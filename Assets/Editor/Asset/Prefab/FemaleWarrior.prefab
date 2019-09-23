@@ -2551,7 +2551,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8264591116870501617}
   m_Layer: 0
-  m_Name: A03
+  m_Name: FemaleWarrior
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2694,7 +2694,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &8264591116870501623
 Transform:
   m_ObjectHideFlags: 0
@@ -3729,7 +3729,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &8264591116870501707
 Transform:
   m_ObjectHideFlags: 0
