@@ -1,10 +1,10 @@
 ﻿using UnityEditor;
 using UnityEngine;
 
-public class SkillEditorMonoWindow : EditorWindow {
+public class SkillEditorWindow : EditorWindow {
 
     public static void Open() {
-        SkillEditorMonoWindow window = GetWindow<SkillEditorMonoWindow>();
+        SkillEditorWindow window = GetWindow<SkillEditorWindow>();
         window.Show();
     }
 

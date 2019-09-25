@@ -1,5 +1,5 @@
 ﻿using UnityEditor;
-using UnityEngine;
+//using UnityEngine;
 
 [CustomEditor(typeof(SkillEditorMono))]
 public class SkillEditorMonoInspector : Editor {
@@ -11,13 +11,12 @@ public class SkillEditorMonoInspector : Editor {
     }
 
     public override void OnInspectorGUI() {
-        EditorGUILayout.BeginHorizontal();
-        GUILayout.Label("This is a SkillEditorMono!");
-        EditorGUILayout.EndHorizontal();
+        //EditorGUILayout.BeginHorizontal();
+        //GUILayout.Label("This is a SkillEditorMono!");
+        //EditorGUILayout.EndHorizontal();
     }
 
-    public void OnSceneGUI()
-    {
+    public void OnSceneGUI() {
         Handles.Label(m_target.transform.position, "This is a test!");
     }
 }
