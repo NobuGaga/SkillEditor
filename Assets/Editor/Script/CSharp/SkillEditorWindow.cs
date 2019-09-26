@@ -4,8 +4,7 @@ using UnityEngine;
 public class SkillEditorWindow : EditorWindow {
 
     public static void Open() {
-        SkillEditorWindow window = GetWindow<SkillEditorWindow>();
-        window.Show();
+        GetWindow<SkillEditorWindow>().Show();
     }
 
     private void OnGUI() {

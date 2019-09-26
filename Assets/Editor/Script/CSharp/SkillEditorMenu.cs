@@ -12,8 +12,18 @@ public static class SkillEditorMenu {
         SkillEditorWindow.Open();
 	}
 
-	[MenuItem("技能编辑器/退出编辑器模式")]
+    [MenuItem("技能编辑器/退出编辑器模式")]
     private static void ExitSkillEditor() {
         SkillEditorManager.RevertScene();
+    }
+
+    [MenuItem("技能编辑器/播放")]
+    private static void Play() {
+        SkillEditorManager.Play();
+    }
+
+    [MenuItem("技能编辑器/停止")]
+    private static void Stop() {
+        SkillEditorManager.Stop();
     }
 }
