@@ -61,7 +61,8 @@ public static class SkillEditorManager{
         string clipPath = m_modelPath.Substring(0, m_modelPath.IndexOf("prefabs/", System.StringComparison.Ordinal)) + "models/";
         DirectoryInfo direction = new DirectoryInfo(clipPath);
         string[] fileNames = Directory.GetFiles(clipPath);
-        List<AnimationClip> listClipNames = new List<AnimationClip>(8);
+        List<string> listClipNames = new List<string>();
+        List<AnimationClip> listClip = new List<AnimationClip>(8);
         foreach (string fileName in fileNames) {
             if (fileName.Contains(".meta") || !fileName.Contains("@") || !(fileName.Contains(".fbx") || fileName.Contains(".FBX")))
                 continue;
@@ -70,11 +71,12 @@ public static class SkillEditorManager{
             AnimationClip clip = AssetDatabase.LoadAssetAtPath<AnimationClip>(path);
             if (clip == null)
                 continue;
-            listClipNames.Add(clip);
+            listClipNames.Add(clip.name);
+            listClip.Add(clip);
             Debug.Log(string.Format("clip name {0}", clip.name));
         }
         SkillEditorMono script = CurrentModel;
-        script.AddAllAnimationClipName(listClipNames.ToArray());
+        script.AddAllAnimationClipName(listClip.ToArray());
     }
 
 #if UNITY_EDITOR_WIN
@@ -103,7 +105,7 @@ public static class SkillEditorManager{
         double currentTime = EditorApplication.timeSinceStartup;
         float deltaTime = (float)(currentTime - m_lastTime);
         m_lastTime = currentTime;
-        m_modelScript.Update(deltaTime);
+        m_modelScript.UpdateAnimation(deltaTime);
     }
 
     public static void Stop() {

@@ -63,6 +63,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Editor\Script\CSharp\SkillEditorData.cs" />
     <Compile Include="Assets\Editor\Script\CSharp\SkillEditorManager.cs" />
     <Compile Include="Assets\Editor\Script\CSharp\SkillEditorMenu.cs" />
     <Compile Include="Assets\Editor\Script\CSharp\SkillEditorMonoInspector.cs" />

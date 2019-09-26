@@ -56,7 +56,7 @@ public class SkillEditorMono : MonoBehaviour {
         }
     }
 
-    public void Update(float deltaTime) {
+    public void UpdateAnimation(float deltaTime) {
         if (!m_isPlaying)
             return;
         m_curClipPlayTime += deltaTime;
