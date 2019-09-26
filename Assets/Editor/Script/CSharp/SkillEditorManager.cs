@@ -34,11 +34,15 @@ public static class SkillEditorManager{
 		string prefabPath = EditorUtility.OpenFilePanel("模型 Prefab 路径", ModelPrefabPath, ModelPrefabExtension);
 		if (prefabPath == null || prefabPath == string.Empty || prefabPath == m_modelPath)
 			return;
+        if (!isEditorMode) {
+            string menuPath = string.Format("Window/Layouts/{0}", SkillEditorLayout);
+            if (!EditorApplication.ExecuteMenuItem(menuPath)) {
 #if UNITY_EDITOR_WIN
-        CopyLayoutFile();
+                CopyLayoutFile();
+                EditorApplication.ExecuteMenuItem(menuPath);
 #endif
-        if (!isEditorMode)
-            EditorApplication.ExecuteMenuItem(string.Format("Window/Layouts/{0}", SkillEditorLayout));
+            }
+        }
         EditorSceneManager.OpenScene(EditScenePath);
         m_modelPath = prefabPath;
         Debug.Log(string.Format("Model Path {0}", m_modelPath));
