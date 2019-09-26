@@ -7,6 +7,10 @@ public class SkillEditorWindow : EditorWindow {
         GetWindow<SkillEditorWindow>().Show();
     }
 
+    public static void CloseWindow() {
+        GetWindow<SkillEditorWindow>().Close();
+    }
+
     private void OnGUI() {
         EditorGUILayout.BeginHorizontal();
         GUILayout.Label("This is a test window!");

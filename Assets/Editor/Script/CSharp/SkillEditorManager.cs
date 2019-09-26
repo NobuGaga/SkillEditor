@@ -50,7 +50,7 @@ public static class SkillEditorManager{
         string clipPath = m_modelPath.Substring(0, m_modelPath.IndexOf("prefabs/", System.StringComparison.Ordinal)) + "models/";
         DirectoryInfo direction = new DirectoryInfo(clipPath);
         string[] fileNames = Directory.GetFiles(clipPath);
-        List<string> listClipNames = new List<string>(8);
+        List<AnimationClip> listClipNames = new List<AnimationClip>(8);
         foreach (string fileName in fileNames) {
             if (fileName.Contains(".meta") || !fileName.Contains("@") || !(fileName.Contains(".fbx") || fileName.Contains(".FBX")))
                 continue;
@@ -59,7 +59,7 @@ public static class SkillEditorManager{
             AnimationClip clip = AssetDatabase.LoadAssetAtPath<AnimationClip>(path);
             if (clip == null)
                 continue;
-            listClipNames.Add(clip.name);
+            listClipNames.Add(clip);
             Debug.Log(string.Format("clip name {0}", clip.name));
         }
         SkillEditorMono script = CurrentModel;
@@ -69,6 +69,7 @@ public static class SkillEditorManager{
     public static void Play() {
         m_lastTime = EditorApplication.timeSinceStartup;
         EditorApplication.update += Update;
+        CurrentModel.Play();
     }
 
     private static void Update() {
@@ -85,8 +86,10 @@ public static class SkillEditorManager{
     public static void RevertScene() {
         if (!isEditorMode)
             return;
+        EditorApplication.update = null;
         m_model = null;
         m_modelPath = string.Empty;
+        SkillEditorWindow.CloseWindow();
         EditorSceneManager.OpenScene(ExitScenePath);
         EditorApplication.ExecuteMenuItem("Window/Layouts/Default");
     }
