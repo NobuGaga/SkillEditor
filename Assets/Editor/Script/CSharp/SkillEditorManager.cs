@@ -2,8 +2,11 @@
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using System.IO;
-using System.Text;
 using System.Collections.Generic;
+
+#if UNITY_EDITOR_WIN
+using UnityEditorInternal;
+#endif
 
 public static class SkillEditorManager{
 
@@ -15,6 +18,7 @@ public static class SkillEditorManager{
 	private const string ModelPrefabExtension = "prefab";
 	private const string EditScenePath = "Assets/Editor/Scene/EditScene.unity";
 	private const string ExitScenePath = "Assets/Editor/Scene/EditScene.unity";
+    private const string SkillEditorLayout = "SkillEditor";
 
     private static double m_lastTime;
 
@@ -30,8 +34,11 @@ public static class SkillEditorManager{
 		string prefabPath = EditorUtility.OpenFilePanel("模型 Prefab 路径", ModelPrefabPath, ModelPrefabExtension);
 		if (prefabPath == null || prefabPath == string.Empty || prefabPath == m_modelPath)
 			return;
+#if UNITY_EDITOR_WIN
+        CopyLayoutFile();
+#endif
         if (!isEditorMode)
-            EditorApplication.ExecuteMenuItem("Window/Layouts/SkillEditor");
+            EditorApplication.ExecuteMenuItem(string.Format("Window/Layouts/{0}", SkillEditorLayout));
         EditorSceneManager.OpenScene(EditScenePath);
         m_modelPath = prefabPath;
         Debug.Log(string.Format("Model Path {0}", m_modelPath));
@@ -65,6 +72,22 @@ public static class SkillEditorManager{
         SkillEditorMono script = CurrentModel;
         script.AddAllAnimationClipName(listClipNames.ToArray());
     }
+
+#if UNITY_EDITOR_WIN
+    private static void CopyLayoutFile() {
+        string targetPath = Application.persistentDataPath;
+        string keyWord = "AppData/";
+        int subIndex = targetPath.IndexOf(keyWord, System.StringComparison.Ordinal);
+        subIndex += keyWord.Length;
+        targetPath = targetPath.Substring(0, subIndex);
+        targetPath = Path.Combine(targetPath, string.Format("Roaming/Unity/Editor-5.x/Preferences/Layouts/{0}.wlt", SkillEditorLayout));
+        subIndex = Application.dataPath.IndexOf("Assets", System.StringComparison.Ordinal);
+        string filePath = Application.dataPath.Substring(0, subIndex);
+        filePath = Path.Combine(filePath, string.Format("Layout/{0}.wlt", SkillEditorLayout));
+        File.Copy(filePath, targetPath);
+        InternalEditorUtility.ReloadWindowLayoutMenu();
+    }
+#endif
 
     public static void Play() {
         m_lastTime = EditorApplication.timeSinceStartup;
