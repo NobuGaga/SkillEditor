@@ -21,6 +21,7 @@ public static class SkillEditorData {
                     m_listAnimationClipIndexs.Add(i);
             }
             else
+            else if (m_aniamtionClips.Length < m_listAnimationClipIndexs.Count)
                 m_listAnimationClipIndexs.RemoveRange(m_aAnimationClipNames.Length, m_listAnimationClipIndexs.Count - 1);
             m_aAnimationClipIndexs = m_listAnimationClipIndexs.ToArray();
         }

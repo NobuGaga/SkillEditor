@@ -14,14 +14,14 @@ public class SkillEditorWindow : BaseEditorWindow {
 
     public static void Open() {
         Open<SkillEditorWindow>();
-        Init();
     }
 
     public static void CloseWindow() {
+        Clear();
         CloseWindow<SkillEditorWindow>();
     }
 
-    public static void Init() {
+    private void Enable() {
         AddButtonData(BtnSelectPrefab, Style.PreButton);
     }
 
