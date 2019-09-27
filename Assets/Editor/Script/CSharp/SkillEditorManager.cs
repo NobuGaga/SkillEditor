@@ -22,6 +22,8 @@ public static class SkillEditorManager{
 
     private static double m_lastTime;
 
+    private static List<AnimationClip> m_animationClips = new List<AnimationClip>(SkillEditorConst.DefaultAnimationClipLength);
+
     private static bool isEditorMode {
         get { return m_modelPath != string.Empty; }
     }
@@ -45,7 +47,6 @@ public static class SkillEditorManager{
         }
         EditorSceneManager.OpenScene(EditScenePath);
         m_modelPath = prefabPath;
-        Debug.Log(string.Format("Model Path {0}", m_modelPath));
 		if (m_model)
 			Object.DestroyImmediate(m_model);
 		GameObject prefab = PrefabUtility.LoadPrefabContents(m_modelPath);
@@ -54,6 +55,7 @@ public static class SkillEditorManager{
         m_modelScript = m_model.AddComponent<SkillEditorMono>();
         AddAllAnimationClipName();
         Selection.activeGameObject = m_model;
+        SkillEditorScene.RegisterSceneGUI();
         SkillEditorWindow.Open();
 	}
 
@@ -61,8 +63,7 @@ public static class SkillEditorManager{
         string clipPath = m_modelPath.Substring(0, m_modelPath.IndexOf("prefabs/", System.StringComparison.Ordinal)) + "models/";
         DirectoryInfo direction = new DirectoryInfo(clipPath);
         string[] fileNames = Directory.GetFiles(clipPath);
-        List<string> listClipNames = new List<string>();
-        List<AnimationClip> listClip = new List<AnimationClip>(8);
+        m_animationClips.Clear();
         foreach (string fileName in fileNames) {
             if (fileName.Contains(".meta") || !fileName.Contains("@") || !(fileName.Contains(".fbx") || fileName.Contains(".FBX")))
                 continue;
@@ -71,12 +72,14 @@ public static class SkillEditorManager{
             AnimationClip clip = AssetDatabase.LoadAssetAtPath<AnimationClip>(path);
             if (clip == null)
                 continue;
-            listClipNames.Add(clip.name);
-            listClip.Add(clip);
-            Debug.Log(string.Format("clip name {0}", clip.name));
+            m_animationClips.Add(clip); 
         }
-        SkillEditorMono script = CurrentModel;
-        script.AddAllAnimationClipName(listClip.ToArray());
+        SkillEditorData.AnimationClips = m_animationClips.ToArray();
+        SkillEditorWindow.SetDisplayData(SkillEditorData.AnimationClipNames, SkillEditorData.AnimationClipIndexs);
+    }
+
+    public static void SetAnimationClipData(int index) {
+        SkillEditorData.SetCurrentAnimationClip(index);
     }
 
 #if UNITY_EDITOR_WIN
@@ -98,7 +101,7 @@ public static class SkillEditorManager{
     public static void Play() {
         m_lastTime = EditorApplication.timeSinceStartup;
         EditorApplication.update += Update;
-        CurrentModel.Play();
+        CurrentModel.Play(SkillEditorData.SelectAnimationClipName, SkillEditorData.SelectAnimationClip);
     }
 
     private static void Update() {
@@ -119,6 +122,7 @@ public static class SkillEditorManager{
         m_model = null;
         m_modelPath = string.Empty;
         SkillEditorWindow.CloseWindow();
+        SkillEditorScene.UnregisterSceneGUI();
         EditorSceneManager.OpenScene(ExitScenePath);
         EditorApplication.ExecuteMenuItem("Window/Layouts/Default");
     }

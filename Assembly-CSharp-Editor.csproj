@@ -63,10 +63,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Editor\Script\CSharp\BaseEditorWindow.cs" />
+    <Compile Include="Assets\Editor\Script\CSharp\SkillEditorConst.cs" />
     <Compile Include="Assets\Editor\Script\CSharp\SkillEditorData.cs" />
     <Compile Include="Assets\Editor\Script\CSharp\SkillEditorManager.cs" />
     <Compile Include="Assets\Editor\Script\CSharp\SkillEditorMenu.cs" />
-    <Compile Include="Assets\Editor\Script\CSharp\SkillEditorMonoInspector.cs" />
+    <Compile Include="Assets\Editor\Script\CSharp\SkillEditorScene.cs" />
     <Compile Include="Assets\Editor\Script\CSharp\SkillEditorWindow.cs" />
     <Reference Include="UnityEditor.TestRunner">
       <HintPath>/Users/biweixiong/Documents/GitHub/Unity/SkillEditor/Library/ScriptAssemblies/UnityEditor.TestRunner.dll</HintPath>
