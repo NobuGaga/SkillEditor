@@ -14,6 +14,7 @@ public class SkillEditorWindow : BaseEditorWindow {
 
     public static void Open() {
         Open<SkillEditorWindow>();
+        Init();
     }
 
     public static void CloseWindow() {
@@ -21,7 +22,7 @@ public class SkillEditorWindow : BaseEditorWindow {
         CloseWindow<SkillEditorWindow>();
     }
 
-    private void Enable() {
+    private static void Init() {
         AddButtonData(BtnSelectPrefab, Style.PreButton);
     }
 
