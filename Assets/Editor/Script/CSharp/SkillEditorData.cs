@@ -20,11 +20,10 @@ public static class SkillEditorData {
                 for (int i = m_listAnimationClipIndexs.Count; i < m_aniamtionClips.Length; i++)
                     m_listAnimationClipIndexs.Add(i);
             }
-            else
             else if (m_aniamtionClips.Length < m_listAnimationClipIndexs.Count)
                 m_listAnimationClipIndexs.RemoveRange(m_aAnimationClipNames.Length, m_listAnimationClipIndexs.Count - 1);
             m_aAnimationClipIndexs = m_listAnimationClipIndexs.ToArray();
-        }
+        } 
         get { return m_aniamtionClips; }
     }
 
