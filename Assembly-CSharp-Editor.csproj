@@ -64,7 +64,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Editor\Script\CSharp\BaseEditorWindow.cs" />
-    <Compile Include="Assets\Editor\Script\CSharp\MyRangeAttributeDrawer.cs" />
+    <Compile Include="Assets\Editor\Script\CSharp\SkillEditorAnimator.cs" />
+    <Compile Include="Assets\Editor\Script\CSharp\SkillEditorClip.cs" />
     <Compile Include="Assets\Editor\Script\CSharp\SkillEditorConst.cs" />
     <Compile Include="Assets\Editor\Script\CSharp\SkillEditorData.cs" />
     <Compile Include="Assets\Editor\Script\CSharp\SkillEditorManager.cs" />
@@ -662,12 +663,6 @@
     <Reference Include="Boo.Lang">
       <HintPath>/Applications/Unity/Hub/Editor/2019.2.6f1/Unity.app/Contents/MonoBleedingEdge/lib/mono/unityscript/Boo.Lang.dll</HintPath>
     </Reference>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="Assembly-CSharp.csproj">
-      <Project>{7EEE7D51-2290-AE77-9389-4462DF9E04C7}</Project>
-      <Name>Assembly-CSharp</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="GenerateTargetFrameworkMonikerAttribute" />

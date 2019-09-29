@@ -26,6 +26,14 @@ public static class SkillEditorData {
         } 
         get { return m_aniamtionClips; }
     }
+    public static bool IsGeneric {
+        get {
+            if (m_aniamtionClips == null)
+                return false;
+            AnimationClip sampleClip = m_aniamtionClips[0];
+            return !sampleClip.legacy && !sampleClip.humanMotion;
+        }
+    }
 
     private static List<string> m_listAnimationClipNames = new List<string>(SkillEditorConst.DefaultAnimationClipLength);
     private static string[] m_aAnimationClipNames;

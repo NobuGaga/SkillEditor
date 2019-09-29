@@ -48,6 +48,8 @@ public static class SkillEditorManager{
 		m_model = Object.Instantiate(prefab);
         PrefabUtility.UnloadPrefabContents(prefab);
         AddAllAnimationClipName();
+        if (SkillEditorData.IsGeneric)
+            SkillEditorAnimator.Animator = m_model.GetComponent<Animator>();
         Selection.activeGameObject = m_model;
         SkillEditorScene.RegisterSceneGUI();
         SkillEditorWindow.Open();
@@ -95,16 +97,23 @@ public static class SkillEditorManager{
     public static void Play() {
         m_lastTime = EditorApplication.timeSinceStartup;
         EditorApplication.update += Update;
-        SkillEditorClip.Play(m_model, SkillEditorData.SelectAnimationClip);
+        if (SkillEditorData.IsGeneric)
+            SkillEditorAnimator.Play(SkillEditorData.SelectAnimationClip);
+        else
+            SkillEditorClip.Play(m_model, SkillEditorData.SelectAnimationClip);
     }
 
     private static void Update() {
-        if (SkillEditorClip.IsPlayOver)
+        bool isGeneric = SkillEditorData.IsGeneric;
+        if ((isGeneric && SkillEditorAnimator.IsPlayOver) || (!isGeneric && SkillEditorClip.IsPlayOver))
             Stop();
         double currentTime = EditorApplication.timeSinceStartup;
         float deltaTime = (float)(currentTime - m_lastTime);
         m_lastTime = currentTime;
-        SkillEditorClip.Update(deltaTime);
+        if (isGeneric)
+            SkillEditorAnimator.Update(deltaTime);
+        else
+            SkillEditorClip.Update(deltaTime);
     }
 
     public static void Stop() {
