@@ -11,7 +11,6 @@ using UnityEditorInternal;
 public static class SkillEditorManager{
 
 	private static GameObject m_model = null;
-    private static SkillEditorMono m_modelScript = null;
     private static string m_modelPath = string.Empty;
 
 	private const string ModelPrefabPath = "Assets/Editor/Asset/prefabs";
@@ -26,10 +25,6 @@ public static class SkillEditorManager{
 
     private static bool isEditorMode {
         get { return m_modelPath != string.Empty; }
-    }
-
-    public static SkillEditorMono CurrentModel  {
-        get { return m_modelScript; }
     }
 
     public static void OpenPrefab() {
@@ -52,12 +47,11 @@ public static class SkillEditorManager{
 		GameObject prefab = PrefabUtility.LoadPrefabContents(m_modelPath);
 		m_model = Object.Instantiate(prefab);
         PrefabUtility.UnloadPrefabContents(prefab);
-        m_modelScript = m_model.AddComponent<SkillEditorMono>();
         AddAllAnimationClipName();
         Selection.activeGameObject = m_model;
         SkillEditorScene.RegisterSceneGUI();
         SkillEditorWindow.Open();
-	}
+    }
 
     private static void AddAllAnimationClipName() {
         string clipPath = m_modelPath.Substring(0, m_modelPath.IndexOf("prefabs/", System.StringComparison.Ordinal)) + "models/";
@@ -101,14 +95,16 @@ public static class SkillEditorManager{
     public static void Play() {
         m_lastTime = EditorApplication.timeSinceStartup;
         EditorApplication.update += Update;
-        CurrentModel.Play(SkillEditorData.SelectAnimationClipName, SkillEditorData.SelectAnimationClip);
+        SkillEditorClip.Play(m_model, SkillEditorData.SelectAnimationClip);
     }
 
     private static void Update() {
+        if (SkillEditorClip.IsPlayOver)
+            Stop();
         double currentTime = EditorApplication.timeSinceStartup;
         float deltaTime = (float)(currentTime - m_lastTime);
         m_lastTime = currentTime;
-        m_modelScript.UpdateAnimation(deltaTime);
+        SkillEditorClip.Update(deltaTime);
     }
 
     public static void Stop() {

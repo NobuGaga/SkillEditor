@@ -64,6 +64,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Editor\Script\CSharp\BaseEditorWindow.cs" />
+    <Compile Include="Assets\Editor\Script\CSharp\MyRangeAttributeDrawer.cs" />
     <Compile Include="Assets\Editor\Script\CSharp\SkillEditorConst.cs" />
     <Compile Include="Assets\Editor\Script\CSharp\SkillEditorData.cs" />
     <Compile Include="Assets\Editor\Script\CSharp\SkillEditorManager.cs" />
@@ -661,7 +662,6 @@
     <Reference Include="Boo.Lang">
       <HintPath>/Applications/Unity/Hub/Editor/2019.2.6f1/Unity.app/Contents/MonoBleedingEdge/lib/mono/unityscript/Boo.Lang.dll</HintPath>
     </Reference>
-    <Compile Include="Assets\Editor\Script\CSharp\EditAnimatorInspector.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="Assembly-CSharp.csproj">
