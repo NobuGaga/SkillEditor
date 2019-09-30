@@ -26,22 +26,21 @@ public static class SkillEditorData {
         } 
         get { return m_aniamtionClips; }
     }
-    public static bool IsGeneric {
-        get {
-            if (m_aniamtionClips == null)
-                return false;
-            AnimationClip sampleClip = m_aniamtionClips[0];
-            return !sampleClip.legacy && !sampleClip.humanMotion;
-        }
+
+    public static bool GenericState() {
+        if (m_aniamtionClips == null)
+            return false;
+        AnimationClip sampleClip = m_aniamtionClips[0];
+        return !sampleClip.legacy && !sampleClip.humanMotion;
     }
 
-    private static List<string> m_listAnimationClipNames = new List<string>(SkillEditorConst.DefaultAnimationClipLength);
+    private static List<string> m_listAnimationClipNames = new List<string>(SkillEditorConfig.DefaultAnimationClipLength);
     private static string[] m_aAnimationClipNames;
     public static string[] AnimationClipNames {
         get { return m_aAnimationClipNames; }
     }
 
-    private static List<int> m_listAnimationClipIndexs = new List<int>(SkillEditorConst.DefaultAnimationClipLength);
+    private static List<int> m_listAnimationClipIndexs = new List<int>(SkillEditorConfig.DefaultAnimationClipLength);
     private static int[] m_aAnimationClipIndexs;
     public static int[] AnimationClipIndexs {
         get { return m_aAnimationClipIndexs; }

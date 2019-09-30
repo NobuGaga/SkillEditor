@@ -75,7 +75,7 @@ public class SkillEditorWindow : BaseEditorWindow {
             m_curClipIndex = EditorGUILayout.IntPopup(m_curClipIndex, m_animationClipNames, m_animationClipIndexs, GetGUIStyle(Style.PreDropDown));
         if (m_lastClipIndex != m_curClipIndex) {
             m_lastClipIndex = m_curClipIndex;
-            SkillEditorManager.SetAnimationClipData(m_curClipIndex);
+            SkillEditorController.SetAnimationClipData(m_curClipIndex);
         }
     }
 }

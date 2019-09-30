@@ -2,8 +2,6 @@
 
 public static class SkillEditorMenu {
 
-    //#Shift %Ctrl &Alt
-
     [MenuItem("技能编辑器/选择模型预设")]
     private static void SelectPrefab() {
         SkillEditorManager.SelectPrefab();

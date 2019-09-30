@@ -66,10 +66,12 @@
     <Compile Include="Assets\Editor\Script\CSharp\Base\BaseEditorWindow.cs" />
     <Compile Include="Assets\Editor\Script\CSharp\SkillEditor\Animation\SkillEditorAnimator.cs" />
     <Compile Include="Assets\Editor\Script\CSharp\SkillEditor\Animation\SkillEditorClip.cs" />
+    <Compile Include="Assets\Editor\Script\CSharp\SkillEditor\Controller\SkillEditorController.cs" />
     <Compile Include="Assets\Editor\Script\CSharp\SkillEditor\Controller\SkillEditorManager.cs" />
-    <Compile Include="Assets\Editor\Script\CSharp\SkillEditor\Data\SkillEditorConst.cs" />
+    <Compile Include="Assets\Editor\Script\CSharp\SkillEditor\Data\SkillEditorConfig.cs" />
     <Compile Include="Assets\Editor\Script\CSharp\SkillEditor\Data\SkillEditorData.cs" />
     <Compile Include="Assets\Editor\Script\CSharp\SkillEditor\SkillEditorMenu.cs" />
+    <Compile Include="Assets\Editor\Script\CSharp\SkillEditor\SkillEditorTool.cs" />
     <Compile Include="Assets\Editor\Script\CSharp\SkillEditor\View\SkillEditorScene.cs" />
     <Compile Include="Assets\Editor\Script\CSharp\SkillEditor\View\SkillEditorWindow.cs" />
     <Reference Include="UnityEditor.TestRunner">
