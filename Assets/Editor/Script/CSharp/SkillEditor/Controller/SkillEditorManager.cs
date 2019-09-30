@@ -36,10 +36,8 @@ public static class SkillEditorManager{
     public static void Exit() {
         if (!isEditorMode)
             return;
-        EditorApplication.update = null;
+        SkillEditorController.Exit();
         SkillEditorConfig.Reset();
-        SkillEditorWindow.CloseWindow();
-        SkillEditorScene.UnregisterSceneGUI();
         EditorSceneManager.OpenScene(SkillEditorConfig.ExitScenePath);
         EditorApplication.ExecuteMenuItem("Window/Layouts/Default");
     }

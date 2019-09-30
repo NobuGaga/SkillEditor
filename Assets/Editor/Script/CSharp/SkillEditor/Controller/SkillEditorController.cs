@@ -108,5 +108,8 @@ public static class SkillEditorController {
 
     public static void Exit() {
         m_model = null;
+        EditorApplication.update = null;
+        SkillEditorWindow.CloseWindow();
+        SkillEditorScene.UnregisterSceneGUI();
     }
 }
