@@ -6,8 +6,8 @@ using StringComparison = System.StringComparison;
 public static class SkillEditorConfig {
 
     // Common
-    public static readonly int ProjectPathSubIndex = Application.dataPath.IndexOf("Assets", System.StringComparison.Ordinal);
-    public static readonly string ProjectPath = Application.dataPath.Substring(0, ProjectPathSubIndex);
+    private static readonly int ProjectPathSubIndex = Application.dataPath.IndexOf("Assets", System.StringComparison.Ordinal);
+    private static readonly string ProjectPath = Application.dataPath.Substring(0, ProjectPathSubIndex);
 
     // Prefab Group Structure
     public const string ModelPrefabPath = "Assets/Editor/Asset/prefabs";
@@ -15,9 +15,8 @@ public static class SkillEditorConfig {
     public const string FilePanelTitle = "模型预设路径";
     private static string m_prefabFullPath = string.Empty;
     private static string m_clipFullPath = string.Empty;
-    private static string m_clipPath = string.Empty;
     private static string m_controllerPath = string.Empty;
-    public static string PrefabPath{
+    public static string PrefabPath {
         set {
             m_prefabFullPath = value;
             if (m_prefabFullPath == string.Empty)
@@ -30,24 +29,23 @@ public static class SkillEditorConfig {
         get { return m_prefabFullPath; }
     }
     public static string ClipGroupFullPath => m_clipFullPath;
-    public static string ClipGroupPath => m_clipPath;
     public static string ControllerPath => m_controllerPath;
 
     // Scene
-    public const string ScenePath = "Assets/Editor/Scene";
-    public const string EditSceneName = "EditScene";
-    public const string ExitSceneName = "EditScene";
+    private const string ScenePath = "Assets/Editor/Scene";
+    private const string EditSceneName = "EditScene";
+    private const string ExitSceneName = "EditScene";
     public const string SceneExtension = "unity";
     public static readonly string EditScenePath = Path.Combine(ScenePath, SkillEditorTool.FileWithExtension(EditSceneName, SceneExtension));
     public static readonly string ExitScenePath = Path.Combine(ScenePath, SkillEditorTool.FileWithExtension(ExitSceneName, SceneExtension));
 
     // Layout
-    public const string LayoutMenuPath = "Window/Layouts";
-    public const string SkillEditorLayoutName = "SkillEditor";
-    public const string LayoutExtension = "wlt";
-    public static readonly string SkillEditorLayoutFullName = SkillEditorTool.FileWithExtension(SkillEditorLayoutName, LayoutExtension);
+    private const string LayoutMenuPath = "Window/Layouts";
+    private const string SkillEditorLayoutName = "SkillEditor";
+    private const string LayoutExtension = "wlt";
+    private static readonly string SkillEditorLayoutFullName = SkillEditorTool.FileWithExtension(SkillEditorLayoutName, LayoutExtension);
     public static readonly string SkillEditorMenuPath = Path.Combine(LayoutMenuPath, SkillEditorLayoutName);
-    public static readonly string LayoutFileGroupPath =
+    private static readonly string LayoutFileGroupPath =
 #if UNITY_EDITOR_WIN
     Path.Combine(InternalEditorUtility.unityPreferencesFolder, "Layouts");
 #elif UNITY_EDITOR_OSX
@@ -56,13 +54,12 @@ public static class SkillEditorConfig {
     string.Empty;
 #endif
     public static readonly string SkillEditorLayoutFilePath = Path.Combine(LayoutFileGroupPath, SkillEditorLayoutFullName);
-    public static readonly string LocalLayoutFileGroupPath = Path.Combine(ProjectPath, "Layout");
+    private static readonly string LocalLayoutFileGroupPath = Path.Combine(ProjectPath, "Layout");
     public static readonly string LocalSkillEditorLayoutFilePath = Path.Combine(LocalLayoutFileGroupPath, SkillEditorLayoutFullName);
-    public const string ExitSkillEditorLayoutName = "Default";
+    private const string ExitSkillEditorLayoutName = "Default";
     public static readonly string ExitLayoutMenuPath = Path.Combine(LayoutMenuPath, ExitSkillEditorLayoutName);
 
     // Animation
-    public const short DefaultClipFrame = 30;
     public const short DefaultAnimationClipLength = 8;
 
     // Window
@@ -72,7 +69,6 @@ public static class SkillEditorConfig {
     public static void Reset() {
         m_prefabFullPath = string.Empty;
         m_clipFullPath = string.Empty;
-        m_clipPath = string.Empty;
         m_controllerPath = string.Empty;
     }
 }
