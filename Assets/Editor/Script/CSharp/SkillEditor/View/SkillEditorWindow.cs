@@ -67,7 +67,7 @@ public class SkillEditorWindow : BaseEditorWindow {
     }
 
     private void OnSelectPrefabButton() {
-        SkillEditorManager.OpenPrefab();
+        SkillEditorManager.SelectPrefab();
     }
 
     private void TitleUI() {

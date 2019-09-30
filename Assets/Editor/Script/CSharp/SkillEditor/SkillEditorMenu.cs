@@ -2,13 +2,15 @@
 
 public static class SkillEditorMenu {
 
-	[MenuItem("技能编辑器/选择模型 Prefab")]
-    private static void OpenPrefab() {
-        SkillEditorManager.OpenPrefab();
+    //#Shift %Ctrl &Alt
+
+    [MenuItem("技能编辑器/选择模型预设")]
+    private static void SelectPrefab() {
+        SkillEditorManager.SelectPrefab();
 	}
 
     [MenuItem("技能编辑器/打开技能编辑窗口")]
-    private static void OpenTimelineWindow() {
+    private static void OpenWindow() {
         SkillEditorWindow.Open();
 	}
 
@@ -24,6 +26,6 @@ public static class SkillEditorMenu {
 
     [MenuItem("技能编辑器/退出编辑器模式")]
     private static void ExitSkillEditor() {
-        SkillEditorManager.RevertScene();
+        SkillEditorManager.Exit();
     }
 }

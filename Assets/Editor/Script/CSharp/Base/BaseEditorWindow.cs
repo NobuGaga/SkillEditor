@@ -67,6 +67,14 @@ public class BaseEditorWindow : EditorWindow {
         EditorGUILayout.EndHorizontal();
     }
 
+    protected enum Layout {
+        Left,
+        Right,
+        Center,
+        Top,
+        Bottom,
+    }
+
     protected enum Style {
         PreButton,
         PreDropDown,
@@ -82,13 +90,5 @@ public class BaseEditorWindow : EditorWindow {
             this.name = name;
             this.style = style;
         }
-    }
-
-    protected enum Layout {
-        Left,
-        Right,
-        Center,
-        Top,
-        Bottom,
     }
 }
