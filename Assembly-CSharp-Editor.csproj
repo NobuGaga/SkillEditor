@@ -63,15 +63,15 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Editor\Script\CSharp\BaseEditorWindow.cs" />
-    <Compile Include="Assets\Editor\Script\CSharp\SkillEditorAnimator.cs" />
-    <Compile Include="Assets\Editor\Script\CSharp\SkillEditorClip.cs" />
-    <Compile Include="Assets\Editor\Script\CSharp\SkillEditorConst.cs" />
-    <Compile Include="Assets\Editor\Script\CSharp\SkillEditorData.cs" />
-    <Compile Include="Assets\Editor\Script\CSharp\SkillEditorManager.cs" />
-    <Compile Include="Assets\Editor\Script\CSharp\SkillEditorMenu.cs" />
-    <Compile Include="Assets\Editor\Script\CSharp\SkillEditorScene.cs" />
-    <Compile Include="Assets\Editor\Script\CSharp\SkillEditorWindow.cs" />
+    <Compile Include="Assets\Editor\Script\CSharp\Base\BaseEditorWindow.cs" />
+    <Compile Include="Assets\Editor\Script\CSharp\SkillEditor\Animation\SkillEditorAnimator.cs" />
+    <Compile Include="Assets\Editor\Script\CSharp\SkillEditor\Animation\SkillEditorClip.cs" />
+    <Compile Include="Assets\Editor\Script\CSharp\SkillEditor\Controller\SkillEditorManager.cs" />
+    <Compile Include="Assets\Editor\Script\CSharp\SkillEditor\Data\SkillEditorConst.cs" />
+    <Compile Include="Assets\Editor\Script\CSharp\SkillEditor\Data\SkillEditorData.cs" />
+    <Compile Include="Assets\Editor\Script\CSharp\SkillEditor\SkillEditorMenu.cs" />
+    <Compile Include="Assets\Editor\Script\CSharp\SkillEditor\View\SkillEditorScene.cs" />
+    <Compile Include="Assets\Editor\Script\CSharp\SkillEditor\View\SkillEditorWindow.cs" />
     <Reference Include="UnityEditor.TestRunner">
       <HintPath>/Users/biweixiong/Documents/GitHub/Unity/SkillEditor/Library/ScriptAssemblies/UnityEditor.TestRunner.dll</HintPath>
     </Reference>
