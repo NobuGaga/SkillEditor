@@ -58,6 +58,8 @@ public static class SkillEditorConfig {
     public static readonly string SkillEditorLayoutFilePath = Path.Combine(LayoutFileGroupPath, SkillEditorLayoutFullName);
     public static readonly string LocalLayoutFileGroupPath = Path.Combine(ProjectPath, "Layout");
     public static readonly string LocalSkillEditorLayoutFilePath = Path.Combine(LocalLayoutFileGroupPath, SkillEditorLayoutFullName);
+    public const string ExitSkillEditorLayoutName = "Default";
+    public static readonly string ExitLayoutMenuPath = Path.Combine(LayoutMenuPath, ExitSkillEditorLayoutName);
 
     // Animation
     public const short DefaultClipFrame = 30;
