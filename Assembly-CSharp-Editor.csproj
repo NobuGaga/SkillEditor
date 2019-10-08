@@ -68,7 +68,7 @@
     <Compile Include="Assets\Editor\Script\CSharp\SkillEditor\Animation\SkillEditorClip.cs" />
     <Compile Include="Assets\Editor\Script\CSharp\SkillEditor\Controller\SkillEditorController.cs" />
     <Compile Include="Assets\Editor\Script\CSharp\SkillEditor\Controller\SkillEditorManager.cs" />
-    <Compile Include="Assets\Editor\Script\CSharp\SkillEditor\Model\SkillEditorAnimationConfig.cs" />
+    <Compile Include="Assets\Editor\Script\CSharp\SkillEditor\Model\SkillEditorAnimationModel.cs" />
     <Compile Include="Assets\Editor\Script\CSharp\SkillEditor\Model\SkillEditorConfig.cs" />
     <Compile Include="Assets\Editor\Script\CSharp\SkillEditor\SkillEditorMenu.cs" />
     <Compile Include="Assets\Editor\Script\CSharp\SkillEditor\SkillEditorTool.cs" />
@@ -666,7 +666,7 @@
       <HintPath>/Applications/Unity/Hub/Editor/2019.2.6f1/Unity.app/Contents/MonoBleedingEdge/lib/mono/unityscript/Boo.Lang.dll</HintPath>
     </Reference>
     <Compile Include="Assets\Editor\Script\CSharp\SkillEditor\Model\SkillEditorKeyFrameData.cs" />
-    <Compile Include="Assets\Editor\Script\CSharp\SkillEditor\Model\SkillEditorKeyFrameConfig.cs" />
+    <Compile Include="Assets\Editor\Script\CSharp\SkillEditor\Model\SkillEditorKeyFrameModel.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="GenerateTargetFrameworkMonikerAttribute" />

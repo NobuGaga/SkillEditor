@@ -1,6 +1,6 @@
 ﻿
 
-public static class SkillEditorKeyFrameConfig {
+public static class SkillEditorKeyFrameModel {
 
     private static SkillEditorKeyFrameData m_data = new SkillEditorKeyFrameData();
 
