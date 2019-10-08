@@ -15,8 +15,7 @@ public static class SkillEditorController {
     private static double m_lastTime;
 
     public static void Start(string prefabPath) {
-        if (m_model)
-            Object.DestroyImmediate(m_model);
+        Reset();
         GameObject prefab = PrefabUtility.LoadPrefabContents(prefabPath);
         m_model = Object.Instantiate(prefab);
         m_model.name = prefab.name;
@@ -57,23 +56,38 @@ public static class SkillEditorController {
     }
 
     private static void RemoveAllAnimatorTransition() {
-        AnimatorController animatorCtrl = AssetDatabase.LoadAssetAtPath<AnimatorController>(SkillEditorConfig.GetAnimatorControllerPath(m_model.name));
-        AnimatorControllerLayer[] layers = animatorCtrl.layers;
+        string sourcePath = SkillEditorConfig.GetAnimatorControllerPath(m_model.name);
+        string copyPath = SkillEditorConfig.GetAnimatorControllerCopyPath(m_model.name);
+        AnimatorController animatorController = AssetDatabase.LoadAssetAtPath<AnimatorController>(sourcePath);
+        File.Copy(SkillEditorTool.ProjectPathToFullPath(sourcePath), copyPath);
+        AnimatorControllerLayer[] layers = animatorController.layers;
         for (int layerIndex = 0; layerIndex < layers.Length; layerIndex++) {
-            AnimatorStateMachine machine = layers[layerIndex].stateMachine;
-            if (machine == null)
+            AnimatorStateMachine mainMachine = layers[layerIndex].stateMachine;
+            if (mainMachine == null || mainMachine.states == null)
                 continue;
-            ChildAnimatorState[] states = machine.states;
-            if (states == null)
+            RemoveAnimatorMachineTransition(mainMachine);
+            ChildAnimatorStateMachine[] subMachines = mainMachine.stateMachines;
+            if (subMachines == null)
                 continue;
-            for (int stateIndex = 0; stateIndex < states.Length; stateIndex++) {
-                AnimatorState state = states[stateIndex].state;
-                if (state == null || state.transitions == null)
+            for (int machineIndex = 0; machineIndex < subMachines.Length; machineIndex++) {
+                AnimatorStateMachine subMachine = subMachines[machineIndex].stateMachine;
+                if (subMachine == null)
                     continue;
-                int transIndex = state.transitions.Length - 1;
-                for (; transIndex >= 0; transIndex--)
-                    state.RemoveTransition(state.transitions[transIndex]);
+                RemoveAnimatorMachineTransition(subMachine);
             }
+        }
+        AssetDatabase.SaveAssets();
+    }
+
+    private static void RemoveAnimatorMachineTransition(AnimatorStateMachine machine) {
+        ChildAnimatorState[] states = machine.states;
+        for (int stateIndex = 0; stateIndex < states.Length; stateIndex++) {
+            AnimatorState state = states[stateIndex].state;
+            if (state == null || state.transitions == null)
+                continue;
+            int transIndex = state.transitions.Length - 1;
+            for (; transIndex >= 0; transIndex--)
+                state.RemoveTransition(state.transitions[transIndex]);
         }
     }
 
@@ -106,8 +120,25 @@ public static class SkillEditorController {
         EditorApplication.update -= Update;
     }
 
+    public static void Reset() {
+        if (m_isGenericClip) {
+            string copyPath = SkillEditorConfig.GetAnimatorControllerCopyPath(m_model.name);
+            if (File.Exists(copyPath)) {
+                string sourcePath = SkillEditorConfig.GetAnimatorControllerPath(m_model.name);
+                sourcePath = SkillEditorTool.ProjectPathToFullPath(sourcePath);
+                File.Copy(copyPath, sourcePath, true);
+                File.Delete(copyPath);
+                AssetDatabase.SaveAssets();
+            }
+        }
+        if (m_model) {
+            Object.DestroyImmediate(m_model);
+            m_model = null;
+        }
+    }
+
     public static void Exit() {
-        m_model = null;
+        Reset();
         EditorApplication.update = null;
         SkillEditorWindow.CloseWindow();
         SkillEditorScene.UnregisterSceneGUI();

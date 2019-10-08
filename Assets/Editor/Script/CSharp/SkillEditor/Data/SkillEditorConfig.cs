@@ -6,7 +6,7 @@ public static class SkillEditorConfig {
 
     // Common
     private static readonly int ProjectPathSubIndex = Application.dataPath.IndexOf("Assets", StringComparison.Ordinal);
-    private static readonly string ProjectPath = Application.dataPath.Substring(0, ProjectPathSubIndex);
+    public static readonly string ProjectPath = Application.dataPath.Substring(0, ProjectPathSubIndex);
 
     // Prefab Group Structure
     public const string ModelPrefabPath = "Assets/Editor/Asset/prefabs";
@@ -59,7 +59,9 @@ public static class SkillEditorConfig {
     public static readonly string ExitLayoutMenuPath = SkillEditorTool.CombinePath(LayoutMenuPath, ExitSkillEditorLayoutName);
 
     // Animation
-    public const string AnimatorControllerExtension = "controller";
+    private const string AnimatorControllerExtension = "controller";
+    private const string AnimatorControllerCopyName = "Copy";
+    private static readonly string AnimatorControllerCopyPath = LocalLayoutFileGroupPath;
     public const short DefaultAnimationClipLength = 8;
 
     // Window
@@ -74,5 +76,10 @@ public static class SkillEditorConfig {
 
     public static string GetAnimatorControllerPath(string fileName) {
         return SkillEditorTool.CombineFilePath(m_controllerPath, fileName, AnimatorControllerExtension);
+    }
+
+    public static string GetAnimatorControllerCopyPath(string fileName) {
+        return SkillEditorTool.CombineFilePath(AnimatorControllerCopyPath, string.Format("{0}{1}", fileName, AnimatorControllerCopyName),
+                                                AnimatorControllerExtension);
     }
 }

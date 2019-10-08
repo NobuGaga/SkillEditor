@@ -24,6 +24,10 @@ public static class SkillEditorTool {
         return fullPath.Substring(subIndex);
     }
 
+    public static string ProjectPathToFullPath(string projectPath) {
+        return string.Format("{0}{1}", SkillEditorConfig.ProjectPath, projectPath);
+    }
+
     public static string CombinePath(string path1, string path2) {
         if (path1 == null || path1.Length == 0 || path2 == null || path2.Length == 0) {
             Debug.LogError("SkillEditorConfig::CombinePath argument error");
