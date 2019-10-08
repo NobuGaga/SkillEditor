@@ -121,7 +121,7 @@ public static class SkillEditorController {
     }
 
     public static void Reset() {
-        if (m_isGenericClip) {
+        if (m_isGenericClip && m_model != null) {
             string copyPath = SkillEditorConfig.GetAnimatorControllerCopyPath(m_model.name);
             if (File.Exists(copyPath)) {
                 string sourcePath = SkillEditorConfig.GetAnimatorControllerPath(m_model.name);
