@@ -22,11 +22,11 @@ public static class SkillEditorController {
         Selection.activeGameObject = m_model;
         PrefabUtility.UnloadPrefabContents(prefab);
         SetAllAnimationClip();
-        SkillEditorData.AnimationClips = m_animationClips.ToArray();
-        m_isGenericClip = SkillEditorData.GenericState();
+        SkillEditorAnimationData.AnimationClips = m_animationClips.ToArray();
+        m_isGenericClip = SkillEditorAnimationData.GenericState();
         InitAnimation();
         SkillEditorScene.RegisterSceneGUI();
-        SkillEditorWindow.SetDisplayData(SkillEditorData.AnimationClipNames, SkillEditorData.AnimationClipIndexs);
+        SkillEditorWindow.SetDisplayData(SkillEditorAnimationData.AnimationClipNames, SkillEditorAnimationData.AnimationClipIndexs);
         SkillEditorWindow.Open();
     }
 
@@ -92,16 +92,16 @@ public static class SkillEditorController {
     }
 
     public static void SetAnimationClipData(int index) {
-        SkillEditorData.SetCurrentAnimationClip(index);
+        SkillEditorAnimationData.SetCurrentAnimationClip(index);
     }
 
     public static void Play() {
         m_lastTime = EditorApplication.timeSinceStartup;
         EditorApplication.update += Update;
         if (m_isGenericClip)
-            SkillEditorAnimator.Play(SkillEditorData.SelectAnimationClip);
+            SkillEditorAnimator.Play(SkillEditorAnimationData.SelectAnimationClip);
         else
-            SkillEditorClip.Play(m_model, SkillEditorData.SelectAnimationClip);
+            SkillEditorClip.Play(m_model, SkillEditorAnimationData.SelectAnimationClip);
     }
 
     private static void Update() {
