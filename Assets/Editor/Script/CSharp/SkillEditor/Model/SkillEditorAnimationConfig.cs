@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
-public static class SkillEditorAnimationData {
+public static class SkillEditorAnimationConfig {
 
     private static AnimationClip[] m_aniamtionClips;
     public static AnimationClip[] AnimationClips {
