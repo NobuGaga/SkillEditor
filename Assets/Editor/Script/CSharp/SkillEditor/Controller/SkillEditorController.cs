@@ -57,7 +57,7 @@ public static class SkillEditorController {
     }
 
     private static void RemoveAllAnimatorTransition() {
-        AnimatorController animatorCtrl = AssetDatabase.LoadAssetAtPath<AnimatorController>(SkillEditorConfig.ControllerPath);
+        AnimatorController animatorCtrl = AssetDatabase.LoadAssetAtPath<AnimatorController>(SkillEditorConfig.GetAnimatorControllerPath(m_model.name));
         AnimatorControllerLayer[] layers = animatorCtrl.layers;
         for (int layerIndex = 0; layerIndex < layers.Length; layerIndex++) {
             AnimatorStateMachine machine = layers[layerIndex].stateMachine;
