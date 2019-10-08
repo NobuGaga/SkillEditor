@@ -63,10 +63,11 @@ public static class SkillEditorAnimator {
             return;
         m_curPlayTime += deltaTime;
         bool isPlayOver = m_curPlayTime >= m_clipLength;
-        m_animator.playbackTime = isPlayOver ? m_clipLength : m_curPlayTime;
         if (isPlayOver)
             Stop();
-        else
+        else {
+            m_animator.playbackTime = m_curPlayTime;
             m_animator.Update(0);
+        }
     }
 }
