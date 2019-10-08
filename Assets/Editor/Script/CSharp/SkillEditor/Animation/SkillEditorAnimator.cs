@@ -11,8 +11,10 @@ public static class SkillEditorAnimator {
             }
             Reset();
             m_animator = value;
+            m_originPos = m_animator.transform.position;
         }
     }
+    private static Vector3 m_originPos;
 
     private static string m_clipName;
     private static bool m_isPlaying;
@@ -43,8 +45,10 @@ public static class SkillEditorAnimator {
     }
 
     public static void Play(AnimationClip clip) {
-        if (clip.name != m_clipName)
+        if (clip.name != m_clipName) {
+            m_animator.transform.position = m_originPos;
             Bake(clip);
+        }
         m_isPlaying = true;
         m_curPlayTime = 0;
     }
