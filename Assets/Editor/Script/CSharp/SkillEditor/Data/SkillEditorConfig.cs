@@ -1,6 +1,5 @@
 ﻿using UnityEditorInternal;
 using UnityEngine;
-using System.IO;
 using StringComparison = System.StringComparison;
 
 public static class SkillEditorConfig {
@@ -23,8 +22,8 @@ public static class SkillEditorConfig {
                 return;
             int subIndex = m_prefabFullPath.IndexOf("prefabs/", StringComparison.Ordinal);
             string modelFileGroupFullPath = m_prefabFullPath.Substring(0, subIndex);
-            m_clipFullPath = Path.Combine(modelFileGroupFullPath, "models");
-            m_controllerPath = Path.Combine(modelFileGroupFullPath, "animatorcontroller");
+            m_clipFullPath = CombinePath(modelFileGroupFullPath, "models");
+            m_controllerPath = CombinePath(modelFileGroupFullPath, "animatorcontroller");
         }
         get { return m_prefabFullPath; }
     }
@@ -36,28 +35,28 @@ public static class SkillEditorConfig {
     private const string EditSceneName = "EditScene";
     private const string ExitSceneName = "EditScene";
     public const string SceneExtension = "unity";
-    public static readonly string EditScenePath = Path.Combine(ScenePath, SkillEditorTool.FileWithExtension(EditSceneName, SceneExtension));
-    public static readonly string ExitScenePath = Path.Combine(ScenePath, SkillEditorTool.FileWithExtension(ExitSceneName, SceneExtension));
+    public static readonly string EditScenePath = CombinePath(ScenePath, SkillEditorTool.FileWithExtension(EditSceneName, SceneExtension));
+    public static readonly string ExitScenePath = CombinePath(ScenePath, SkillEditorTool.FileWithExtension(ExitSceneName, SceneExtension));
 
     // Layout
     private const string LayoutMenuPath = "Window/Layouts";
     private const string SkillEditorLayoutName = "SkillEditor";
     private const string LayoutExtension = "wlt";
     private static readonly string SkillEditorLayoutFullName = SkillEditorTool.FileWithExtension(SkillEditorLayoutName, LayoutExtension);
-    public static readonly string SkillEditorMenuPath = Path.Combine(LayoutMenuPath, SkillEditorLayoutName);
+    public static readonly string SkillEditorMenuPath = CombinePath(LayoutMenuPath, SkillEditorLayoutName);
     private static readonly string LayoutFileGroupPath =
 #if UNITY_EDITOR_WIN
-    Path.Combine(InternalEditorUtility.unityPreferencesFolder, "Layouts");
+    CombinePath(InternalEditorUtility.unityPreferencesFolder, "Layouts");
 #elif UNITY_EDITOR_OSX
-    Path.Combine(InternalEditorUtility.unityPreferencesFolder, "Layouts/default");
+    CombinePath(InternalEditorUtility.unityPreferencesFolder, "Layouts/default");
 #else
     string.Empty;
 #endif
-    public static readonly string SkillEditorLayoutFilePath = Path.Combine(LayoutFileGroupPath, SkillEditorLayoutFullName);
-    private static readonly string LocalLayoutFileGroupPath = Path.Combine(ProjectPath, "Layout");
-    public static readonly string LocalSkillEditorLayoutFilePath = Path.Combine(LocalLayoutFileGroupPath, SkillEditorLayoutFullName);
+    public static readonly string SkillEditorLayoutFilePath = CombinePath(LayoutFileGroupPath, SkillEditorLayoutFullName);
+    private static readonly string LocalLayoutFileGroupPath = CombinePath(ProjectPath, "Layout");
+    public static readonly string LocalSkillEditorLayoutFilePath = CombinePath(LocalLayoutFileGroupPath, SkillEditorLayoutFullName);
     private const string ExitSkillEditorLayoutName = "Default";
-    public static readonly string ExitLayoutMenuPath = Path.Combine(LayoutMenuPath, ExitSkillEditorLayoutName);
+    public static readonly string ExitLayoutMenuPath = CombinePath(LayoutMenuPath, ExitSkillEditorLayoutName);
 
     // Animation
     public const short DefaultAnimationClipLength = 8;
@@ -70,5 +69,23 @@ public static class SkillEditorConfig {
         m_prefabFullPath = string.Empty;
         m_clipFullPath = string.Empty;
         m_controllerPath = string.Empty;
+    }
+
+    private static string CombinePath(string path1, string path2) {
+        if (path1 == null || path1.Length == 0 || path2 == null || path2.Length == 0) {
+            Debug.LogError("SkillEditorConfig::CombinePath argument error");
+            return string.Empty;
+        }
+        string format;
+        char flag = '/';
+        bool isPath1LastFormat = path1[path1.Length - 1] == flag;
+        bool isPath2StartFormat = path2[0] == flag;
+        if (isPath1LastFormat && isPath2StartFormat)
+            return string.Format("{0}{1}", path1.Substring(0, path1.Length - 2), path2);
+        else if (!isPath1LastFormat && !isPath2StartFormat)
+            format = "{0}/{1}";
+        else
+            format = "{0}{1}";
+        return string.Format(format, path1, path2);
     }
 }
