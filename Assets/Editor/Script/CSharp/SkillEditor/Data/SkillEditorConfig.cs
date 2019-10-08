@@ -6,7 +6,7 @@ using StringComparison = System.StringComparison;
 public static class SkillEditorConfig {
 
     // Common
-    private static readonly int ProjectPathSubIndex = Application.dataPath.IndexOf("Assets", System.StringComparison.Ordinal);
+    private static readonly int ProjectPathSubIndex = Application.dataPath.IndexOf("Assets", StringComparison.Ordinal);
     private static readonly string ProjectPath = Application.dataPath.Substring(0, ProjectPathSubIndex);
 
     // Prefab Group Structure

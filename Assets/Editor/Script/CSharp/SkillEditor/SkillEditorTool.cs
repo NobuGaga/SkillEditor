@@ -19,7 +19,7 @@ public static class SkillEditorTool {
     }
 
     public static string FullPathToProjectPath(string fullPath) {
-        int subIndex = fullPath.IndexOf("Assets/", System.StringComparison.Ordinal);
+        int subIndex = fullPath.IndexOf("Assets/", StringComparison.Ordinal);
         return fullPath.Substring(subIndex);
     }
 }
