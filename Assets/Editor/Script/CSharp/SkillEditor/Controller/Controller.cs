@@ -27,6 +27,7 @@ namespace SkillEditor {
             AnimationModel.AnimationClips = m_animationClips.ToArray();
             m_isGenericClip = AnimationModel.GenericState();
             InitAnimation();
+            KeyFrameModel.ModelName = m_model.name;
             EditorScene.RegisterSceneGUI();
             EditorWindow.SetDisplayData(AnimationModel.AnimationClipNames, AnimationModel.AnimationClipIndexs);
             EditorWindow.Open();
@@ -137,6 +138,7 @@ namespace SkillEditor {
                 Object.DestroyImmediate(m_model);
                 m_model = null;
             }
+            KeyFrameModel.Reset();
         }
 
         public static void Exit() {

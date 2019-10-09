@@ -1,14 +1,11 @@
 ﻿using UnityEngine;
 using System.IO;
-using System.Collections.Generic;
 
 namespace SkillEditor {
 
     internal static class LuaReader {
 
         private static string m_curLuaText;
-
-        private static List<KeyFrameData> m_curFrameDataList = new List<KeyFrameData>();
 
         public static void Read(string path) {
             Reset();
@@ -17,6 +14,11 @@ namespace SkillEditor {
                 return;
             }
             m_curLuaText = File.ReadAllText(path);
+        }
+
+        public static KeyFrameData GetModelData(string modelName) {
+
+            return new KeyFrameData();
         }
 
         private static void Reset() {
