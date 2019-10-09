@@ -1,4 +1,5 @@
-﻿using UnityEditor;
+﻿using UnityEngine;
+using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEditorInternal;
 using System.IO;
@@ -9,6 +10,13 @@ namespace SkillEditor {
 
         private static bool isEditorMode {
             get { return Config.PrefabPath != string.Empty; }
+        }
+
+        private static bool NotInEditorModeHanle() {
+            if (isEditorMode)
+                return false;
+            Debug.LogError("不在技能编辑器模式");
+            return true;
         }
 
         public static void SelectPrefab() {
@@ -28,10 +36,14 @@ namespace SkillEditor {
         }
 
         public static void Play() {
+            if (NotInEditorModeHanle())
+                return;
             Controller.Play();
         }
 
         public static void Stop() {
+            if (NotInEditorModeHanle())
+                return;
             Controller.Stop();
         }
 
