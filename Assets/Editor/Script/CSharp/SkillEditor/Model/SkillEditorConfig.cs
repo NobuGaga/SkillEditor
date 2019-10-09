@@ -53,7 +53,7 @@ public static class SkillEditorConfig {
     string.Empty;
 #endif
     public static readonly string SkillEditorLayoutFilePath = SkillEditorTool.CombinePath(LayoutFileGroupPath, SkillEditorLayoutFullName);
-    private static readonly string LocalLayoutFileGroupPath = SkillEditorTool.CombinePath(ProjectPath, "Layout");
+    private static readonly string LocalLayoutFileGroupPath = SkillEditorTool.CombinePath(Application.dataPath, "Editor/.Layout");
     public static readonly string LocalSkillEditorLayoutFilePath = SkillEditorTool.CombinePath(LocalLayoutFileGroupPath, SkillEditorLayoutFullName);
     private const string ExitSkillEditorLayoutName = "Default";
     public static readonly string ExitLayoutMenuPath = SkillEditorTool.CombinePath(LayoutMenuPath, ExitSkillEditorLayoutName);
