@@ -26,7 +26,7 @@ namespace SkillEditor {
         }
 
         public static string ProjectPathToFullPath(string projectPath) {
-            return string.Format("{0}{1}", Config.ProjectPath, projectPath);
+            return Config.ProjectPath + projectPath;
         }
 
         public static string CombinePath(string path1, string path2) {

@@ -24,15 +24,16 @@ namespace SkillEditor {
                                                             Config.ModelPrefabPath, Config.ModelPrefabExtension);
 		    if (prefabPath == null || prefabPath == string.Empty || prefabPath == Config.PrefabPath)
 			    return;
-            if (!isEditorMode && !EditorApplication.ExecuteMenuItem(Config.SkillEditorMenuPath)) {
+            if (!isEditorMode && !EditorApplication.ExecuteMenuItem(Config.MenuPath)) {
                 Tool.ClearConsole();
-                File.Copy(Config.LocalSkillEditorLayoutFilePath, Config.SkillEditorLayoutFilePath);
+                File.Copy(Config.LocalEditorLayoutFilePath, Config.EditorLayoutFilePath);
                 InternalEditorUtility.ReloadWindowLayoutMenu();
-                EditorApplication.ExecuteMenuItem(Config.SkillEditorMenuPath);
+                EditorApplication.ExecuteMenuItem(Config.MenuPath);
             }
             EditorSceneManager.OpenScene(Config.EditScenePath);
             Config.PrefabPath = prefabPath;
             Controller.Start(prefabPath);
+            LuaManager.Start();
         }
 
         public static void Play() {

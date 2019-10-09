@@ -42,10 +42,10 @@ namespace SkillEditor {
 
         // Layout
         private const string LayoutMenuPath = "Window/Layouts";
-        private const string SkillEditorLayoutName = "SkillEditor";
+        private const string EditorLayoutName = "SkillEditor";
         private const string LayoutExtension = "wlt";
-        private static readonly string SkillEditorLayoutFullName = Tool.FileWithExtension(SkillEditorLayoutName, LayoutExtension);
-        public static readonly string SkillEditorMenuPath = Tool.CombinePath(LayoutMenuPath, SkillEditorLayoutName);
+        private static readonly string EditorLayoutFullName = Tool.FileWithExtension(EditorLayoutName, LayoutExtension);
+        public static readonly string MenuPath = Tool.CombinePath(LayoutMenuPath, EditorLayoutName);
         private static readonly string LayoutFileGroupPath =
     #if UNITY_EDITOR_WIN
         Tool.CombinePath(InternalEditorUtility.unityPreferencesFolder, "Layouts");
@@ -54,17 +54,20 @@ namespace SkillEditor {
     #else
         string.Empty;
     #endif
-        public static readonly string SkillEditorLayoutFilePath = Tool.CombinePath(LayoutFileGroupPath, SkillEditorLayoutFullName);
+        public static readonly string EditorLayoutFilePath = Tool.CombinePath(LayoutFileGroupPath, EditorLayoutFullName);
         private static readonly string LocalLayoutFileGroupPath = Tool.CombinePath(Application.dataPath, "Editor/.Layout");
-        public static readonly string LocalSkillEditorLayoutFilePath = Tool.CombinePath(LocalLayoutFileGroupPath, SkillEditorLayoutFullName);
-        private const string ExitSkillEditorLayoutName = "Default";
-        public static readonly string ExitLayoutMenuPath = Tool.CombinePath(LayoutMenuPath, ExitSkillEditorLayoutName);
+        public static readonly string LocalEditorLayoutFilePath = Tool.CombinePath(LocalLayoutFileGroupPath, EditorLayoutFullName);
+        private const string ExitEditorLayoutName = "Default";
+        public static readonly string ExitLayoutMenuPath = Tool.CombinePath(LayoutMenuPath, ExitEditorLayoutName);
 
         // Animation
         private const string AnimatorControllerExtension = "controller";
         private const string AnimatorControllerCopyName = "Copy";
         private static readonly string AnimatorControllerCopyPath = LocalLayoutFileGroupPath;
         public const short DefaultAnimationClipLength = 8;
+
+        // Structure
+        public static readonly string KeyFrameFilePath = Tool.CombinePath(ProjectPath, "../LuaSource/lua/data/config/keyframeData.lua");
 
         public static void Reset() {
             m_prefabFullPath = string.Empty;
