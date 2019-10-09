@@ -70,7 +70,7 @@
     <Compile Include="Assets\Editor\Script\CSharp\SkillEditor\Controller\SkillEditorManager.cs" />
     <Compile Include="Assets\Editor\Script\CSharp\SkillEditor\Model\SkillEditorAnimationModel.cs" />
     <Compile Include="Assets\Editor\Script\CSharp\SkillEditor\Model\SkillEditorConfig.cs" />
-    <Compile Include="Assets\Editor\Script\CSharp\SkillEditor\Model\SkillEditorKeyFrameData.cs" />
+    <Compile Include="Assets\Editor\Script\CSharp\SkillEditor\Model\SkillEditorKeyFrameStruct.cs" />
     <Compile Include="Assets\Editor\Script\CSharp\SkillEditor\Model\SkillEditorKeyFrameModel.cs" />
     <Compile Include="Assets\Editor\Script\CSharp\SkillEditor\SkillEditorMenu.cs" />
     <Compile Include="Assets\Editor\Script\CSharp\SkillEditor\SkillEditorTool.cs" />
