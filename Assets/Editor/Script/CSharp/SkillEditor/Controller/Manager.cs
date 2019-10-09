@@ -31,6 +31,7 @@ namespace SkillEditor {
                 EditorApplication.ExecuteMenuItem(Config.MenuPath);
             }
             EditorSceneManager.OpenScene(Config.EditScenePath);
+            EditorApplication.wantsToQuit += Exit;
             Config.PrefabPath = prefabPath;
             Controller.Start(prefabPath);
             LuaManager.Start();
@@ -48,13 +49,15 @@ namespace SkillEditor {
             Controller.Stop();
         }
 
-        public static void Exit() {
+        public static bool Exit() {
             if (!isEditorMode)
-                return;
+                return true;
             Controller.Exit();
             Config.Reset();
+            EditorApplication.wantsToQuit -= Exit;
             EditorSceneManager.OpenScene(Config.ExitScenePath);
             EditorApplication.ExecuteMenuItem(Config.ExitLayoutMenuPath);
+            return true;
         }
     }
 }

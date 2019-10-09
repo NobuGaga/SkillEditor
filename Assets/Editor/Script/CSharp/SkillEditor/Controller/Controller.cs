@@ -61,7 +61,7 @@ namespace SkillEditor {
             string sourcePath = Config.GetAnimatorControllerPath(m_model.name);
             string copyPath = Config.GetAnimatorControllerCopyPath(m_model.name);
             AnimatorController animatorController = AssetDatabase.LoadAssetAtPath<AnimatorController>(sourcePath);
-            File.Copy(Tool.ProjectPathToFullPath(sourcePath), copyPath);
+            File.Copy(Tool.ProjectPathToFullPath(sourcePath), copyPath, true);
             AnimatorControllerLayer[] layers = animatorController.layers;
             for (int layerIndex = 0; layerIndex < layers.Length; layerIndex++) {
                 AnimatorStateMachine mainMachine = layers[layerIndex].stateMachine;
