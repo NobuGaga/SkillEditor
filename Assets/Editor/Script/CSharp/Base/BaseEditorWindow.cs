@@ -5,8 +5,8 @@ using System.Collections.Generic;
 
 public class BaseEditorWindow : EditorWindow {
 
-    private static Dictionary<Style, GUIStyle> m_dicGUIStyle = new Dictionary<Style, GUIStyle>(SkillEditorConfig.DefaultGUIStyleCount);
-    private static Dictionary<string, ButtonData> m_dicButtonData = new Dictionary<string, ButtonData>(SkillEditorConfig.DefaultWindowButtonCount);
+    private static Dictionary<Style, GUIStyle> m_dicGUIStyle = new Dictionary<Style, GUIStyle>(8);
+    private static Dictionary<string, ButtonData> m_dicButtonData = new Dictionary<string, ButtonData>(8);
 
     protected static void Open<T>() where T : BaseEditorWindow {
         GetWindow<T>().Show();
