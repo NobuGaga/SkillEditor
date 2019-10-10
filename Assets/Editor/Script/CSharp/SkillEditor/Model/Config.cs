@@ -64,11 +64,14 @@ namespace SkillEditor {
         private const string AnimatorControllerExtension = "controller";
         private const string AnimatorControllerCopyName = "Copy";
         private static readonly string AnimatorControllerCopyPath = LocalLayoutFileGroupPath;
-        public const short DefaultAnimationClipLength = 8;
 
         // Structure
         public static readonly string KeyFrameFilePath = Tool.CombinePath(ProjectPath, "../LuaSource/lua/data/config/keyframeData.lua");
         public const short ErrorIndex = -1;
+        public const short ModelCount = 2;
+        public const short ModelClipCount = 8;
+        public const short ModelClipKeyFrameCount = 8;
+        public const short ModelClipFrameCustomDataCount = 4;
 
         public static void Reset() {
             m_prefabFullPath = string.Empty;

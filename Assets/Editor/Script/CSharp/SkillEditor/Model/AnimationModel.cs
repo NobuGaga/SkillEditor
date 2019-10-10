@@ -36,13 +36,13 @@ namespace SkillEditor {
             return !sampleClip.legacy && !sampleClip.humanMotion;
         }
 
-        private static List<string> m_listAnimationClipNames = new List<string>(Config.DefaultAnimationClipLength);
+        private static List<string> m_listAnimationClipNames = new List<string>(Config.ModelClipCount);
         private static string[] m_aAnimationClipNames;
         public static string[] AnimationClipNames {
             get { return m_aAnimationClipNames; }
         }
 
-        private static List<int> m_listAnimationClipIndexs = new List<int>(Config.DefaultAnimationClipLength);
+        private static List<int> m_listAnimationClipIndexs = new List<int>(Config.ModelClipCount);
         private static int[] m_aAnimationClipIndexs;
         public static int[] AnimationClipIndexs {
             get { return m_aAnimationClipIndexs; }

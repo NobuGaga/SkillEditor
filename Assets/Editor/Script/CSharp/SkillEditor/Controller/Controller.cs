@@ -42,7 +42,7 @@ namespace SkillEditor {
 
         private static AnimationClip[] GetAllAnimationClip() {
             string[] fileNames = Directory.GetFiles(Config.ClipGroupFullPath);
-            List<AnimationClip> list = new List<AnimationClip>(Config.DefaultAnimationClipLength);
+            List<AnimationClip> list = new List<AnimationClip>(Config.ModelClipCount);
             for (int index = 0; index < fileNames.Length; index++) {
                 if (fileNames[index].Contains(".meta") || !fileNames[index].Contains("@") ||
                     !(fileNames[index].Contains(".fbx") || fileNames[index].Contains(".FBX")))

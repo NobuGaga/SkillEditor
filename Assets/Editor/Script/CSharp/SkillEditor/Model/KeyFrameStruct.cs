@@ -4,6 +4,11 @@
         public string modelName;
         public SkillClipData[] clipDatas;
 
+        public KeyFrameData(string modelName, SkillClipData[] clipDatas) {
+            this.modelName = modelName;
+            this.clipDatas = clipDatas;
+        }
+
         public override string ToString() {
             string clipDataString = string.Empty;
             if (clipDatas != null)
@@ -19,6 +24,11 @@
     internal struct SkillClipData {
         public string clipName;
         public FrameData[] frameDatas;
+
+        public SkillClipData(string clipName, FrameData[] frameDatas) {
+            this.clipName = clipName;
+            this.frameDatas = frameDatas;
+        }
 
         public override string ToString() {
             string frameDataString = string.Empty;
@@ -38,6 +48,13 @@
         public short priority;
         public CustomData[] customData;
 
+        public FrameData(string name, float time, short priority, CustomData[] customData) {
+            this.name = name;
+            this.time = time;
+            this.priority = priority;
+            this.customData = customData;
+        }
+
         public override string ToString() {
             string customDataString = string.Empty;
             if (customData != null)
@@ -53,6 +70,11 @@
     internal struct CustomData {
         public EFrameType frameType;
         public object data;
+
+        public CustomData(EFrameType frameType, object data) {
+            this.frameType = frameType;
+            this.data = data;
+        }
 
         public override string ToString() {
             string dataString = string.Empty;
@@ -84,6 +106,11 @@
         public short type;
         public int id;
 
+        public GrabData(short type, int id) {
+            this.type = type;
+            this.id = id;
+        }
+
         public override string ToString() {
             string toString = string.Format("type = {0}, id = {1}", type, id);
             string internString = string.Intern(toString);
@@ -94,6 +121,11 @@
     internal struct UngrabData {
         public short type;
         public int id;
+
+        public UngrabData(short type, int id) {
+            this.type = type;
+            this.id = id;
+        }
 
         public override string ToString() {
             string toString = string.Format("type = {0}, id = {1}", type, id);
@@ -109,6 +141,15 @@
         public float width;
         public float height;
         public short depth;
+
+        public HarmData(float x, float y, float z, float width, float height, short depth) {
+            this.x = x;
+            this.y = y;
+            this.z = z;
+            this.width = width;
+            this.height = height;
+            this.depth = depth;
+        }
 
         public override string ToString() {
             string toString = string.Format("x = {0}, y = {1}, z = {2}, width = {3}, height = {4}, depth = {5}",

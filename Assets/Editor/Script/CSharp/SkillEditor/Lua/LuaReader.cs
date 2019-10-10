@@ -7,7 +7,6 @@ namespace SkillEditor {
     internal static class LuaReader {
 
         private static string m_lastPath;
-        private static string m_curLuaText;
 
         public static void Read(string path) {
             if (m_lastPath == path)
@@ -17,13 +16,11 @@ namespace SkillEditor {
                 return;
             }
             m_lastPath = path;
-            m_curLuaText = File.ReadAllText(path);
+            string luaText = File.ReadAllText(path);
+            AnalyseLuaText(luaText);
         }
 
-        public static void SetModelData(ref KeyFrameData data) {
-            int index = m_curLuaText.IndexOf(data.modelName, StringComparison.Ordinal);
-            if (index == Config.ErrorIndex)
-                return;
+        private static void AnalyseLuaText(string luaText) {
 
         }
     }
