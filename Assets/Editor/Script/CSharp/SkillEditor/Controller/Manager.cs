@@ -34,7 +34,6 @@ namespace SkillEditor {
             EditorApplication.wantsToQuit += Exit;
             Config.PrefabPath = prefabPath;
             Controller.Start(prefabPath);
-            LuaManager.Start();
         }
 
         public static void Play() {

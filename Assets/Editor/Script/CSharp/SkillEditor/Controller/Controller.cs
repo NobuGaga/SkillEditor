@@ -8,9 +8,7 @@ namespace SkillEditor {
 
     internal static class Controller {
 
-        private static GameObject m_model = null;
-
-        private static List<AnimationClip> m_animationClips = new List<AnimationClip>(Config.DefaultAnimationClipLength);
+        private static GameObject m_model;
 
         private static bool m_isGenericClip;
 
@@ -23,19 +21,28 @@ namespace SkillEditor {
             m_model.name = prefab.name;
             Selection.activeGameObject = m_model;
             PrefabUtility.UnloadPrefabContents(prefab);
-            SetAllAnimationClip();
-            AnimationModel.AnimationClips = m_animationClips.ToArray();
-            m_isGenericClip = AnimationModel.GenericState();
             InitAnimation();
-            KeyFrameModel.ModelName = m_model.name;
+            InitKeyFrameData();
             EditorScene.RegisterSceneGUI();
             EditorWindow.SetDisplayData(AnimationModel.AnimationClipNames, AnimationModel.AnimationClipIndexs);
             EditorWindow.Open();
         }
 
-        private static void SetAllAnimationClip() {
+        private static void InitAnimation() {
+            AnimationModel.AnimationClips = GetAllAnimationClip();
+            m_isGenericClip = AnimationModel.GenericState();
+            if (!m_isGenericClip)
+                return;
+            Animator animator = m_model.GetComponent<Animator>();
+            if (animator == null)
+                Debug.LogError("Prefab's animator is not exit");
+            SkillAnimator.Animator = animator;
+            RemoveAllAnimatorTransition();
+        }
+
+        private static AnimationClip[] GetAllAnimationClip() {
             string[] fileNames = Directory.GetFiles(Config.ClipGroupFullPath);
-            m_animationClips.Clear();
+            List<AnimationClip> list = new List<AnimationClip>(Config.DefaultAnimationClipLength);
             for (int index = 0; index < fileNames.Length; index++) {
                 if (fileNames[index].Contains(".meta") || !fileNames[index].Contains("@") ||
                     !(fileNames[index].Contains(".fbx") || fileNames[index].Contains(".FBX")))
@@ -44,18 +51,9 @@ namespace SkillEditor {
                 AnimationClip clip = AssetDatabase.LoadAssetAtPath<AnimationClip>(path);
                 if (clip == null)
                     continue;
-                m_animationClips.Add(clip);
+                list.Add(clip);
             }
-        }
-
-        private static void InitAnimation() {
-            if (!m_isGenericClip)
-                return;
-            Animator animator = m_model.GetComponent<Animator>();
-            if (animator == null)
-                Debug.LogError("Prefab's animator is not exit");
-            SkillAnimator.Animator = animator;
-            RemoveAllAnimatorTransition();
+            return list.ToArray();
         }
 
         private static void RemoveAllAnimatorTransition() {
@@ -98,6 +96,10 @@ namespace SkillEditor {
             AnimationModel.SetCurrentAnimationClip(index);
         }
 
+        private static void InitKeyFrameData() {
+            LuaReader.Read(Config.KeyFrameFilePath);
+        }
+
         public static void Play() {
             m_lastTime = EditorApplication.timeSinceStartup;
             EditorApplication.update += Update;
@@ -124,6 +126,7 @@ namespace SkillEditor {
         }
 
         public static void Reset() {
+            KeyFrameModel.Reset();
             if (m_isGenericClip && m_model != null) {
                 string copyPath = Config.GetAnimatorControllerCopyPath(m_model.name);
                 if (File.Exists(copyPath)) {
@@ -138,7 +141,6 @@ namespace SkillEditor {
                 Object.DestroyImmediate(m_model);
                 m_model = null;
             }
-            KeyFrameModel.Reset();
         }
 
         public static void Exit() {

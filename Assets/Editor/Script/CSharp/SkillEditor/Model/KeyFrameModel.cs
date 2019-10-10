@@ -8,17 +8,25 @@ namespace SkillEditor {
         private static List<KeyFrameData> m_curFrameDataList = new List<KeyFrameData>();
 
         private static int m_curIndex;
-        private const short ErrorIndex = -1;
 
         public static void Init(string modelName){
+            ModelName = modelName;
+            if (m_curIndex == Config.ErrorIndex)
+                AddNewKeyFrameData(modelName);
+        }
 
+        private static void AddNewKeyFrameData(string modelName) {
+            KeyFrameData data = new KeyFrameData();
+            data.modelName = modelName;
+            m_curFrameDataList.Add(data);
+            m_curIndex = m_curFrameDataList.Count - 1;
         }
 
         public static KeyFrameData Data {
             set {
-                if (m_curIndex == ErrorIndex)
+                if (m_curIndex == Config.ErrorIndex)
                     ModelName = value.modelName;
-                if (m_curIndex == ErrorIndex) {
+                if (m_curIndex == Config.ErrorIndex) {
                     m_curFrameDataList.Add(value);
                     m_curIndex = m_curFrameDataList.Count - 1;
                     return;
@@ -26,7 +34,7 @@ namespace SkillEditor {
                 m_curFrameDataList[m_curIndex] = value;
             }
             get {
-                if (m_curIndex == ErrorIndex)
+                if (m_curIndex == Config.ErrorIndex)
                     Debug.LogError("KeyFrameModel current index is error index");
                 return m_curFrameDataList[m_curIndex];
             }
@@ -44,7 +52,7 @@ namespace SkillEditor {
         }
 
         public static void Reset() {
-            m_curIndex = ErrorIndex;
+            m_curIndex = Config.ErrorIndex;
         }
     }
 }
