@@ -97,7 +97,7 @@ namespace SkillEditor {
         }
 
         private static void InitKeyFrameData() {
-            LuaReader.Read(Config.KeyFrameFilePath);
+            KeyFrameModel.Init(LuaReader.Read(Config.KeyFrameFilePath), m_model.name);
         }
 
         public static void Play() {

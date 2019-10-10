@@ -1,4 +1,13 @@
-﻿namespace SkillEditor {
+﻿namespace SkillEditor.Structure {
+
+    internal enum KeyFrameLuaLayer {
+        Model = 1,
+        Clip = 2,
+        Frame = 3,
+        Shell = 4,
+        Effect = 5,
+        Rect = 6,
+    }
 
     internal struct KeyFrameData {
         public string modelName;
@@ -43,12 +52,14 @@
     }
 
     internal struct FrameData {
+        public int frameIndex;
         public string name;
         public float time;
         public short priority;
         public CustomData[] customData;
 
-        public FrameData(string name, float time, short priority, CustomData[] customData) {
+        public FrameData(int frameIndex, string name, float time, short priority, CustomData[] customData) {
+            this.frameIndex = frameIndex;
             this.name = name;
             this.time = time;
             this.priority = priority;

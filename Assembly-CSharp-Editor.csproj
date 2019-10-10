@@ -69,6 +69,7 @@
     <Compile Include="Assets\Editor\Script\CSharp\SkillEditor\Controller\Controller.cs" />
     <Compile Include="Assets\Editor\Script\CSharp\SkillEditor\Controller\Manager.cs" />
     <Compile Include="Assets\Editor\Script\CSharp\SkillEditor\EditorMenu.cs" />
+    <Compile Include="Assets\Editor\Script\CSharp\SkillEditor\Lua\LuaFormat.cs" />
     <Compile Include="Assets\Editor\Script\CSharp\SkillEditor\Lua\LuaReader.cs" />
     <Compile Include="Assets\Editor\Script\CSharp\SkillEditor\Model\AnimationModel.cs" />
     <Compile Include="Assets\Editor\Script\CSharp\SkillEditor\Model\Config.cs" />

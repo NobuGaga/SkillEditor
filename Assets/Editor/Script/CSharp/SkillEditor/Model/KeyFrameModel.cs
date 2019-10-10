@@ -1,15 +1,18 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using SkillEditor.Structure;
 
 namespace SkillEditor {
 
     internal static class KeyFrameModel {
 
-        private static List<KeyFrameData> m_curFrameDataList = new List<KeyFrameData>();
+        private static List<KeyFrameData> m_curFrameDataList;
 
         private static int m_curIndex;
 
-        public static void Init(string modelName){
+        public static void Init(List<KeyFrameData> list, string modelName){
+            if (m_curFrameDataList == null)
+                m_curFrameDataList = list;
             ModelName = modelName;
             if (m_curIndex == Config.ErrorIndex)
                 AddNewKeyFrameData(modelName);
