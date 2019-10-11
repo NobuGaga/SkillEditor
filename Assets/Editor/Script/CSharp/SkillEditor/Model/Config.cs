@@ -74,6 +74,7 @@ namespace SkillEditor {
         public const short ModelClipCount = 8;
         public const short ModelClipKeyFrameCount = 8;
         public const short ModelClipFrameCustomDataCount = 4;
+        public const short ModelClipFrameRectDataCount = 2;
 
         public static void Reset() {
             m_prefabFullPath = string.Empty;

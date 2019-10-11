@@ -1,12 +1,15 @@
 ﻿namespace SkillEditor.Structure {
 
+    using LuaTableKeyValue = LuaFormat.LuaTableKeyValue;
+
     internal enum KeyFrameLuaLayer {
         Model = 1,
         Clip = 2,
-        Frame = 3,
-        Shell = 4,
-        Effect = 5,
-        Rect = 6,
+        FrameIndex = 3,
+        FrameData = 4,
+        CustomData = 5,
+        Effect = 6,
+        Rect = 7,
     }
 
     internal struct KeyFrameData {
@@ -51,7 +54,7 @@
         }
     }
 
-    internal struct FrameData {
+    internal struct FrameData : ITable {
         public int frameIndex;
         public string name;
         public float time;
@@ -75,6 +78,41 @@
                                             name, time, priority, customDataString);
             string internString = string.Intern(toString);
             return internString;
+        }
+
+        public void SetTableKeyValue(string key, object value) {
+            switch (key) {
+                case Key_Name:
+                    name = value as string;
+                    return;
+                case Key_Time:
+                    time = (float)value;
+                    return;
+                case Key_Priority:
+                    priority = (short)value;
+                    return;
+                case Key_Data:
+                    var list = value as System.Collections.Generic.List<CustomData>;
+                    customData = list.ToArray();
+                    return;
+            }
+        }
+
+        private const string Key_Name = "name";
+        private const string Key_Time = "time";
+        private const string Key_Priority = "priority";
+        private const string Key_Data = "data";
+
+        private static LuaTableKeyValue[] m_arraykeyValue;
+        public LuaTableKeyValue[] GetTableKeyValueList() {
+            if (m_arraykeyValue != null)
+                return m_arraykeyValue;
+            m_arraykeyValue = new LuaTableKeyValue[4];
+            m_arraykeyValue[0] = new LuaTableKeyValue(Key_Name, LuaFormat.Type.LuaString);
+            m_arraykeyValue[1] = new LuaTableKeyValue(Key_Time, LuaFormat.Type.LuaNumber);
+            m_arraykeyValue[2] = new LuaTableKeyValue(Key_Priority, LuaFormat.Type.LuaInt);
+            m_arraykeyValue[3] = new LuaTableKeyValue(Key_Data, LuaFormat.Type.LuaTable);
+            return m_arraykeyValue;
         }
     }
 
@@ -113,7 +151,7 @@
         Max = 5,
     }
 
-    internal struct GrabData {
+    internal struct GrabData : ITable {
         public short type;
         public int id;
 
@@ -127,9 +165,33 @@
             string internString = string.Intern(toString);
             return internString;
         }
+
+        public void SetTableKeyValue(string key, object value) {
+            switch (key) {
+                case Key_Type:
+                    type = (short)value;
+                    return;
+                case Key_Id:
+                    id = (int)value;
+                    return;
+            }
+        }
+
+        private const string Key_Type = "type";
+        private const string Key_Id = "id";
+
+        private static LuaTableKeyValue[] m_arraykeyValue;
+        public LuaTableKeyValue[] GetTableKeyValueList() {
+            if (m_arraykeyValue != null)
+                return m_arraykeyValue;
+            m_arraykeyValue = new LuaTableKeyValue[2];
+            m_arraykeyValue[0] = new LuaTableKeyValue(Key_Type, LuaFormat.Type.LuaInt);
+            m_arraykeyValue[1] = new LuaTableKeyValue(Key_Id, LuaFormat.Type.LuaInt);
+            return m_arraykeyValue;
+        }
     }
 
-    internal struct UngrabData {
+    internal struct UngrabData : ITable {
         public short type;
         public int id;
 
@@ -143,9 +205,33 @@
             string internString = string.Intern(toString);
             return internString;
         }
+
+        public void SetTableKeyValue(string key, object value) {
+            switch (key) {
+                case Key_Type:
+                    type = (short)value;
+                    return;
+                case Key_Id:
+                    id = (int)value;
+                    return;
+            }
+        }
+
+        private const string Key_Type = "type";
+        private const string Key_Id = "id";
+
+        private static LuaTableKeyValue[] m_arraykeyValue;
+        public LuaTableKeyValue[] GetTableKeyValueList() {
+            if (m_arraykeyValue != null)
+                return m_arraykeyValue;
+            m_arraykeyValue = new LuaTableKeyValue[2];
+            m_arraykeyValue[0] = new LuaTableKeyValue(Key_Type, LuaFormat.Type.LuaInt);
+            m_arraykeyValue[1] = new LuaTableKeyValue(Key_Id, LuaFormat.Type.LuaInt);
+            return m_arraykeyValue;
+        }
     }
 
-    internal struct HarmData {
+    internal struct HarmData : ITable {
         public float x;
         public float y;
         public float z;
@@ -168,5 +254,55 @@
             string internString = string.Intern(toString);
             return internString;
         }
+
+        public void SetTableKeyValue(string key, object value) {
+            switch (key) {
+                case Key_X:
+                    x = (float)value;
+                    return;
+                case Key_Y:
+                    y = (float)value;
+                    return;
+                case Key_Z:
+                    z = (float)value;
+                    return;
+                case Key_Width:
+                    width = (float)value;
+                    return;
+                case Key_Height:
+                    height = (float)value;
+                    return;
+                case Key_Depth:
+                    depth = (short)value;
+                    return;
+            }
+        }
+
+        private const string Key_X = "x";
+        private const string Key_Y = "y";
+        private const string Key_Z = "z";
+        private const string Key_Width = "width";
+        private const string Key_Height = "height";
+        private const string Key_Depth = "depth";
+
+        private static LuaTableKeyValue[] m_arraykeyValue;
+        public LuaTableKeyValue[] GetTableKeyValueList() {
+            if (m_arraykeyValue != null)
+                return m_arraykeyValue;
+            m_arraykeyValue = new LuaTableKeyValue[6];
+            m_arraykeyValue[0] = new LuaTableKeyValue(Key_X, LuaFormat.Type.LuaNumber);
+            m_arraykeyValue[1] = new LuaTableKeyValue(Key_Y, LuaFormat.Type.LuaNumber);
+            m_arraykeyValue[2] = new LuaTableKeyValue(Key_Z, LuaFormat.Type.LuaNumber);
+            m_arraykeyValue[3] = new LuaTableKeyValue(Key_Width, LuaFormat.Type.LuaNumber);
+            m_arraykeyValue[4] = new LuaTableKeyValue(Key_Height, LuaFormat.Type.LuaNumber);
+            m_arraykeyValue[5] = new LuaTableKeyValue(Key_Depth, LuaFormat.Type.LuaInt);
+            return m_arraykeyValue;
+        }
+    }
+
+    internal interface ITable {
+
+        void SetTableKeyValue(string key, object value);
+        LuaTableKeyValue[] GetTableKeyValueList();
     }
 }
