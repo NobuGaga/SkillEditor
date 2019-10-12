@@ -89,7 +89,8 @@ namespace SkillEditor {
                     }
                     break;
                 case KeyFrameLuaLayer.Rect:
-
+                    if (data is List<HarmData>)
+                        AnalyseHarmData(luaText, ref index, data as List<HarmData>);
                     break;
             }
             return null;
@@ -179,6 +180,12 @@ namespace SkillEditor {
             return m_listHarmDataCache.ToArray();
         }
 
+        private static void AnalyseHarmData(string luaText, ref int index, List<HarmData> list) {
+            HarmData data = new HarmData();
+            data = (HarmData)ReadLuaTable(luaText, ref index, data);
+            list.Add(data);
+        }
+
         private static int ReadLuaTableArray(string luaText, ref int index) {
             FilterNotesLine(luaText, ref index);
             char curChar = luaText[index];
@@ -189,7 +196,7 @@ namespace SkillEditor {
             int resultIndex = GetLuaTextInt(luaText, ref index);
             FilterSpaceSymbol(luaText, ref index);
             if (luaText[index] != LuaFormat.SquareBracketPair.end)
-                Debug.LogError("关键帧配置表索引配置错误");
+                PrintErrorWhithLayer("关键帧配置表索引配置错误");
             index++;
             FindLuaTableStartIndex(luaText, ref index);
             return resultIndex;
@@ -201,7 +208,7 @@ namespace SkillEditor {
             if (curChar != LuaFormat.SquareBracketPair.start)
                 return string.Empty;
             if (!CheckNextIndexSymbol(luaText, index, LuaFormat.QuotationPair.start)) {
-                Debug.LogError("关键帧配置表模型名字配置错误");
+                PrintErrorWhithLayer("关键帧配置表 string key 配置错误");
                 return string.Empty;
             }
             index++;
@@ -220,7 +227,7 @@ namespace SkillEditor {
                 keyIndex += tableKeyValue.KeyLength;
                 FilterSpaceSymbol(luaText, ref keyIndex);
                 if (luaText[keyIndex] == LuaFormat.EqualSymbol) {
-                    Debug.LogError("关键帧配置表关键帧 Lua table 配置错误");
+                    PrintErrorWhithLayer("关键帧配置表关键帧 Lua table 配置错误");
                     break;
                 }
                 keyIndex++;
@@ -228,7 +235,7 @@ namespace SkillEditor {
                 SetLuaTableData(luaText, ref keyIndex, tableKeyValue, ref table, data);
                 FilterSpaceSymbol(luaText, ref keyIndex);
                 if (luaText[index] != LuaFormat.CommaSymbol) {
-                    Debug.LogError("关键帧配置表关键帧 lua table 缺少逗号");
+                    PrintErrorWhithLayer("关键帧配置表关键帧 lua table 缺少逗号");
                     break;
                 }
                 if (maxIndex < keyIndex)
@@ -303,7 +310,7 @@ namespace SkillEditor {
             }
             string intString = luaText.Substring(startIndex, index - 1);
             if (!int.TryParse(intString, out int intData))
-                Debug.LogError("关键帧配置表整型配置错误");
+                PrintErrorWhithLayer("关键帧配置表读取整型错误");
             return intData;
         }
 
@@ -316,7 +323,7 @@ namespace SkillEditor {
             }
             string numberString = luaText.Substring(startIndex, index - 1);
             if (!float.TryParse(numberString, out float numberData))
-                Debug.LogError("关键帧配置表浮点型配置错误");
+                PrintErrorWhithLayer("关键帧配置表读取浮点型错误");
             return numberData;
         }
 
@@ -358,6 +365,10 @@ namespace SkillEditor {
             
             if (index >= luaText.Length)
                 Debug.LogError(string.Format("关键帧配置表结尾缺少{0}个 table 结束符 }", m_tableCount));
+        }
+
+        private static void PrintErrorWhithLayer(string text) {
+            Debug.LogError(string.Format("{0} 当前层为 {1}", text, (KeyFrameLuaLayer)m_tableCount));
         }
 
         private static void Reset() {
