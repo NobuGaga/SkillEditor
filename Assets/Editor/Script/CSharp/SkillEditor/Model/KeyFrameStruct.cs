@@ -89,7 +89,7 @@
                     time = (float)value;
                     return;
                 case Key_Priority:
-                    priority = (short)value;
+                    priority = (short)((int)value);
                     return;
                 case Key_Data:
                     var list = value as System.Collections.Generic.List<CustomData>;
@@ -119,10 +119,12 @@
     internal struct CustomData {
         public EFrameType frameType;
         public object data;
+        public bool isNullTable;
 
         public CustomData(EFrameType frameType, object data) {
             this.frameType = frameType;
             this.data = data;
+            isNullTable = false;
         }
 
         public override string ToString() {

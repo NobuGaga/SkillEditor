@@ -236,7 +236,7 @@ namespace SkillEditor {
                 FilterSpaceSymbol(luaText, ref keyIndex);
                 SetLuaTableData(luaText, ref keyIndex, tableKeyValue, ref table, data);
                 FilterSpaceSymbol(luaText, ref keyIndex);
-                if (luaText[index] != LuaFormat.CommaSymbol) {
+                if (luaText[keyIndex] != LuaFormat.CommaSymbol) {
                     PrintErrorWhithLayer("关键帧配置表关键帧 lua table 缺少逗号");
                     break;
                 }
@@ -251,7 +251,17 @@ namespace SkillEditor {
         private static void SetLuaTableData(string luaText, ref int keyIndex, LuaTableKeyValue keyValue, ref ITable table, object data) {
             switch (keyValue.type) {
                 case LuaFormat.Type.LuaString:
+                    if (luaText[keyIndex] != LuaFormat.QuotationPair.start) {
+                        Debug.LogError("关键帧配置表 table string 配置错误");
+                        return;
+                    }
+                    keyIndex++;
                     table.SetTableKeyValue(keyValue.key, GetLuaTextString(luaText, ref keyIndex));
+                    if (luaText[keyIndex] != LuaFormat.QuotationPair.end) {
+                        Debug.LogError("关键帧配置表 table string 配置错误");
+                        return;
+                    }
+                    keyIndex++;
                     return;
                 case LuaFormat.Type.LuaInt:
                     table.SetTableKeyValue(keyValue.key, GetLuaTextInt(luaText, ref keyIndex));
@@ -263,6 +273,13 @@ namespace SkillEditor {
                     if (data == null)
                         break;
                     FindLuaTableStartIndex(luaText, ref keyIndex);
+                    int tempIndex = keyIndex;
+                    if (CheckNullTable(luaText, ref tempIndex)) {
+                        keyIndex = tempIndex;
+                        FindLuaTableEndIndex(luaText, ref keyIndex);
+                        keyIndex--; // FindLuaTableEndIndex move index after ’.‘
+                        return;
+                    }
                     AnalyseKeyFrameData(luaText, ref keyIndex, data);
                     table.SetTableKeyValue(keyValue.key, data);
                     return;
@@ -290,6 +307,25 @@ namespace SkillEditor {
         private static bool CheckNextIndexSymbol(string luaText, int index, char symbol) {
             int nextIndex = index + 1;
             return nextIndex < luaText.Length && luaText[nextIndex] == symbol;
+        }
+
+        private static bool CheckNullTable(string luaText, ref int index) {
+            int startIndex = index;
+            for (; index < luaText.Length; index++)
+                if (luaText[index] == LuaFormat.CurlyBracesPair.end)
+                    break;
+            if (index - startIndex == 1)
+                return true;
+            bool isNullTable = true;
+            for (; startIndex < index; startIndex++) {
+                char curChar = luaText[startIndex];
+                if (curChar != LuaFormat.NotesSymbolStart && curChar != LuaFormat.SpaceSymbol &&
+                    curChar != LuaFormat.LineSymbol) {
+                    isNullTable = false;
+                    break;
+                }
+            }
+            return isNullTable;
         }
 
         private static string GetLuaTextString(string luaText, ref int index) {

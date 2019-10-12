@@ -19,7 +19,7 @@
 
         public const char NotesSymbolStart = '-';
         private const string NotesSymbol = "--";
-        private const char LineSymbol = '\n';
+        public const char LineSymbol = '\n';
         public static readonly PairStringChar NotesLinePair = new PairStringChar(NotesSymbol, LineSymbol);
 
         public static readonly PairString HashKeyPair = new PairString(SquareBraceStart, QuotationSymbol,
