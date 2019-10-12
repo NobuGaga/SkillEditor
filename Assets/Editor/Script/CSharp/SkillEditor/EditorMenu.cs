@@ -16,7 +16,10 @@ namespace SkillEditor {
 
         [MenuItem("技能编辑器/播放")]
         private static void Play() {
-            Manager.Play();
+            //Manager.Play();
+            var list = LuaReader.Read(Config.KeyFrameFilePath);
+            foreach (var data in list)
+                UnityEngine.Debug.Log(data.ToString());
         }
 
         [MenuItem("技能编辑器/停止")]
