@@ -89,7 +89,7 @@
                     time = (float)value;
                     return;
                 case Key_Priority:
-                    priority = (short)((int)value);
+                    priority = (short)(int)value;
                     return;
                 case Key_Data:
                     var list = value as System.Collections.Generic.List<CustomData>;
@@ -119,12 +119,10 @@
     internal struct CustomData {
         public EFrameType frameType;
         public object data;
-        public bool isNullTable;
 
         public CustomData(EFrameType frameType, object data) {
             this.frameType = frameType;
             this.data = data;
-            isNullTable = false;
         }
 
         public override string ToString() {
@@ -171,10 +169,10 @@
         public void SetTableKeyValue(string key, object value) {
             switch (key) {
                 case Key_Type:
-                    type = (short)value;
+                    type = (short)(int)value;
                     return;
                 case Key_Id:
-                    id = (int)value;
+                    id = (short)(int)value;
                     return;
             }
         }
@@ -211,10 +209,10 @@
         public void SetTableKeyValue(string key, object value) {
             switch (key) {
                 case Key_Type:
-                    type = (short)value;
+                    type = (short)(int)value;
                     return;
                 case Key_Id:
-                    id = (int)value;
+                    id = (short)(int)value;
                     return;
             }
         }
@@ -275,7 +273,7 @@
                     height = (float)value;
                     return;
                 case Key_Depth:
-                    depth = (short)value;
+                    depth = (short)(int)value;
                     return;
             }
         }

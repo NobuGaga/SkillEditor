@@ -133,18 +133,24 @@ namespace SkillEditor {
 
         private static List<CustomData> m_listCustomDataCache = new List<CustomData>(Config.ModelClipFrameCustomDataCount);
         private static FrameData AnalyseFrameData(string luaText, ref int index, FrameData frameData) {
+            m_listCustomDataCache.Clear();
             return (FrameData)ReadLuaTable(luaText, ref index, frameData, m_listCustomDataCache);
         }
 
         private static void AnalyseCustomData(string luaText, ref int index, List<CustomData> list) {
+            int layerIndex = FindLuaTableLayerArea(luaText, index);
             for (; index < luaText.Length; index++) {
+                int copyIndex = index;
                 int frameTypeInt = ReadLuaTableArrayKey(luaText, ref index);
+                if (index > layerIndex) {
+                    index = copyIndex;
+                    return;
+                }
                 if (frameTypeInt == Config.ErrorIndex)
                     continue;
                 EFrameType frameType = (EFrameType)frameTypeInt;
                 CustomData data = new CustomData();
                 data.frameType = frameType;
-                FindLuaTableStartIndex(luaText, ref index);
                 data.data = AnalyseKeyFrameData(luaText, ref index, frameType);
                 list.Add(data);
             }
@@ -271,17 +277,18 @@ namespace SkillEditor {
                     return;
                 case LuaFormat.Type.LuaTable:
                     if (data == null)
-                        break;
+                        return;
                     FindLuaTableStartIndex(luaText, ref keyIndex);
                     int tempIndex = keyIndex;
                     if (CheckNullTable(luaText, ref tempIndex)) {
                         keyIndex = tempIndex;
-                        FindLuaTableEndIndex(luaText, ref keyIndex);
-                        keyIndex--; // FindLuaTableEndIndex move index after ’.‘
-                        return;
+                        keyIndex++;
                     }
-                    AnalyseKeyFrameData(luaText, ref keyIndex, data);
-                    table.SetTableKeyValue(keyValue.key, data);
+                    else {
+                        AnalyseKeyFrameData(luaText, ref keyIndex, data);
+                        table.SetTableKeyValue(keyValue.key, data);
+                        FindLuaTableEndIndex(luaText, ref keyIndex);
+                    }
                     return;
             }
         }
@@ -400,6 +407,25 @@ namespace SkillEditor {
             
             if (index >= luaText.Length)
                 Debug.LogError(string.Format("关键帧配置表结尾缺少{0}个 table 结束符 }", m_tableCount));
+        }
+
+        /// <summary>
+        /// start inside { }, found first no pair } to return index
+        /// </summary>
+        private static int FindLuaTableLayerArea(string luaText, int index) {
+            int curlyBracesCount = 0;
+            for (; index < luaText.Length; index++) {
+                char curChar = luaText[index];
+                if (curChar == LuaFormat.CurlyBracesPair.end)
+                    curlyBracesCount--;
+                else if (curChar == LuaFormat.CurlyBracesPair.start)
+                    curlyBracesCount++;
+                else
+                    continue;
+                if (curlyBracesCount < 0)
+                    break;
+            }
+            return ++index;
         }
 
         private static void PrintErrorWhithLayer(string text) {
