@@ -41,7 +41,7 @@ KeyFrameData.config = {
                             z = 0,
                             width = 3.5,
                             height = 1.7,
-                            depth = 2
+                            depth = 2,
                         },
                     },
                 },

@@ -120,8 +120,15 @@ namespace SkillEditor {
         }
 
         private static void AnalyseFrameIndexData(string luaText, ref int index, List<FrameData> list) {
+            int layerIndex = FindLuaTableLayerArea(luaText, index);
             for (; index < luaText.Length; index++) {
+                int copyIndex = index;
                 int frameIndex = ReadLuaTableArrayKey(luaText, ref index);
+                if (index > layerIndex) {
+                    index = copyIndex;
+                    m_tableCount--;
+                    return;
+                }
                 if (frameIndex == Config.ErrorIndex)
                     continue;
                 FrameData data = new FrameData();
@@ -144,6 +151,7 @@ namespace SkillEditor {
                 int frameTypeInt = ReadLuaTableArrayKey(luaText, ref index);
                 if (index > layerIndex) {
                     index = copyIndex;
+                    m_tableCount--;
                     return;
                 }
                 if (frameTypeInt == Config.ErrorIndex)
@@ -177,8 +185,16 @@ namespace SkillEditor {
         private static List<HarmData> m_listHarmDataCache = new List<HarmData>(Config.ModelClipFrameRectDataCount);
         private static HarmData[] AnalyseRectData(string luaText, ref int index) {
             m_listHarmDataCache.Clear();
+            int layerIndex = FindLuaTableLayerArea(luaText, index);
             for (; index < luaText.Length; index++) {
-                if (ReadLuaTableArrayKey(luaText, ref index) == Config.ErrorIndex)
+                int copyIndex = index;
+                int arrayIndex = ReadLuaTableArrayKey(luaText, ref index);
+                if (index > layerIndex) {
+                    index = copyIndex;
+                    m_tableCount--;
+                    break;
+                }
+                if (arrayIndex == Config.ErrorIndex)
                     continue;
                 AnalyseKeyFrameData(luaText, ref index, m_listHarmDataCache);
             }
@@ -242,10 +258,6 @@ namespace SkillEditor {
                 FilterSpaceSymbol(luaText, ref keyIndex);
                 SetLuaTableData(luaText, ref keyIndex, tableKeyValue, ref table, data);
                 FilterSpaceSymbol(luaText, ref keyIndex);
-                if (luaText[keyIndex] != LuaFormat.CommaSymbol) {
-                    PrintErrorWhithLayer("关键帧配置表关键帧 lua table 缺少逗号");
-                    break;
-                }
                 if (maxIndex < keyIndex)
                     maxIndex = keyIndex;
             }
@@ -280,15 +292,13 @@ namespace SkillEditor {
                         return;
                     FindLuaTableStartIndex(luaText, ref keyIndex);
                     int tempIndex = keyIndex;
-                    if (CheckNullTable(luaText, ref tempIndex)) {
+                    if (CheckNullTable(luaText, ref tempIndex))
                         keyIndex = tempIndex;
-                        keyIndex++;
-                    }
                     else {
                         AnalyseKeyFrameData(luaText, ref keyIndex, data);
                         table.SetTableKeyValue(keyValue.key, data);
-                        FindLuaTableEndIndex(luaText, ref keyIndex);
                     }
+                    FindLuaTableEndIndex(luaText, ref keyIndex);
                     return;
             }
         }
@@ -347,7 +357,7 @@ namespace SkillEditor {
             int startIndex = index;
             for (; index < luaText.Length; index++) {
                 char curChar = luaText[index];
-                if (curChar < LuaFormat.IntMin || curChar > LuaFormat.IntMax)
+                if ((curChar < LuaFormat.IntMin || curChar > LuaFormat.IntMax) && curChar != LuaFormat.NotesSymbolStart)
                     break;
             }
             string intString = luaText.Substring(startIndex, index - startIndex);
@@ -360,7 +370,8 @@ namespace SkillEditor {
             int startIndex = index;
             for (; index < luaText.Length; index++) {
                 char curChar = luaText[index];
-                if ((curChar < LuaFormat.IntMin || curChar > LuaFormat.IntMax) && curChar != LuaFormat.NumberPoint)
+                if ((curChar < LuaFormat.IntMin || curChar > LuaFormat.IntMax) &&
+                    curChar != LuaFormat.NumberPoint && curChar != LuaFormat.NotesSymbolStart)
                     break;
             }
             string numberString = luaText.Substring(startIndex, index - startIndex);
@@ -398,10 +409,13 @@ namespace SkillEditor {
             for (; index < luaText.Length; index++) {
                 if (luaText[index] != LuaFormat.CurlyBracesPair.end)
                     continue;
+                index++;
                 m_tableCount--;
                 FilterSpaceSymbol(luaText, ref index);
                 if (luaText[index] == LuaFormat.CommaSymbol)
                     index++;
+                else
+                    PrintErrorWhithLayer("关键帧配置表关键帧 lua table 缺少逗号");
                 break;
             }
             
