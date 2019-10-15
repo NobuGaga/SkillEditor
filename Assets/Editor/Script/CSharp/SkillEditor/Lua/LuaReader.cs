@@ -231,7 +231,7 @@ namespace SkillEditor {
                 keyIndex += tableKeyValue.KeyLength;
                 FilterSpaceSymbol(luaText, ref keyIndex);
                 if (luaText[keyIndex] != LuaFormat.EqualSymbol) {
-                    PrintErrorWhithLayer("关键帧配置表关键帧 Lua table 配置错误");
+                    PrintErrorWhithLayer("关键帧配置表关键帧 Lua table 配置错误", index);
                     break;
                 }
                 keyIndex++;
@@ -297,7 +297,7 @@ namespace SkillEditor {
 
         private static string GetLuaTextString(string luaText, ref int index) {
             if (luaText[index] != LuaFormat.QuotationPair.start) {
-                PrintErrorWhithLayer("关键帧配置表读取字符串错误");
+                PrintErrorWhithLayer("关键帧配置表读取字符串错误", index);
                 return string.Empty;
             }
             index++;
@@ -323,7 +323,7 @@ namespace SkillEditor {
             }
             string intString = luaText.Substring(startIndex, index - startIndex);
             if (!int.TryParse(intString, out int interge))
-                PrintErrorWhithLayer("关键帧配置表读取整型错误");
+                PrintErrorWhithLayer("关键帧配置表读取整型错误", index);
             if (luaText[index] == LuaFormat.CommaSymbol)
                 index++;
             if (luaText[index] == LuaFormat.LineSymbol)
@@ -341,7 +341,7 @@ namespace SkillEditor {
             }
             string numberString = luaText.Substring(startIndex, index - startIndex);
             if (!float.TryParse(numberString, out float number))
-                PrintErrorWhithLayer("关键帧配置表读取浮点型错误");
+                PrintErrorWhithLayer("关键帧配置表读取浮点型错误", index);
             if (luaText[index] == LuaFormat.CommaSymbol)
                 index++;
             if (luaText[index] == LuaFormat.LineSymbol)
@@ -390,8 +390,8 @@ namespace SkillEditor {
             return index;
         }
 
-        private static void PrintErrorWhithLayer(string text) {
-            Debug.LogError(string.Format("{0} 当前层为 {1}", text, (KeyFrameLuaLayer)m_tableLayer));
+        private static void PrintErrorWhithLayer(string text, int index) {
+            Debug.LogError(string.Format("{0} 当前层为 {1}, 索引值为 {2}", text, (KeyFrameLuaLayer)m_tableLayer, index));
         }
     }
 }

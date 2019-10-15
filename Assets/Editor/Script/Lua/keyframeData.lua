@@ -224,63 +224,63 @@ KeyFrameData.config = {
                 priority = 1,
                 data = {},
             },
-            ["attack_4_2"] = {
-                [1] = {
-                    name = "start",
-                    time = 0,
-                    priority = 99,
-                    data = {},
+        },
+        ["attack_4_2"] = {
+            [1] = {
+                name = "start",
+                time = 0,
+                priority = 99,
+                data = {},
+            },
+            [2] = {
+                name = "play_effect",
+                time = 0,
+                priority = 1,
+                data = {
+                    [1] = {
+                        type = 1,
+                        id = 14,
+                    },
+                    [2] = {
+                        type = 3,
+                        id = 100,
+                    },
                 },
-                [2] = {
-                    name = "play_effect",
-                    time = 0,
-                    priority = 1,
-                    data = {
+            },
+            [3] = {
+                name = "hit",
+                time = 0.233,
+                priority = 1,
+                data = {
+                    [4] = {
                         [1] = {
-                            type = 1,
-                            id = 14,
-                        },
-                        [2] = {
-                            type = 3,
-                            id = 100,
-                        },
-                    },
-                },
-                [3] = {
-                    name = "hit",
-                    time = 0.233,
-                    priority = 1,
-                    data = {
-                        [4] = {
-                            [1] = {
-                                x = 0,
-                                y = 0,
-                                z = 0,
-                                width = 6,
-                                height = 1.7,
-                                depth = 2,
-                            },
+                            x = 0,
+                            y = 0,
+                            z = 0,
+                            width = 6,
+                            height = 1.7,
+                            depth = 2,
                         },
                     },
                 },
-                [4] = {
-                    name = "cache_begin",
-                    time = 0.368,
-                    priority = 99,
-                    data = {},
-                },
-                [5] = {
-                    name = "section_over",
-                    time = 0.368,
-                    priority = 1,
-                    data = {},
-                },
-                [6] = {
-                    name = "end",
-                    time = 0.833,
-                    priority = 1,
-                    data = {},
-                },
+            },
+            [4] = {
+                name = "cache_begin",
+                time = 0.368,
+                priority = 99,
+                data = {},
+            },
+            [5] = {
+                name = "section_over",
+                time = 0.368,
+                priority = 1,
+                data = {},
+            },
+            [6] = {
+                name = "end",
+                time = 0.833,
+                priority = 1,
+                data = {},
             },
         },
     },
