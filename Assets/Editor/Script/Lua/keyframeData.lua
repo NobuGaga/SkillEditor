@@ -334,6 +334,6 @@ KeyFrameData.config = {
                 priority = 1,
                 data = {},
             },
-        }
-    }
+        },
+    },
 }

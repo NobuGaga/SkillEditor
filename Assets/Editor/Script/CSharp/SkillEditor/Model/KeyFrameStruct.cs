@@ -34,7 +34,7 @@ namespace SkillEditor.Structure {
                 clipDatasString = m_staticBuilder.ToString();
             }
             string tabString = Tool.GetTabString(KeyFrameLuaLayer.Model);
-            string format = string.Intern("{0}[{1}] = {2}\n{3}{0}{4},\n");
+            string format = string.Intern("{0}[\"{1}\"] = {2}\n{3}{0}{4},\n");
             string toString = string.Format(format, tabString, modelName,
                                             LuaFormat.CurlyBracesPair.start,
                                             clipDatasString, LuaFormat.CurlyBracesPair.end);

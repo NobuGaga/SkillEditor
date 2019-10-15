@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using System;
-using System.Text;
 using System.Reflection;
 using SkillEditor.Structure;
 

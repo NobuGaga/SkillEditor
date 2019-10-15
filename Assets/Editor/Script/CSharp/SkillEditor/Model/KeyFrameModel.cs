@@ -57,7 +57,7 @@ namespace SkillEditor {
 
         public static string GetWriteFileString(StringBuilder builder) {
             builder.Append(LuaFormat.CurlyBracesPair.start);
-            if (m_curFrameDataList != null && m_curFrameDataList.Count == 0) {
+            if (m_curFrameDataList != null && m_curFrameDataList.Count != 0) {
                 builder.Append(LuaFormat.LineSymbol);
                 for (int index = 0; index < m_curFrameDataList.Count; index++)
                     builder.Append(m_curFrameDataList[index].ToString());
