@@ -156,7 +156,7 @@ namespace SkillEditor {
                 ExitLuaTable(luaText, ref index);
                 m_listCustomDataCache.Add(data);
             }
-            return m_listClipCache.ToArray();
+            return m_listCustomDataCache.ToArray();
         }
 
         private static ITable AnalyseEffectData(string luaText, ref int index, EFrameType frameType) {

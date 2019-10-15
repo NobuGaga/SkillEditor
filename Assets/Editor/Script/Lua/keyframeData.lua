@@ -137,10 +137,6 @@ KeyFrameData.config = {
                         type = 2,
                         id = 20,
                     },
-                    [3] = {
-                        type = 3,
-                        id = 100,
-                    },
                 },
             },
             [3] = {

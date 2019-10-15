@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using System;
+using System.Text;
 using System.Reflection;
+using SkillEditor.Structure;
 
 namespace SkillEditor {
 
@@ -51,6 +53,14 @@ namespace SkillEditor {
             if (extension == null)
                 return CombinePath(path, fileName);
             return CombinePath(path, FileWithExtension(fileName, extension));
+        }
+
+        internal static string GetTabString(KeyFrameLuaLayer layer) {
+            int layerInt = (int)layer;
+            string tabString = string.Empty;
+            for (int index = 0; index < layerInt; index++)
+                tabString = string.Intern(tabString + LuaFormat.TabString);
+            return tabString;
         }
     }
 }

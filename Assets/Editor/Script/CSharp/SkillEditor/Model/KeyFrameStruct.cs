@@ -1,4 +1,6 @@
-﻿namespace SkillEditor.Structure {
+﻿using System.Text;
+
+namespace SkillEditor.Structure {
 
     using LuaTableKeyValue = LuaFormat.LuaTableKeyValue;
 
@@ -22,13 +24,20 @@
             this.clipDatas = clipDatas;
         }
 
+        private static readonly StringBuilder m_staticBuilder = new StringBuilder(Config.ClipDataStringLength);
         public override string ToString() {
-            string clipDataString = string.Empty;
-            if (clipDatas != null)
+            string clipDatasString = string.Empty;
+            if (clipDatas != null) {
+                m_staticBuilder.Clear();
                 for (int index = 0; index < clipDatas.Length; index++)
-                    clipDataString += string.Format("\n[{0}] = {1}", index, clipDatas[index]);
-            string toString = string.Format("clipName = {0}, frameData = \n{1}",
-                                            modelName, clipDataString);
+                    m_staticBuilder.Append(clipDatas[index].ToString());
+                clipDatasString = m_staticBuilder.ToString();
+            }
+            string tabString = Tool.GetTabString(KeyFrameLuaLayer.Model);
+            string format = string.Intern("{0}[{1}] = {2}\n{3}{0}{4},\n");
+            string toString = string.Format(format, tabString, modelName,
+                                            LuaFormat.CurlyBracesPair.start,
+                                            clipDatasString, LuaFormat.CurlyBracesPair.end);
             string internString = string.Intern(toString);
             return internString;
         }
@@ -43,13 +52,28 @@
             this.frameDatas = frameDatas;
         }
 
+        private static readonly StringBuilder m_staticBuilder = new StringBuilder(Config.FrameDataStringLength);
         public override string ToString() {
             string frameDataString = string.Empty;
-            if (frameDatas != null)
-                for (int index = 0; index < frameDatas.Length; index++)
-                    frameDataString += string.Format("\n[{0}] = {1}", index, frameDatas[index]);
-            string toString = string.Format("clipName = {0}, frameData = \n{1}",
-                                            clipName, frameDataString);
+            string tabString = Tool.GetTabString(KeyFrameLuaLayer.FrameIndex);
+            string format;
+            if (frameDatas != null) {
+                m_staticBuilder.Clear();
+                m_staticBuilder.Append(LuaFormat.LineSymbol);
+                format = string.Intern("{0}[{1}] = {2}\n{3}{0}{4},\n");
+                for (int index = 0; index < frameDatas.Length; index++) {
+                    FrameData data = frameDatas[index];
+                    string formatString = string.Format(format, tabString, data.frameIndex,
+                                                        LuaFormat.CurlyBracesPair.start, data.ToString(),
+                                                        LuaFormat.CurlyBracesPair.end);
+                    m_staticBuilder.Append(formatString);
+                }
+                frameDataString = m_staticBuilder.ToString();
+            }
+            format = string.Intern("{0}[\"{1}\"] = {2}{3}{0}{4},\n");
+            tabString = Tool.GetTabString(KeyFrameLuaLayer.Clip);
+            string toString = string.Format(format, tabString, clipName, LuaFormat.CurlyBracesPair.start,
+                                            frameDataString, LuaFormat.CurlyBracesPair.end);
             string internString = string.Intern(toString);
             return internString;
         }
@@ -70,13 +94,22 @@
             this.customData = customData;
         }
 
+        private static readonly StringBuilder m_staticBuilder = new StringBuilder(Config.CustomDataStringLength);
         public override string ToString() {
             string customDataString = string.Empty;
-            if (customData != null)
+            string tabString = Tool.GetTabString(KeyFrameLuaLayer.FrameData);
+            if (customData != null) {
+                m_staticBuilder.Clear();
+                m_staticBuilder.Append(LuaFormat.LineSymbol);
                 for (int index = 0; index < customData.Length; index++)
-                    customDataString += string.Format("\n[{0}] = {1}", index, customData[index]);
-            string toString = string.Format("name = {0}, time = {1}, priority = {2}\ncustomData = {3}",
-                                            name, time, priority, customDataString);
+                    m_staticBuilder.Append(customData[index].ToString());
+                m_staticBuilder.Append(tabString);
+                customDataString = m_staticBuilder.ToString();
+            }
+            string format = string.Intern("{0}name = \"{1}\",\n{0}time = {2},\n{0}priority = {3},\n{0}data = {4}{5}{6},\n");
+            string toString = string.Format(format, tabString, name, time, priority,
+                                            LuaFormat.CurlyBracesPair.start,
+                                            customDataString, LuaFormat.CurlyBracesPair.end);
             string internString = string.Intern(toString);
             return internString;
         }
@@ -125,18 +158,31 @@
             this.data = data;
         }
 
+        private static readonly StringBuilder m_staticBuilder = new StringBuilder(Config.RectDataStringLength);
         public override string ToString() {
             string dataString = string.Empty;
+            string tabString;
+            string format;
             if (data is GrabData)
                 dataString = ((GrabData)data).ToString();
             else if (data is UngrabData)
                 dataString = ((UngrabData)data).ToString();
             else if (data is HarmData[]) {
+                m_staticBuilder.Clear();
+                tabString = Tool.GetTabString(KeyFrameLuaLayer.Effect);
                 HarmData[] array = data as HarmData[];
+                format = string.Intern("{0}[{1}] = {2}\n{3}{0}{4},\n");
                 for (int index = 0; index < array.Length; index++)
-                    dataString += string.Format("\n[{0}] = {1}", index, array[index]);
+                    m_staticBuilder.Append(string.Format(format, tabString, index + 1,
+                                                LuaFormat.CurlyBracesPair.start, array[index].ToString(),
+                                                LuaFormat.CurlyBracesPair.end));
+                dataString = m_staticBuilder.ToString();
             }
-            string toString = string.Format("frameType = {0}, data = {1}", frameType, dataString);
+            tabString = Tool.GetTabString(KeyFrameLuaLayer.CustomData);
+            format = string.Intern("{0}[{1}] = {2}\n{3}{0}{4},\n");
+            string toString = string.Format(format, tabString, (int)frameType,
+                                            LuaFormat.CurlyBracesPair.start,
+                                            dataString, LuaFormat.CurlyBracesPair.end);
             string internString = string.Intern(toString);
             return internString;
         }
@@ -161,7 +207,9 @@
         }
 
         public override string ToString() {
-            string toString = string.Format("type = {0}, id = {1}", type, id);
+            string tabString = Tool.GetTabString(KeyFrameLuaLayer.Effect);
+            string format = string.Intern("{0}type = {1},\n{0}id = {2},\n");
+            string toString = string.Format(format, tabString, type, id);
             string internString = string.Intern(toString);
             return internString;
         }
@@ -201,7 +249,9 @@
         }
 
         public override string ToString() {
-            string toString = string.Format("type = {0}, id = {1}", type, id);
+            string tabString = Tool.GetTabString(KeyFrameLuaLayer.Effect);
+            string format = string.Intern("{0}type = {1},\n{0}id = {2},\n");
+            string toString = string.Format(format, tabString, type, id);
             string internString = string.Intern(toString);
             return internString;
         }
@@ -249,8 +299,9 @@
         }
 
         public override string ToString() {
-            string toString = string.Format("x = {0}, y = {1}, z = {2}, width = {3}, height = {4}, depth = {5}",
-                                            x, y, z, width, height, depth);
+            string tabString = Tool.GetTabString(KeyFrameLuaLayer.Rect);
+            string format = string.Intern("{0}x = {1},\n{0}y = {2},\n{0}z = {3},\n{0}width = {4},\n{0}height = {5},\n{0}depth = {6},\n");
+            string toString = string.Format(format, tabString, x, y, z, width, height, depth);
             string internString = string.Intern(toString);
             return internString;
         }
