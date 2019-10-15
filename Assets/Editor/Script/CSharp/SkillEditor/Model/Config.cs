@@ -78,9 +78,10 @@ namespace SkillEditor {
 
         // Lua
         public const short ReadFileCount = 4;
-        public const short ClipDataStringLength = 8192;
-        public const short FrameDataStringLength = 2048;
-        public const short CustomDataStringLength = 1024;
+        public const short KeyFrameFileLength = ClipDataStringLength * 2;
+        public const short ClipDataStringLength = FrameDataStringLength * 4;
+        public const short FrameDataStringLength = CustomDataStringLength * 2;
+        public const short CustomDataStringLength = RectDataStringLength * 2;
         public const short RectDataStringLength = 512;
 
         public static void Reset() {

@@ -98,11 +98,7 @@ namespace SkillEditor {
         }
 
         private static void InitKeyFrameData() {
-            List<KeyFrameData> list = LuaReader.Read<KeyFrameData>(Config.KeyFrameFilePath);
-            foreach (var data in list)
-                Debug.Log("Lua Data\n" + data.ToString());
-            Debug.Log("Lua Head\n" + LuaWriter.GetHeadText(Config.KeyFrameFilePath));
-            KeyFrameModel.Init(list, m_model.name);
+            KeyFrameModel.Init(LuaReader.Read<KeyFrameData>(Config.KeyFrameFilePath), m_model.name);
         }
 
         public static void Play() {

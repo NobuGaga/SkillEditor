@@ -1,4 +1,6 @@
 ﻿using UnityEngine;
+using System.IO;
+using System.Text;
 using System.Collections.Generic;
 
 namespace SkillEditor {
@@ -15,12 +17,25 @@ namespace SkillEditor {
             m_dicPathFileHead.Add(path, headText);
         }
 
-        public static string GetHeadText(string path) {
-            if (!m_dicPathFileHead.ContainsKey(path)) {
-                Debug.LogError(string.Format("LuaWriter:;GetHeadText {0} path is not exit", path));
-                return string.Empty;
+        private static StringBuilder m_stringBuilder = new StringBuilder(Config.KeyFrameFileLength);
+
+        public static void Write() {
+            string path = string.Empty;
+            string headText = string.Empty;
+            foreach (var keyValue in m_dicPathFileHead) {
+                path = keyValue.Key;
+                headText = keyValue.Value;
             }
-            return m_dicPathFileHead[path];
+            if (path == string.Empty || headText == string.Empty)
+                return;
+            m_stringBuilder.Clear();
+            m_stringBuilder.Append(headText);
+            string fileString = KeyFrameModel.GetWriteFileString(m_stringBuilder);
+            FileStream file = new FileStream(path, FileMode.Create);
+            StreamWriter fileWriter = new StreamWriter(file);
+            fileWriter.Write(fileString);
+            fileWriter.Close();
+            fileWriter.Dispose();
         }
     }
 }

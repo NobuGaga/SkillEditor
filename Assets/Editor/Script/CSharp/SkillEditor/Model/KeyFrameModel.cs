@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Text;
 using System.Collections.Generic;
 using SkillEditor.Structure;
 
@@ -52,6 +53,17 @@ namespace SkillEditor {
             get {
                 return Data.modelName;
             }
+        }
+
+        public static string GetWriteFileString(StringBuilder builder) {
+            builder.Append(LuaFormat.CurlyBracesPair.start);
+            if (m_curFrameDataList != null && m_curFrameDataList.Count == 0) {
+                builder.Append(LuaFormat.LineSymbol);
+                for (int index = 0; index < m_curFrameDataList.Count; index++)
+                    builder.Append(m_curFrameDataList[index].ToString());
+            }
+            builder.Append(LuaFormat.CurlyBracesPair.end);
+            return builder.ToString();
         }
 
         public static void Reset() {

@@ -1,9 +1,5 @@
 ﻿using UnityEditor;
 
-using UnityEngine;
-using System.Collections.Generic;
-using SkillEditor.Structure;
-
 namespace SkillEditor {
 
     internal static class EditorMenu {
@@ -20,11 +16,7 @@ namespace SkillEditor {
 
         [MenuItem("技能编辑器/播放")]
         private static void Play() {
-            //Manager.Play();
-            List<KeyFrameData> list = LuaReader.Read<KeyFrameData>(Config.KeyFrameFilePath);
-            foreach (var data in list)
-                Debug.Log("Lua Data\n" + data.ToString());
-            Debug.Log("Lua Head\n" + LuaWriter.GetHeadText(Config.KeyFrameFilePath));
+            Manager.Play();
         }
 
         [MenuItem("技能编辑器/停止")]
