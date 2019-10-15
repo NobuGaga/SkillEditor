@@ -3,6 +3,7 @@ using UnityEditor.Animations;
 using UnityEngine;
 using System.IO;
 using System.Collections.Generic;
+using SkillEditor.Structure;
 
 namespace SkillEditor {
 
@@ -97,7 +98,11 @@ namespace SkillEditor {
         }
 
         private static void InitKeyFrameData() {
-            KeyFrameModel.Init(LuaReader.Read(Config.KeyFrameFilePath), m_model.name);
+            List<KeyFrameData> list = LuaReader.Read<KeyFrameData>(Config.KeyFrameFilePath);
+            foreach (var data in list)
+                Debug.Log("Lua Data\n" + data.ToString());
+            Debug.Log("Lua Head\n" + LuaWriter.GetHeadText(Config.KeyFrameFilePath));
+            KeyFrameModel.Init(list, m_model.name);
         }
 
         public static void Play() {

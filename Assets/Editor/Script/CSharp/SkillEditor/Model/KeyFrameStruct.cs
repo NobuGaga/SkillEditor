@@ -3,6 +3,7 @@
     using LuaTableKeyValue = LuaFormat.LuaTableKeyValue;
 
     internal enum KeyFrameLuaLayer {
+        EnterTable = 0,
         Model = 1,
         Clip = 2,
         FrameIndex = 3,
@@ -92,8 +93,7 @@
                     priority = (short)(int)value;
                     return;
                 case Key_Data:
-                    var list = value as System.Collections.Generic.List<CustomData>;
-                    customData = list.ToArray();
+                    customData = value as CustomData[];
                     return;
             }
         }

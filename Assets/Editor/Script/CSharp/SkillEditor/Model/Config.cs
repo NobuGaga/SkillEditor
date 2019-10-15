@@ -76,6 +76,9 @@ namespace SkillEditor {
         public const short ModelClipFrameCustomDataCount = 4;
         public const short ModelClipFrameRectDataCount = 2;
 
+        // Lua
+        public const short ReadFileCount = 4;
+
         public static void Reset() {
             m_prefabFullPath = string.Empty;
             m_clipFullPath = string.Empty;
