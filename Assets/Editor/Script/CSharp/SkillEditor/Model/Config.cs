@@ -66,7 +66,7 @@ namespace SkillEditor {
         private static readonly string AnimatorControllerCopyPath = LocalLayoutFileGroupPath;
 
         // Structure
-        public static readonly string KeyFrameFilePath = Tool.CombinePath(ProjectPath, "../LuaSource/lua/data/config/keyframeData.lua");
+        public static readonly string KeyFrameFilePath = Tool.CombinePath(ProjectPath, "Assets/Editor/Script/Lua/keyframeData.lua");
         public const short ErrorIndex = -1;
         public const short LuaFileHeadLength = 64;
         public const string LuaFileHeadStart = "KeyFrameData";

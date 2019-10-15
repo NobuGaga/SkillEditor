@@ -16,12 +16,14 @@ namespace SkillEditor {
 
         [MenuItem("技能编辑器/播放")]
         private static void Play() {
-            Manager.Play();
+            //Manager.Play();
+            LuaReader.Read<Structure.KeyFrameData>(Config.KeyFrameFilePath);
         }
 
         [MenuItem("技能编辑器/停止")]
         private static void Stop() {
-            Manager.Stop();
+            //Manager.Stop();
+            LuaWriter.Write();
         }
 
         [MenuItem("技能编辑器/退出编辑器模式")]
