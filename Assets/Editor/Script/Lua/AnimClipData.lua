@@ -1,7 +1,3 @@
---*-coding:utf-8-*
---Import Table Start
--- 表格定义维度如下：
--- [CharacterDefine.TYPE][StatesConfig][AnimName]
 AnimClipData = AnimClipData or {}
 AnimClipData.data = {
     ["hero_nvwang"] = {
@@ -30,7 +26,6 @@ AnimClipData.data = {
                     ["Start"] = {
                         time = 0,
                         priority = 99,
-                        data = {},
                     },
                     ["PlayEffect"] = {
                         time = 0,
@@ -49,17 +44,14 @@ AnimClipData.data = {
                     ["CacheBegin"] = {
                         time = 0.2,
                         priority = 99,
-                        data = {},
                     },
                     ["SectionOver"] = {
                         time = 0.27,
                         priority = 1,
-                        data = {},
                     },
                     ["End"] = {
                         time = 0.867,
                         priority = 1,
-                        data = {},
                     },
                 },
             },
@@ -87,7 +79,6 @@ AnimClipData.data = {
                     ["Start"] = {
                         time = 0,
                         priority = 99,
-                        data = {},
                     },
                     ["PlayEffect"] = {
                         time = 0,
@@ -106,17 +97,14 @@ AnimClipData.data = {
                     ["CacheBegin"] = {
                         time = 0.2,
                         priority = 99,
-                        data = {},
                     },
                     ["SectionOver"] = {
                         time = 0.27,
                         priority = 1,
-                        data = {},
                     },
                     ["End"] = {
                         time = 0.967,
                         priority = 1,
-                        data = {},
                     },
                 },
             },
@@ -144,7 +132,6 @@ AnimClipData.data = {
                     ["Start"] = {
                         time = 0,
                         priority = 99,
-                        data = {},
                     },
                     ["PlayEffect"] = {
                         time = 0,
@@ -167,17 +154,14 @@ AnimClipData.data = {
                     ["CacheBegin"] = {
                         time = 0.4,
                         priority = 99,
-                        data = {},
                     },
                     ["SectionOver"] = {
                         time = 0.8,
                         priority = 1,
-                        data = {},
                     },
                     ["End"] = {
                         time = 1.333,
                         priority = 1,
-                        data = {},
                     },
                 },
             },
@@ -205,7 +189,6 @@ AnimClipData.data = {
                     ["Start"] = {
                         time = 0,
                         priority = 99,
-                        data = {},
                     },
                     ["PlayEffect"] = {
                         time = 0,
@@ -224,7 +207,6 @@ AnimClipData.data = {
                     ["End"] = {
                         time = 0.467,
                         priority = 1,
-                        data = {},
                     },
                 },
             },
@@ -252,7 +234,6 @@ AnimClipData.data = {
                     ["Start"] = {
                         time = 0,
                         priority = 99,
-                        data = {},
                     },
                     ["PlayEffect"] = {
                         time = 0,
@@ -271,17 +252,14 @@ AnimClipData.data = {
                     ["CacheBegin"] = {
                         time = 0.368,
                         priority = 99,
-                        data = {},
                     },
                     ["SectionOver"] = {
                         time = 0.368,
                         priority = 1,
-                        data = {},
                     },
                     ["End"] = {
                         time = 0.833,
                         priority = 1,
-                        data = {},
                     },
                 },
             },
@@ -293,7 +271,6 @@ AnimClipData.data = {
                     ["Start"] = {
                         time = 0,
                         priority = 99,
-                        data = {},
                     },
                     ["PlayEffect"] = {
                         time = 0,
@@ -308,7 +285,6 @@ AnimClipData.data = {
                     ["End"] = {
                         time = 1.467,
                         priority = 1,
-                        data = {},
                     },
                 },
             },
@@ -318,7 +294,6 @@ AnimClipData.data = {
                     ["Start"] = {
                         time = 0,
                         priority = 99,
-                        data = {},
                     },
                     ["PlayEffect"] = {
                         time = 0,
@@ -333,7 +308,6 @@ AnimClipData.data = {
                     ["End"] = {
                         time = 1.133,
                         priority = 1,
-                        data = {},
                     },
                 },
             },
@@ -343,7 +317,6 @@ AnimClipData.data = {
                     ["Start"] = {
                         time = 0,
                         priority = 99,
-                        data = {},
                     },
                     ["PlayEffect"] = {
                         time = 0,
@@ -358,7 +331,6 @@ AnimClipData.data = {
                     ["End"] = {
                         time = 0.233,
                         priority = 1,
-                        data = {},
                     },
                 },
             },
@@ -368,7 +340,6 @@ AnimClipData.data = {
                     ["Start"] = {
                         time = 0,
                         priority = 99,
-                        data = {},
                     },
                     ["PlayEffect"] = {
                         time = 0,
@@ -383,7 +354,6 @@ AnimClipData.data = {
                     ["End"] = {
                         time = 1.267,
                         priority = 1,
-                        data = {},
                     },
                 },
             },
@@ -393,7 +363,6 @@ AnimClipData.data = {
                     ["Start"] = {
                         time = 0,
                         priority = 99,
-                        data = {},
                     },
                     ["PlayEffect"] = {
                         time = 0,
@@ -408,7 +377,6 @@ AnimClipData.data = {
                     ["End"] = {
                         time = 1.1,
                         priority = 1,
-                        data = {},
                     },
                 },
             },
@@ -418,7 +386,6 @@ AnimClipData.data = {
                     ["Start"] = {
                         time = 0,
                         priority = 99,
-                        data = {},
                     },
                     ["PlayEffect"] = {
                         time = 0,
@@ -433,7 +400,6 @@ AnimClipData.data = {
                     ["End"] = {
                         time = 2.067,
                         priority = 1,
-                        data = {},
                     },
                 },
             },
@@ -460,17 +426,14 @@ AnimClipData.data = {
                     ["Start"] = {
                         time = 0,
                         priority = 99,
-                        data = {},
                     },
                     ["PlayEffect"] = {
                         time = 0,
                         priority = 1,
-                        data = {},
                     },
                     ["End"] = {
                         time = 0.467,
                         priority = 1,
-                        data = {},
                     },
                 },
             },
@@ -480,17 +443,14 @@ AnimClipData.data = {
                     ["Start"] = {
                         time = 0,
                         priority = 99,
-                        data = {},
                     },
                     ["PlayEffect"] = {
                         time = 0,
                         priority = 1,
-                        data = {},
                     },
                     ["End"] = {
                         time = 0.467,
                         priority = 1,
-                        data = {},
                     },
                 },
             },
@@ -502,12 +462,10 @@ AnimClipData.data = {
                     ["Start"] = {
                         time = 0,
                         priority = 1,
-                        data = {},
                     },
                     ["End"] = {
                         time = 2,
                         priority = 1,
-                        data = {},
                     },
                 },
             },

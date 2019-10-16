@@ -31,7 +31,9 @@ namespace SkillEditor {
             int index = luaText.IndexOf(luaFileHeadStart, StringComparison.Ordinal);
             if (index == Config.ErrorIndex)
                 return null;
+            index += Config.LuaFileHeadStart.Length;
             StringBuilder headBuilder = new StringBuilder(Config.LuaFileHeadLength);
+            headBuilder.Append(Config.LuaFileHeadStart);
             for (; index < luaText.Length; index++) {
                 char curChar = luaText[index];
                 if (curChar == LuaFormat.CurlyBracesPair.start)

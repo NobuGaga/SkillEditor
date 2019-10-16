@@ -98,7 +98,7 @@ namespace SkillEditor {
         }
 
         private static void InitKeyFrameData() {
-            KeyFrameModel.Init(LuaReader.Read<AnimClipData>(Config.KeyFrameFilePath), m_model.name);
+            KeyFrameModel.Init(LuaReader.Read<AnimClipData>(Config.AnimDataFilePath), m_model.name);
         }
 
         public static void Play() {

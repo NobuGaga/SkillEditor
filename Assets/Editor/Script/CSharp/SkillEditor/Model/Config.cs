@@ -66,10 +66,10 @@ namespace SkillEditor {
         private static readonly string AnimatorControllerCopyPath = LocalLayoutFileGroupPath;
 
         // Structure
-        public static readonly string KeyFrameFilePath = Tool.CombinePath(ProjectPath, "Assets/Editor/Script/Lua/keyframeData.lua");
+        public static readonly string AnimDataFilePath = Tool.CombinePath(ProjectPath, "Assets/Editor/Script/Lua/AnimClipData.lua");
         public const short ErrorIndex = -1;
         public const short LuaFileHeadLength = 64;
-        public const string LuaFileHeadStart = "KeyFrameData";
+        public const string LuaFileHeadStart = "AnimClipData = AnimClipData or {}";
         public const short ModelCount = 2;
         public const short ModelStateCount = 4;
         public const short ModelStateClipCount = 8;

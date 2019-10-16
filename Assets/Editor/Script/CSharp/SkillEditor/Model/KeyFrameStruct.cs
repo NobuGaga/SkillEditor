@@ -61,7 +61,6 @@ namespace SkillEditor.Structure {
             if (!originKey.Contains(StateHeadString + LuaFormat.PointSymbol))
                 return;
             string stateString = originKey.Substring(StateHeadString.Length + 1);
-            UnityEngine.Debug.Log("StateData::SetState stateString " + stateString);
             state = (State)Enum.Parse(typeof(State), stateString);
         }
 
@@ -112,21 +111,33 @@ namespace SkillEditor.Structure {
             if (!originKey.Contains(GameConstantHeadString + LuaFormat.PointSymbol))
                 return;
             string poolTypeString = originKey.Substring(GameConstantHeadString.Length + 1);
-            UnityEngine.Debug.Log("ClipData::SetPoolType stateString " + poolTypeString);
             poolType = (PoolType)Enum.Parse(typeof(PoolType), poolTypeString);
         }
 
         private static readonly StringBuilder m_staticBuilder = new StringBuilder(Config.FrameListStringLength);
         public override string ToString() {
             string keyFrameString = string.Empty;
+            string format;
             string frameGroupTabString = Tool.GetTabString(KeyFrameLuaLayer.FrameGroup);
-            if (keyFrameList != null)
+            if (keyFrameList != null) {
+                format = "{0}keyframe = {1}{3}{2},\n";
                 keyFrameString = Tool.GetArrayString(m_staticBuilder, KeyFrameLuaLayer.FrameGroup, keyFrameList);
+                keyFrameString = string.Format(format, frameGroupTabString,
+                                               LuaFormat.CurlyBracesPair.start,
+                                               LuaFormat.CurlyBracesPair.end,
+                                               keyFrameString);
+            }
             string processFrameString = string.Empty;
-            if (processFrameList != null)
+            if (processFrameList != null) {
+                format = "{0}processFrame = {1}{3}{2},\n";
                 processFrameString = Tool.GetArrayString(m_staticBuilder, KeyFrameLuaLayer.FrameGroup, processFrameList);
+                processFrameString = string.Format(format, frameGroupTabString,
+                                               LuaFormat.CurlyBracesPair.start,
+                                               LuaFormat.CurlyBracesPair.end,
+                                               processFrameString);
+            }
+            format = "{0}[\"{4}\"] = {2}\n{1}iPoolType = {5}{6}{7},\n{8}{9}{0}{3},\n";
             string clipTabString = Tool.GetTabString(KeyFrameLuaLayer.Clip);
-            string format = "{0}[\"{4}\"] = {2}\n{1}iPoolType = {5}{6}{7},\n{1}keyframe = {2}{8}{3},\n{1}processFrame = {2}{9}{3},\n";
             string toString = string.Format(format, clipTabString,
                                             frameGroupTabString,
                                             LuaFormat.CurlyBracesPair.start,
@@ -206,11 +217,18 @@ namespace SkillEditor.Structure {
         private static readonly StringBuilder m_staticBuilder = new StringBuilder(Config.CustomDataListStringLength);
         public override string ToString() {
             string dataListString = string.Empty;
-            if (dataList != null)
-                dataListString = Tool.GetArrayString(m_staticBuilder, KeyFrameLuaLayer.CustomeData, dataList);
-            string format = "{0}{4} = {2}\n{1}time = {5},\n{1}priority = {6},\n{1}data = {2}{7}{3},\n";
-            string frameTypeTabString = Tool.GetTabString(KeyFrameLuaLayer.FrameType);
+            string format;
             string frameDataString = Tool.GetTabString(KeyFrameLuaLayer.FrameData);
+            if (dataList != null) {
+                format = "{0}data = {1}{3}{2},\n";
+                dataListString = Tool.GetArrayString(m_staticBuilder, KeyFrameLuaLayer.FrameData, dataList);
+                dataListString = string.Format(format, frameDataString,
+                                               LuaFormat.CurlyBracesPair.start,
+                                               LuaFormat.CurlyBracesPair.end,
+                                               dataListString);
+            }
+            format = "{0}[\"{4}\"] = {2}\n{1}time = {5},\n{1}priority = {6},\n{7}{0}{3},\n";
+            string frameTypeTabString = Tool.GetTabString(KeyFrameLuaLayer.FrameType);
             string toString = string.Format(format, frameTypeTabString,
                                             frameDataString,
                                             LuaFormat.CurlyBracesPair.start,
@@ -274,6 +292,7 @@ namespace SkillEditor.Structure {
                 CubeData[] array = data as CubeData[];
                 tabString = Tool.GetTabString(KeyFrameLuaLayer.Effect);
                 format = string.Intern("{0}[{1}] = {2}\n{3}{0}{4},\n");
+                m_staticBuilder.Clear();
                 m_staticBuilder.Append(LuaFormat.LineSymbol);
                 for (int i = 0; i < array.Length; i++)
                     m_staticBuilder.Append(string.Format(format,
@@ -285,7 +304,7 @@ namespace SkillEditor.Structure {
                 dataString = m_staticBuilder.ToString();
             }
             tabString = Tool.GetTabString(KeyFrameLuaLayer.CustomeData);
-            format = "{0}[{1}] = {2}{3}{4},\n";
+            format = "{0}[{1}] = {2}{3}{0}{4},\n";
             string toString = string.Format(format,
                                             tabString,
                                             index,
@@ -308,7 +327,7 @@ namespace SkillEditor.Structure {
 
         public override string ToString() {
             string tabString = Tool.GetTabString(KeyFrameLuaLayer.Effect);
-            string format = "\n{0}type = {1},\n{0}id = {2},\n{0}";
+            string format = "\n{0}type = {1},\n{0}id = {2},\n";
             string toString = string.Format(format, tabString, type, id);
             string internString = string.Intern(toString);
             return internString;
