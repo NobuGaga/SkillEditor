@@ -221,6 +221,7 @@ namespace SkillEditor {
             return key;
         }
 
+        // table unsupport contain keyword notes
         private static ITable ReadLuaTable(string luaText, ref int index, ITable table) {
             int maxIndex = index;
             LuaTableKeyValue[] array = table.GetTableKeyValueList();
@@ -231,7 +232,7 @@ namespace SkillEditor {
                 keyIndex += tableKeyValue.KeyLength;
                 FilterSpaceSymbol(luaText, ref keyIndex);
                 if (luaText[keyIndex] != LuaFormat.EqualSymbol) {
-                    PrintErrorWhithLayer("关键帧配置表关键帧 Lua table 配置错误", index);
+                    PrintErrorWhithLayer("关键帧配置表关键帧 Lua table 配置错误", keyIndex);
                     break;
                 }
                 keyIndex++;
@@ -365,8 +366,12 @@ namespace SkillEditor {
                     continue;
                 m_tableLayer--;
                 index++;
+                if (index >= luaText.Length)
+                    break;
                 if (luaText[index] == LuaFormat.CommaSymbol)
                     index++;
+                if (index >= luaText.Length)
+                    break;
                 if (luaText[index] == LuaFormat.LineSymbol)
                     index++;
                 break;

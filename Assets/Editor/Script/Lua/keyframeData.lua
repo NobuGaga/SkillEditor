@@ -1,6 +1,6 @@
 KeyFrameData = Class("KeyFrameData", ConfigBase)
 KeyFrameData.config = {
-    ["hero_nwang"] = {
+    ["hero_nvwang"] = {
         ["attack_1"] = {
             [1] = {
                 name = "start",
