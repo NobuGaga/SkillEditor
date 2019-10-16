@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System;
+using System.Text;
 using System.Reflection;
 using SkillEditor.Structure;
 
@@ -60,6 +61,16 @@ namespace SkillEditor {
             for (int index = 0; index < layerInt; index++)
                 tabString = string.Intern(tabString + LuaFormat.TabString);
             return tabString;
+        }
+
+        internal static string GetArrayString<T>(StringBuilder builder, KeyFrameLuaLayer layer, T[] list) {
+            string tabString = GetTabString(layer);
+            builder.Clear();
+            builder.Append(LuaFormat.LineSymbol);
+            for (int index = 0; index < list.Length; index++)
+                builder.Append(list[index].ToString());
+            builder.Append(tabString);
+            return builder.ToString();
         }
     }
 }

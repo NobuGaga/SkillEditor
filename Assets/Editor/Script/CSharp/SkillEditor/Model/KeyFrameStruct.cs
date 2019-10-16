@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System;
+using System.Text;
 
 namespace SkillEditor.Structure {
 
@@ -7,118 +8,223 @@ namespace SkillEditor.Structure {
     internal enum KeyFrameLuaLayer {
         EnterTable = 0,
         Model = 1,
-        Clip = 2,
-        FrameIndex = 3,
-        FrameData = 4,
-        CustomData = 5,
-        Effect = 6,
-        Rect = 7,
+        State = 2,
+        Clip = 3,
+        FrameGroup = 4,
+        FrameType = 5,
+        FrameData = 6,
+        CustomeData = 7,
+        Effect = 8,
+        Rect = 9,
     }
 
-    internal struct KeyFrameData {
+    internal struct AnimClipData {
         public string modelName;
-        public SkillClipData[] clipDatas;
+        public StateData[] stateList;
 
-        public KeyFrameData(string modelName, SkillClipData[] clipDatas) {
+        public AnimClipData(string modelName, StateData[] stateList) {
             this.modelName = modelName;
-            this.clipDatas = clipDatas;
+            this.stateList = stateList;
         }
 
-        private static readonly StringBuilder m_staticBuilder = new StringBuilder(Config.ClipDataStringLength);
+        private static readonly StringBuilder m_staticBuilder = new StringBuilder(Config.StateListStringLength);
         public override string ToString() {
-            string clipDatasString = string.Empty;
-            if (clipDatas != null) {
+            string stateListString = string.Empty;
+            if (stateList != null) {
                 m_staticBuilder.Clear();
-                for (int index = 0; index < clipDatas.Length; index++)
-                    m_staticBuilder.Append(clipDatas[index].ToString());
-                clipDatasString = m_staticBuilder.ToString();
+                for (int index = 0; index < stateList.Length; index++)
+                    m_staticBuilder.Append(stateList[index].ToString());
+                stateListString = m_staticBuilder.ToString();
             }
             string tabString = Tool.GetTabString(KeyFrameLuaLayer.Model);
-            string format = string.Intern("{0}[\"{1}\"] = {2}\n{3}{0}{4},\n");
-            string toString = string.Format(format, tabString, modelName,
+            string format = "{0}[\"{1}\"] = {2}\n{3}{0}{4},\n";
+            string toString = string.Format(format, tabString,
+                                            modelName,
                                             LuaFormat.CurlyBracesPair.start,
-                                            clipDatasString, LuaFormat.CurlyBracesPair.end);
+                                            stateListString,
+                                            LuaFormat.CurlyBracesPair.end);
             string internString = string.Intern(toString);
             return internString;
         }
     }
 
-    internal struct SkillClipData {
+    internal struct StateData {
+        public State state;
+        public ClipData[] clipList;
+
+        public StateData(State state, ClipData[] clipList) {
+            this.state = state;
+            this.clipList = clipList;
+        }
+
+        public void SetState(string originKey) {
+            if (!originKey.Contains(StateHeadString + LuaFormat.PointSymbol))
+                return;
+            string stateString = originKey.Substring(StateHeadString.Length + 1);
+            UnityEngine.Debug.Log("StateData::SetState stateString " + stateString);
+            state = (State)Enum.Parse(typeof(State), stateString);
+        }
+
+        private static readonly StringBuilder m_staticBuilder = new StringBuilder(Config.ClipListStringLength);
+        public override string ToString() {
+            string clipListString = string.Empty;
+            if (clipList != null) {
+                m_staticBuilder.Clear();
+                for (int index = 0; index < clipList.Length; index++)
+                    m_staticBuilder.Append(clipList[index].ToString());
+                clipListString = m_staticBuilder.ToString();
+            }
+            string tabString = Tool.GetTabString(KeyFrameLuaLayer.State);
+            string format = "{0}[\"{1}{2}{3}\"] = {4}\n{5}{0}{6},\n";
+            string toString = string.Format(format, tabString,
+                                            StateHeadString, LuaFormat.PointSymbol, state.ToString(),
+                                            LuaFormat.CurlyBracesPair.start,
+                                            clipListString,
+                                            LuaFormat.CurlyBracesPair.end);
+            string internString = string.Intern(toString);
+            return internString;
+        }
+
+        private const string StateHeadString = "EntityStateDefine";
+
+        internal enum State {
+            Atk,
+            UseSkill,
+            Hit,
+            Dead
+        }
+    }
+
+    internal struct ClipData : ITable {
         public string clipName;
-        public FrameData[] frameDatas;
+        public PoolType poolType;
+        public KeyFrameData[] keyFrameList;
+        public KeyFrameData[] processFrameList;
 
-        public SkillClipData(string clipName, FrameData[] frameDatas) {
+        public ClipData(string clipName, PoolType poolType, KeyFrameData[] keyFrameList, KeyFrameData[] processFrameList) {
             this.clipName = clipName;
-            this.frameDatas = frameDatas;
+            this.poolType = poolType;
+            this.keyFrameList = keyFrameList;
+            this.processFrameList = processFrameList;
         }
 
-        private static readonly StringBuilder m_staticBuilder = new StringBuilder(Config.FrameDataStringLength);
+        public void SetPoolType(string originKey) {
+            if (!originKey.Contains(GameConstantHeadString + LuaFormat.PointSymbol))
+                return;
+            string poolTypeString = originKey.Substring(GameConstantHeadString.Length + 1);
+            UnityEngine.Debug.Log("ClipData::SetPoolType stateString " + poolTypeString);
+            poolType = (PoolType)Enum.Parse(typeof(PoolType), poolTypeString);
+        }
+
+        private static readonly StringBuilder m_staticBuilder = new StringBuilder(Config.FrameListStringLength);
         public override string ToString() {
-            string frameDataString = string.Empty;
-            string tabString = Tool.GetTabString(KeyFrameLuaLayer.FrameIndex);
-            string format;
-            if (frameDatas != null) {
-                m_staticBuilder.Clear();
-                m_staticBuilder.Append(LuaFormat.LineSymbol);
-                format = string.Intern("{0}[{1}] = {2}\n{3}{0}{4},\n");
-                for (int index = 0; index < frameDatas.Length; index++) {
-                    FrameData data = frameDatas[index];
-                    string formatString = string.Format(format, tabString, data.frameIndex,
-                                                        LuaFormat.CurlyBracesPair.start, data.ToString(),
-                                                        LuaFormat.CurlyBracesPair.end);
-                    m_staticBuilder.Append(formatString);
-                }
-                frameDataString = m_staticBuilder.ToString();
-            }
-            format = string.Intern("{0}[\"{1}\"] = {2}{3}{0}{4},\n");
-            tabString = Tool.GetTabString(KeyFrameLuaLayer.Clip);
-            string toString = string.Format(format, tabString, clipName, LuaFormat.CurlyBracesPair.start,
-                                            frameDataString, LuaFormat.CurlyBracesPair.end);
-            string internString = string.Intern(toString);
-            return internString;
-        }
-    }
-
-    internal struct FrameData : ITable {
-        public int frameIndex;
-        public string name;
-        public float time;
-        public short priority;
-        public CustomData[] customData;
-
-        public FrameData(int frameIndex, string name, float time, short priority, CustomData[] customData) {
-            this.frameIndex = frameIndex;
-            this.name = name;
-            this.time = time;
-            this.priority = priority;
-            this.customData = customData;
-        }
-
-        private static readonly StringBuilder m_staticBuilder = new StringBuilder(Config.CustomDataStringLength);
-        public override string ToString() {
-            string customDataString = string.Empty;
-            string tabString = Tool.GetTabString(KeyFrameLuaLayer.FrameData);
-            if (customData != null) {
-                m_staticBuilder.Clear();
-                m_staticBuilder.Append(LuaFormat.LineSymbol);
-                for (int index = 0; index < customData.Length; index++)
-                    m_staticBuilder.Append(customData[index].ToString());
-                m_staticBuilder.Append(tabString);
-                customDataString = m_staticBuilder.ToString();
-            }
-            string format = string.Intern("{0}name = \"{1}\",\n{0}time = {2},\n{0}priority = {3},\n{0}data = {4}{5}{6},\n");
-            string toString = string.Format(format, tabString, name, time, priority,
+            string keyFrameString = string.Empty;
+            string frameGroupTabString = Tool.GetTabString(KeyFrameLuaLayer.FrameGroup);
+            if (keyFrameList != null)
+                keyFrameString = Tool.GetArrayString(m_staticBuilder, KeyFrameLuaLayer.FrameGroup, keyFrameList);
+            string processFrameString = string.Empty;
+            if (processFrameList != null)
+                processFrameString = Tool.GetArrayString(m_staticBuilder, KeyFrameLuaLayer.FrameGroup, processFrameList);
+            string clipTabString = Tool.GetTabString(KeyFrameLuaLayer.Clip);
+            string format = "{0}[\"{4}\"] = {2}\n{1}iPoolType = {5}{6}{7},\n{1}keyframe = {2}{8}{3},\n{1}processFrame = {2}{9}{3},\n";
+            string toString = string.Format(format, clipTabString,
+                                            frameGroupTabString,
                                             LuaFormat.CurlyBracesPair.start,
-                                            customDataString, LuaFormat.CurlyBracesPair.end);
+                                            LuaFormat.CurlyBracesPair.end,
+                                            clipName,
+                                            GameConstantHeadString, LuaFormat.PointSymbol, poolType.ToString(),
+                                            keyFrameString,
+                                            processFrameString);
             string internString = string.Intern(toString);
             return internString;
         }
 
         public void SetTableKeyValue(string key, object value) {
             switch (key) {
-                case Key_Name:
-                    name = value as string;
+                case Key_IPoolType:
+                    SetPoolType(value as string);
                     return;
+                case Key_KeyFrame:
+                    keyFrameList = value as KeyFrameData[];
+                    return;
+                case Key_ProcessFrame:
+                    processFrameList = value as KeyFrameData[];
+                    return;
+            }
+        }
+
+        private const string Key_IPoolType = "iPoolType";
+        private const string Key_KeyFrame = "keyframe";
+        private const string Key_ProcessFrame = "processFrame";
+
+        private static LuaTableKeyValue[] m_arraykeyValue;
+        public LuaTableKeyValue[] GetTableKeyValueList() {
+            if (m_arraykeyValue != null)
+                return m_arraykeyValue;
+            m_arraykeyValue = new LuaTableKeyValue[3];
+            m_arraykeyValue[0] = new LuaTableKeyValue(Key_IPoolType, LuaFormat.Type.LuaReference);
+            m_arraykeyValue[1] = new LuaTableKeyValue(Key_KeyFrame, LuaFormat.Type.LuaTable);
+            m_arraykeyValue[2] = new LuaTableKeyValue(Key_ProcessFrame, LuaFormat.Type.LuaTable);
+            return m_arraykeyValue;
+        }
+
+        private const string GameConstantHeadString = "GameConstant";
+
+        internal enum PoolType {
+            POOL_ANIM_ATTACK,
+            POOL_ANIM_HIT,
+            POOL_ANIM_DEFAULT,
+        }
+    }
+
+    internal enum FrameType {
+        Hit,
+        Start,
+        PlayEffect,
+        CacheBegin,
+        SectionOver,
+        End,
+    }
+
+    internal struct KeyFrameData : ITable{
+        public FrameType frameType;
+        public float time;
+        public short priority;
+        public CustomData[] dataList;
+
+        public KeyFrameData(FrameType frameType, float time, short priority, CustomData[] dataList) {
+            this.frameType = frameType;
+            this.time = time;
+            this.priority = priority;
+            this.dataList = dataList;
+        }
+
+        public void SetFrameType(string frameTypeString) {
+            frameType = (FrameType)Enum.Parse(typeof(FrameType), frameTypeString);
+        }
+
+        private static readonly StringBuilder m_staticBuilder = new StringBuilder(Config.CustomDataListStringLength);
+        public override string ToString() {
+            string dataListString = string.Empty;
+            if (dataList != null)
+                dataListString = Tool.GetArrayString(m_staticBuilder, KeyFrameLuaLayer.CustomeData, dataList);
+            string format = "{0}{4} = {2}\n{1}time = {5},\n{1}priority = {6},\n{1}data = {2}{7}{3},\n";
+            string frameTypeTabString = Tool.GetTabString(KeyFrameLuaLayer.FrameType);
+            string frameDataString = Tool.GetTabString(KeyFrameLuaLayer.FrameData);
+            string toString = string.Format(format, frameTypeTabString,
+                                            frameDataString,
+                                            LuaFormat.CurlyBracesPair.start,
+                                            LuaFormat.CurlyBracesPair.end,
+                                            frameType.ToString(),
+                                            time,
+                                            priority,
+                                            dataListString);
+            string internString = string.Intern(toString);
+            return internString;
+        }
+
+        public void SetTableKeyValue(string key, object value) {
+            switch (key) {
                 case Key_Time:
                     time = (float)value;
                     return;
@@ -126,12 +232,11 @@ namespace SkillEditor.Structure {
                     priority = (short)(int)value;
                     return;
                 case Key_Data:
-                    customData = value as CustomData[];
+                    dataList = value as CustomData[];
                     return;
             }
         }
 
-        private const string Key_Name = "name";
         private const string Key_Time = "time";
         private const string Key_Priority = "priority";
         private const string Key_Data = "data";
@@ -140,75 +245,70 @@ namespace SkillEditor.Structure {
         public LuaTableKeyValue[] GetTableKeyValueList() {
             if (m_arraykeyValue != null)
                 return m_arraykeyValue;
-            m_arraykeyValue = new LuaTableKeyValue[4];
-            m_arraykeyValue[0] = new LuaTableKeyValue(Key_Name, LuaFormat.Type.LuaString);
-            m_arraykeyValue[1] = new LuaTableKeyValue(Key_Time, LuaFormat.Type.LuaNumber);
-            m_arraykeyValue[2] = new LuaTableKeyValue(Key_Priority, LuaFormat.Type.LuaInt);
-            m_arraykeyValue[3] = new LuaTableKeyValue(Key_Data, LuaFormat.Type.LuaTable);
+            m_arraykeyValue = new LuaTableKeyValue[3];
+            m_arraykeyValue[0] = new LuaTableKeyValue(Key_Time, LuaFormat.Type.LuaNumber);
+            m_arraykeyValue[1] = new LuaTableKeyValue(Key_Priority, LuaFormat.Type.LuaInt);
+            m_arraykeyValue[2] = new LuaTableKeyValue(Key_Data, LuaFormat.Type.LuaTable);
             return m_arraykeyValue;
         }
     }
 
     internal struct CustomData {
-        public EFrameType frameType;
+        public int index;
         public object data;
 
-        public CustomData(EFrameType frameType, object data) {
-            this.frameType = frameType;
+        public CustomData(int index, object data) {
+            this.index = index;
             this.data = data;
         }
 
-        private static readonly StringBuilder m_staticBuilder = new StringBuilder(Config.RectDataStringLength);
+        private static readonly StringBuilder m_staticBuilder = new StringBuilder(Config.RectDataListStringLength);
         public override string ToString() {
             string dataString = string.Empty;
             string tabString;
             string format;
-            if (data is GrabData)
-                dataString = ((GrabData)data).ToString();
-            else if (data is UngrabData)
-                dataString = ((UngrabData)data).ToString();
-            else if (data is HarmData[]) {
-                m_staticBuilder.Clear();
+            if (data is EffectData)
+                dataString = ((EffectData)data).ToString();
+            else if (data is CubeData[]) {
+                index = 4;
+                CubeData[] array = data as CubeData[];
                 tabString = Tool.GetTabString(KeyFrameLuaLayer.Effect);
-                HarmData[] array = data as HarmData[];
                 format = string.Intern("{0}[{1}] = {2}\n{3}{0}{4},\n");
-                for (int index = 0; index < array.Length; index++)
-                    m_staticBuilder.Append(string.Format(format, tabString, index + 1,
-                                                LuaFormat.CurlyBracesPair.start, array[index].ToString(),
-                                                LuaFormat.CurlyBracesPair.end));
+                m_staticBuilder.Append(LuaFormat.LineSymbol);
+                for (int i = 0; i < array.Length; i++)
+                    m_staticBuilder.Append(string.Format(format,
+                                                         tabString,
+                                                         i + 1,
+                                                         LuaFormat.CurlyBracesPair.start,
+                                                         array[i].ToString(),
+                                                         LuaFormat.CurlyBracesPair.end));
                 dataString = m_staticBuilder.ToString();
             }
-            tabString = Tool.GetTabString(KeyFrameLuaLayer.CustomData);
-            format = string.Intern("{0}[{1}] = {2}\n{3}{0}{4},\n");
-            string toString = string.Format(format, tabString, (int)frameType,
+            tabString = Tool.GetTabString(KeyFrameLuaLayer.CustomeData);
+            format = "{0}[{1}] = {2}{3}{4},\n";
+            string toString = string.Format(format,
+                                            tabString,
+                                            index,
                                             LuaFormat.CurlyBracesPair.start,
-                                            dataString, LuaFormat.CurlyBracesPair.end);
+                                            dataString,
+                                            LuaFormat.CurlyBracesPair.end);
             string internString = string.Intern(toString);
             return internString;
         }
     }
 
-    internal enum EFrameType {
-        None = 0,
-        Grab = 1,
-        Ungrab = 2,
-        Collision = 3,
-        Harm = 4,
-        Max = 5,
-    }
-
-    internal struct GrabData : ITable {
+    internal struct EffectData : ITable {
         public short type;
         public int id;
 
-        public GrabData(short type, int id) {
+        public EffectData(short type, int id) {
             this.type = type;
             this.id = id;
         }
 
         public override string ToString() {
             string tabString = Tool.GetTabString(KeyFrameLuaLayer.Effect);
-            string format = string.Intern("{0}type = {1},\n{0}id = {2},\n");
+            string format = "\n{0}type = {1},\n{0}id = {2},\n{0}";
             string toString = string.Format(format, tabString, type, id);
             string internString = string.Intern(toString);
             return internString;
@@ -239,49 +339,7 @@ namespace SkillEditor.Structure {
         }
     }
 
-    internal struct UngrabData : ITable {
-        public short type;
-        public int id;
-
-        public UngrabData(short type, int id) {
-            this.type = type;
-            this.id = id;
-        }
-
-        public override string ToString() {
-            string tabString = Tool.GetTabString(KeyFrameLuaLayer.Effect);
-            string format = string.Intern("{0}type = {1},\n{0}id = {2},\n");
-            string toString = string.Format(format, tabString, type, id);
-            string internString = string.Intern(toString);
-            return internString;
-        }
-
-        public void SetTableKeyValue(string key, object value) {
-            switch (key) {
-                case Key_Type:
-                    type = (short)(int)value;
-                    return;
-                case Key_Id:
-                    id = (short)(int)value;
-                    return;
-            }
-        }
-
-        private const string Key_Type = "type";
-        private const string Key_Id = "id";
-
-        private static LuaTableKeyValue[] m_arraykeyValue;
-        public LuaTableKeyValue[] GetTableKeyValueList() {
-            if (m_arraykeyValue != null)
-                return m_arraykeyValue;
-            m_arraykeyValue = new LuaTableKeyValue[2];
-            m_arraykeyValue[0] = new LuaTableKeyValue(Key_Type, LuaFormat.Type.LuaInt);
-            m_arraykeyValue[1] = new LuaTableKeyValue(Key_Id, LuaFormat.Type.LuaInt);
-            return m_arraykeyValue;
-        }
-    }
-
-    internal struct HarmData : ITable {
+    internal struct CubeData : ITable {
         public float x;
         public float y;
         public float z;
@@ -289,7 +347,7 @@ namespace SkillEditor.Structure {
         public float height;
         public short depth;
 
-        public HarmData(float x, float y, float z, float width, float height, short depth) {
+        public CubeData(float x, float y, float z, float width, float height, short depth) {
             this.x = x;
             this.y = y;
             this.z = z;
@@ -300,7 +358,7 @@ namespace SkillEditor.Structure {
 
         public override string ToString() {
             string tabString = Tool.GetTabString(KeyFrameLuaLayer.Rect);
-            string format = string.Intern("{0}x = {1},\n{0}y = {2},\n{0}z = {3},\n{0}width = {4},\n{0}height = {5},\n{0}depth = {6},\n");
+            string format = "{0}x = {1},\n{0}y = {2},\n{0}z = {3},\n{0}width = {4},\n{0}height = {5},\n{0}depth = {6},\n";
             string toString = string.Format(format, tabString, x, y, z, width, height, depth);
             string internString = string.Intern(toString);
             return internString;

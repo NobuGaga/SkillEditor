@@ -43,7 +43,7 @@ namespace SkillEditor {
 
         private static AnimationClip[] GetAllAnimationClip() {
             string[] fileNames = Directory.GetFiles(Config.ClipGroupFullPath);
-            List<AnimationClip> list = new List<AnimationClip>(Config.ModelClipCount);
+            List<AnimationClip> list = new List<AnimationClip>(Config.ModelStateClipCount);
             for (int index = 0; index < fileNames.Length; index++) {
                 if (fileNames[index].Contains(".meta") || !fileNames[index].Contains("@") ||
                     !(fileNames[index].Contains(".fbx") || fileNames[index].Contains(".FBX")))
@@ -98,7 +98,7 @@ namespace SkillEditor {
         }
 
         private static void InitKeyFrameData() {
-            KeyFrameModel.Init(LuaReader.Read<KeyFrameData>(Config.KeyFrameFilePath), m_model.name);
+            KeyFrameModel.Init(LuaReader.Read<AnimClipData>(Config.KeyFrameFilePath), m_model.name);
         }
 
         public static void Play() {

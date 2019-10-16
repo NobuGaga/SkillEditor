@@ -71,18 +71,20 @@ namespace SkillEditor {
         public const short LuaFileHeadLength = 64;
         public const string LuaFileHeadStart = "KeyFrameData";
         public const short ModelCount = 2;
-        public const short ModelClipCount = 8;
-        public const short ModelClipKeyFrameCount = 8;
+        public const short ModelStateCount = 4;
+        public const short ModelStateClipCount = 8;
+        public const short ModelStateClipFrameCount = 8;
         public const short ModelClipFrameCustomDataCount = 4;
-        public const short ModelClipFrameRectDataCount = 2;
+        public const short ModelClipFrameCubeDataCount = 2;
 
         // Lua
         public const short ReadFileCount = 4;
-        public const short KeyFrameFileLength = ClipDataStringLength * 2;
-        public const short ClipDataStringLength = FrameDataStringLength * 4;
-        public const short FrameDataStringLength = CustomDataStringLength * 2;
-        public const short CustomDataStringLength = RectDataStringLength * 2;
-        public const short RectDataStringLength = 512;
+        public const ushort KeyFrameFileLength = 32768;
+        public const ushort StateListStringLength = 16384;
+        public const ushort ClipListStringLength = 16384;
+        public const ushort FrameListStringLength = 2048;
+        public const ushort CustomDataListStringLength = 512;
+        public const ushort RectDataListStringLength = 512;
 
         public static void Reset() {
             m_prefabFullPath = string.Empty;

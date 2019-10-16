@@ -7,11 +7,11 @@ namespace SkillEditor {
 
     internal static class KeyFrameModel {
 
-        private static List<KeyFrameData> m_curFrameDataList;
+        private static List<AnimClipData> m_curFrameDataList;
 
         private static int m_curIndex;
 
-        public static void Init(List<KeyFrameData> list, string modelName){
+        public static void Init(List<AnimClipData> list, string modelName){
             if (m_curFrameDataList == null)
                 m_curFrameDataList = list;
             ModelName = modelName;
@@ -20,13 +20,13 @@ namespace SkillEditor {
         }
 
         private static void AddNewKeyFrameData(string modelName) {
-            KeyFrameData data = new KeyFrameData();
+            AnimClipData data = new AnimClipData();
             data.modelName = modelName;
             m_curFrameDataList.Add(data);
             m_curIndex = m_curFrameDataList.Count - 1;
         }
 
-        public static KeyFrameData Data {
+        public static AnimClipData Data {
             set {
                 if (m_curIndex == Config.ErrorIndex)
                     ModelName = value.modelName;

@@ -5,6 +5,7 @@
         public const char EqualSymbol = '=';
         public const char SpaceSymbol = ' ';
         public const char CommaSymbol = ',';
+        public const string PointSymbol = ".";
 
         private const char QuotationSymbol = '"';
         public static readonly PairChar QuotationPair = new PairChar(QuotationSymbol, QuotationSymbol);
@@ -34,6 +35,7 @@
             LuaString,
             LuaInt,
             LuaNumber,
+            LuaReference,
             LuaTable,
         }
 

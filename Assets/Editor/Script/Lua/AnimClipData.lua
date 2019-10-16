@@ -9,7 +9,7 @@ AnimClipData.data = {
             ["attack_1"] = {
                 iPoolType = GameConstant.POOL_ANIM_ATTACK,
                 keyframe = {
-                    Hit = {
+                    ["Hit"] = {
                         time = 0.133,
                         priority = 1,
                         data = {
@@ -27,12 +27,12 @@ AnimClipData.data = {
                     },
                 },
                 processFrame = {
-                    Start = {
+                    ["Start"] = {
                         time = 0,
                         priority = 99,
                         data = {},
                     },
-                    PlayEffect = {
+                    ["PlayEffect"] = {
                         time = 0,
                         priority = 1,
                         data = {
@@ -46,17 +46,17 @@ AnimClipData.data = {
                             },
                         },
                     },
-                    CacheBegin = {
+                    ["CacheBegin"] = {
                         time = 0.2,
                         priority = 99,
                         data = {},
                     },
-                    SectionOver = {
+                    ["SectionOver"] = {
                         time = 0.27,
                         priority = 1,
                         data = {},
                     },
-                    End = {
+                    ["End"] = {
                         time = 0.867,
                         priority = 1,
                         data = {},
@@ -66,7 +66,7 @@ AnimClipData.data = {
             ["attack_2"] = {
                 iPoolType = GameConstant.POOL_ANIM_ATTACK,
                 keyframe = {
-                    Hit = {
+                    ["Hit"] = {
                         time = 0.108,
                         priority = 1,
                         data = {
@@ -81,15 +81,15 @@ AnimClipData.data = {
                                 },
                             },
                         },
-                    }
+                    },
                 },
                 processFrame = {
-                    Start = {
+                    ["Start"] = {
                         time = 0,
                         priority = 99,
                         data = {},
                     },
-                    PlayEffect = {
+                    ["PlayEffect"] = {
                         time = 0,
                         priority = 1,
                         data = {
@@ -103,17 +103,17 @@ AnimClipData.data = {
                             },
                         },
                     },
-                    CacheBegin = {
+                    ["CacheBegin"] = {
                         time = 0.2,
                         priority = 99,
                         data = {},
                     },
-                    SectionOver = {
+                    ["SectionOver"] = {
                         time = 0.27,
                         priority = 1,
                         data = {},
                     },
-                    End = {
+                    ["End"] = {
                         time = 0.967,
                         priority = 1,
                         data = {},
@@ -123,7 +123,7 @@ AnimClipData.data = {
             ["attack_3"] = {
                 iPoolType = GameConstant.POOL_ANIM_ATTACK,
                 keyframe = {
-                    Hit = {
+                    ["Hit"] = {
                         time = 0.39,
                         priority = 1,
                         data = {
@@ -141,12 +141,12 @@ AnimClipData.data = {
                     },
                 },
                 processFrame = {
-                    Start = {
+                    ["Start"] = {
                         time = 0,
                         priority = 99,
                         data = {},
                     },
-                    PlayEffect = {
+                    ["PlayEffect"] = {
                         time = 0,
                         priority = 1,
                         data = {
@@ -164,17 +164,17 @@ AnimClipData.data = {
                             },
                         },
                     },
-                    CacheBegin = {
+                    ["CacheBegin"] = {
                         time = 0.4,
                         priority = 99,
                         data = {},
                     },
-                    SectionOver = {
+                    ["SectionOver"] = {
                         time = 0.8,
                         priority = 1,
                         data = {},
                     },
-                    End = {
+                    ["End"] = {
                         time = 1.333,
                         priority = 1,
                         data = {},
@@ -184,7 +184,7 @@ AnimClipData.data = {
             ["attack_4_1"] = {
                 iPoolType = GameConstant.POOL_ANIM_ATTACK,
                 keyframe = {
-                    Hit = {
+                    ["Hit"] = {
                         time = 0.233,
                         priority = 1,
                         data = {
@@ -202,12 +202,12 @@ AnimClipData.data = {
                     },
                 },
                 processFrame = {
-                    Start = {
+                    ["Start"] = {
                         time = 0,
                         priority = 99,
                         data = {},
                     },
-                    PlayEffect = {
+                    ["PlayEffect"] = {
                         time = 0,
                         priority = 1,
                         data = {
@@ -221,7 +221,7 @@ AnimClipData.data = {
                             },
                         },
                     },
-                    End = {
+                    ["End"] = {
                         time = 0.467,
                         priority = 1,
                         data = {},
@@ -231,7 +231,7 @@ AnimClipData.data = {
             ["attack_4_2"] = {
                 iPoolType = GameConstant.POOL_ANIM_ATTACK,
                 keyframe = {
-                    Hit = {
+                    ["Hit"] = {
                         time = 0.233,
                         priority = 1,
                         data = {
@@ -249,12 +249,12 @@ AnimClipData.data = {
                     },
                 },
                 processFrame = {
-                    Start = {
+                    ["Start"] = {
                         time = 0,
                         priority = 99,
                         data = {},
                     },
-                    PlayEffect = {
+                    ["PlayEffect"] = {
                         time = 0,
                         priority = 1,
                         data = {
@@ -268,17 +268,17 @@ AnimClipData.data = {
                             },
                         },
                     },
-                    CacheBegin = {
+                    ["CacheBegin"] = {
                         time = 0.368,
                         priority = 99,
                         data = {},
                     },
-                    SectionOver = {
+                    ["SectionOver"] = {
                         time = 0.368,
                         priority = 1,
                         data = {},
                     },
-                    End = {
+                    ["End"] = {
                         time = 0.833,
                         priority = 1,
                         data = {},
@@ -290,12 +290,12 @@ AnimClipData.data = {
             ["skill_01_1"] = {
                 iPoolType = GameConstant.POOL_ANIM_ATTACK,
                 processFrame = {
-                    Start = {
+                    ["Start"] = {
                         time = 0,
                         priority = 99,
                         data = {},
                     },
-                    PlayEffect = {
+                    ["PlayEffect"] = {
                         time = 0,
                         priority = 1,
                         data = {
@@ -305,7 +305,7 @@ AnimClipData.data = {
                             },
                         },
                     },
-                    End = {
+                    ["End"] = {
                         time = 1.467,
                         priority = 1,
                         data = {},
@@ -315,12 +315,12 @@ AnimClipData.data = {
             ["skill_01_2"] = {
                 iPoolType = GameConstant.POOL_ANIM_ATTACK,
                 processFrame = {
-                    Start = {
+                    ["Start"] = {
                         time = 0,
                         priority = 99,
                         data = {},
                     },
-                    PlayEffect = {
+                    ["PlayEffect"] = {
                         time = 0,
                         priority = 1,
                         data = {
@@ -330,7 +330,7 @@ AnimClipData.data = {
                             },
                         },
                     },
-                    End = {
+                    ["End"] = {
                         time = 1.133,
                         priority = 1,
                         data = {},
@@ -340,12 +340,12 @@ AnimClipData.data = {
             ["skill_02_1"] = {
                 iPoolType = GameConstant.POOL_ANIM_ATTACK,
                 processFrame = {
-                    Start = {
+                    ["Start"] = {
                         time = 0,
                         priority = 99,
                         data = {},
                     },
-                    PlayEffect = {
+                    ["PlayEffect"] = {
                         time = 0,
                         priority = 1,
                         data = {
@@ -355,7 +355,7 @@ AnimClipData.data = {
                             },
                         },
                     },
-                    End = {
+                    ["End"] = {
                         time = 0.233,
                         priority = 1,
                         data = {},
@@ -365,12 +365,12 @@ AnimClipData.data = {
             ["skill_02_2"] = {
                 iPoolType = GameConstant.POOL_ANIM_ATTACK,
                 processFrame = {
-                    Start = {
+                    ["Start"] = {
                         time = 0,
                         priority = 99,
                         data = {},
                     },
-                    PlayEffect = {
+                    ["PlayEffect"] = {
                         time = 0,
                         priority = 1,
                         data = {
@@ -380,7 +380,7 @@ AnimClipData.data = {
                             },
                         },
                     },
-                    End = {
+                    ["End"] = {
                         time = 1.267,
                         priority = 1,
                         data = {},
@@ -390,12 +390,12 @@ AnimClipData.data = {
             ["skill_03_1"] = {
                 iPoolType = GameConstant.POOL_ANIM_ATTACK,
                 processFrame = {
-                    Start = {
+                    ["Start"] = {
                         time = 0,
                         priority = 99,
                         data = {},
                     },
-                    PlayEffect = {
+                    ["PlayEffect"] = {
                         time = 0,
                         priority = 1,
                         data = {
@@ -405,7 +405,7 @@ AnimClipData.data = {
                             },
                         },
                     },
-                    End = {
+                    ["End"] = {
                         time = 1.1,
                         priority = 1,
                         data = {},
@@ -415,12 +415,12 @@ AnimClipData.data = {
             ["skill_03_2"] = {
                 iPoolType = GameConstant.POOL_ANIM_ATTACK,
                 processFrame = {
-                    Start = {
+                    ["Start"] = {
                         time = 0,
                         priority = 99,
                         data = {},
                     },
-                    PlayEffect = {
+                    ["PlayEffect"] = {
                         time = 0,
                         priority = 1,
                         data = {
@@ -430,7 +430,7 @@ AnimClipData.data = {
                             },
                         },
                     },
-                    End = {
+                    ["End"] = {
                         time = 2.067,
                         priority = 1,
                         data = {},
@@ -457,17 +457,17 @@ AnimClipData.data = {
             ["hit_1"] = {
                 iPoolType = GameConstant.POOL_ANIM_HIT,
                 processFrame = {
-                    Start = {
+                    ["Start"] = {
                         time = 0,
                         priority = 99,
                         data = {},
                     },
-                    PlayEffect = {
+                    ["PlayEffect"] = {
                         time = 0,
                         priority = 1,
                         data = {},
                     },
-                    End = {
+                    ["End"] = {
                         time = 0.467,
                         priority = 1,
                         data = {},
@@ -477,17 +477,17 @@ AnimClipData.data = {
             ["hit_2"] = {
                 iPoolType = GameConstant.POOL_ANIM_HIT,
                 processFrame = {
-                    Start = {
+                    ["Start"] = {
                         time = 0,
                         priority = 99,
                         data = {},
                     },
-                    PlayEffect = {
+                    ["PlayEffect"] = {
                         time = 0,
                         priority = 1,
                         data = {},
                     },
-                    End = {
+                    ["End"] = {
                         time = 0.467,
                         priority = 1,
                         data = {},
@@ -499,12 +499,12 @@ AnimClipData.data = {
             ["die"] = {
                 iPoolType = GameConstant.POOL_ANIM_DEFAULT,
                 processFrame = {
-                    Start = {
+                    ["Start"] = {
                         time = 0,
                         priority = 1,
                         data = {},
                     },
-                    End = {
+                    ["End"] = {
                         time = 2,
                         priority = 1,
                         data = {},
