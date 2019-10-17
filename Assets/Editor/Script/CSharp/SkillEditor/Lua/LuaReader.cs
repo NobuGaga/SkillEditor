@@ -3,7 +3,7 @@ using System.IO;
 using System.Text;
 using System.Collections.Generic;
 using StringComparison = System.StringComparison;
-using SkillEditor.Structure;
+using SkillEditor.LuaStructure;
 
 namespace SkillEditor {
 
@@ -13,24 +13,31 @@ namespace SkillEditor {
 
         private static int m_tableLayer;
 
-        public static List<T> Read<T>(string path) {
-            if (!File.Exists(path)) {
-                Debug.LogError(path + " is not exit");
-                return null;
-            }
-            m_tableLayer = 0;
-            return AnalyseLuaText<T>(path, File.ReadAllText(path));
-        }
-
-        private static List<T> AnalyseLuaText<T>(string path, string luaText) {
+        public static void Read<T>() {
+            string luaFilePath = string.Empty;
             string luaFileHeadStart = string.Empty;
+            object list = null;
             string typeName = typeof(T).Name;
             string animClipDataTypeName = typeof(AnimClipData).Name;
-            if (typeName == animClipDataTypeName)
+            if (typeName == animClipDataTypeName) {
+                luaFilePath = Config.AnimDataFilePath;
                 luaFileHeadStart = Config.LuaFileHeadStart;
+                list = LuaAnimClipModel.AnimClipList;
+            }
+            if (!File.Exists(luaFilePath)) {
+                Debug.LogError("LuaReader::Read path file is not exit. path : " + luaFilePath);
+                return;
+            }
+            AnalyseLuaText(luaFilePath, luaFileHeadStart, list);
+        }
+
+        private static void AnalyseLuaText(string luaFilePath, string luaFileHeadStart, object list) {
+            string luaText = File.ReadAllText(luaFilePath);
             int index = luaText.IndexOf(luaFileHeadStart, StringComparison.Ordinal);
-            if (index == Config.ErrorIndex)
-                return null;
+            if (index == Config.ErrorIndex) {
+                Debug.LogError("LuaReader::AnalyseLuaText lua file start text is not found. text " + luaFileHeadStart);
+                return;
+            }
             index += Config.LuaFileHeadStart.Length;
             StringBuilder headBuilder = new StringBuilder(Config.LuaFileHeadLength);
             headBuilder.Append(Config.LuaFileHeadStart);
@@ -40,38 +47,36 @@ namespace SkillEditor {
                     break;
                 headBuilder.Append(curChar);
             }
-            LuaWriter.AddHeadText(path, headBuilder.ToString());
-            List<T> list = null;
-            if (typeName == animClipDataTypeName)
-                AnalyseAnimClipData(luaText, ref index, list = new List<T>(Config.ModelCount));
-            return list;
+            LuaWriter.AddHeadText(luaFilePath, headBuilder.ToString());
+            m_tableLayer = 0;
+            AnalyseAnimClipData(luaText, ref index, list);
         }
 
         private static object AnalyseAnimClipData(string luaText, ref int index, object data = null) {
-            switch ((KeyFrameLuaLayer)m_tableLayer) {
-                case KeyFrameLuaLayer.EnterTable:
+            switch ((AnimClipLuaLayer)m_tableLayer) {
+                case AnimClipLuaLayer.EnterTable:
                     AnalyseEntry(luaText, ref index, data);
                     break;
-                case KeyFrameLuaLayer.Model:
+                case AnimClipLuaLayer.Model:
                     AnalyseModelData(luaText, ref index, data as List<AnimClipData>);
                     break;
-                case KeyFrameLuaLayer.State:
+                case AnimClipLuaLayer.State:
                     AnalyseStateData(luaText, ref index, data as List<StateData>);
                     break;
-                case KeyFrameLuaLayer.Clip:
+                case AnimClipLuaLayer.Clip:
                     AnalyseClipListData(luaText, ref index, data as List<ClipData>);
                     break;
-                case KeyFrameLuaLayer.FrameGroup:
+                case AnimClipLuaLayer.FrameGroup:
                     return AnalyseClipData(luaText, ref index, (ClipData)data);
-                case KeyFrameLuaLayer.FrameType:
+                case AnimClipLuaLayer.FrameType:
                     return AnalyseKeyFrameListData(luaText, ref index);
-                case KeyFrameLuaLayer.FrameData:
+                case AnimClipLuaLayer.FrameData:
                     return AnalyseKeyFrameData(luaText, ref index, (KeyFrameData)data);
-                case KeyFrameLuaLayer.CustomeData:
+                case AnimClipLuaLayer.CustomeData:
                     return AnalyseCustomData(luaText, ref index, ((KeyFrameData)data).frameType);
-                case KeyFrameLuaLayer.Effect:
+                case AnimClipLuaLayer.Effect:
                     return AnalyseEffectData(luaText, ref index, (FrameType)data);
-                case KeyFrameLuaLayer.Rect:
+                case AnimClipLuaLayer.Rect:
                     return AnalyseCubeData(luaText, ref index);
             }
             return null;
@@ -427,7 +432,7 @@ namespace SkillEditor {
         }
 
         private static void PrintErrorWhithLayer(string text, int index) {
-            Debug.LogError(string.Format("{0} 当前层为 {1}, 索引值为 {2}", text, (KeyFrameLuaLayer)m_tableLayer, index));
+            Debug.LogError(string.Format("{0} 当前层为 {1}, 索引值为 {2}", text, (AnimClipLuaLayer)m_tableLayer, index));
         }
     }
 }

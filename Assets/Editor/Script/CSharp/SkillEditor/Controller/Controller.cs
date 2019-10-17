@@ -3,7 +3,7 @@ using UnityEditor.Animations;
 using UnityEngine;
 using System.IO;
 using System.Collections.Generic;
-using SkillEditor.Structure;
+using SkillEditor.LuaStructure;
 
 namespace SkillEditor {
 
@@ -23,7 +23,7 @@ namespace SkillEditor {
             Selection.activeGameObject = m_model;
             PrefabUtility.UnloadPrefabContents(prefab);
             InitAnimation();
-            InitKeyFrameData();
+            InitAnimClipData();
             EditorScene.RegisterSceneGUI();
             EditorWindow.SetDisplayData(AnimationModel.AnimationClipNames, AnimationModel.AnimationClipIndexs);
             EditorWindow.Open();
@@ -97,8 +97,13 @@ namespace SkillEditor {
             AnimationModel.SetCurrentAnimationClip(index);
         }
 
-        private static void InitKeyFrameData() {
-            KeyFrameModel.Init(LuaReader.Read<AnimClipData>(Config.AnimDataFilePath), m_model.name);
+        private static void InitAnimClipData() {
+            LuaReader.Read<AnimClipData>();
+            LuaAnimClipModel.CurrentEditModel = m_model.name;
+        }
+
+        private static void WriteAnimClipData() {
+            LuaWriter.Write();
         }
 
         public static void Play() {
@@ -127,7 +132,7 @@ namespace SkillEditor {
         }
 
         public static void Reset() {
-            KeyFrameModel.Reset();
+            LuaAnimClipModel.Reset();
             if (m_isGenericClip && m_model != null) {
                 string copyPath = Config.GetAnimatorControllerCopyPath(m_model.name);
                 if (File.Exists(copyPath)) {
@@ -149,6 +154,7 @@ namespace SkillEditor {
             EditorApplication.update = null;
             EditorWindow.CloseWindow();
             EditorScene.UnregisterSceneGUI();
+            WriteAnimClipData();
         }
     }
 }

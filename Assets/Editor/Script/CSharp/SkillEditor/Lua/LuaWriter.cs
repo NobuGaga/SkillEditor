@@ -1,5 +1,4 @@
-﻿using UnityEngine;
-using System.IO;
+﻿using System.IO;
 using System.Text;
 using System.Collections.Generic;
 
@@ -10,32 +9,29 @@ namespace SkillEditor {
         private static Dictionary<string, string> m_dicPathFileHead = new Dictionary<string, string>(Config.ReadFileCount);
 
         public static void AddHeadText(string path, string headText) {
-            if (m_dicPathFileHead.ContainsKey(path)) {
-                Debug.LogError("LuaWriter::AddHeadText file already added");
-                return;
-            }
-            m_dicPathFileHead.Add(path, headText);
+            if (!m_dicPathFileHead.ContainsKey(path))
+                m_dicPathFileHead.Add(path, headText);
+            else
+                m_dicPathFileHead[path] = headText;
         }
 
-        private static StringBuilder m_stringBuilder = new StringBuilder(Config.KeyFrameFileLength);
+        private static StringBuilder m_stringBuilder = new StringBuilder(Config.AnimClipLuaFileLength);
 
         public static void Write() {
-            string path = string.Empty;
-            string headText = string.Empty;
             foreach (var keyValue in m_dicPathFileHead) {
-                path = keyValue.Key;
-                headText = keyValue.Value;
+                string path = keyValue.Key;
+                if (path != Config.AnimDataFilePath)
+                    continue;
+                m_stringBuilder.Clear();
+                string headText = keyValue.Value;
+                m_stringBuilder.Append(headText);
+                string fileString = LuaAnimClipModel.GetWriteFileString(m_stringBuilder);
+                FileStream file = new FileStream(path, FileMode.Create);
+                StreamWriter fileWriter = new StreamWriter(file);
+                fileWriter.Write(fileString);
+                fileWriter.Close();
+                fileWriter.Dispose();
             }
-            if (path == string.Empty || headText == string.Empty)
-                return;
-            m_stringBuilder.Clear();
-            m_stringBuilder.Append(headText);
-            string fileString = KeyFrameModel.GetWriteFileString(m_stringBuilder);
-            FileStream file = new FileStream(path, FileMode.Create);
-            StreamWriter fileWriter = new StreamWriter(file);
-            fileWriter.Write(fileString);
-            fileWriter.Close();
-            fileWriter.Dispose();
         }
     }
 }

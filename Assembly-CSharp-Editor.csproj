@@ -74,8 +74,8 @@
     <Compile Include="Assets\Editor\Script\CSharp\SkillEditor\Lua\LuaWriter.cs" />
     <Compile Include="Assets\Editor\Script\CSharp\SkillEditor\Model\AnimationModel.cs" />
     <Compile Include="Assets\Editor\Script\CSharp\SkillEditor\Model\Config.cs" />
-    <Compile Include="Assets\Editor\Script\CSharp\SkillEditor\Model\KeyFrameModel.cs" />
-    <Compile Include="Assets\Editor\Script\CSharp\SkillEditor\Model\KeyFrameStruct.cs" />
+    <Compile Include="Assets\Editor\Script\CSharp\SkillEditor\Model\LuaAnimClipModel.cs" />
+    <Compile Include="Assets\Editor\Script\CSharp\SkillEditor\Model\LuaAnimClipStructure.cs" />
     <Compile Include="Assets\Editor\Script\CSharp\SkillEditor\Tool.cs" />
     <Compile Include="Assets\Editor\Script\CSharp\SkillEditor\View\EditorScene.cs" />
     <Compile Include="Assets\Editor\Script\CSharp\SkillEditor\View\EditorWindow.cs" />

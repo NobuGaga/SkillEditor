@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Text;
 
-namespace SkillEditor.Structure {
+namespace SkillEditor.LuaStructure {
 
     using LuaTableKeyValue = LuaFormat.LuaTableKeyValue;
 
-    internal enum KeyFrameLuaLayer {
+    internal enum AnimClipLuaLayer {
         EnterTable = 0,
         Model = 1,
         State = 2,
@@ -36,7 +36,7 @@ namespace SkillEditor.Structure {
                     m_staticBuilder.Append(stateList[index].ToString());
                 stateListString = m_staticBuilder.ToString();
             }
-            string tabString = Tool.GetTabString(KeyFrameLuaLayer.Model);
+            string tabString = Tool.GetTabString(AnimClipLuaLayer.Model);
             string format = "{0}[\"{1}\"] = {2}\n{3}{0}{4},\n";
             string toString = string.Format(format, tabString,
                                             modelName,
@@ -73,7 +73,7 @@ namespace SkillEditor.Structure {
                     m_staticBuilder.Append(clipList[index].ToString());
                 clipListString = m_staticBuilder.ToString();
             }
-            string tabString = Tool.GetTabString(KeyFrameLuaLayer.State);
+            string tabString = Tool.GetTabString(AnimClipLuaLayer.State);
             string format = "{0}[\"{1}{2}{3}\"] = {4}\n{5}{0}{6},\n";
             string toString = string.Format(format, tabString,
                                             StateHeadString, LuaFormat.PointSymbol, state.ToString(),
@@ -118,10 +118,10 @@ namespace SkillEditor.Structure {
         public override string ToString() {
             string keyFrameString = string.Empty;
             string format;
-            string frameGroupTabString = Tool.GetTabString(KeyFrameLuaLayer.FrameGroup);
+            string frameGroupTabString = Tool.GetTabString(AnimClipLuaLayer.FrameGroup);
             if (keyFrameList != null) {
                 format = "{0}keyframe = {1}{3}{2},\n";
-                keyFrameString = Tool.GetArrayString(m_staticBuilder, KeyFrameLuaLayer.FrameGroup, keyFrameList);
+                keyFrameString = Tool.GetArrayString(m_staticBuilder, AnimClipLuaLayer.FrameGroup, keyFrameList);
                 keyFrameString = string.Format(format, frameGroupTabString,
                                                LuaFormat.CurlyBracesPair.start,
                                                LuaFormat.CurlyBracesPair.end,
@@ -130,14 +130,14 @@ namespace SkillEditor.Structure {
             string processFrameString = string.Empty;
             if (processFrameList != null) {
                 format = "{0}processFrame = {1}{3}{2},\n";
-                processFrameString = Tool.GetArrayString(m_staticBuilder, KeyFrameLuaLayer.FrameGroup, processFrameList);
+                processFrameString = Tool.GetArrayString(m_staticBuilder, AnimClipLuaLayer.FrameGroup, processFrameList);
                 processFrameString = string.Format(format, frameGroupTabString,
                                                LuaFormat.CurlyBracesPair.start,
                                                LuaFormat.CurlyBracesPair.end,
                                                processFrameString);
             }
             format = "{0}[\"{4}\"] = {2}\n{1}iPoolType = {5}{6}{7},\n{8}{9}{0}{3},\n";
-            string clipTabString = Tool.GetTabString(KeyFrameLuaLayer.Clip);
+            string clipTabString = Tool.GetTabString(AnimClipLuaLayer.Clip);
             string toString = string.Format(format, clipTabString,
                                             frameGroupTabString,
                                             LuaFormat.CurlyBracesPair.start,
@@ -218,17 +218,17 @@ namespace SkillEditor.Structure {
         public override string ToString() {
             string dataListString = string.Empty;
             string format;
-            string frameDataString = Tool.GetTabString(KeyFrameLuaLayer.FrameData);
+            string frameDataString = Tool.GetTabString(AnimClipLuaLayer.FrameData);
             if (dataList != null) {
                 format = "{0}data = {1}{3}{2},\n";
-                dataListString = Tool.GetArrayString(m_staticBuilder, KeyFrameLuaLayer.FrameData, dataList);
+                dataListString = Tool.GetArrayString(m_staticBuilder, AnimClipLuaLayer.FrameData, dataList);
                 dataListString = string.Format(format, frameDataString,
                                                LuaFormat.CurlyBracesPair.start,
                                                LuaFormat.CurlyBracesPair.end,
                                                dataListString);
             }
             format = "{0}[\"{4}\"] = {2}\n{1}time = {5},\n{1}priority = {6},\n{7}{0}{3},\n";
-            string frameTypeTabString = Tool.GetTabString(KeyFrameLuaLayer.FrameType);
+            string frameTypeTabString = Tool.GetTabString(AnimClipLuaLayer.FrameType);
             string toString = string.Format(format, frameTypeTabString,
                                             frameDataString,
                                             LuaFormat.CurlyBracesPair.start,
@@ -290,7 +290,7 @@ namespace SkillEditor.Structure {
             else if (data is CubeData[]) {
                 index = 4;
                 CubeData[] array = data as CubeData[];
-                tabString = Tool.GetTabString(KeyFrameLuaLayer.Effect);
+                tabString = Tool.GetTabString(AnimClipLuaLayer.Effect);
                 format = string.Intern("{0}[{1}] = {2}\n{3}{0}{4},\n");
                 m_staticBuilder.Clear();
                 m_staticBuilder.Append(LuaFormat.LineSymbol);
@@ -303,7 +303,7 @@ namespace SkillEditor.Structure {
                                                          LuaFormat.CurlyBracesPair.end));
                 dataString = m_staticBuilder.ToString();
             }
-            tabString = Tool.GetTabString(KeyFrameLuaLayer.CustomeData);
+            tabString = Tool.GetTabString(AnimClipLuaLayer.CustomeData);
             format = "{0}[{1}] = {2}{3}{0}{4},\n";
             string toString = string.Format(format,
                                             tabString,
@@ -326,7 +326,7 @@ namespace SkillEditor.Structure {
         }
 
         public override string ToString() {
-            string tabString = Tool.GetTabString(KeyFrameLuaLayer.Effect);
+            string tabString = Tool.GetTabString(AnimClipLuaLayer.Effect);
             string format = "\n{0}type = {1},\n{0}id = {2},\n";
             string toString = string.Format(format, tabString, type, id);
             string internString = string.Intern(toString);
@@ -376,7 +376,7 @@ namespace SkillEditor.Structure {
         }
 
         public override string ToString() {
-            string tabString = Tool.GetTabString(KeyFrameLuaLayer.Rect);
+            string tabString = Tool.GetTabString(AnimClipLuaLayer.Rect);
             string format = "{0}x = {1},\n{0}y = {2},\n{0}z = {3},\n{0}width = {4},\n{0}height = {5},\n{0}depth = {6},\n";
             string toString = string.Format(format, tabString, x, y, z, width, height, depth);
             string internString = string.Intern(toString);

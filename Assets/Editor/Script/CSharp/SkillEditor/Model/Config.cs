@@ -79,7 +79,7 @@ namespace SkillEditor {
 
         // Lua
         public const short ReadFileCount = 4;
-        public const ushort KeyFrameFileLength = 32768;
+        public const ushort AnimClipLuaFileLength = 32768;
         public const ushort StateListStringLength = 16384;
         public const ushort ClipListStringLength = 16384;
         public const ushort FrameListStringLength = 2048;

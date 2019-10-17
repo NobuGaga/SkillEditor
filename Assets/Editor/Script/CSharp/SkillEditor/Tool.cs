@@ -2,7 +2,7 @@
 using System;
 using System.Text;
 using System.Reflection;
-using SkillEditor.Structure;
+using SkillEditor.LuaStructure;
 
 namespace SkillEditor {
 
@@ -55,7 +55,7 @@ namespace SkillEditor {
             return CombinePath(path, FileWithExtension(fileName, extension));
         }
 
-        internal static string GetTabString(KeyFrameLuaLayer layer) {
+        internal static string GetTabString(AnimClipLuaLayer layer) {
             int layerInt = (int)layer;
             string tabString = string.Empty;
             for (int index = 0; index < layerInt; index++)
@@ -63,7 +63,7 @@ namespace SkillEditor {
             return tabString;
         }
 
-        internal static string GetArrayString<T>(StringBuilder builder, KeyFrameLuaLayer layer, T[] list) {
+        internal static string GetArrayString<T>(StringBuilder builder, AnimClipLuaLayer layer, T[] list) {
             string tabString = GetTabString(layer);
             builder.Clear();
             builder.Append(LuaFormat.LineSymbol);
