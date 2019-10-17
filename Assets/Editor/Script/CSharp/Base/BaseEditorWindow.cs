@@ -7,9 +7,10 @@ public class BaseEditorWindow : EditorWindow {
 
     private static Dictionary<Style, GUIStyle> m_dicGUIStyle = new Dictionary<Style, GUIStyle>(8);
     private static Dictionary<string, ButtonData> m_dicButtonData = new Dictionary<string, ButtonData>(8);
+    private const float DefaultSpace = 10;
 
-    protected static void Open<T>() where T : BaseEditorWindow {
-        GetWindow<T>().Show();
+    protected static void Open<T>(string title) where T : BaseEditorWindow {
+        GetWindow<T>(title).Show();
     }
 
     protected static void CloseWindow<T>() where T : BaseEditorWindow {
@@ -45,25 +46,33 @@ public class BaseEditorWindow : EditorWindow {
         return GUILayout.Button(data.name, data.style);
     }
 
+    protected void FlexibleSpace() {
+        GUILayout.FlexibleSpace();
+    }
+
+    protected void Space(float space = DefaultSpace) {
+        GUILayout.Space(space);
+    }
+
     protected void HorizontalLayoutUI(Action uiFunction, Layout layout = Layout.Left) {
         EditorGUILayout.BeginHorizontal();
         if (layout != Layout.Left)
-            GUILayout.FlexibleSpace();
+            FlexibleSpace();
         uiFunction();
         if (layout != Layout.Right)
-            GUILayout.FlexibleSpace();
+            FlexibleSpace();
         EditorGUILayout.EndHorizontal();
     }
 
     protected void CenterLayoutUI(Action uiFunction) {
         EditorGUILayout.BeginHorizontal();
-        GUILayout.FlexibleSpace();
+        FlexibleSpace();
         EditorGUILayout.BeginVertical();
-        GUILayout.FlexibleSpace();
+        FlexibleSpace();
         uiFunction();
-        GUILayout.FlexibleSpace();
+        FlexibleSpace();
         EditorGUILayout.EndVertical();
-        GUILayout.FlexibleSpace();
+        FlexibleSpace();
         EditorGUILayout.EndHorizontal();
     }
 

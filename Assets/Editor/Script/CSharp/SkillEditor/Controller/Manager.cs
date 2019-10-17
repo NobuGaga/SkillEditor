@@ -12,13 +12,6 @@ namespace SkillEditor {
             get { return Config.PrefabPath != string.Empty; }
         }
 
-        private static bool NotInEditorModeHanle() {
-            if (isEditorMode)
-                return false;
-            Debug.LogError("不在技能编辑器模式");
-            return true;
-        }
-
         public static void SelectPrefab() {
 		    string prefabPath = EditorUtility.OpenFilePanel(Config.FilePanelTitle,
                                                             Config.ModelPrefabPath, Config.ModelPrefabExtension);
@@ -36,16 +29,12 @@ namespace SkillEditor {
             Controller.Start(prefabPath);
         }
 
-        public static void Play() {
-            if (NotInEditorModeHanle())
+        public static void CopyLocalLayoutFileToProject() {
+            if (!File.Exists(Config.EditorLayoutFilePath)) {
+                Debug.LogError("本地不存在技能编辑器布局文件");
                 return;
-            Controller.Play();
-        }
-
-        public static void Stop() {
-            if (NotInEditorModeHanle())
-                return;
-            Controller.Stop();
+            }
+            File.Copy(Config.EditorLayoutFilePath, Config.LocalEditorLayoutFilePath, true);
         }
 
         public static bool Exit() {

@@ -25,7 +25,7 @@ namespace SkillEditor {
             InitAnimation();
             InitAnimClipData();
             EditorScene.RegisterSceneGUI();
-            EditorWindow.SetDisplayData(AnimationModel.AnimationClipNames, AnimationModel.AnimationClipIndexs);
+            EditorWindow.InitData(AnimationModel.AnimationClipNames, AnimationModel.AnimationClipIndexs);
             EditorWindow.Open();
         }
 
@@ -93,13 +93,13 @@ namespace SkillEditor {
             }
         }
 
-        public static void SetAnimationClipData(int index) {
-            AnimationModel.SetCurrentAnimationClip(index);
-        }
-
         private static void InitAnimClipData() {
             LuaReader.Read<AnimClipData>();
-            LuaAnimClipModel.CurrentEditModel = m_model.name;
+            LuaAnimClipModel.SetCurrentEditModelName(m_model.name);
+        }
+
+        public static void SetAnimationClipData(int index) {
+            AnimationModel.SetCurrentAnimationClip(index);
         }
 
         private static void WriteAnimClipData() {
@@ -150,11 +150,11 @@ namespace SkillEditor {
         }
 
         public static void Exit() {
+            WriteAnimClipData();
             Reset();
             EditorApplication.update = null;
             EditorWindow.CloseWindow();
             EditorScene.UnregisterSceneGUI();
-            WriteAnimClipData();
         }
     }
 }

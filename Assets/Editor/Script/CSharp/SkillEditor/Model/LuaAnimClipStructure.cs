@@ -29,13 +29,12 @@ namespace SkillEditor.LuaStructure {
 
         private static readonly StringBuilder m_staticBuilder = new StringBuilder(Config.StateListStringLength);
         public override string ToString() {
-            string stateListString = string.Empty;
-            if (stateList != null) {
-                m_staticBuilder.Clear();
-                for (int index = 0; index < stateList.Length; index++)
-                    m_staticBuilder.Append(stateList[index].ToString());
-                stateListString = m_staticBuilder.ToString();
-            }
+            if (stateList == null)
+                return string.Empty;
+            m_staticBuilder.Clear();
+            for (int index = 0; index < stateList.Length; index++)
+                m_staticBuilder.Append(stateList[index].ToString());
+            string stateListString = m_staticBuilder.ToString();
             string tabString = Tool.GetTabString(AnimClipLuaLayer.Model);
             string format = "{0}[\"{1}\"] = {2}\n{3}{0}{4},\n";
             string toString = string.Format(format, tabString,
@@ -43,9 +42,15 @@ namespace SkillEditor.LuaStructure {
                                             LuaFormat.CurlyBracesPair.start,
                                             stateListString,
                                             LuaFormat.CurlyBracesPair.end);
-            string internString = string.Intern(toString);
-            return internString;
+            return Tool.GetCacheString(toString);
         }
+    }
+
+    internal enum State {
+        Atk,
+        UseSkill,
+        Hit,
+        Dead
     }
 
     internal struct StateData {
@@ -66,13 +71,12 @@ namespace SkillEditor.LuaStructure {
 
         private static readonly StringBuilder m_staticBuilder = new StringBuilder(Config.ClipListStringLength);
         public override string ToString() {
-            string clipListString = string.Empty;
-            if (clipList != null) {
-                m_staticBuilder.Clear();
-                for (int index = 0; index < clipList.Length; index++)
-                    m_staticBuilder.Append(clipList[index].ToString());
-                clipListString = m_staticBuilder.ToString();
-            }
+            if (clipList == null)
+                return string.Empty;
+            m_staticBuilder.Clear();
+            for (int index = 0; index < clipList.Length; index++)
+                m_staticBuilder.Append(clipList[index].ToString());
+            string clipListString = m_staticBuilder.ToString();
             string tabString = Tool.GetTabString(AnimClipLuaLayer.State);
             string format = "{0}[\"{1}{2}{3}\"] = {4}\n{5}{0}{6},\n";
             string toString = string.Format(format, tabString,
@@ -80,21 +84,13 @@ namespace SkillEditor.LuaStructure {
                                             LuaFormat.CurlyBracesPair.start,
                                             clipListString,
                                             LuaFormat.CurlyBracesPair.end);
-            string internString = string.Intern(toString);
-            return internString;
+            return Tool.GetCacheString(toString);
         }
 
         private const string StateHeadString = "EntityStateDefine";
-
-        internal enum State {
-            Atk,
-            UseSkill,
-            Hit,
-            Dead
-        }
     }
 
-    internal struct ClipData : ITable {
+    internal struct ClipData : ITable, INullTable {
         public string clipName;
         public PoolType poolType;
         public KeyFrameData[] keyFrameList;
@@ -112,6 +108,17 @@ namespace SkillEditor.LuaStructure {
                 return;
             string poolTypeString = originKey.Substring(GameConstantHeadString.Length + 1);
             poolType = (PoolType)Enum.Parse(typeof(PoolType), poolTypeString);
+        }
+
+        public void Clear() {
+            clipName = string.Empty;
+            poolType = PoolType.None;
+            keyFrameList = null;
+            processFrameList = null;
+        }
+
+        public bool IsNullTable() {
+            return poolType == PoolType.None;
         }
 
         private static readonly StringBuilder m_staticBuilder = new StringBuilder(Config.FrameListStringLength);
@@ -146,8 +153,7 @@ namespace SkillEditor.LuaStructure {
                                             GameConstantHeadString, LuaFormat.PointSymbol, poolType.ToString(),
                                             keyFrameString,
                                             processFrameString);
-            string internString = string.Intern(toString);
-            return internString;
+            return Tool.GetCacheString(toString);
         }
 
         public void SetTableKeyValue(string key, object value) {
@@ -182,6 +188,7 @@ namespace SkillEditor.LuaStructure {
         private const string GameConstantHeadString = "GameConstant";
 
         internal enum PoolType {
+            None,
             POOL_ANIM_ATTACK,
             POOL_ANIM_HIT,
             POOL_ANIM_DEFAULT,
@@ -197,7 +204,7 @@ namespace SkillEditor.LuaStructure {
         End,
     }
 
-    internal struct KeyFrameData : ITable{
+    internal struct KeyFrameData : ITable, INullTable {
         public FrameType frameType;
         public float time;
         public short priority;
@@ -237,8 +244,11 @@ namespace SkillEditor.LuaStructure {
                                             time,
                                             priority,
                                             dataListString);
-            string internString = string.Intern(toString);
-            return internString;
+            return Tool.GetCacheString(toString);
+        }
+
+        public bool IsNullTable() {
+            return frameType == FrameType.Hit && (int)time == 0 && priority == 0 && dataList == null;
         }
 
         public void SetTableKeyValue(string key, object value) {
@@ -291,7 +301,7 @@ namespace SkillEditor.LuaStructure {
                 index = 4;
                 CubeData[] array = data as CubeData[];
                 tabString = Tool.GetTabString(AnimClipLuaLayer.Effect);
-                format = string.Intern("{0}[{1}] = {2}\n{3}{0}{4},\n");
+                format = "{0}[{1}] = {2}\n{3}{0}{4},\n";
                 m_staticBuilder.Clear();
                 m_staticBuilder.Append(LuaFormat.LineSymbol);
                 for (int i = 0; i < array.Length; i++)
@@ -311,8 +321,7 @@ namespace SkillEditor.LuaStructure {
                                             LuaFormat.CurlyBracesPair.start,
                                             dataString,
                                             LuaFormat.CurlyBracesPair.end);
-            string internString = string.Intern(toString);
-            return internString;
+            return Tool.GetCacheString(toString);
         }
     }
 
@@ -329,8 +338,7 @@ namespace SkillEditor.LuaStructure {
             string tabString = Tool.GetTabString(AnimClipLuaLayer.Effect);
             string format = "\n{0}type = {1},\n{0}id = {2},\n";
             string toString = string.Format(format, tabString, type, id);
-            string internString = string.Intern(toString);
-            return internString;
+            return Tool.GetCacheString(toString);
         }
 
         public void SetTableKeyValue(string key, object value) {
@@ -379,8 +387,7 @@ namespace SkillEditor.LuaStructure {
             string tabString = Tool.GetTabString(AnimClipLuaLayer.Rect);
             string format = "{0}x = {1},\n{0}y = {2},\n{0}z = {3},\n{0}width = {4},\n{0}height = {5},\n{0}depth = {6},\n";
             string toString = string.Format(format, tabString, x, y, z, width, height, depth);
-            string internString = string.Intern(toString);
-            return internString;
+            return Tool.GetCacheString(toString);
         }
 
         public void SetTableKeyValue(string key, object value) {
@@ -426,6 +433,11 @@ namespace SkillEditor.LuaStructure {
             m_arraykeyValue[5] = new LuaTableKeyValue(Key_Depth, LuaFormat.Type.LuaInt);
             return m_arraykeyValue;
         }
+    }
+
+    internal interface INullTable {
+
+        bool IsNullTable();
     }
 
     internal interface ITable {

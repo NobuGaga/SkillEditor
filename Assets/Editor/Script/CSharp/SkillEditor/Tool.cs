@@ -59,7 +59,7 @@ namespace SkillEditor {
             int layerInt = (int)layer;
             string tabString = string.Empty;
             for (int index = 0; index < layerInt; index++)
-                tabString = string.Intern(tabString + LuaFormat.TabString);
+                tabString = GetCacheString(tabString + LuaFormat.TabString);
             return tabString;
         }
 
@@ -67,10 +67,18 @@ namespace SkillEditor {
             string tabString = GetTabString(layer);
             builder.Clear();
             builder.Append(LuaFormat.LineSymbol);
-            for (int index = 0; index < list.Length; index++)
-                builder.Append(list[index].ToString());
+            for (int index = 0; index < list.Length; index++) {
+                T data = list[index];
+                if (data is INullTable && ((INullTable)data).IsNullTable())
+                    continue;
+                builder.Append(data.ToString());
+            }
             builder.Append(tabString);
             return builder.ToString();
+        }
+
+        internal static string GetCacheString(string text) {
+            return string.Intern(text);
         }
     }
 }

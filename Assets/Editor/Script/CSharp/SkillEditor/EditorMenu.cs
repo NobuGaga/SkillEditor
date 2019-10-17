@@ -14,14 +14,9 @@ namespace SkillEditor {
             EditorWindow.Open();
 	    }
 
-        [MenuItem("技能编辑器/播放")]
-        private static void Play() {
-            Manager.Play();
-        }
-
-        [MenuItem("技能编辑器/停止")]
-        private static void Stop() {
-            Manager.Stop();
+        [MenuItem("技能编辑器/复制本地布局文件到项目")]
+        private static void CopyLocalLayoutFileToProject() {
+            Manager.CopyLocalLayoutFileToProject();
         }
 
         [MenuItem("技能编辑器/退出编辑器模式")]
