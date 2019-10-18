@@ -14,7 +14,10 @@ namespace SkillEditor {
         private const string LabelNoClipTips = "Current prefab has no AnimationClip file";
         private const string LabelModelName = "模型名 ";
         private const string LabelModelClipTips = "动画名 ";
+        private const string LabelModelClipStateTips = "状态机组 ";
 
+        private const string LabelFrameGroupType = "帧类型组 ";
+        private const string BtnAdd = "增加";
         private const string LabelFrameType = "帧类型 ";
 
         private const string BtnPlay = "Play";
@@ -30,11 +33,17 @@ namespace SkillEditor {
         private static int[] m_animationClipIndexs;
 
         private static int m_lastFrameIndex;
+        private static bool IsNoSelectFrameGroup => m_lastFrameIndex == Config.ErrorIndex;
         private static readonly string[] FrameKeyArray = { ClipData.Key_KeyFrame, ClipData.Key_ProcessFrame };
         private static readonly string[] FrameKeyNameArray = { "关键帧", "动画帧" };
         private static readonly int[] FrameKeyNameIndexArray = { 0, 1 };
-
-        private static List<KeyFrameData> m_listFrame = new List<KeyFrameData>(Config.ModelStateClipFrameCount);
+        private static string FrameGroupKey {
+            get {
+                if (IsNoSelectFrameGroup)
+                    return default;
+                return FrameKeyArray[m_lastFrameIndex];
+            }
+        }
 
         private static ClipData m_curClipData;
 
@@ -117,6 +126,7 @@ namespace SkillEditor {
             if (IsNoSelectClip)
                 return;
             Space();
+            SpaceWithLabel(LabelModelClipStateTips);
             State lastState = LuaAnimClipModel.ClipDataState;
             State selectState = (State)EnumPopup(lastState);
             if (selectState != lastState)
@@ -139,21 +149,23 @@ namespace SkillEditor {
         private void OnStopButton() => Controller.Stop();
 
         private void FrameKeyNameUI() {
-            Space();
+            SpaceWithLabel(LabelFrameGroupType);
             m_lastFrameIndex = IntPopup(m_lastFrameIndex, FrameKeyNameArray, FrameKeyNameIndexArray);
+            if (IsNoSelectFrameGroup)
+                return;
+            if (SpaceWithButton(BtnAdd))
+                Controller.AddNewKeyFrameData(FrameGroupKey);
         }
 
         private void FrameListUI() {
-            if (m_lastFrameIndex == Config.ErrorIndex)
+            if (IsNoSelectFrameGroup)
                 return;
-            m_listFrame.Clear();
             m_curClipData = LuaAnimClipModel.ClipData;
-            KeyFrameData[] array = m_curClipData.GetKeyFrameList(FrameKeyArray[m_lastFrameIndex]);
+            KeyFrameData[] array = m_curClipData.GetKeyFrameList(FrameGroupKey);
             if (array == null || array.Length == 0)
                 return;
             Space();
             for (int index = 0; index < array.Length; index++) {
-                m_listFrame.Add(array[index]);
                 HorizontalLayoutUI(FrameUI, index);
                 Space();
             }
@@ -161,11 +173,11 @@ namespace SkillEditor {
 
         private void FrameUI(int index) {
             SpaceWithLabel(LabelFrameType);
-            KeyFrameData data = m_listFrame[index];
+            KeyFrameData data = LuaAnimClipModel.GetKeyFrameData(FrameGroupKey, index);
             data.frameType = (FrameType)EnumPopup(data.frameType);
             data.time = SpaceWithTextField(data.time);
             data.priority = (short)SpaceWithTextField(data.priority);
-            m_listFrame[index] = data;
+            Controller.SetAnimClipData(FrameGroupKey, index, data);
         }
     }
 }

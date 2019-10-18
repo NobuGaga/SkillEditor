@@ -109,6 +109,14 @@ namespace SkillEditor {
             LuaAnimClipModel.ClipDataState = state;
         }
 
+        public static void AddNewKeyFrameData(string key) {
+            LuaAnimClipModel.AddNewKeyFrameData(key);
+        }
+
+        public static void SetAnimClipData(string key, int index, KeyFrameData data) {
+            LuaAnimClipModel.SetKeyFrameData(key, index, data);
+        }
+
         public static void Play() {
             AnimationClip selectAnimationClip = AnimationModel.SelectAnimationClip;
             if (selectAnimationClip == null)

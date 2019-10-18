@@ -81,7 +81,7 @@ namespace SkillEditor.LuaStructure {
 
         private static readonly StringBuilder m_staticBuilder = new StringBuilder(Config.ClipListStringLength);
         public override string ToString() {
-            if (clipList == null)
+            if (IsNullTable())
                 return string.Empty;
             m_staticBuilder.Clear();
             for (int index = 0; index < clipList.Length; index++)
@@ -122,6 +122,9 @@ namespace SkillEditor.LuaStructure {
 
         public void SetPoolType(State state) {
             switch (state) {
+                case State.None:
+                    poolType = PoolType.None;
+                    break;
                 case State.Atk:
                 case State.UseSkill:
                     poolType = PoolType.POOL_ANIM_ATTACK;
@@ -156,12 +159,29 @@ namespace SkillEditor.LuaStructure {
             return poolType == PoolType.None;
         }
 
+        private bool CheckKeyFrameArrayIsNull(string key) {
+            KeyFrameData[] array = GetKeyFrameList(key);
+            if (array == null)
+                return true;
+            bool isAllDataNuul = true;
+            for (int index = 0; index < array.Length; index++)
+                if (!array[index].IsNullTable()) {
+                    isAllDataNuul = false;
+                    break;
+                }
+            return isAllDataNuul;
+        }
+
+        private bool IsNoKeyFrameGroupData => CheckKeyFrameArrayIsNull(Key_KeyFrame);
+
+        private bool IsNoProcessFrameGroupData => CheckKeyFrameArrayIsNull(Key_ProcessFrame);
+
         private static readonly StringBuilder m_staticBuilder = new StringBuilder(Config.FrameListStringLength);
         public override string ToString() {
             string keyFrameString = string.Empty;
             string format;
             string frameGroupTabString = Tool.GetTabString(AnimClipLuaLayer.FrameGroup);
-            if (keyFrameList != null) {
+            if (!IsNoKeyFrameGroupData) {
                 format = "{0}keyframe = {1}{3}{2},\n";
                 keyFrameString = Tool.GetArrayString(m_staticBuilder, AnimClipLuaLayer.FrameGroup, keyFrameList);
                 keyFrameString = string.Format(format, frameGroupTabString,
@@ -170,7 +190,7 @@ namespace SkillEditor.LuaStructure {
                                                keyFrameString);
             }
             string processFrameString = string.Empty;
-            if (processFrameList != null) {
+            if (!IsNoProcessFrameGroupData) {
                 format = "{0}processFrame = {1}{3}{2},\n";
                 processFrameString = Tool.GetArrayString(m_staticBuilder, AnimClipLuaLayer.FrameGroup, processFrameList);
                 processFrameString = string.Format(format, frameGroupTabString,
@@ -231,6 +251,7 @@ namespace SkillEditor.LuaStructure {
     }
 
     internal enum FrameType {
+        None,
         Hit,
         Start,
         PlayEffect,
@@ -283,7 +304,7 @@ namespace SkillEditor.LuaStructure {
         }
 
         public bool IsNullTable() {
-            return frameType == FrameType.Hit && (int)time == 0 && priority == 0 && dataList == null;
+            return frameType == FrameType.None && (int)time == 0 && priority == 0 && dataList == null;
         }
 
         public void SetTableKeyValue(string key, object value) {

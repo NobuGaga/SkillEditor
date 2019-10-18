@@ -56,7 +56,10 @@ namespace SkillEditor {
 
         private static int m_curClipIndex;
         private static ClipData m_curClipData;
-        public static ClipData ClipData => m_curClipData;
+        public static ClipData ClipData {
+            set => m_curClipData = value;
+            get => m_curClipData;
+        }
         public static List<ClipData> m_listClip = new List<ClipData>(Config.ModelStateClipCount);
 
         public static void SetCurrentEditClipName(string clipName) {
@@ -87,8 +90,8 @@ namespace SkillEditor {
         }
 
         private static void SaveCurrentClipData() {
-            if (m_curStateData.IsNullTable() || m_curClipData.IsNullTable())
-                return;
+            //if (m_curStateData.IsNullTable() || m_curClipData.IsNullTable())
+            //    return;
             bool isNewData = m_curStateIndex == Config.ErrorIndex && m_curClipIndex == Config.ErrorIndex;
             if (!isNewData) {
                 m_curStateData.clipList[m_curClipIndex] = m_curClipData;
@@ -119,6 +122,31 @@ namespace SkillEditor {
             return leftData.state.CompareTo(rightData.state);
         }
 
+        public static void AddNewKeyFrameData(string key) {
+            KeyFrameData[] array = ClipData.GetKeyFrameList(key);
+            if (array == null) {
+                array = new KeyFrameData[] { new KeyFrameData() };
+                m_curClipData.SetTableKeyValue(key, array);
+                return;
+            }
+            List<KeyFrameData> list = new List<KeyFrameData>(array);
+            list.Add(new KeyFrameData());
+            m_curClipData.SetTableKeyValue(key, list.ToArray());
+        }
+
+        public static void SetKeyFrameData(string key, int index, KeyFrameData data) {
+            KeyFrameData[] array = ClipData.GetKeyFrameList(key);
+            array[index] = data;
+            m_curClipData.SetTableKeyValue(key, array);
+        }
+
+        public static KeyFrameData GetKeyFrameData(string key, int index) {
+            KeyFrameData[] list = ClipData.GetKeyFrameList(key);
+            if (list == null && index >= 0 && index < list.Length)
+                return default;
+            return list[index];
+        }
+
         public static string GetWriteFileString(StringBuilder builder) {
             SaveCurrentClipData();
             builder.Append(LuaFormat.CurlyBracesPair.start);
@@ -147,6 +175,7 @@ namespace SkillEditor {
             m_listState.Clear();
             m_curClipIndex = Config.ErrorIndex;
             m_curClipData.Clear();
+            m_listClip.Clear();
         }
     }
 }
