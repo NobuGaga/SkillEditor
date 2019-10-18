@@ -15,6 +15,8 @@ namespace SkillEditor {
 
         private static double m_lastTime;
 
+        private static bool m_isPlaying;
+
         public static void Start(string prefabPath) {
             Reset();
             GameObject prefab = PrefabUtility.LoadPrefabContents(prefabPath);
@@ -100,19 +102,46 @@ namespace SkillEditor {
 
         public static void SetAnimationClipData(int index) {
             AnimationModel.SetCurrentAnimationClip(index);
+            LuaAnimClipModel.SetCurrentEditClipName(AnimationModel.SelectAnimationClipName);
         }
 
-        private static void WriteAnimClipData() {
-            LuaWriter.Write();
+        public static void SetAnimClipData(State state) {
+            LuaAnimClipModel.ClipDataState = state;
         }
 
         public static void Play() {
+            AnimationClip selectAnimationClip = AnimationModel.SelectAnimationClip;
+            if (selectAnimationClip == null)
+                return;
+            if (m_isPlaying)
+                return;
+            m_isPlaying = true;
             m_lastTime = EditorApplication.timeSinceStartup;
             EditorApplication.update += Update;
             if (m_isGenericClip)
-                SkillAnimator.Play(AnimationModel.SelectAnimationClip);
+                SkillAnimator.Play(selectAnimationClip);
             else
-                SkillClip.Play(m_model, AnimationModel.SelectAnimationClip);
+                SkillClip.Play(m_model, selectAnimationClip);
+        }
+
+        public static void Pause() {
+            if (!m_isPlaying)
+                return;
+            if (m_isGenericClip)
+                SkillAnimator.Pause();
+            else
+                SkillClip.Pause();
+        }
+
+        public static void Stop() {
+            if (!m_isPlaying)
+                return;
+            m_isPlaying = false;
+            EditorApplication.update -= Update;
+            if (m_isGenericClip)
+                SkillAnimator.Stop();
+            else
+                SkillClip.Stop();
         }
 
         private static void Update() {
@@ -127,12 +156,13 @@ namespace SkillEditor {
                 SkillClip.Update(deltaTime);
         }
 
-        public static void Stop() {
-            EditorApplication.update -= Update;
+        private static void WriteAnimClipData() {
+            LuaWriter.Write();
         }
 
         public static void Reset() {
             LuaAnimClipModel.Reset();
+            m_isPlaying = false;
             if (m_isGenericClip && m_model != null) {
                 string copyPath = Config.GetAnimatorControllerCopyPath(m_model.name);
                 if (File.Exists(copyPath)) {

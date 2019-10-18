@@ -47,13 +47,14 @@ namespace SkillEditor.LuaStructure {
     }
 
     internal enum State {
+        None,
         Atk,
         UseSkill,
         Hit,
         Dead
     }
 
-    internal struct StateData {
+    internal struct StateData : INullTable {
         public State state;
         public ClipData[] clipList;
 
@@ -67,6 +68,15 @@ namespace SkillEditor.LuaStructure {
                 return;
             string stateString = originKey.Substring(StateHeadString.Length + 1);
             state = (State)Enum.Parse(typeof(State), stateString);
+        }
+
+        public void Clear() {
+            state = State.None;
+            clipList = null;
+        }
+
+        public bool IsNullTable() {
+            return state == State.None && clipList == null;
         }
 
         private static readonly StringBuilder m_staticBuilder = new StringBuilder(Config.ClipListStringLength);
@@ -108,6 +118,31 @@ namespace SkillEditor.LuaStructure {
                 return;
             string poolTypeString = originKey.Substring(GameConstantHeadString.Length + 1);
             poolType = (PoolType)Enum.Parse(typeof(PoolType), poolTypeString);
+        }
+
+        public void SetPoolType(State state) {
+            switch (state) {
+                case State.Atk:
+                case State.UseSkill:
+                    poolType = PoolType.POOL_ANIM_ATTACK;
+                    break;
+                case State.Hit:
+                    poolType = PoolType.POOL_ANIM_HIT;
+                    break;
+                case State.Dead:
+                    poolType = PoolType.POOL_ANIM_DEFAULT;
+                    break;
+            }
+        }
+
+        public KeyFrameData[] GetKeyFrameList(string key) {
+            switch (key) {
+                case Key_KeyFrame:
+                    return keyFrameList;
+                case Key_ProcessFrame:
+                    return processFrameList;
+            }
+            return null;
         }
 
         public void Clear() {
@@ -171,8 +206,8 @@ namespace SkillEditor.LuaStructure {
         }
 
         private const string Key_IPoolType = "iPoolType";
-        private const string Key_KeyFrame = "keyframe";
-        private const string Key_ProcessFrame = "processFrame";
+        public const string Key_KeyFrame = "keyframe";
+        public const string Key_ProcessFrame = "processFrame";
 
         private static LuaTableKeyValue[] m_arraykeyValue;
         public LuaTableKeyValue[] GetTableKeyValueList() {

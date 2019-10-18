@@ -20,7 +20,7 @@ namespace SkillEditor {
 
         private static string m_clipName;
         private static bool m_isPlaying;
-        public static bool IsPlayOver => m_isPlaying == false;
+        public static bool IsPlayOver => m_curPlayTime >= m_clipLength;
         private static float m_curPlayTime;
         private static float m_clipLength;
 
@@ -55,21 +55,18 @@ namespace SkillEditor {
             m_curPlayTime = 0;
         }
 
-        public static void Pause() => m_isPlaying = false;
+        public static void Pause() => m_isPlaying = !m_isPlaying;
 
         public static void Stop() {
             m_isPlaying = false;
-            m_curPlayTime = 0;
+            m_animator.playbackTime = 0;
         }
-
-        public static void Revert() => m_isPlaying = true;
 
         public static void Update(float deltaTime) {
             if (!m_isPlaying)
                 return;
             m_curPlayTime += deltaTime;
-            bool isPlayOver = m_curPlayTime >= m_clipLength;
-            if (isPlayOver)
+            if (IsPlayOver)
                 Stop();
             else {
                 m_animator.playbackTime = m_curPlayTime;

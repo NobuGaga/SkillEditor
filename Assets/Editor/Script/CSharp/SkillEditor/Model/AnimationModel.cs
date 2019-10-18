@@ -61,12 +61,5 @@ namespace SkillEditor {
             m_selectAnimationClipName = m_listAnimationClipNames[index];
             m_selectAnimationClip = m_aniamtionClips[index];
         }
-
-        public static AnimationClip GetAnimationClip(string clipName) {
-            for (int i = 0; i < m_aniamtionClips.Length; i++)
-                if (clipName == m_aniamtionClips[i].name)
-                    return m_aniamtionClips[i];
-            return null;
-        }
     }
 }

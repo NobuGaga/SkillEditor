@@ -1,46 +1,61 @@
 ﻿using UnityEngine;
-using UnityEditor;
+using System.Collections.Generic;
 
 namespace SkillEditor {
+
+    using SkillEditor.LuaStructure;
 
     internal class EditorWindow : BaseEditorWindow {
 
         private const string WindowName = "技能编辑器窗口";
+
         private const string BtnSelectPrefab = "Select Prefab";
         private const string LabelSelectTips = "Please select a model's prefab";
         private const string LabelNoClipTips = "Current prefab has no AnimationClip file";
-        private const string LabelModelNameTitle = "模型名 ";
+        private const string LabelModelName = "模型名 ";
+        private const string LabelModelClipTips = "动画名 ";
+
+        private const string LabelFrameType = "帧类型 ";
+
+        private const string BtnPlay = "Play";
+        private const string BtnPause = "Pause";
+        private const string BtnStop = "Stop";
 
         private static bool m_isSelectPrefab;
         private static bool m_isNoAnimationClip;
 
         private static int m_lastClipIndex;
-        private static int m_curClipIndex;
+        private static bool IsNoSelectClip => m_lastClipIndex == Config.ErrorIndex;
         private static string[] m_animationClipNames;
         private static int[] m_animationClipIndexs;
 
+        private static int m_lastFrameIndex;
+        private static readonly string[] FrameKeyArray = { ClipData.Key_KeyFrame, ClipData.Key_ProcessFrame };
+        private static readonly string[] FrameKeyNameArray = { "关键帧", "动画帧" };
+        private static readonly int[] FrameKeyNameIndexArray = { 0, 1 };
+
+        private static List<KeyFrameData> m_listFrame = new List<KeyFrameData>(Config.ModelStateClipFrameCount);
+
+        private static ClipData m_curClipData;
+
         public static void Open() {
             Open<EditorWindow>(WindowName);
-            Init();
         }
 
         public static void CloseWindow() {
             Clear();
-            CloseWindow<EditorWindow>();
-        }
-
-        private static void Init() {
-            AddButtonData(BtnSelectPrefab, Style.PreButton);
+            GetWindow<EditorWindow>().Close();
         }
 
         public static void Clear() {
             m_isSelectPrefab = false;
             m_isNoAnimationClip = false;
 
-            m_lastClipIndex = -1;
-            m_curClipIndex = 0;
+            m_lastClipIndex = Config.ErrorIndex;
             m_animationClipNames = null;
             m_animationClipIndexs = null;
+
+            m_lastFrameIndex = Config.ErrorIndex;
         }
 
         public static void InitData(string[] animationClipNames, int[] animationClipIndexs) {
@@ -60,8 +75,7 @@ namespace SkillEditor {
                 CenterLayoutUI(NoAnimationClipUI);
                 return;
             }
-            Space();
-            HorizontalLayoutUI(TitleUI);
+            VerticalLayoutUI(EditorWindowUI);
         }
 
         private void UnselectPrefabUI() {
@@ -78,16 +92,80 @@ namespace SkillEditor {
             Manager.SelectPrefab();
         }
 
+        private void EditorWindowUI() {
+            Space();
+            HorizontalLayoutUI(TitleUI);
+            if (IsNoSelectClip)
+                return;
+            Space();
+            HorizontalLayoutUI(FrameKeyNameUI);
+            FrameListUI();
+            Space();
+            HorizontalLayoutUI(AnimationUI);
+        }
+
         private void TitleUI() {
-            Space();
-            Label(Tool.GetCacheString(LabelModelNameTitle + LuaAnimClipModel.ModelName));
-            Space();
+            SpaceWithLabel(Tool.GetCacheString(LabelModelName + LuaAnimClipModel.ModelName));
+            SpaceWithLabel(LabelModelClipTips);
+            int selectIndex = m_lastClipIndex;
             if (m_animationClipNames != null && m_animationClipIndexs != null)
-                m_curClipIndex = EditorGUILayout.IntPopup(m_curClipIndex, m_animationClipNames, m_animationClipIndexs, GetGUIStyle(Style.PreDropDown));
-            if (m_lastClipIndex != m_curClipIndex) {
-                m_lastClipIndex = m_curClipIndex;
-                Controller.SetAnimationClipData(m_curClipIndex);
+                selectIndex = IntPopup(m_lastClipIndex, m_animationClipNames, m_animationClipIndexs);
+            if (selectIndex != m_lastClipIndex && selectIndex != Config.ErrorIndex) {
+                m_lastClipIndex = selectIndex;
+                Controller.SetAnimationClipData(m_lastClipIndex);
             }
+            if (IsNoSelectClip)
+                return;
+            Space();
+            State lastState = LuaAnimClipModel.ClipDataState;
+            State selectState = (State)EnumPopup(lastState);
+            if (selectState != lastState)
+                Controller.SetAnimClipData(selectState);
+        }
+
+        private void AnimationUI() {
+            if (SpaceWithButton(BtnPlay))
+                OnPlayButton();
+            if (SpaceWithButton(BtnPause))
+                OnPauseButton();
+            if (SpaceWithButton(BtnStop))
+                OnStopButton();
+        }
+
+        private void OnPlayButton() => Controller.Play();
+
+        private void OnPauseButton() => Controller.Pause();
+
+        private void OnStopButton() => Controller.Stop();
+
+        private void FrameKeyNameUI() {
+            Space();
+            m_lastFrameIndex = IntPopup(m_lastFrameIndex, FrameKeyNameArray, FrameKeyNameIndexArray);
+        }
+
+        private void FrameListUI() {
+            if (m_lastFrameIndex == Config.ErrorIndex)
+                return;
+            m_listFrame.Clear();
+            m_curClipData = LuaAnimClipModel.ClipData;
+            KeyFrameData[] array = m_curClipData.GetKeyFrameList(FrameKeyArray[m_lastFrameIndex]);
+            if (array == null || array.Length == 0)
+                return;
+            Space();
+            for (int index = 0; index < array.Length; index++) {
+                m_listFrame.Add(array[index]);
+                HorizontalLayoutUI(FrameUI, index);
+                Space();
+            }
+        }
+
+        private void FrameUI(int index) {
+            SpaceWithLabel(LabelFrameType);
+            KeyFrameData data = m_listFrame[index];
+            data.frameType = (FrameType)EnumPopup(data.frameType);
+            data.time = SpaceWithTextField(data.time);
+            data.priority = (short)SpaceWithTextField(data.priority);
+            m_listFrame[index] = data;
         }
     }
 }

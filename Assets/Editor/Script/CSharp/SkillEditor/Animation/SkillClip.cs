@@ -27,7 +27,7 @@ namespace SkillEditor {
         }
 
         private static bool m_isPlaying;
-        public static bool IsPlayOver => m_isPlaying == false;
+        public static bool IsPlayOver => m_curPlayTime >= m_curClip.length;
         private static float m_curPlayTime;
 
         public static void Play() {
@@ -45,20 +45,18 @@ namespace SkillEditor {
             Play(clip);
         }
 
-        public static void Pause() => m_isPlaying = false;
+        public static void Pause() => m_isPlaying = !m_isPlaying;
 
         public static void Stop() {
             m_isPlaying = false;
-            m_curPlayTime = 0;
+            m_curClip.SampleAnimation(m_gameObject, 0);
         }
-
-        public static void Revert() => m_isPlaying = true;
 
         public static void Update(float deltaTime) {
             if (!m_isPlaying)
                 return;
             m_curPlayTime += deltaTime;
-            bool isPlayOver = m_curPlayTime >= m_curClip.length;
+            bool isPlayOver = IsPlayOver;
             m_curClip.SampleAnimation(m_gameObject, isPlayOver ? m_curClip.length : m_curPlayTime);
             if (isPlayOver)
                 Stop();
