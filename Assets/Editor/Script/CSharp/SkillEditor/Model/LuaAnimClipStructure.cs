@@ -76,7 +76,7 @@ namespace SkillEditor.LuaStructure {
         }
 
         public bool IsNullTable() {
-            return state == State.None && clipList == null;
+            return state == State.None || clipList == null;
         }
 
         private static readonly StringBuilder m_staticBuilder = new StringBuilder(Config.ClipListStringLength);
@@ -156,7 +156,7 @@ namespace SkillEditor.LuaStructure {
         }
 
         public bool IsNullTable() {
-            return poolType == PoolType.None;
+            return clipName == string.Empty || poolType == PoolType.None;
         }
 
         private bool CheckKeyFrameArrayIsNull(string key) {
@@ -304,7 +304,7 @@ namespace SkillEditor.LuaStructure {
         }
 
         public bool IsNullTable() {
-            return frameType == FrameType.None && (int)time == 0 && priority == 0 && dataList == null;
+            return frameType == FrameType.None || ((int)time == 0 && priority == 0 && dataList == null);
         }
 
         public void SetTableKeyValue(string key, object value) {

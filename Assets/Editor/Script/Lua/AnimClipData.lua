@@ -471,4 +471,17 @@ AnimClipData.data = {
             },
         },
     },
+    ["FemaleWarrior"] = {
+        ["EntityStateDefine.Atk"] = {
+            ["2HAttack"] = {
+                iPoolType = GameConstant.POOL_ANIM_ATTACK,
+                processFrame = {
+                    ["Start"] = {
+                        time = 0.1,
+                        priority = 1,
+                    },
+                },
+            },
+        },
+    },
 }

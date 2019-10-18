@@ -90,8 +90,8 @@ namespace SkillEditor {
         }
 
         private static void SaveCurrentClipData() {
-            //if (m_curStateData.IsNullTable() || m_curClipData.IsNullTable())
-            //    return;
+            if (m_curStateData.state == State.None || m_curClipData.IsNullTable())
+                return;
             bool isNewData = m_curStateIndex == Config.ErrorIndex && m_curClipIndex == Config.ErrorIndex;
             if (!isNewData) {
                 m_curStateData.clipList[m_curClipIndex] = m_curClipData;

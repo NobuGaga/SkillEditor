@@ -43,9 +43,10 @@ namespace SkillEditor {
             RemoveAllAnimatorTransition();
         }
 
+        private static List<AnimationClip> m_listAnimationClip = new List<AnimationClip>(Config.ModelStateClipCount);
         private static AnimationClip[] GetAllAnimationClip() {
             string[] fileNames = Directory.GetFiles(Config.ClipGroupFullPath);
-            List<AnimationClip> list = new List<AnimationClip>(Config.ModelStateClipCount);
+            m_listAnimationClip.Clear();
             for (int index = 0; index < fileNames.Length; index++) {
                 if (fileNames[index].Contains(".meta") || !fileNames[index].Contains("@") ||
                     !(fileNames[index].Contains(".fbx") || fileNames[index].Contains(".FBX")))
@@ -54,9 +55,9 @@ namespace SkillEditor {
                 AnimationClip clip = AssetDatabase.LoadAssetAtPath<AnimationClip>(path);
                 if (clip == null)
                     continue;
-                list.Add(clip);
+                m_listAnimationClip.Add(clip);
             }
-            return list.ToArray();
+            return m_listAnimationClip.ToArray();
         }
 
         private static void RemoveAllAnimatorTransition() {

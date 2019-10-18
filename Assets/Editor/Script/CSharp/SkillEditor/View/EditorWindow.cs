@@ -14,7 +14,7 @@ namespace SkillEditor {
         private const string LabelNoClipTips = "Current prefab has no AnimationClip file";
         private const string LabelModelName = "模型名 ";
         private const string LabelModelClipTips = "动画名 ";
-        private const string LabelModelClipStateTips = "状态机组 ";
+        private const string LabelModelClipStateTips = "状态组 ";
 
         private const string LabelFrameGroupType = "帧类型组 ";
         private const string BtnAdd = "增加";
@@ -104,7 +104,7 @@ namespace SkillEditor {
         private void EditorWindowUI() {
             Space();
             HorizontalLayoutUI(TitleUI);
-            if (IsNoSelectClip)
+            if (IsNoSelectClip || LuaAnimClipModel.ClipDataState == State.None)
                 return;
             Space();
             HorizontalLayoutUI(FrameKeyNameUI);

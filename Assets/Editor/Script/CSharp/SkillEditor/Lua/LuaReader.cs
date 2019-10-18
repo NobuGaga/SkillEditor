@@ -31,6 +31,7 @@ namespace SkillEditor {
             AnalyseLuaText(luaFilePath, luaFileHeadStart, list);
         }
 
+        private static StringBuilder m_luaTextHeadStringBuilder = new StringBuilder(Config.LuaFileHeadLength);
         private static void AnalyseLuaText(string luaFilePath, string luaFileHeadStart, object list) {
             string luaText = File.ReadAllText(luaFilePath);
             int index = luaText.IndexOf(luaFileHeadStart, StringComparison.Ordinal);
@@ -39,15 +40,15 @@ namespace SkillEditor {
                 return;
             }
             index += Config.LuaFileHeadStart.Length;
-            StringBuilder headBuilder = new StringBuilder(Config.LuaFileHeadLength);
-            headBuilder.Append(Config.LuaFileHeadStart);
+            m_luaTextHeadStringBuilder.Clear();
+            m_luaTextHeadStringBuilder.Append(Config.LuaFileHeadStart);
             for (; index < luaText.Length; index++) {
                 char curChar = luaText[index];
                 if (curChar == LuaFormat.CurlyBracesPair.start)
                     break;
-                headBuilder.Append(curChar);
+                m_luaTextHeadStringBuilder.Append(curChar);
             }
-            LuaWriter.AddHeadText(luaFilePath, headBuilder.ToString());
+            LuaWriter.AddHeadText(luaFilePath, m_luaTextHeadStringBuilder.ToString());
             m_tableLayer = 0;
             AnalyseAnimClipData(luaText, ref index, list);
         }
