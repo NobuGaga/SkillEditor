@@ -60,6 +60,7 @@ namespace SkillEditor {
         public static void Stop() {
             m_isPlaying = false;
             m_animator.playbackTime = 0;
+            m_animator.Update(0);
         }
 
         public static void Update(float deltaTime) {
