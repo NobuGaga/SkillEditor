@@ -163,6 +163,28 @@ namespace SkillEditor {
                 SkillAnimator.Update(deltaTime);
             else
                 SkillClip.Update(deltaTime);
+            if (LuaAnimClipModel.ListCollision.Count == 0)
+                return;
+            float time;
+            if (m_isGenericClip)
+                time = SkillAnimator.PlayTime;
+            else
+                time = SkillClip.PlayTime;
+            var list = LuaAnimClipModel.ListCollision;
+            float minTime = list[0].Key - Config.FramesPerSecond;
+            float maxTime = list[list.Count].Key + Config.FramesPerSecond;
+            if (time < minTime || time > maxTime)
+                return;
+            for (int index = 0; index < list.Count; index++) {
+                if (!IsInCollisionTime(time, list[index].Key))
+                    EditorScene.OnDrawCube(m_model, GizmoType.NotInSelectionHierarchy, list[index].Value);
+            }
+        }
+
+        private static bool IsInCollisionTime(float curTime, float collisionTime) {
+            float minTime = collisionTime - Config.FramesPerSecond;
+            float maxTime = collisionTime + Config.FramesPerSecond;
+            return curTime >= minTime && curTime <= maxTime;
         }
 
         private static void WriteAnimClipData() {

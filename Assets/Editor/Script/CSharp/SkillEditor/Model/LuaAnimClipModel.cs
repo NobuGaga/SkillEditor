@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System;
 using System.Text;
 using System.Collections.Generic;
 using SkillEditor.LuaStructure;
@@ -11,6 +10,9 @@ namespace SkillEditor {
         private static List<AnimClipData> m_listAnimClip = new List<AnimClipData>(Config.ModelCount);
         public static List<AnimClipData> AnimClipList => m_listAnimClip;
         private static int m_curModelIndex;
+
+        private static List<KeyValuePair<float, CubeData>> m_listCollision = new List<KeyValuePair<float, CubeData>>();
+        public static List<KeyValuePair<float, CubeData>> ListCollision => m_listCollision;
 
         public static void SetCurrentEditModelName(string modelName) {
             ModelName = modelName;
@@ -57,7 +59,10 @@ namespace SkillEditor {
         private static int m_curClipIndex;
         private static ClipData m_curClipData;
         public static ClipData ClipData {
-            set => m_curClipData = value;
+            set {
+                m_curClipData = value;
+                SetCollisionList();
+            }
             get => m_curClipData;
         }
         public static List<ClipData> m_listClip = new List<ClipData>(Config.ModelStateClipCount);
@@ -84,6 +89,7 @@ namespace SkillEditor {
                         m_curStateData = stateData;
                         m_curClipIndex = clipIndex;
                         m_curClipData = clipData;
+                        SetCollisionList();
                     }
                 }
             }
@@ -138,6 +144,8 @@ namespace SkillEditor {
             KeyFrameData[] array = ClipData.GetKeyFrameList(key);
             array[index] = data;
             m_curClipData.SetTableKeyValue(key, array);
+            if (key == ClipData.Key_KeyFrame)
+                SetCollisionList();
         }
 
         public static KeyFrameData GetKeyFrameData(string key, int index) {
@@ -145,6 +153,35 @@ namespace SkillEditor {
             if (list == null && index >= 0 && index < list.Length)
                 return default;
             return list[index];
+        }
+
+        private static void SetCollisionList() {
+            m_listCollision.Clear();
+            if (m_curClipData.keyFrameList == null || m_curClipData.keyFrameList.Length == 0)
+                return;
+            KeyFrameData[] keyFrameList = m_curClipData.keyFrameList;
+            for (int keyFrameDataIndex = 0; keyFrameDataIndex < keyFrameList.Length; keyFrameDataIndex++) {
+                KeyFrameData keyFrameData = keyFrameList[keyFrameDataIndex];
+                if (keyFrameData.dataList == null || keyFrameData.dataList.Length == 0)
+                    continue;
+                for (int customDataIndex = 0; customDataIndex < keyFrameData.dataList.Length; customDataIndex++) {
+                    CustomData customData = keyFrameData.dataList[customDataIndex];
+                    if (!(customData.data is CubeData[]))
+                        break;
+                    CubeData[] cubeDataList = customData.data as CubeData[];
+                    for (int cubeDataIndex = 0; cubeDataIndex < cubeDataList.Length; cubeDataIndex++) {
+                        CubeData cubeData = cubeDataList[cubeDataIndex];
+                        float time = keyFrameData.time;
+                        KeyValuePair<float, CubeData> timeCubeData = new KeyValuePair<float, CubeData>(time, cubeData);
+                        m_listCollision.Add(timeCubeData);
+                    }
+                }
+            }
+            m_listCollision.Sort(SortCollisionList);
+        }
+
+        private static int SortCollisionList(KeyValuePair<float, CubeData> left, KeyValuePair<float, CubeData> right) {
+            return left.Key.CompareTo(right.Key);
         }
 
         public static string GetWriteFileString(StringBuilder builder) {
@@ -176,6 +213,7 @@ namespace SkillEditor {
             m_curClipIndex = Config.ErrorIndex;
             m_curClipData.Clear();
             m_listClip.Clear();
+            m_listCollision.Clear();
         }
     }
 }

@@ -9,7 +9,8 @@ namespace SkillEditor {
         // Common
         private static readonly int ProjectPathSubIndex = Application.dataPath.IndexOf("Assets", StringComparison.Ordinal);
         public static readonly string ProjectPath = Application.dataPath.Substring(0, ProjectPathSubIndex);
-
+        public const float FramesPerSecond = 1f / 30f;
+        
         // Prefab Group Structure
         public const string ModelPrefabPath = "Assets/Editor/Asset/prefabs";
         public const string ModelPrefabExtension = "prefab";
@@ -39,6 +40,7 @@ namespace SkillEditor {
         public const string SceneExtension = "unity";
         public static readonly string EditScenePath = Tool.CombinePath(ScenePath, Tool.FileWithExtension(EditSceneName, SceneExtension));
         public static readonly string ExitScenePath = Tool.CombinePath(ScenePath, Tool.FileWithExtension(ExitSceneName, SceneExtension));
+        public const string DrawCubeNodeName = "FootCenter_Point00";
 
         // Layout
         private const string LayoutMenuPath = "Window/Layouts";

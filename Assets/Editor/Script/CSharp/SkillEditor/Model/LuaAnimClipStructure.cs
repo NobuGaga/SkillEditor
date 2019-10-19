@@ -1,4 +1,5 @@
-﻿using System;
+﻿using UnityEngine;
+using System;
 using System.Text;
 
 namespace SkillEditor.LuaStructure {
@@ -422,7 +423,7 @@ namespace SkillEditor.LuaStructure {
         }
     }
 
-    internal struct CubeData : ITable {
+    internal struct CubeData : ITable, INullTable {
         public float x;
         public float y;
         public float z;
@@ -437,6 +438,10 @@ namespace SkillEditor.LuaStructure {
             this.width = width;
             this.height = height;
             this.depth = depth;
+        }
+
+        public bool IsNullTable() {
+            return Szie == Vector3.zero;
         }
 
         public override string ToString() {
@@ -488,6 +493,27 @@ namespace SkillEditor.LuaStructure {
             m_arraykeyValue[4] = new LuaTableKeyValue(Key_Height, LuaFormat.Type.LuaNumber);
             m_arraykeyValue[5] = new LuaTableKeyValue(Key_Depth, LuaFormat.Type.LuaInt);
             return m_arraykeyValue;
+        }
+
+        private static Vector3 m_offsetCache;
+        private static Vector3 m_sizeCache;
+
+        public Vector3 Offset {
+            get {
+                m_offsetCache.x = x;
+                m_offsetCache.y = y;
+                m_offsetCache.z = z;
+                return m_offsetCache;
+            }
+        }
+
+        public Vector3 Szie {
+            get {
+                m_sizeCache.x = width;
+                m_sizeCache.y = height;
+                m_sizeCache.z = depth;
+                return m_sizeCache;
+            }
         }
     }
 

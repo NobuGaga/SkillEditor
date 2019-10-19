@@ -29,7 +29,8 @@ namespace SkillEditor {
         private static bool m_isPlaying;
         public static bool IsPlayOver => m_curPlayTime >= m_curClip.length;
         private static float m_curPlayTime;
-
+        public static float PlayTime => m_curPlayTime;
+        
         public static void Play() {
             m_isPlaying = true;
             m_curPlayTime = 0;
