@@ -29,6 +29,13 @@ public class BaseEditorWindow : EditorWindow {
         Label(text);
     }
 
+    protected short TextField(short shortNumber) {
+        string shortNumberString = EditorGUILayout.TextField(shortNumber.ToString());
+        if (short.TryParse(shortNumberString, out short result))
+            return result;
+        return shortNumber;
+    }
+
     protected int TextField(int interge) {
         string intString = EditorGUILayout.TextField(interge.ToString());
         if (int.TryParse(intString, out int result))
@@ -41,16 +48,6 @@ public class BaseEditorWindow : EditorWindow {
         if (float.TryParse(floatString, out float result))
             return result;
         return number;
-    }
-
-    protected int SpaceWithTextField(int interge, float space = DefaultSpace) {
-        Space(space);
-        return TextField(interge);
-    }
-
-    protected float SpaceWithTextField(float number, float space = DefaultSpace) {
-        Space(space);
-        return TextField(number);
     }
 
     protected bool Button(string buttonName, Style style = Style.PreButton) {
@@ -104,12 +101,33 @@ public class BaseEditorWindow : EditorWindow {
         EditorGUILayout.EndHorizontal();
     }
 
+    protected object HorizontalLayoutUI(Func<object, object> uiFunction, object data, Layout layout = Layout.Left) {
+        EditorGUILayout.BeginHorizontal();
+        if (layout != Layout.Left)
+            FlexibleSpace();
+        object result = uiFunction(data);
+        if (layout != Layout.Right)
+            FlexibleSpace();
+        EditorGUILayout.EndHorizontal();
+        return result;
+    }
+
     protected void VerticalLayoutUI(Action uiFunction, Layout layout = Layout.Top) {
         EditorGUILayout.BeginVertical();
         if (layout != Layout.Top)
             FlexibleSpace();
         uiFunction();
         if (layout != Layout.Bottom)
+            FlexibleSpace();
+        EditorGUILayout.EndVertical();
+    }
+
+    protected void VerticalLayoutUI(Action<object> uiFunction, object data, Layout layout = Layout.Left) {
+        EditorGUILayout.BeginVertical();
+        if (layout != Layout.Left)
+            FlexibleSpace();
+        uiFunction(data);
+        if (layout != Layout.Right)
             FlexibleSpace();
         EditorGUILayout.EndVertical();
     }

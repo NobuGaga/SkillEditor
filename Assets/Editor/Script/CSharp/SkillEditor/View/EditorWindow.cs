@@ -1,7 +1,4 @@
-﻿using UnityEngine;
-using System.Collections.Generic;
-
-namespace SkillEditor {
+﻿namespace SkillEditor {
 
     using SkillEditor.LuaStructure;
 
@@ -19,7 +16,18 @@ namespace SkillEditor {
         private const string LabelFrameGroupType = "帧类型组 ";
         private const string BtnAdd = "增加";
         private const string LabelFrameType = "帧类型 ";
-
+        private const string LabelTime = "触发时间点 ";
+        private const string LabelPriority = "优先级 ";
+        private const string LabelEffect = "特效";
+        private const string LabelEffectType = "类型 ";
+        private const string LabelEffectID = "ID ";
+        private const string LabelCollision = "碰撞框";
+        private const string LabelX = "x";
+        private const string LabelY = "y";
+        private const string LabelZ = "z";
+        private const string LabelWidth = "width";
+        private const string LabelHeight = "height";
+        private const string LabelDepth = "depth";
         private const string BtnPlay = "Play";
         private const string BtnPause = "Pause";
         private const string BtnStop = "Stop";
@@ -164,10 +172,9 @@ namespace SkillEditor {
             KeyFrameData[] array = m_curClipData.GetKeyFrameList(FrameGroupKey);
             if (array == null || array.Length == 0)
                 return;
-            Space();
             for (int index = 0; index < array.Length; index++) {
-                HorizontalLayoutUI(FrameUI, index);
                 Space();
+                HorizontalLayoutUI(FrameUI, index);
             }
         }
 
@@ -175,9 +182,64 @@ namespace SkillEditor {
             SpaceWithLabel(LabelFrameType);
             KeyFrameData data = LuaAnimClipModel.GetKeyFrameData(FrameGroupKey, index);
             data.frameType = (FrameType)EnumPopup(data.frameType);
-            data.time = SpaceWithTextField(data.time);
-            data.priority = (short)SpaceWithTextField(data.priority);
+            SpaceWithLabel(LabelTime);
+            data.time = TextField(data.time);
+            SpaceWithLabel(LabelPriority);
+            data.priority = (short)TextField(data.priority);
+            if (data.dataList != null)
+                VerticalLayoutUI(CustomDataListUI, data.dataList);
             Controller.SetAnimClipData(FrameGroupKey, index, data);
+        }
+
+        private void CustomDataListUI(object dataList) {
+            CustomData[] array = dataList as CustomData[];
+            for (int index = 0; index < array.Length; index++) {
+                CustomData customData = array[index];
+                if (customData.data is EffectData) {
+                    Space();
+                    customData.data = HorizontalLayoutUI(EffectDataUI, customData.data);
+                } 
+                else if (customData.data is CubeData[]) {
+                    CubeData[] arrayCubeData = customData.data as CubeData[];
+                    if (arrayCubeData.Length == 0)
+                        continue;
+                    for (int cubeDataIndex = 0; cubeDataIndex < arrayCubeData.Length; cubeDataIndex++) {
+                        CubeData cubeData = arrayCubeData[cubeDataIndex];
+                        Space();
+                        arrayCubeData[cubeDataIndex] = (CubeData)HorizontalLayoutUI(CubeDataUI, cubeData);
+                    }
+                    customData.data = arrayCubeData;
+                }
+                array[index] = customData;
+            }
+        }
+
+        private object EffectDataUI(object data) {
+            EffectData effectData = (EffectData)data;
+            SpaceWithLabel(LabelEffect);
+            SpaceWithLabel(LabelEffectType);
+            effectData.type = TextField(effectData.type);
+            SpaceWithLabel(LabelEffectID);
+            effectData.id = TextField(effectData.id);
+            return effectData;
+        }
+
+        private object CubeDataUI(object data) {
+            CubeData cubeData = (CubeData)data;
+            SpaceWithLabel(LabelCollision);
+            SpaceWithLabel(LabelX);
+            cubeData.x = TextField(cubeData.x);
+            SpaceWithLabel(LabelY);
+            cubeData.y = TextField(cubeData.y);
+            SpaceWithLabel(LabelZ);
+            cubeData.z = TextField(cubeData.z);
+            SpaceWithLabel(LabelWidth);
+            cubeData.width = TextField(cubeData.width);
+            SpaceWithLabel(LabelHeight);
+            cubeData.height = TextField(cubeData.height);
+            SpaceWithLabel(LabelDepth);
+            cubeData.depth = TextField(cubeData.depth);
+            return cubeData;
         }
     }
 }
