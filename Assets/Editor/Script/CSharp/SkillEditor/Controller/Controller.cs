@@ -17,6 +17,8 @@ namespace SkillEditor {
 
         private static bool m_isPlaying;
 
+        private static List<CubeData> m_listDrawCubeData = new List<CubeData>();
+
         public static void Start(string prefabPath) {
             Reset();
             GameObject prefab = PrefabUtility.LoadPrefabContents(prefabPath);
@@ -26,6 +28,7 @@ namespace SkillEditor {
             PrefabUtility.UnloadPrefabContents(prefab);
             InitAnimation();
             InitAnimClipData();
+            EditorScene.SetDrawCubeData(m_listDrawCubeData);
             EditorScene.RegisterSceneGUI();
             EditorWindow.InitData(AnimationModel.AnimationClipNames, AnimationModel.AnimationClipIndexs);
             EditorWindow.Open();
@@ -151,6 +154,7 @@ namespace SkillEditor {
                 SkillAnimator.Stop();
             else
                 SkillClip.Stop();
+            m_listDrawCubeData.Clear();
         }
 
         private static void Update() {
@@ -163,6 +167,7 @@ namespace SkillEditor {
                 SkillAnimator.Update(deltaTime);
             else
                 SkillClip.Update(deltaTime);
+            m_listDrawCubeData.Clear();
             if (LuaAnimClipModel.ListCollision.Count == 0)
                 return;
             float time;
@@ -172,13 +177,13 @@ namespace SkillEditor {
                 time = SkillClip.PlayTime;
             var list = LuaAnimClipModel.ListCollision;
             float minTime = list[0].Key - Config.FramesPerSecond;
-            float maxTime = list[list.Count].Key + Config.FramesPerSecond;
+            float maxTime = list[list.Count - 1].Key + Config.FramesPerSecond;
             if (time < minTime || time > maxTime)
                 return;
-            for (int index = 0; index < list.Count; index++) {
-                if (!IsInCollisionTime(time, list[index].Key))
-                    EditorScene.OnDrawCube(m_model, GizmoType.NotInSelectionHierarchy, list[index].Value);
-            }
+            for (int index = 0; index < list.Count; index++)
+                if (IsInCollisionTime(time, list[index].Key))
+                    m_listDrawCubeData.Add(list[index].Value);
+            EditorScene.SetDrawCubeData(m_listDrawCubeData);
         }
 
         private static bool IsInCollisionTime(float curTime, float collisionTime) {
@@ -193,6 +198,7 @@ namespace SkillEditor {
 
         public static void Reset() {
             LuaAnimClipModel.Reset();
+            m_listDrawCubeData.Clear();
             m_isPlaying = false;
             if (m_isGenericClip && m_model != null) {
                 string copyPath = Config.GetAnimatorControllerCopyPath(m_model.name);

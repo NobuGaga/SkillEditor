@@ -175,7 +175,7 @@
             for (int index = 0; index < array.Length; index++) {
                 Space();
                 KeyFrameData data = LuaAnimClipModel.GetKeyFrameData(FrameGroupKey, index);
-                HorizontalLayoutUI(FrameUI, data);
+                data = (KeyFrameData)HorizontalLayoutUI(FrameUI, data);
                 if (data.dataList != null) {
                     CustomDataListUI(data.dataList);
                 }
@@ -183,7 +183,7 @@
             }
         }
 
-        private void FrameUI(object data) {
+        private object FrameUI(object data) {
             KeyFrameData keyFramedata = (KeyFrameData)data;
             SpaceWithLabel(LabelFrameType);
             keyFramedata.frameType = (FrameType)EnumPopup(keyFramedata.frameType);
@@ -191,6 +191,7 @@
             keyFramedata.time = TextField(keyFramedata.time);
             SpaceWithLabel(LabelPriority);
             keyFramedata.priority = (short)TextField(keyFramedata.priority);
+            return keyFramedata;
         }
 
         private void CustomDataListUI(CustomData[] array) {
@@ -199,7 +200,7 @@
                 if (customData.data is EffectData) {
                     Space();
                     customData.data = HorizontalLayoutUI(EffectDataUI, customData.data);
-                } 
+                }
                 else if (customData.data is CubeData[]) {
                     CubeData[] arrayCubeData = customData.data as CubeData[];
                     if (arrayCubeData.Length == 0)

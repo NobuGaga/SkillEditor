@@ -9,7 +9,7 @@ namespace SkillEditor {
         // Common
         private static readonly int ProjectPathSubIndex = Application.dataPath.IndexOf("Assets", StringComparison.Ordinal);
         public static readonly string ProjectPath = Application.dataPath.Substring(0, ProjectPathSubIndex);
-        public const float FramesPerSecond = 1f / 30f;
+        public const float FramesPerSecond = 1f / 30;
         
         // Prefab Group Structure
         public const string ModelPrefabPath = "Assets/Editor/Asset/prefabs";

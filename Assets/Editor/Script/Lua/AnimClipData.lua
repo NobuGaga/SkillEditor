@@ -475,9 +475,53 @@ AnimClipData.data = {
         ["EntityStateDefine.Atk"] = {
             ["2HAttack"] = {
                 iPoolType = GameConstant.POOL_ANIM_ATTACK,
+                keyframe = {
+                    ["Hit"] = {
+                        time = 0.3,
+                        priority = 1,
+                        data = {
+                            [4] = {
+                                [1] = {
+                                    x = -1.4,
+                                    y = 0,
+                                    z = 0,
+                                    width = 3.5,
+                                    height = 1.7,
+                                    depth = 2,
+                                },
+                            },
+                        },
+                    },
+                },
                 processFrame = {
                     ["Start"] = {
                         time = 0.1,
+                        priority = 1,
+                    },
+                    ["PlayEffect"] = {
+                        time = 0,
+                        priority = 1,
+                        data = {
+                            [1] = {
+                                type = 1,
+                                id = 11,
+                            },
+                            [2] = {
+                                type = 3,
+                                id = 100,
+                            },
+                        },
+                    },
+                    ["CacheBegin"] = {
+                        time = 0.2,
+                        priority = 99,
+                    },
+                    ["SectionOver"] = {
+                        time = 0.27,
+                        priority = 1,
+                    },
+                    ["End"] = {
+                        time = 0.967,
                         priority = 1,
                     },
                 },

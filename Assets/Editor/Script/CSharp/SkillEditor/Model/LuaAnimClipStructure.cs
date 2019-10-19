@@ -441,7 +441,7 @@ namespace SkillEditor.LuaStructure {
         }
 
         public bool IsNullTable() {
-            return Szie == Vector3.zero;
+            return Size == Vector3.zero;
         }
 
         public override string ToString() {
@@ -507,7 +507,7 @@ namespace SkillEditor.LuaStructure {
             }
         }
 
-        public Vector3 Szie {
+        public Vector3 Size {
             get {
                 m_sizeCache.x = width;
                 m_sizeCache.y = height;
