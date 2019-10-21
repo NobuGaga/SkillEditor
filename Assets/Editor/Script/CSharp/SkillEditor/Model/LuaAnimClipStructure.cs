@@ -346,7 +346,7 @@ namespace SkillEditor.LuaStructure {
         }
     }
 
-    internal struct CustomData {
+    internal struct CustomData : INullTable {
         public int index;
         public object data;
 
@@ -355,12 +355,27 @@ namespace SkillEditor.LuaStructure {
             this.data = data;
         }
 
+        public bool IsNullTable() {
+            if (data == null)
+                return true;
+            if (data is EffectData)
+                return ((EffectData)data).IsNullTable();
+            if (data is CubeData[]) {
+                CubeData[] array = data as CubeData[];
+                for (int i = 0; i < array.Length; i++)
+                    if (!array[i].IsNullTable())
+                        return false;
+                return true;
+            }
+            return true;
+        }
+
         private static readonly StringBuilder m_staticBuilder = new StringBuilder(Config.RectDataListStringLength);
         public override string ToString() {
             string dataString = string.Empty;
             string tabString;
             string format;
-            if (data is EffectData)
+            if (data is EffectData && !((EffectData)data).IsNullTable())
                 dataString = ((EffectData)data).ToString();
             else if (data is CubeData[]) {
                 index = CubeDataIndex;
@@ -369,13 +384,16 @@ namespace SkillEditor.LuaStructure {
                 format = "{0}[{1}] = {2}\n{3}{0}{4},\n";
                 m_staticBuilder.Clear();
                 m_staticBuilder.Append(LuaFormat.LineSymbol);
-                for (int i = 0; i < array.Length; i++)
+                for (int i = 0; i < array.Length; i++) {
+                    if (array[i].IsNullTable())
+                        continue;
                     m_staticBuilder.Append(string.Format(format,
                                                          tabString,
                                                          i + 1,
                                                          LuaFormat.CurlyBracesPair.start,
                                                          array[i].ToString(),
                                                          LuaFormat.CurlyBracesPair.end));
+                }
                 dataString = m_staticBuilder.ToString();
             }
             tabString = Tool.GetTabString(AnimClipLuaLayer.CustomeData);
@@ -392,13 +410,17 @@ namespace SkillEditor.LuaStructure {
         public const short CubeDataIndex = 4;
     }
 
-    internal struct EffectData : ITable {
+    internal struct EffectData : ITable, INullTable {
         public short type;
         public int id;
 
         public EffectData(short type, int id) {
             this.type = type;
             this.id = id;
+        }
+
+        public bool IsNullTable() {
+            return type == 0 || id == 0;
         }
 
         public override string ToString() {
