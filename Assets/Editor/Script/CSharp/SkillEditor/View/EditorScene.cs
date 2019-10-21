@@ -24,7 +24,7 @@ namespace SkillEditor {
             Gizmos.color = CubeColor;
             for (int index = 0; index < m_listDrawCubeData.Count; index++) {
                 CubeData data = m_listDrawCubeData[index];
-                Vector3 footPoint = gameObject.transform.position + data.Offset;
+                Vector3 footPoint = gameObject.transform.localPosition + data.Offset;
                 footPoint.x += data.width / 2;
                 footPoint.y += data.height / 2;
                 Gizmos.DrawWireCube(footPoint, data.Size);
