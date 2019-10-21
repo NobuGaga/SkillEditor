@@ -404,7 +404,7 @@ namespace SkillEditor.LuaStructure {
                     type = (short)(int)value;
                     return;
                 case Key_Id:
-                    id = (short)(int)value;
+                    id = (int)value;
                     return;
             }
         }
