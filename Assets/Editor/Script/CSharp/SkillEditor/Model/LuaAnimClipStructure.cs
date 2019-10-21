@@ -139,6 +139,14 @@ namespace SkillEditor.LuaStructure {
             }
         }
 
+        public KeyFrameData[] GetKeyFrameList() {
+            return keyFrameList;
+        }
+
+        public KeyFrameData[] GetProcessFrameList() {
+            return processFrameList;
+        }
+
         public KeyFrameData[] GetKeyFrameList(string key) {
             switch (key) {
                 case Key_KeyFrame:
@@ -355,7 +363,7 @@ namespace SkillEditor.LuaStructure {
             if (data is EffectData)
                 dataString = ((EffectData)data).ToString();
             else if (data is CubeData[]) {
-                index = 4;
+                index = CubeDataIndex;
                 CubeData[] array = data as CubeData[];
                 tabString = Tool.GetTabString(AnimClipLuaLayer.Effect);
                 format = "{0}[{1}] = {2}\n{3}{0}{4},\n";
@@ -380,6 +388,8 @@ namespace SkillEditor.LuaStructure {
                                             LuaFormat.CurlyBracesPair.end);
             return Tool.GetCacheString(toString);
         }
+
+        public const short CubeDataIndex = 4;
     }
 
     internal struct EffectData : ITable {

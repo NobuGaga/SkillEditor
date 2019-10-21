@@ -139,6 +139,14 @@ namespace SkillEditor {
             LuaAnimClipModel.SetKeyFrameData(key, index, data);
         }
 
+        public static void AddNewEffectData(int index) {
+            LuaAnimClipModel.AddNewEffectData(index);
+        }
+
+        public static void AddNewCubeData(int index) {
+            LuaAnimClipModel.AddNewCubeData(index);
+        }
+
         public static void Play() {
             AnimationClip selectAnimationClip = AnimationModel.SelectAnimationClip;
             if (selectAnimationClip == null)

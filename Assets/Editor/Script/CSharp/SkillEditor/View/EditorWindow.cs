@@ -174,8 +174,7 @@
                 return;
             for (int index = 0; index < array.Length; index++) {
                 Space();
-                KeyFrameData data = LuaAnimClipModel.GetKeyFrameData(FrameGroupKey, index);
-                data = (KeyFrameData)HorizontalLayoutUI(FrameUI, data);
+                KeyFrameData data = (KeyFrameData)HorizontalLayoutUI(FrameUI, index);
                 if (data.dataList != null) {
                     CustomDataListUI(data.dataList);
                 }
@@ -183,15 +182,40 @@
             }
         }
 
-        private object FrameUI(object data) {
-            KeyFrameData keyFramedata = (KeyFrameData)data;
+        private object FrameUI(int index) {
+            KeyFrameData data = LuaAnimClipModel.GetKeyFrameData(FrameGroupKey, index);
             SpaceWithLabel(LabelFrameType);
-            keyFramedata.frameType = (FrameType)EnumPopup(keyFramedata.frameType);
+            data.frameType = CheckFrameType((FrameType)EnumPopup(data.frameType), data.frameType);
             SpaceWithLabel(LabelTime);
-            keyFramedata.time = TextField(keyFramedata.time);
+            data.time = TextField(data.time);
             SpaceWithLabel(LabelPriority);
-            keyFramedata.priority = (short)TextField(keyFramedata.priority);
-            return keyFramedata;
+            data.priority = (short)TextField(data.priority);
+            if ((data.frameType == FrameType.PlayEffect || data.frameType == FrameType.Hit) && 
+                SpaceWithButton(BtnAdd))
+                OnAddCustomDataButton(data.frameType, index);
+            return data;
+        }
+
+        private FrameType CheckFrameType(FrameType newType, FrameType originType) {
+            switch (newType) {
+                case FrameType.None:
+                    return newType;
+                case FrameType.Hit:
+                    return FrameGroupKey == ClipData.Key_KeyFrame ? newType : originType;
+                default:
+                    return FrameGroupKey == ClipData.Key_KeyFrame ? originType : newType;
+            }
+        }
+
+        private void OnAddCustomDataButton(FrameType frameType, int index) {
+            switch (frameType) {
+                case FrameType.PlayEffect:
+                    Controller.AddNewEffectData(index);
+                    break;
+                case FrameType.Hit:
+                    Controller.AddNewCubeData(index);
+                    break;
+            }
         }
 
         private void CustomDataListUI(CustomData[] array) {

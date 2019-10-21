@@ -67,6 +67,10 @@ namespace SkillEditor {
         }
         public static List<ClipData> m_listClip = new List<ClipData>(Config.ModelStateClipCount);
 
+        private static List<CustomData> m_listCustomData = new List<CustomData>(Config.ModelClipFrameCustomDataCount);
+
+        private static List<CubeData> m_listCubeData = new List<CubeData>(Config.ModelClipFrameCubeDataCount);
+
         public static void SetCurrentEditClipName(string clipName) {
             if (clipName != m_curClipData.clipName)
                 SaveCurrentClipData();
@@ -182,6 +186,48 @@ namespace SkillEditor {
 
         private static int SortCollisionList(KeyValuePair<float, CubeData> left, KeyValuePair<float, CubeData> right) {
             return left.Key.CompareTo(right.Key);
+        }
+
+        public static void AddNewEffectData(int index) {
+            KeyFrameData[] arrayProcessFrameData = ClipData.GetProcessFrameList();
+            KeyFrameData keyFrameData = arrayProcessFrameData[index];
+            CustomData customData = new CustomData();
+            customData.data = new EffectData();
+            if (keyFrameData.dataList == null) {
+                customData.index = 0;
+                keyFrameData.dataList = new CustomData[] { customData };
+            }
+            else {
+                m_listCustomData.Clear();
+                CustomData[] arrayCustomData = keyFrameData.dataList as CustomData[];
+                for (int customDataIndex = 0; customDataIndex < arrayCustomData.Length; customDataIndex++)
+                    m_listCustomData.Add(arrayCustomData[customDataIndex]);
+                customData.index = arrayCustomData.Length + 1;
+                m_listCustomData.Add(customData);
+                keyFrameData.dataList = m_listCustomData.ToArray();
+            }
+            arrayProcessFrameData[index] = keyFrameData;
+        }
+
+        public static void AddNewCubeData(int index) {
+            KeyFrameData[] arrayKeyFrameData = ClipData.GetKeyFrameList();
+            KeyFrameData keyFrameData = arrayKeyFrameData[index];
+            if (keyFrameData.dataList == null)
+                keyFrameData.dataList = new CustomData[] { new CustomData() };
+            CustomData customData = keyFrameData.dataList[0];
+            customData.index = CustomData.CubeDataIndex;
+            if (customData.data == null)
+                customData.data = new CubeData[] { new CubeData() };
+            else {
+                m_listCubeData.Clear();
+                CubeData[] arrayCubeData = customData.data as CubeData[];
+                for (int cubeDataIndex = 0; cubeDataIndex < arrayCubeData.Length; cubeDataIndex++)
+                    m_listCubeData.Add(arrayCubeData[cubeDataIndex]);
+                m_listCubeData.Add(new CubeData());
+                customData.data = m_listCubeData.ToArray();
+            }
+            keyFrameData.dataList[0] = customData;
+            arrayKeyFrameData[index] = keyFrameData;
         }
 
         public static string GetWriteFileString(StringBuilder builder) {
