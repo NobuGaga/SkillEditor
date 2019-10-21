@@ -33,6 +33,9 @@ namespace SkillEditor {
         }
         public static string ClipGroupFullPath => m_clipFullPath;
 
+        // Weapon
+        public static readonly string WeaponPath = Tool.CombinePath(Application.dataPath, "character/weapon/wp_nvwang/prefabs/wp_nvwang_01.prefab");
+
         // Scene
         private const string ScenePath = "Assets/Editor/Scene";
         private const string EditSceneName = "EditScene";

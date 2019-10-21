@@ -21,17 +21,35 @@ namespace SkillEditor {
 
         public static void Start(string prefabPath) {
             Reset();
-            GameObject prefab = PrefabUtility.LoadPrefabContents(prefabPath);
-            m_model = Object.Instantiate(prefab);
-            m_model.name = prefab.name;
+            m_model = LoadPrefab(prefabPath);
+            if (File.Exists(Config.WeaponPath)) {
+                GameObject weapon = LoadPrefab(Config.WeaponPath);
+                Transform[] nodes = m_model.transform.GetComponentsInChildren<Transform>();
+                Transform rightHand = null;
+                if (nodes != null)
+                    for (int index = 0; index < nodes.Length; index++)
+                        if (nodes[index].name == "R_Weapon_Point")
+                            rightHand = nodes[index];
+                if (rightHand != null) {
+                    weapon.transform.SetParent(rightHand);
+                    weapon.transform.localPosition = Vector3.zero;
+                }
+            }
             Selection.activeGameObject = m_model;
-            PrefabUtility.UnloadPrefabContents(prefab);
             InitAnimation();
             InitAnimClipData();
             EditorScene.SetDrawCubeData(m_listDrawCubeData);
             EditorScene.RegisterSceneGUI();
             EditorWindow.InitData(AnimationModel.AnimationClipNames, AnimationModel.AnimationClipIndexs);
             EditorWindow.Open();
+        }
+
+        private static GameObject LoadPrefab(string path) {
+            GameObject prefab = PrefabUtility.LoadPrefabContents(path);
+            GameObject gameObject = Object.Instantiate(prefab);
+            gameObject.name = prefab.name;
+            PrefabUtility.UnloadPrefabContents(prefab);
+            return gameObject;
         }
 
         private static void InitAnimation() {
