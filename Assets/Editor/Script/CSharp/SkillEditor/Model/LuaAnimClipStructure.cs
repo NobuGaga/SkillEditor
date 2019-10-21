@@ -313,7 +313,7 @@ namespace SkillEditor.LuaStructure {
         }
 
         public bool IsNullTable() {
-            return frameType == FrameType.None || ((int)time == 0 && priority == 0 && dataList == null);
+            return frameType == FrameType.None || priority == 0;
         }
 
         public void SetTableKeyValue(string key, object value) {

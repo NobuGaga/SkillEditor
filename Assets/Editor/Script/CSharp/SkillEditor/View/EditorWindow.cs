@@ -53,8 +53,6 @@
             }
         }
 
-        private static ClipData m_curClipData;
-
         public static void Open() {
             Open<EditorWindow>(WindowName);
         }
@@ -168,16 +166,14 @@
         private void FrameListUI() {
             if (IsNoSelectFrameGroup)
                 return;
-            m_curClipData = LuaAnimClipModel.ClipData;
-            KeyFrameData[] array = m_curClipData.GetKeyFrameList(FrameGroupKey);
+            KeyFrameData[] array = LuaAnimClipModel.ClipData.GetKeyFrameList(FrameGroupKey);
             if (array == null || array.Length == 0)
                 return;
             for (int index = 0; index < array.Length; index++) {
                 Space();
                 KeyFrameData data = (KeyFrameData)HorizontalLayoutUI(FrameUI, index);
-                if (data.dataList != null) {
+                if (data.dataList != null)
                     CustomDataListUI(data.dataList);
-                }
                 Controller.SetAnimClipData(FrameGroupKey, index, data);
             }
         }
@@ -191,8 +187,10 @@
             SpaceWithLabel(LabelPriority);
             data.priority = (short)TextField(data.priority);
             if ((data.frameType == FrameType.PlayEffect || data.frameType == FrameType.Hit) && 
-                SpaceWithButton(BtnAdd))
+                SpaceWithButton(BtnAdd)) {
                 OnAddCustomDataButton(data.frameType, index);
+                return LuaAnimClipModel.GetKeyFrameData(FrameGroupKey, index);
+            }
             return data;
         }
 

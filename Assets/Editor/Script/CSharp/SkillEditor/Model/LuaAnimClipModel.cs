@@ -75,11 +75,10 @@ namespace SkillEditor {
             if (clipName != m_curClipData.clipName)
                 SaveCurrentClipData();
             ResetClip();
+            m_curClipData.clipName = clipName;
             StateData[] stateList = GetAnimClipData().stateList;
-            if (stateList == null) {
-                m_curClipData.clipName = clipName;
+            if (stateList == null)
                 return;
-            }
             for (int stateIndex = 0; stateIndex < stateList.Length; stateIndex++) {
                 StateData stateData = stateList[stateIndex];
                 m_listState.Add(stateData);
@@ -194,7 +193,7 @@ namespace SkillEditor {
             CustomData customData = new CustomData();
             customData.data = new EffectData();
             if (keyFrameData.dataList == null) {
-                customData.index = 0;
+                customData.index = 1;
                 keyFrameData.dataList = new CustomData[] { customData };
             }
             else {
