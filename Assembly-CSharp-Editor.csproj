@@ -45,6 +45,7 @@
     <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
   </PropertyGroup>
   <ItemGroup>     <Compile Include="Assets\Editor\Script\CSharp\Base\BaseEditorWindow.cs" />
+     <Compile Include="Assets\Editor\Script\CSharp\Base\BaseInterface.cs" />
      <Compile Include="Assets\Editor\Script\CSharp\SkillEditor\Animation\SkillAnimator.cs" />
      <Compile Include="Assets\Editor\Script\CSharp\SkillEditor\Animation\SkillClip.cs" />
      <Compile Include="Assets\Editor\Script\CSharp\SkillEditor\Controller\Controller.cs" />
