@@ -25,6 +25,7 @@ namespace SkillEditor {
         private static string m_prefabFullPath = string.Empty;
         private static string m_clipFullPath = string.Empty;
         private static string m_controllerPath = string.Empty;
+        public static string ControllerPath => m_controllerPath;
         public static string PrefabPath {
             set {
                 m_prefabFullPath = value;
@@ -103,10 +104,6 @@ namespace SkillEditor {
             m_prefabFullPath = string.Empty;
             m_clipFullPath = string.Empty;
             m_controllerPath = string.Empty;
-        }
-
-        public static string GetAnimatorControllerPath(string fileName) {
-            return Tool.CombineFilePath(m_controllerPath, fileName, AnimatorControllerExtension);
         }
     }
 }

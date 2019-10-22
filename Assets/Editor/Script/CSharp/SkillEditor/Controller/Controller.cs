@@ -49,7 +49,7 @@ namespace SkillEditor {
             if (animator == null)
                 Debug.LogError("Prefab's animator is not exit");
             SkillAnimator.Animator = animator;
-            string sourcePath = Config.GetAnimatorControllerPath(m_model.name);
+            string sourcePath = Tool.FullPathToProjectPath(Config.ControllerPath);
             AnimatorControllerManager.RemoveAllAnimatorTransition(m_model.name, sourcePath);
         }
 
