@@ -56,9 +56,8 @@ namespace SkillEditor {
         }
 
         public static string GetFileNameFromPath(string path) {
-            Debug.Log("Tool::GetFileNameFromPath path " + path);
 #if UNITY_EDITOR_WIN
-            string[] array = path.Split('\\');
+            string[] array = path.Replace("\\", "/").Split('\\');
 #elif UNITY_EDITOR_OSX
             string[] array = path.Split('/');
 #else

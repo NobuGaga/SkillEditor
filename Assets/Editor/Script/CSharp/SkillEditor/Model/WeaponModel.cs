@@ -19,9 +19,9 @@ namespace SkillEditor {
         }
 
         private static void Init() {
-            if (!File.Exists(Config.WeaponPath))
+            if (!Directory.Exists(Config.WeaponPath))
                 return;
-            string[] arrayFullPath = Directory.GetFiles(Config.WeaponPath);
+            string[] arrayFullPath = Directory.GetDirectories(Config.WeaponPath);
             if (arrayFullPath == null || arrayFullPath.Length == 0)
                 return;
             string animControllerFolder = Config.AnimatorControllerFolder;
@@ -31,7 +31,7 @@ namespace SkillEditor {
                     continue;
                 if (fullPath.Contains(animControllerFolder)) {
                     int stringIndex = fullPath.IndexOf(animControllerFolder);
-                    if (stringIndex + animControllerFolder.Length + 1 >= fullPath.Length)
+                    if (stringIndex + animControllerFolder.Length >= fullPath.Length)
                         InitAnimatorController(Tool.CombinePath(fullPath, animControllerFolder));
                 }
                 else if (fullPath.Contains(Config.WeaponFilePrefix)) {
@@ -59,7 +59,7 @@ namespace SkillEditor {
 
         private static void InitModelWeapon(string folderName, string folderFullPath) {
             string prefabPath = Tool.CombinePath(folderFullPath, Config.ModelPrefabFolder);
-            if (!File.Exists(prefabPath))
+            if (!Directory.Exists(prefabPath))
                 return;
             string[] arrayFullPath = Directory.GetFiles(prefabPath);
             if (arrayFullPath == null || arrayFullPath.Length == 0)
@@ -85,7 +85,7 @@ namespace SkillEditor {
 
         private static void InitModelWeaponClip(string modelName, string folderFullPath) {
             string clipPath = Tool.CombinePath(folderFullPath, Config.AnimationClipFolder);
-            if (!File.Exists(clipPath))
+            if (!Directory.Exists(clipPath))
                 return;
             string[] arrayFullPath = Directory.GetFiles(clipPath);
             if (arrayFullPath == null || arrayFullPath.Length == 0)

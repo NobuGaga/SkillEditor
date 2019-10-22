@@ -2,10 +2,10 @@
 
 namespace SkillEditor {
 
-    internal static class SkillClip {
+    internal class SkillClip {
 
-        private static GameObject m_gameObject;
-        public static GameObject ModelGameObject {
+        private GameObject m_gameObject;
+        public GameObject ModelGameObject {
             set {
                 if (value == null) {
                     Debug.LogError("SkillClip.ModelGameObject = null");
@@ -15,8 +15,8 @@ namespace SkillEditor {
             }
         }
 
-        private static AnimationClip m_curClip;
-        public static AnimationClip Clip {
+        private AnimationClip m_curClip;
+        public AnimationClip Clip {
             set {
                 if (value == null) {
                     Debug.LogError("SkillClip.Clip = null");
@@ -26,34 +26,34 @@ namespace SkillEditor {
             }
         }
 
-        private static bool m_isPlaying;
-        public static bool IsPlayOver => m_curPlayTime >= m_curClip.length;
-        private static float m_curPlayTime;
-        public static float PlayTime => m_curPlayTime;
+        private bool m_isPlaying;
+        public bool IsPlayOver => m_curPlayTime >= m_curClip.length;
+        private float m_curPlayTime;
+        public float PlayTime => m_curPlayTime;
         
-        public static void Play() {
+        public void Play() {
             m_isPlaying = true;
             m_curPlayTime = 0;
         }
 
-        public static void Play(AnimationClip clip) {
+        public void Play(AnimationClip clip) {
             Clip = clip;
             Play();
         }
 
-        public static void Play(GameObject gameObject, AnimationClip clip) {
+        public void Play(GameObject gameObject, AnimationClip clip) {
             ModelGameObject = gameObject;
             Play(clip);
         }
 
-        public static void Pause() => m_isPlaying = !m_isPlaying;
+        public void Pause() => m_isPlaying = !m_isPlaying;
 
-        public static void Stop() {
+        public void Stop() {
             m_isPlaying = false;
             m_curClip.SampleAnimation(m_gameObject, 0);
         }
 
-        public static void Update(float deltaTime) {
+        public void Update(float deltaTime) {
             if (!m_isPlaying)
                 return;
             m_curPlayTime += deltaTime;
