@@ -19,16 +19,16 @@ namespace SkillEditor {
         }
 
         public static string FileWithExtension(string fileName, string extension) {
-            return string.Format("{0}.{1}", fileName, extension);
+            return GetCacheString(string.Format("{0}.{1}", fileName, extension));
         }
 
         public static string FullPathToProjectPath(string fullPath) {
             int subIndex = fullPath.IndexOf("Assets/", StringComparison.Ordinal);
-            return fullPath.Substring(subIndex);
+            return GetCacheString(fullPath.Substring(subIndex));
         }
 
         public static string ProjectPathToFullPath(string projectPath) {
-            return Config.ProjectPath + projectPath;
+            return GetCacheString(Config.ProjectPath + projectPath);
         }
 
         public static string CombinePath(string path1, string path2) {
@@ -41,18 +41,45 @@ namespace SkillEditor {
             bool isPath1LastFormat = path1[path1.Length - 1] == flag;
             bool isPath2StartFormat = path2[0] == flag;
             if (isPath1LastFormat && isPath2StartFormat)
-                return path1.Substring(0, path1.Length - 2) + path2;
+                return GetCacheString(path1.Substring(0, path1.Length - 2) + path2);
             else if (!isPath1LastFormat && !isPath2StartFormat)
                 format = "{0}/{1}";
             else
                 format = "{0}{1}";
-            return string.Format(format, path1, path2);
+            return GetCacheString(string.Format(format, path1, path2));
         }
 
         public static string CombineFilePath(string path, string fileName, string extension = null) {
             if (extension == null)
                 return CombinePath(path, fileName);
             return CombinePath(path, FileWithExtension(fileName, extension));
+        }
+
+        public static string GetFileNameFromPath(string path) {
+            Debug.Log("Tool::GetFileNameFromPath path " + path);
+#if UNITY_EDITOR_WIN
+            string[] array = path.Split('\\');
+#elif UNITY_EDITOR_OSX
+            string[] array = path.Split('/');
+#else
+            string[] array = path.Split('/');
+#endif
+            return GetCacheString(array[array.Length - 1]);
+        }
+
+        public static string GetFileNameWithourExtensionFromPath(string path) {
+            string fileName = GetFileNameFromPath(path);
+            int subIndex = fileName.IndexOf(".");
+            return GetCacheString(fileName.Substring(0, subIndex));
+        }
+
+        public static string GetFileNameWithoutPrefix(string fileName, string prefix) {
+            return GetCacheString(fileName.Substring(prefix.Length));
+        }
+
+        public static string GetPathFromFilePath(string path, string fileName) {
+            int subIndex = path.IndexOf(fileName);
+            return GetCacheString(path.Substring(0, subIndex));
         }
 
         internal static string GetTabString(AnimClipLuaLayer layer) {
@@ -74,7 +101,7 @@ namespace SkillEditor {
                 builder.Append(data.ToString());
             }
             builder.Append(tabString);
-            return builder.ToString();
+            return GetCacheString(builder.ToString());
         }
 
         internal static string GetCacheString(string text) {

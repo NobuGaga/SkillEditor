@@ -10,6 +10,7 @@ namespace SkillEditor {
     internal static class Controller {
 
         private static GameObject m_model;
+        private static GameObject m_weapon;
 
         private static bool m_isGenericClip;
 
@@ -22,19 +23,6 @@ namespace SkillEditor {
         public static void Start(string prefabPath) {
             Reset();
             m_model = LoadPrefab(prefabPath);
-            if (File.Exists(Config.WeaponPath)) {
-                GameObject weapon = LoadPrefab(Config.WeaponPath);
-                Transform[] nodes = m_model.transform.GetComponentsInChildren<Transform>();
-                Transform rightHand = null;
-                if (nodes != null)
-                    for (int index = 0; index < nodes.Length; index++)
-                        if (nodes[index].name == "R_Weapon_Point")
-                            rightHand = nodes[index];
-                if (rightHand != null) {
-                    weapon.transform.SetParent(rightHand);
-                    weapon.transform.localPosition = Vector3.zero;
-                }
-            }
             Selection.activeGameObject = m_model;
             InitAnimation();
             InitAnimClipData();
@@ -61,7 +49,8 @@ namespace SkillEditor {
             if (animator == null)
                 Debug.LogError("Prefab's animator is not exit");
             SkillAnimator.Animator = animator;
-            RemoveAllAnimatorTransition();
+            string sourcePath = Config.GetAnimatorControllerPath(m_model.name);
+            AnimatorControllerManager.RemoveAllAnimatorTransition(m_model.name, sourcePath);
         }
 
         private static List<AnimationClip> m_listAnimationClip = new List<AnimationClip>(Config.ModelStateClipCount);
@@ -81,45 +70,26 @@ namespace SkillEditor {
             return m_listAnimationClip.ToArray();
         }
 
-        private static void RemoveAllAnimatorTransition() {
-            string sourcePath = Config.GetAnimatorControllerPath(m_model.name);
-            string copyPath = Config.GetAnimatorControllerCopyPath(m_model.name);
-            AnimatorController animatorController = AssetDatabase.LoadAssetAtPath<AnimatorController>(sourcePath);
-            File.Copy(Tool.ProjectPathToFullPath(sourcePath), copyPath, true);
-            AnimatorControllerLayer[] layers = animatorController.layers;
-            for (int layerIndex = 0; layerIndex < layers.Length; layerIndex++) {
-                AnimatorStateMachine mainMachine = layers[layerIndex].stateMachine;
-                if (mainMachine == null || mainMachine.states == null)
-                    continue;
-                RemoveAnimatorMachineTransition(mainMachine);
-                ChildAnimatorStateMachine[] subMachines = mainMachine.stateMachines;
-                if (subMachines == null)
-                    continue;
-                for (int machineIndex = 0; machineIndex < subMachines.Length; machineIndex++) {
-                    AnimatorStateMachine subMachine = subMachines[machineIndex].stateMachine;
-                    if (subMachine == null)
-                        continue;
-                    RemoveAnimatorMachineTransition(subMachine);
-                }
-            }
-            AssetDatabase.SaveAssets();
-        }
-
-        private static void RemoveAnimatorMachineTransition(AnimatorStateMachine machine) {
-            ChildAnimatorState[] states = machine.states;
-            for (int stateIndex = 0; stateIndex < states.Length; stateIndex++) {
-                AnimatorState state = states[stateIndex].state;
-                if (state == null || state.transitions == null)
-                    continue;
-                int transIndex = state.transitions.Length - 1;
-                for (; transIndex >= 0; transIndex--)
-                    state.RemoveTransition(state.transitions[transIndex]);
-            }
-        }
-
         private static void InitAnimClipData() {
             LuaReader.Read<AnimClipData>();
             LuaAnimClipModel.SetCurrentEditModelName(m_model.name);
+        }
+
+        public static void SetWeapon(int index) {
+            string path = WeaponModel.GetWeaponPrefabPath(m_model.name, index);
+            if (!File.Exists(Tool.ProjectPathToFullPath(path)))
+                return;
+            Transform[] nodes = m_model.transform.GetComponentsInChildren<Transform>();
+            Transform rightHand = null;
+            if (nodes != null)
+                for (int i = 0; i < nodes.Length; i++)
+                    if (nodes[i].name == "R_Weapon_Point")
+                        rightHand = nodes[i];
+            if (rightHand != null) {
+                GameObject weapon = LoadPrefab(path);
+                weapon.transform.SetParent(rightHand);
+                weapon.transform.localPosition = Vector3.zero;
+            }
         }
 
         public static void SetAnimationClipData(int index) {
@@ -226,19 +196,13 @@ namespace SkillEditor {
             LuaAnimClipModel.Reset();
             m_listDrawCubeData.Clear();
             m_isPlaying = false;
-            if (m_isGenericClip && m_model != null) {
-                string copyPath = Config.GetAnimatorControllerCopyPath(m_model.name);
-                if (File.Exists(copyPath)) {
-                    string sourcePath = Config.GetAnimatorControllerPath(m_model.name);
-                    sourcePath = Tool.ProjectPathToFullPath(sourcePath);
-                    File.Copy(copyPath, sourcePath, true);
-                    File.Delete(copyPath);
-                    AssetDatabase.SaveAssets();
-                }
-            }
             if (m_model) {
                 Object.DestroyImmediate(m_model);
                 m_model = null;
+            }
+            if (m_weapon) {
+                Object.DestroyImmediate(m_weapon);
+                m_weapon = null;
             }
         }
 

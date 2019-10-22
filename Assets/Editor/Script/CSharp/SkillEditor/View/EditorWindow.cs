@@ -35,6 +35,7 @@
         private static bool m_isSelectPrefab;
         private static bool m_isNoAnimationClip;
 
+        private static int m_lastWeaponIndex;
         private static int m_lastClipIndex;
         private static bool IsNoSelectClip => m_lastClipIndex == Config.ErrorIndex;
         private static string[] m_animationClipNames;
@@ -120,7 +121,17 @@
         }
 
         private void TitleUI() {
-            SpaceWithLabel(Tool.GetCacheString(LabelModelName + LuaAnimClipModel.ModelName));
+            string modelName = LuaAnimClipModel.ModelName;
+            SpaceWithLabel(Tool.GetCacheString(LabelModelName + modelName));
+            string[] arrayWeaponName = WeaponModel.GetAllWeaponName(modelName);
+            if (arrayWeaponName != null) {
+                int[] arrayIndex = WeaponModel.GetAllWeaponNameIndex(modelName);
+                int tempIndex = IntPopup(m_lastWeaponIndex, arrayWeaponName, arrayIndex);
+                if (tempIndex != m_lastWeaponIndex && tempIndex != Config.ErrorIndex) {
+                    m_lastWeaponIndex = tempIndex;
+                    Controller.SetWeapon(m_lastWeaponIndex);
+                }
+            }
             SpaceWithLabel(LabelModelClipTips);
             int selectIndex = m_lastClipIndex;
             if (m_animationClipNames != null && m_animationClipIndexs != null)

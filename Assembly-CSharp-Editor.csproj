@@ -53,10 +53,13 @@
      <Compile Include="Assets\Editor\Script\CSharp\SkillEditor\Lua\LuaFormat.cs" />
      <Compile Include="Assets\Editor\Script\CSharp\SkillEditor\Lua\LuaReader.cs" />
      <Compile Include="Assets\Editor\Script\CSharp\SkillEditor\Lua\LuaWriter.cs" />
+     <Compile Include="Assets\Editor\Script\CSharp\SkillEditor\Manager\AnimatorControllerManager.cs" />
+     <Compile Include="Assets\Editor\Script\CSharp\SkillEditor\Manager\ModelManager.cs" />
      <Compile Include="Assets\Editor\Script\CSharp\SkillEditor\Model\AnimationModel.cs" />
      <Compile Include="Assets\Editor\Script\CSharp\SkillEditor\Model\Config.cs" />
      <Compile Include="Assets\Editor\Script\CSharp\SkillEditor\Model\LuaAnimClipModel.cs" />
      <Compile Include="Assets\Editor\Script\CSharp\SkillEditor\Model\LuaAnimClipStructure.cs" />
+     <Compile Include="Assets\Editor\Script\CSharp\SkillEditor\Model\WeaponModel.cs" />
      <Compile Include="Assets\Editor\Script\CSharp\SkillEditor\Tool.cs" />
      <Compile Include="Assets\Editor\Script\CSharp\SkillEditor\View\EditorScene.cs" />
      <Compile Include="Assets\Editor\Script\CSharp\SkillEditor\View\EditorWindow.cs" />

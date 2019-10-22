@@ -9,8 +9,15 @@ namespace SkillEditor {
         // Common
         private static readonly int ProjectPathSubIndex = Application.dataPath.IndexOf("Assets", StringComparison.Ordinal);
         public static readonly string ProjectPath = Application.dataPath.Substring(0, ProjectPathSubIndex);
+        public const string AnimatorControllerFolder = "animatorcontroller";
+        public const string AnimationClipFolder = "models";
+        public const string ModelPrefabFolder = "prefabs";
+        public const string MetaExtension = "meta";
+        public const string PrefabExtension = "prefab";
+        public const string AnimationClipExtension = "FBX";
+        public const string AnimationClipSymbol = "@";
         public const float FramesPerSecond = 1f / 30;
-        
+
         // Prefab Group Structure
         public const string ModelPrefabPath = "Assets/Editor/Asset/prefabs";
         public const string ModelPrefabExtension = "prefab";
@@ -26,7 +33,7 @@ namespace SkillEditor {
                 int subIndex = m_prefabFullPath.IndexOf("prefabs/", StringComparison.Ordinal);
                 string modelFileGroupFullPath = m_prefabFullPath.Substring(0, subIndex);
                 m_clipFullPath = Tool.CombinePath(modelFileGroupFullPath, "models");
-                m_controllerPath = Tool.CombinePath(modelFileGroupFullPath, "animatorcontroller");
+                m_controllerPath = Tool.CombinePath(modelFileGroupFullPath, AnimatorControllerFolder);
                 m_controllerPath = Tool.FullPathToProjectPath(m_controllerPath);
             }
             get { return m_prefabFullPath; }
@@ -34,7 +41,10 @@ namespace SkillEditor {
         public static string ClipGroupFullPath => m_clipFullPath;
 
         // Weapon
-        public static readonly string WeaponPath = Tool.CombinePath(Application.dataPath, "character/weapon/wp_nvwang/prefabs/wp_nvwang_01.prefab");
+        public static readonly string WeaponPath = Tool.CombinePath(Application.dataPath, "character/weapon");
+        public const string WeaponFilePrefix = "wp_";
+        public static readonly string WeaponAnimatorControllerPath = Tool.CombinePath(WeaponPath, AnimatorControllerFolder);
+        public const short ModelWeaponCount = 2;
 
         // Scene
         private const string ScenePath = "Assets/Editor/Scene";
@@ -66,9 +76,7 @@ namespace SkillEditor {
         public static readonly string ExitLayoutMenuPath = Tool.CombinePath(LayoutMenuPath, ExitEditorLayoutName);
 
         // Animation
-        private const string AnimatorControllerExtension = "controller";
-        private const string AnimatorControllerCopyName = "Copy";
-        private static readonly string AnimatorControllerCopyPath = LocalLayoutFileGroupPath;
+        public const string AnimatorControllerExtension = "controller";
 
         // Structure
         public static readonly string AnimDataFilePath = Tool.CombinePath(ProjectPath, "Assets/Editor/Script/Lua/AnimClipData.lua");
@@ -99,10 +107,6 @@ namespace SkillEditor {
 
         public static string GetAnimatorControllerPath(string fileName) {
             return Tool.CombineFilePath(m_controllerPath, fileName, AnimatorControllerExtension);
-        }
-
-        public static string GetAnimatorControllerCopyPath(string fileName) {
-            return Tool.CombineFilePath(AnimatorControllerCopyPath, fileName + AnimatorControllerCopyName, AnimatorControllerExtension);
         }
     }
 }

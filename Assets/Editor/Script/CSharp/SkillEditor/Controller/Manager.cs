@@ -40,6 +40,7 @@ namespace SkillEditor {
         public static bool Exit() {
             if (!isEditorMode)
                 return true;
+            AnimatorControllerManager.RevertAnimatorControllerFile();
             Controller.Exit();
             Config.Reset();
             EditorApplication.wantsToQuit -= Exit;
