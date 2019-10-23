@@ -147,8 +147,12 @@ namespace SkillEditor {
             return list[index].weaponPath;
         }
 
+        public static bool CheckModelHasWeaponClip(string modelName) {
+            return m_dicModelClip.ContainsKey(modelName);
+        }
+
         public static AnimationClip GetAnimationClip(string modelName, string clipName) {
-            if (!m_dicModelClip.ContainsKey(modelName))
+            if (!CheckModelHasWeaponClip(modelName))
                 return null;
             Dictionary<string, AnimationClip> dicClip = m_dicModelClip[modelName];
             if (!dicClip.ContainsKey(clipName))
@@ -156,6 +160,16 @@ namespace SkillEditor {
             return dicClip[clipName];
         }
  
+        public static bool GetGenericState(string modelName) {
+            Dictionary<string, AnimationClip> dicClip = m_dicModelClip[modelName];
+            AnimationClip sampleClip = null;
+            foreach (var keyValue in dicClip) {
+                sampleClip = keyValue.Value;
+                break;
+            }
+            return BaseAnimation.IsGenericState(sampleClip);
+        }
+
         private static void Clear() {
             m_dicModelWeapon.Clear();
             m_dicModelClip.Clear();

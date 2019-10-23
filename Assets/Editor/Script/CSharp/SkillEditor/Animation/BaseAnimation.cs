@@ -34,5 +34,9 @@ namespace SkillEditor {
         }
 
         protected abstract void SampleAnimation();
+
+        public static bool IsGenericState(AnimationClip clip) {
+            return !clip.legacy && !clip.humanMotion;
+        }
     }
 }

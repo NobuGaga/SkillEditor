@@ -33,7 +33,7 @@ namespace SkillEditor {
             if (m_aniamtionClips == null)
                 return false;
             AnimationClip sampleClip = m_aniamtionClips[0];
-            return !sampleClip.legacy && !sampleClip.humanMotion;
+            return BaseAnimation.IsGenericState(sampleClip);
         }
 
         private static List<string> m_listAnimationClipNames = new List<string>(Config.ModelStateClipCount);

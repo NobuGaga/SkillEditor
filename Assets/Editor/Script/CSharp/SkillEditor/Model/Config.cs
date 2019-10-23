@@ -40,6 +40,7 @@ namespace SkillEditor {
             get { return m_prefabFullPath; }
         }
         public static string ClipGroupFullPath => m_clipFullPath;
+        public const string TempModelName = "nvwang";
 
         // Weapon
         public static readonly string WeaponPath = Tool.CombinePath(Application.dataPath, "character/weapon");

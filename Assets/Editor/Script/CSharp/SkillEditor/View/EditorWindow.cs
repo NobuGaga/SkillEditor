@@ -122,7 +122,7 @@
         }
 
         private void TitleUI() {
-            string modelName = "nvwang";
+            string modelName = Config.TempModelName;
             SpaceWithLabel(Tool.GetCacheString(LabelModelName + modelName));
             string[] arrayWeaponName = WeaponModel.GetAllWeaponName(modelName);
             if (arrayWeaponName != null) {
