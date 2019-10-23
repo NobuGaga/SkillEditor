@@ -62,6 +62,10 @@ namespace SkillEditor {
                 string sourcePath = Tool.CombineFilePath(fileFullPath, fileName, Config.AnimatorControllerExtension);
                 File.Copy(copyPath, sourcePath, true);
                 File.Delete(copyPath);
+                string copyMetaPath = Tool.FileWithExtension(copyPath, Config.MetaExtension);
+                if (!File.Exists(copyMetaPath))
+                    continue;
+                File.Delete(copyMetaPath);
             }
             m_dicFile.Clear();
             AssetDatabase.SaveAssets();

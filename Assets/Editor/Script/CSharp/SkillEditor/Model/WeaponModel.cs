@@ -32,7 +32,7 @@ namespace SkillEditor {
                 if (fullPath.Contains(animControllerFolder)) {
                     int stringIndex = fullPath.IndexOf(animControllerFolder);
                     if (stringIndex + animControllerFolder.Length >= fullPath.Length)
-                        InitAnimatorController(Tool.CombinePath(fullPath, animControllerFolder));
+                        InitAnimatorController(fullPath);
                 }
                 else if (fullPath.Contains(Config.WeaponFilePrefix)) {
                     string folderName = Tool.GetFileNameFromPath(fullPath);
@@ -43,7 +43,7 @@ namespace SkillEditor {
         }
 
         private static void InitAnimatorController(string path) {
-            string[] arrayFullPath = Directory.GetFiles(Config.WeaponPath);
+            string[] arrayFullPath = Directory.GetFiles(path);
             if (arrayFullPath == null || arrayFullPath.Length == 0)
                 return;
             for (int index = 0; index < arrayFullPath.Length; index++) {
@@ -51,7 +51,7 @@ namespace SkillEditor {
                 if (fullPath.EndsWith(Config.MetaExtension))
                     continue;
                 string projectPath = Tool.FullPathToProjectPath(fullPath);
-                string fileName = Tool.GetFileNameFromPath(projectPath);
+                string fileName = Tool.GetFileNameWithourExtensionFromPath(projectPath);
                 projectPath = Tool.GetPathFromFilePath(projectPath, fileName);
                 AnimatorControllerManager.RemoveAllAnimatorTransition(fileName, projectPath);
             }

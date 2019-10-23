@@ -36,6 +36,12 @@ namespace SkillEditor {
                 Debug.LogError("SkillEditor.Tool::CombinePath argument error");
                 return string.Empty;
             }
+#if UNITY_EDITOR_WIN
+            if (path1.Contains("\\"))
+                path1 = path1.Replace('\\', '/');
+            if (path2.Contains("\\"))
+                path2 = path2.Replace('\\', '/');
+#endif            
             string format;
             char flag = '/';
             bool isPath1LastFormat = path1[path1.Length - 1] == flag;
@@ -57,7 +63,7 @@ namespace SkillEditor {
 
         public static string GetFileNameFromPath(string path) {
 #if UNITY_EDITOR_WIN
-            string[] array = path.Replace("\\", "/").Split('\\');
+            string[] array = path.Replace('\\', '/').Split('/');
 #elif UNITY_EDITOR_OSX
             string[] array = path.Split('/');
 #else
