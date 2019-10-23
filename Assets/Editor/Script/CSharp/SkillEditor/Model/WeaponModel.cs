@@ -95,8 +95,6 @@ namespace SkillEditor {
             Dictionary<string, AnimationClip> dicClip = m_dicModelClip[modelName];
             for (int index = 0; index < arrayFullPath.Length; index++) {
                 string fileFullPath = arrayFullPath[index];
-                if (fileFullPath.EndsWith(Config.MetaExtension) || !fileFullPath.EndsWith(Config.PrefabExtension))
-                    continue;
                 if (fileFullPath.EndsWith(Config.MetaExtension) || !fileFullPath.Contains(Config.AnimationClipSymbol) ||
                     !fileFullPath.Contains(Config.AnimationClipExtension))
                     continue;

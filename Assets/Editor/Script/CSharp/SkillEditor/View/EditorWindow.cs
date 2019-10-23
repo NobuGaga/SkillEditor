@@ -121,7 +121,7 @@
         }
 
         private void TitleUI() {
-            string modelName = LuaAnimClipModel.ModelName;
+            string modelName = "nvwang";
             SpaceWithLabel(Tool.GetCacheString(LabelModelName + modelName));
             string[] arrayWeaponName = WeaponModel.GetAllWeaponName(modelName);
             if (arrayWeaponName != null) {
