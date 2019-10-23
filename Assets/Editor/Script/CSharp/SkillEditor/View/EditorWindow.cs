@@ -9,8 +9,9 @@
         private const string BtnSelectPrefab = "Select Prefab";
         private const string LabelSelectTips = "Please select a model's prefab";
         private const string LabelNoClipTips = "Current prefab has no AnimationClip file";
-        private const string LabelModelName = "模型名 ";
-        private const string LabelModelClipTips = "动画名 ";
+        private const string LabelModelName = "模型 ";
+        private const string LabelWeapon = "武器 ";
+        private const string LabelModelClipTips = "动画 ";
         private const string LabelModelClipStateTips = "状态组 ";
 
         private const string LabelFrameGroupType = "帧类型组 ";
@@ -124,15 +125,7 @@
         private void TitleUI() {
             string modelName = Config.TempModelName;
             SpaceWithLabel(Tool.GetCacheString(LabelModelName + modelName));
-            string[] arrayWeaponName = WeaponModel.GetAllWeaponName(modelName);
-            if (arrayWeaponName != null) {
-                int[] arrayIndex = WeaponModel.GetAllWeaponNameIndex(modelName);
-                int tempIndex = IntPopup(m_lastWeaponIndex, arrayWeaponName, arrayIndex);
-                if (tempIndex != m_lastWeaponIndex && tempIndex != Config.ErrorIndex) {
-                    m_lastWeaponIndex = tempIndex;
-                    Controller.SetWeapon(m_lastWeaponIndex);
-                }
-            }
+            WeaponUI(modelName);
             SpaceWithLabel(LabelModelClipTips);
             int selectIndex = m_lastClipIndex;
             if (m_animationClipNames != null && m_animationClipIndexs != null)
@@ -149,6 +142,19 @@
             State selectState = (State)EnumPopup(lastState);
             if (selectState != lastState)
                 Controller.SetAnimClipData(selectState);
+        }
+
+        private void WeaponUI(string modelName) {
+            string[] arrayWeaponName = WeaponModel.GetAllWeaponName(modelName);
+            if (arrayWeaponName == null)
+                return;
+            SpaceWithLabel(LabelWeapon);
+            int[] arrayIndex = WeaponModel.GetAllWeaponNameIndex(modelName);
+            int tempIndex = IntPopup(m_lastWeaponIndex, arrayWeaponName, arrayIndex);
+            if (tempIndex != m_lastWeaponIndex && tempIndex != Config.ErrorIndex) {
+                m_lastWeaponIndex = tempIndex;
+                Controller.SetWeapon(m_lastWeaponIndex);
+            }
         }
 
         private void AnimationUI() {
