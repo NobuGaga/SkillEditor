@@ -29,8 +29,9 @@ namespace SkillEditor {
         }
 
         public override void SetAnimationPlayTime(AnimationClip clip, float time) {
-            bool isPlayOver = time > clip.length;
-            clip.SampleAnimation(m_gameObject, isPlayOver ? clip.length : time);
+            m_curClip = clip;
+            m_curPlayTime = time;
+            SampleAnimation();
         }
 
         protected override void SampleAnimation() {

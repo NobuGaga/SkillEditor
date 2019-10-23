@@ -188,6 +188,7 @@ namespace SkillEditor {
             m_modelAnimation.SetAnimationPlayTime(selectAnimationClip, time);
             if (m_weaponAnimation != null && !m_isNoWeaponClip)
                 m_modelAnimation.SetAnimationPlayTime(selectAnimationClip, time);
+            SetDrawCubeData();
         }
 
         private static void Update() {
@@ -200,6 +201,10 @@ namespace SkillEditor {
             if (m_weaponAnimation != null && !m_isNoWeaponClip)
                 m_weaponAnimation.Update(deltaTime);
             EditorWindow.RefreshAnimationProcessUI();
+            SetDrawCubeData();
+        }
+
+        private static void SetDrawCubeData() {
             m_listDrawCubeData.Clear();
             if (LuaAnimClipModel.ListCollision.Count == 0)
                 return;

@@ -54,6 +54,7 @@ namespace SkillEditor {
                 m_animator.transform.position = m_originPos;
                 Bake(clip);
             }
+            m_curPlayTime = time;
             m_animator.playbackTime = time;
             m_animator.Update(0);
         }
