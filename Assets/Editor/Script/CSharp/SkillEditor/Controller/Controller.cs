@@ -13,6 +13,7 @@ namespace SkillEditor {
         private static BaseAnimation m_modelAnimation;
         private static GameObject m_weapon;
         private static BaseAnimation m_weaponAnimation;
+        private static bool m_isNoWeaponClip = false;
 
         private static double m_lastTime;
 
@@ -52,7 +53,7 @@ namespace SkillEditor {
 
         private static void SetAnimation(ref BaseAnimation animation, bool isGeneric, GameObject gameObject) {
             if (isGeneric) {
-                Animator animator = m_model.GetComponent<Animator>();
+                Animator animator = gameObject.GetComponent<Animator>();
                 if (animator == null)
                     Debug.LogError("Prefab's animator is not exit, prefab name " + gameObject.name);
                 if (animation is SkillAnimator)
@@ -62,9 +63,9 @@ namespace SkillEditor {
             }
             else {
                 if (animation is SkillClip)
-                    animation.Init(m_model);
+                    animation.Init(gameObject);
                 else
-                    animation = new SkillClip(m_model);
+                    animation = new SkillClip(gameObject);
             }
         }
 
@@ -154,7 +155,8 @@ namespace SkillEditor {
             if (m_weaponAnimation == null)
                 return;
             AnimationClip clip = WeaponModel.GetAnimationClip(Config.TempModelName, selectAnimationClip.name);
-            if (clip == null)
+            m_isNoWeaponClip = clip == null;
+            if (m_isNoWeaponClip)
                 return;
             m_weaponAnimation.Play(clip);
         }
@@ -163,7 +165,7 @@ namespace SkillEditor {
             if (!m_isPlaying)
                 return;
             m_modelAnimation.Pause();
-            if (m_weaponAnimation != null)
+            if (m_weaponAnimation != null && !m_isNoWeaponClip)
                 m_weaponAnimation.Pause();
         }
 
@@ -173,7 +175,7 @@ namespace SkillEditor {
             m_isPlaying = false;
             EditorApplication.update -= Update;
             m_modelAnimation.Stop();
-            if (m_weaponAnimation != null)
+            if (m_weaponAnimation != null && !m_isNoWeaponClip)
                 m_weaponAnimation.Stop();
             m_listDrawCubeData.Clear();
         }
@@ -185,7 +187,7 @@ namespace SkillEditor {
             float deltaTime = (float)(currentTime - m_lastTime);
             m_lastTime = currentTime;
             m_modelAnimation.Update(deltaTime);
-            if (m_weaponAnimation != null)
+            if (m_weaponAnimation != null && !m_isNoWeaponClip)
                 m_weaponAnimation.Update(deltaTime);
             m_listDrawCubeData.Clear();
             if (LuaAnimClipModel.ListCollision.Count == 0)
