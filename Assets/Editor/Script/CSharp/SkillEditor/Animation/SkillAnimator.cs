@@ -7,27 +7,9 @@ namespace SkillEditor {
         private Animator m_animator;
         private Vector3 m_originPos;
         private string m_clipName;
-        public override bool IsPlayOver => m_curPlayTime >= m_clipLength;
-        private float m_clipLength;
 
         public SkillAnimator(Animator animator) {
             Init(animator);
-        }
-
-        private void Bake(AnimationClip clip) {
-            float frameRate = clip.frameRate;
-            int frameCount = (int)(clip.length * frameRate) + 1;
-            m_animator.Rebind();
-            m_animator.StopPlayback();
-            m_animator.Play(clip.name);
-            m_animator.recorderStartTime = 0;
-            m_animator.StartRecording(frameCount);
-            for (int i = 0; i < frameCount; i++)
-                m_animator.Update(1 / frameRate);
-            m_animator.StopRecording();
-            m_animator.StartPlayback();
-            m_clipName = clip.name;
-            m_clipLength = clip.length;
         }
 
         public override void Init<T>(T animator) {
@@ -35,33 +17,39 @@ namespace SkillEditor {
             m_originPos = m_animator.transform.position;
         }
 
-        public override void Play(AnimationClip clip) {
-            if (clip.name != m_clipName) {
-                m_animator.transform.position = m_originPos;
-                Bake(clip);
-            }
-            Play();
+        private void CheckHasRecord(AnimationClip clip) {
+            if (clip.name == m_clipName)
+                return;
+            m_clipName = clip.name;
+            Record(clip);
         }
 
-        public override void Stop() {
-            base.Stop();
-            m_animator.playbackTime = 0;
-            m_animator.Update(0);
+        private void Record(AnimationClip clip) {
+            float frameRate = clip.frameRate;
+            int frameCount = (int)(clip.length * frameRate) + 1;
+            m_animator.Rebind();
+            m_animator.StopPlayback();
+            m_animator.Play(clip.name);
+            m_animator.recorderStartTime = 0;
+            m_animator.StartRecording(frameCount);
+            for (int index = 0; index < frameCount; index++)
+                m_animator.Update(1 / frameRate);
+            m_animator.StopRecording();
+            m_animator.StartPlayback();
+        }
+
+        public override void Play(AnimationClip clip) {
+            CheckHasRecord(clip);
+            m_animator.transform.position = m_originPos;
+            base.Play(clip);
         }
 
         public override void SetAnimationPlayTime(AnimationClip clip, float time) {
-            if (clip.name != m_clipName) {
-                m_animator.transform.position = m_originPos;
-                Bake(clip);
-            }
-            m_curPlayTime = time;
-            m_animator.playbackTime = time;
-            m_animator.Update(0);
+            CheckHasRecord(clip);
+            base.SetAnimationPlayTime(clip, time);
         }
 
         protected override void SampleAnimation() {
-            if (IsPlayOver)
-                return;
             m_animator.playbackTime = m_curPlayTime;
             m_animator.Update(0);
         }

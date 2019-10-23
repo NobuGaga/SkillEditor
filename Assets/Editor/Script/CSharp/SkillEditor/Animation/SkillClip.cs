@@ -16,26 +16,18 @@ namespace SkillEditor {
             m_gameObject = gameObject as GameObject;
         }
 
-        public override bool IsPlayOver => m_curPlayTime >= m_curClip.length;
-        
         public override void Play(AnimationClip clip) {
             m_curClip = clip;
-            Play();
-        }
-
-        public override void Stop() {
-            base.Stop();
-            m_curClip.SampleAnimation(m_gameObject, 0);
+            base.Play(clip);
         }
 
         public override void SetAnimationPlayTime(AnimationClip clip, float time) {
             m_curClip = clip;
-            m_curPlayTime = time;
-            SampleAnimation();
+            base.SetAnimationPlayTime(clip, time);
         }
 
         protected override void SampleAnimation() {
-            m_curClip.SampleAnimation(m_gameObject, IsPlayOver ? m_curClip.length : m_curPlayTime);
+            m_curClip.SampleAnimation(m_gameObject, m_curPlayTime);
         }
     }
 }

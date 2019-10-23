@@ -1,5 +1,4 @@
 ﻿using UnityEditor;
-using UnityEditor.Animations;
 using UnityEngine;
 using System.IO;
 using System.Collections.Generic;
@@ -17,8 +16,6 @@ namespace SkillEditor {
         private static bool m_isNoWeaponClip = false;
 
         private static double m_lastTime;
-
-        private static bool m_isPlaying;
 
         private static List<CubeData> m_listDrawCubeData = new List<CubeData>();
 
@@ -144,12 +141,11 @@ namespace SkillEditor {
         }
 
         public static void Play() {
+            if (m_modelAnimation.IsPlaying)
+                return;
             AnimationClip selectAnimationClip = AnimationModel.SelectAnimationClip;
             if (selectAnimationClip == null)
                 return;
-            if (m_isPlaying)
-                return;
-            m_isPlaying = true;
             m_lastTime = EditorApplication.timeSinceStartup;
             EditorApplication.update += Update;
             m_modelAnimation.Play(selectAnimationClip);
@@ -163,37 +159,29 @@ namespace SkillEditor {
         }
 
         public static void Pause() {
-            if (!m_isPlaying)
-                return;
             m_modelAnimation.Pause();
             if (m_weaponAnimation != null && !m_isNoWeaponClip)
                 m_weaponAnimation.Pause();
         }
 
         public static void Stop() {
-            if (!m_isPlaying)
-                return;
-            m_isPlaying = false;
-            EditorApplication.update -= Update;
+            EditorApplication.update = null;
             m_modelAnimation.Stop();
             if (m_weaponAnimation != null && !m_isNoWeaponClip)
                 m_weaponAnimation.Stop();
-            m_listDrawCubeData.Clear();
         }
 
         public static void SetAnimationPlayTime(float time) {
-            if (m_isPlaying)
+            if (m_modelAnimation.IsPlaying)
                 return;
             AnimationClip selectAnimationClip = AnimationModel.SelectAnimationClip;
             m_modelAnimation.SetAnimationPlayTime(selectAnimationClip, time);
             if (m_weaponAnimation != null && !m_isNoWeaponClip)
-                m_modelAnimation.SetAnimationPlayTime(selectAnimationClip, time);
+                m_weaponAnimation.SetAnimationPlayTime(selectAnimationClip, time);
             SetDrawCubeData();
         }
 
         private static void Update() {
-            if (m_modelAnimation.IsPlayOver)
-                Stop();
             double currentTime = EditorApplication.timeSinceStartup;
             float deltaTime = (float)(currentTime - m_lastTime);
             m_lastTime = currentTime;
@@ -202,6 +190,8 @@ namespace SkillEditor {
                 m_weaponAnimation.Update(deltaTime);
             EditorWindow.RefreshRepaint();
             SetDrawCubeData();
+            if (m_modelAnimation.IsPlayOver)
+                EditorApplication.update = null;
         }
 
         private static void SetDrawCubeData() {
@@ -233,7 +223,6 @@ namespace SkillEditor {
         public static void Reset() {
             LuaAnimClipModel.Reset();
             m_listDrawCubeData.Clear();
-            m_isPlaying = false;
             if (m_model != null) {
                 Object.DestroyImmediate(m_model);
                 m_model = null;
