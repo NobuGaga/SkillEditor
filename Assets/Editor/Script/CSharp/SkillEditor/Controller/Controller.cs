@@ -10,6 +10,7 @@ namespace SkillEditor {
     internal static class Controller {
 
         private static GameObject m_model;
+        private static BaseAnimation m_modelAnimation;
         private static GameObject m_weapon;
 
         private static bool m_isGenericClip;
@@ -43,12 +44,20 @@ namespace SkillEditor {
         private static void InitAnimation() {
             AnimationModel.AnimationClips = GetAllAnimationClip();
             m_isGenericClip = AnimationModel.GenericState();
-            if (!m_isGenericClip)
+            if (!m_isGenericClip) {
+                if (m_modelAnimation is SkillClip)
+                    m_modelAnimation.Init(m_model);
+                else
+                    m_modelAnimation = new SkillClip(m_model);
                 return;
+            }
             Animator animator = m_model.GetComponent<Animator>();
             if (animator == null)
                 Debug.LogError("Prefab's animator is not exit");
-            SkillAnimator.Animator = animator;
+            if (m_modelAnimation is SkillAnimator)
+                m_modelAnimation.Init(animator);
+            else
+                m_modelAnimation = new SkillAnimator(animator);
             string sourcePath = Tool.FullPathToProjectPath(Config.ControllerPath);
             AnimatorControllerManager.RemoveAllAnimatorTransition(m_model.name, sourcePath);
         }
@@ -76,7 +85,7 @@ namespace SkillEditor {
         }
 
         public static void SetWeapon(int index) {
-            string path = WeaponModel.GetWeaponPrefabPath(m_model.name, index);
+            string path = WeaponModel.GetWeaponPrefabPath("nvwang", index);
             if (!File.Exists(Tool.ProjectPathToFullPath(path)))
                 return;
             Transform[] nodes = m_model.transform.GetComponentsInChildren<Transform>();
@@ -126,19 +135,13 @@ namespace SkillEditor {
             m_isPlaying = true;
             m_lastTime = EditorApplication.timeSinceStartup;
             EditorApplication.update += Update;
-            if (m_isGenericClip)
-                SkillAnimator.Play(selectAnimationClip);
-            else
-                SkillClip.Play(m_model, selectAnimationClip);
+                m_modelAnimation.Play(selectAnimationClip);
         }
 
         public static void Pause() {
             if (!m_isPlaying)
                 return;
-            if (m_isGenericClip)
-                SkillAnimator.Pause();
-            else
-                SkillClip.Pause();
+            m_modelAnimation.Pause();
         }
 
         public static void Stop() {
@@ -146,31 +149,21 @@ namespace SkillEditor {
                 return;
             m_isPlaying = false;
             EditorApplication.update -= Update;
-            if (m_isGenericClip)
-                SkillAnimator.Stop();
-            else
-                SkillClip.Stop();
+            m_modelAnimation.Stop();
             m_listDrawCubeData.Clear();
         }
 
         private static void Update() {
-            if ((m_isGenericClip && SkillAnimator.IsPlayOver) || (!m_isGenericClip && SkillClip.IsPlayOver))
+            if (m_modelAnimation.IsPlayOver)
                 Stop();
             double currentTime = EditorApplication.timeSinceStartup;
             float deltaTime = (float)(currentTime - m_lastTime);
             m_lastTime = currentTime;
-            if (m_isGenericClip)
-                SkillAnimator.Update(deltaTime);
-            else
-                SkillClip.Update(deltaTime);
+            m_modelAnimation.Update(deltaTime);
             m_listDrawCubeData.Clear();
             if (LuaAnimClipModel.ListCollision.Count == 0)
                 return;
-            float time;
-            if (m_isGenericClip)
-                time = SkillAnimator.PlayTime;
-            else
-                time = SkillClip.PlayTime;
+            float time = m_modelAnimation.PlayTime;
             var list = LuaAnimClipModel.ListCollision;
             float minTime = list[0].Key - Config.FramesPerSecond;
             float maxTime = list[list.Count - 1].Key + Config.FramesPerSecond;

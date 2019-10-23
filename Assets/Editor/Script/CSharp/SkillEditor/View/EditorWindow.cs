@@ -67,6 +67,7 @@
             m_isSelectPrefab = false;
             m_isNoAnimationClip = false;
 
+            m_lastWeaponIndex = Config.ErrorIndex;
             m_lastClipIndex = Config.ErrorIndex;
             m_animationClipNames = null;
             m_animationClipIndexs = null;

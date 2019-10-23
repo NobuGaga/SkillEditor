@@ -2,33 +2,16 @@
 
 namespace SkillEditor {
 
-    internal class SkillAnimator {
+    internal class SkillAnimator : BaseAnimation {
 
         private Animator m_animator;
-        public Animator Animator {
-            set {
-                if (value == null) {
-                    Debug.LogError("SkillAnimator.Animator = null");
-                    return;
-                }
-                Reset();
-                m_animator = value;
-                m_originPos = m_animator.transform.position;
-            }
-        }
         private Vector3 m_originPos;
-
         private string m_clipName;
-        private bool m_isPlaying;
-        public bool IsPlayOver => m_curPlayTime >= m_clipLength;
-        private float m_curPlayTime;
-        public float PlayTime => m_curPlayTime;
+        public override bool IsPlayOver => m_curPlayTime >= m_clipLength;
         private float m_clipLength;
 
-        private void Reset() {
-            m_clipName = string.Empty;
-            m_isPlaying = false;
-            m_curPlayTime = 0;
+        public SkillAnimator(Animator animator) {
+            Init(animator);
         }
 
         private void Bake(AnimationClip clip) {
@@ -47,33 +30,30 @@ namespace SkillEditor {
             m_clipLength = clip.length;
         }
 
-        public void Play(AnimationClip clip) {
+        public override void Init<T>(T animator) {
+            m_animator = animator as Animator;
+            m_originPos = m_animator.transform.position;
+        }
+
+        public override void Play(AnimationClip clip) {
             if (clip.name != m_clipName) {
                 m_animator.transform.position = m_originPos;
                 Bake(clip);
             }
-            m_isPlaying = true;
-            m_curPlayTime = 0;
+            Play();
         }
 
-        public void Pause() => m_isPlaying = !m_isPlaying;
-
-        public void Stop() {
-            m_isPlaying = false;
+        public override void Stop() {
+            base.Stop();
             m_animator.playbackTime = 0;
             m_animator.Update(0);
         }
 
-        public void Update(float deltaTime) {
-            if (!m_isPlaying)
-                return;
-            m_curPlayTime += deltaTime;
+        protected override void SampleAnimation() {
             if (IsPlayOver)
-                Stop();
-            else {
-                m_animator.playbackTime = m_curPlayTime;
-                m_animator.Update(0);
-            }
+                return;
+            m_animator.playbackTime = m_curPlayTime;
+            m_animator.Update(0);
         }
     }
 }
