@@ -44,7 +44,7 @@ namespace SkillEditor {
             AnimationModel.AnimationClips = GetAllAnimationClip();
             bool isGeneric = AnimationModel.GenericState();
             SetAnimation(ref m_modelAnimation, isGeneric, m_model);
-            if (isGeneric)
+            if (!isGeneric)
                 return;
             string sourcePath = Tool.FullPathToProjectPath(Config.ControllerPath);
             AnimatorControllerManager.RemoveAllAnimatorTransition(m_model.name, sourcePath);
