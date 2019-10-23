@@ -23,7 +23,7 @@ namespace SkillEditor {
         public static void Start(string prefabPath) {
             Reset();
             m_model = LoadPrefab(prefabPath);
-            Selection.activeGameObject = m_model;
+            Selection.activeGameObject = null;
             InitModelAnimation();
             InitAnimClipData();
             EditorScene.SetDrawCubeData(m_listDrawCubeData);
