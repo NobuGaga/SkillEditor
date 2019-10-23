@@ -277,14 +277,6 @@
             if (SpaceWithButton(BtnStop))
                 OnStopButton();
             Space();
-            AnimationProcessUI();
-        }
-
-        public static void RefreshAnimationProcessUI() {
-            GetWindow<EditorWindow>().AnimationProcessUI();
-        } 
-
-        private void AnimationProcessUI() {
             float playTime = Controller.PlayTime;
             float clipTime = AnimationModel.SelectAnimationClipTime;
             if (playTime > clipTime)
@@ -292,6 +284,10 @@
             float time = Slider(playTime, clipTime);
             Controller.SetAnimationPlayTime(time);
         }
+
+        public static void RefreshRepaint() {
+            GetWindow<EditorWindow>().Repaint();
+        } 
 
         private void OnPlayButton() => Controller.Play();
 

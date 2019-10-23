@@ -200,7 +200,7 @@ namespace SkillEditor {
             m_modelAnimation.Update(deltaTime);
             if (m_weaponAnimation != null && !m_isNoWeaponClip)
                 m_weaponAnimation.Update(deltaTime);
-            EditorWindow.RefreshAnimationProcessUI();
+            EditorWindow.RefreshRepaint();
             SetDrawCubeData();
         }
 
