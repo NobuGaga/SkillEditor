@@ -52,6 +52,7 @@ namespace SkillEditor {
         public static string SelectAnimationClipName => m_selectAnimationClipName;
         private static AnimationClip m_selectAnimationClip;
         public static AnimationClip SelectAnimationClip => m_selectAnimationClip;
+        public static float SelectAnimationClipTime => m_selectAnimationClip == null ? 0 : m_selectAnimationClip.length;
 
         public static void SetCurrentAnimationClip(int index) {
             if (m_aniamtionClips == null || m_aniamtionClips.Length == 0)

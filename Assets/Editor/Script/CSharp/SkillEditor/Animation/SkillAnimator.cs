@@ -49,6 +49,15 @@ namespace SkillEditor {
             m_animator.Update(0);
         }
 
+        public override void SetAnimationPlayTime(AnimationClip clip, float time) {
+            if (clip.name != m_clipName) {
+                m_animator.transform.position = m_originPos;
+                Bake(clip);
+            }
+            m_animator.playbackTime = time;
+            m_animator.Update(0);
+        }
+
         protected override void SampleAnimation() {
             if (IsPlayOver)
                 return;

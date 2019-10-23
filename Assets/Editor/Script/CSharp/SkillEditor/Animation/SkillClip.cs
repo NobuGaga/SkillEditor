@@ -28,9 +28,13 @@ namespace SkillEditor {
             m_curClip.SampleAnimation(m_gameObject, 0);
         }
 
+        public override void SetAnimationPlayTime(AnimationClip clip, float time) {
+            bool isPlayOver = time > clip.length;
+            clip.SampleAnimation(m_gameObject, isPlayOver ? clip.length : time);
+        }
+
         protected override void SampleAnimation() {
-            bool isPlayOver = IsPlayOver;
-            m_curClip.SampleAnimation(m_gameObject, isPlayOver ? m_curClip.length : m_curPlayTime);
+            m_curClip.SampleAnimation(m_gameObject, IsPlayOver ? m_curClip.length : m_curPlayTime);
         }
     }
 }

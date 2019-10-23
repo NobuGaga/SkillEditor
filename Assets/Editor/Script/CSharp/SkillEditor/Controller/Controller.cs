@@ -11,6 +11,7 @@ namespace SkillEditor {
 
         private static GameObject m_model;
         private static BaseAnimation m_modelAnimation;
+        public static float PlayTime => m_modelAnimation != null ? m_modelAnimation.PlayTime : 0;
         private static GameObject m_weapon;
         private static BaseAnimation m_weaponAnimation;
         private static bool m_isNoWeaponClip = false;
@@ -180,6 +181,15 @@ namespace SkillEditor {
             m_listDrawCubeData.Clear();
         }
 
+        public static void SetAnimationPlayTime(float time) {
+            if (m_isPlaying)
+                return;
+            AnimationClip selectAnimationClip = AnimationModel.SelectAnimationClip;
+            m_modelAnimation.SetAnimationPlayTime(selectAnimationClip, time);
+            if (m_weaponAnimation != null && !m_isNoWeaponClip)
+                m_modelAnimation.SetAnimationPlayTime(selectAnimationClip, time);
+        }
+
         private static void Update() {
             if (m_modelAnimation.IsPlayOver)
                 Stop();
@@ -189,6 +199,7 @@ namespace SkillEditor {
             m_modelAnimation.Update(deltaTime);
             if (m_weaponAnimation != null && !m_isNoWeaponClip)
                 m_weaponAnimation.Update(deltaTime);
+            EditorWindow.RefreshAnimationProcessUI();
             m_listDrawCubeData.Clear();
             if (LuaAnimClipModel.ListCollision.Count == 0)
                 return;

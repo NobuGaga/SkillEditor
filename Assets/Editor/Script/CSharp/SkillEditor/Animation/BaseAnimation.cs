@@ -24,6 +24,8 @@ namespace SkillEditor {
             m_isPlaying = false;
         }
 
+        public abstract void SetAnimationPlayTime(AnimationClip clip, float time);
+
         public void Update(float deltaTime) {
             if (!m_isPlaying)
                 return;

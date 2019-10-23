@@ -75,6 +75,10 @@ public class BaseEditorWindow : EditorWindow {
         GUILayout.Space(space);
     }
 
+    protected float Slider(float current, float maxValue) {
+        return EditorGUILayout.Slider(current, 0, maxValue);
+    }
+
     protected void FadeLayoutUI(Action uiFunction, float value) {
         EditorGUILayout.BeginFadeGroup(value);
         uiFunction();

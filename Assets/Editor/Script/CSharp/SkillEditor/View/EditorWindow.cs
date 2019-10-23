@@ -157,21 +157,6 @@
             }
         }
 
-        private void AnimationUI() {
-            if (SpaceWithButton(BtnPlay))
-                OnPlayButton();
-            if (SpaceWithButton(BtnPause))
-                OnPauseButton();
-            if (SpaceWithButton(BtnStop))
-                OnStopButton();
-        }
-
-        private void OnPlayButton() => Controller.Play();
-
-        private void OnPauseButton() => Controller.Pause();
-
-        private void OnStopButton() => Controller.Stop();
-
         private void FrameKeyNameUI() {
             SpaceWithLabel(LabelFrameGroupType);
             m_lastFrameIndex = IntPopup(m_lastFrameIndex, FrameKeyNameArray, FrameKeyNameIndexArray);
@@ -283,5 +268,35 @@
             cubeData.depth = TextField(cubeData.depth);
             return cubeData;
         }
+
+        private void AnimationUI() {
+            if (SpaceWithButton(BtnPlay))
+                OnPlayButton();
+            if (SpaceWithButton(BtnPause))
+                OnPauseButton();
+            if (SpaceWithButton(BtnStop))
+                OnStopButton();
+            Space();
+            AnimationProcessUI();
+        }
+
+        public static void RefreshAnimationProcessUI() {
+            GetWindow<EditorWindow>().AnimationProcessUI();
+        } 
+
+        private void AnimationProcessUI() {
+            float playTime = Controller.PlayTime;
+            float clipTime = AnimationModel.SelectAnimationClipTime;
+            if (playTime > clipTime)
+                playTime = clipTime;
+            float time = Slider(playTime, clipTime);
+            Controller.SetAnimationPlayTime(time);
+        }
+
+        private void OnPlayButton() => Controller.Play();
+
+        private void OnPauseButton() => Controller.Pause();
+
+        private void OnStopButton() => Controller.Stop();
     }
 }
