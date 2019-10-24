@@ -5,7 +5,6 @@ namespace SkillEditor {
     internal class SkillAnimator : BaseAnimation {
 
         private Animator m_animator;
-        private Vector3 m_originPos;
         private string m_clipName;
 
         public SkillAnimator(Animator animator) {
@@ -14,7 +13,6 @@ namespace SkillEditor {
 
         public override void Init<T>(T animator) {
             m_animator = animator as Animator;
-            m_originPos = m_animator.transform.position;
         }
 
         private void CheckHasRecord(AnimationClip clip) {
@@ -40,7 +38,6 @@ namespace SkillEditor {
 
         public override void Play(AnimationClip clip) {
             CheckHasRecord(clip);
-            m_animator.transform.position = m_originPos;
             base.Play(clip);
         }
 
