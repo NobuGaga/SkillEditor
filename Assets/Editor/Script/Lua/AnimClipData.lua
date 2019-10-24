@@ -5,7 +5,8 @@ AnimClipData.data = {
             ["attack_1"] = {
                 iPoolType = GameConstant.POOL_ANIM_ATTACK,
                 keyframe = {
-                    ["Hit"] = {
+                    [1] = {
+                        name = "Hit",
                         time = 0.133,
                         priority = 1,
                         data = {
@@ -58,7 +59,8 @@ AnimClipData.data = {
             ["attack_2"] = {
                 iPoolType = GameConstant.POOL_ANIM_ATTACK,
                 keyframe = {
-                    ["Hit"] = {
+                    [1] = {
+                        name = "Hit",
                         time = 0.108,
                         priority = 1,
                         data = {
@@ -111,7 +113,8 @@ AnimClipData.data = {
             ["attack_3"] = {
                 iPoolType = GameConstant.POOL_ANIM_ATTACK,
                 keyframe = {
-                    ["Hit"] = {
+                    [1] = {
+                        name = "Hit",
                         time = 0.39,
                         priority = 1,
                         data = {
@@ -168,7 +171,8 @@ AnimClipData.data = {
             ["attack_4_1"] = {
                 iPoolType = GameConstant.POOL_ANIM_ATTACK,
                 keyframe = {
-                    ["Hit"] = {
+                    [1] = {
+                        name = "Hit",
                         time = 0.233,
                         priority = 1,
                         data = {
@@ -213,7 +217,8 @@ AnimClipData.data = {
             ["attack_4_2"] = {
                 iPoolType = GameConstant.POOL_ANIM_ATTACK,
                 keyframe = {
-                    ["Hit"] = {
+                    [1] = {
+                        name = "Hit",
                         time = 0.233,
                         priority = 1,
                         data = {
@@ -267,6 +272,93 @@ AnimClipData.data = {
         ["EntityStateDefine.UseSkill"] = {
             ["skill_01_1"] = {
                 iPoolType = GameConstant.POOL_ANIM_ATTACK,
+                keyframe = {
+                    [1] = {
+                        name = "Hit",
+                        time = 0.3,
+                        priority = 1,
+                        data = {
+                            [4] = {
+                                [1] = {
+                                    x = 0,
+                                    y = 0,
+                                    z = 0,
+                                    width = 5,
+                                    height = 1.7,
+                                    depth = 3,
+                                },
+                            },
+                        },
+                    },
+                    [2] = {
+                        name = "Hit",
+                        time = 0.6,
+                        priority = 2,
+                        data = {
+                            [4] = {
+                                [1] = {
+                                    x = 0,
+                                    y = 0,
+                                    z = 0,
+                                    width = 5,
+                                    height = 1.7,
+                                    depth = 3,
+                                },
+                            },
+                        },
+                    },
+                    [3] = {
+                        name = "Hit",
+                        time = 0.84,
+                        priority = 3,
+                        data = {
+                            [4] = {
+                                [1] = {
+                                    x = 0,
+                                    y = 0,
+                                    z = 0,
+                                    width = 5,
+                                    height = 1.7,
+                                    depth = 3,
+                                },
+                            },
+                        },
+                    },
+                    [4] = {
+                        name = "Hit",
+                        time = 1.08,
+                        priority = 4,
+                        data = {
+                            [4] = {
+                                [1] = {
+                                    x = 0,
+                                    y = 0,
+                                    z = 0,
+                                    width = 5,
+                                    height = 1.7,
+                                    depth = 3,
+                                },
+                            },
+                        },
+                    },
+                    [5] = {
+                        name = "Hit",
+                        time = 1.32,
+                        priority = 5,
+                        data = {
+                            [4] = {
+                                [1] = {
+                                    x = 0,
+                                    y = 0,
+                                    z = 0,
+                                    width = 5,
+                                    height = 1.7,
+                                    depth = 3,
+                                },
+                            },
+                        },
+                    },
+                },
                 processFrame = {
                     ["Start"] = {
                         time = 0,
@@ -278,7 +370,7 @@ AnimClipData.data = {
                         data = {
                             [1] = {
                                 type = 1,
-                                id = 30,
+                                id = 1010101,
                             },
                         },
                     },
@@ -290,6 +382,25 @@ AnimClipData.data = {
             },
             ["skill_01_2"] = {
                 iPoolType = GameConstant.POOL_ANIM_ATTACK,
+                keyframe = {
+                    [1] = {
+                        name = "Hit",
+                        time = 0.4,
+                        priority = 1,
+                        data = {
+                            [4] = {
+                                [1] = {
+                                    x = 0,
+                                    y = 0,
+                                    z = 0,
+                                    width = 5,
+                                    height = 1.7,
+                                    depth = 3,
+                                },
+                            },
+                        },
+                    },
+                },
                 processFrame = {
                     ["Start"] = {
                         time = 0,
@@ -301,9 +412,21 @@ AnimClipData.data = {
                         data = {
                             [1] = {
                                 type = 1,
-                                id = 31,
+                                id = 1010102,
                             },
                         },
+                    },
+                    ["SectionOver"] = {
+                        time = 0.7,
+                        priority = 1,
+                    },
+                    ["CacheBegin"] = {
+                        time = 0.8,
+                        priority = 99,
+                    },
+                    ["SectionOver"] = {
+                        time = 1,
+                        priority = 1,
                     },
                     ["End"] = {
                         time = 1.133,
@@ -324,32 +447,59 @@ AnimClipData.data = {
                         data = {
                             [1] = {
                                 type = 1,
-                                id = 32,
+                                id = 1010201,
                             },
                         },
                     },
                     ["End"] = {
-                        time = 0.233,
+                        time = 0.1,
                         priority = 1,
                     },
                 },
             },
             ["skill_02_2"] = {
                 iPoolType = GameConstant.POOL_ANIM_ATTACK,
+                keyframe = {
+                    [1] = {
+                        name = "Hit",
+                        time = 0.2,
+                        priority = 1,
+                        data = {
+                            [4] = {
+                                [1] = {
+                                    x = 0,
+                                    y = 0,
+                                    z = 0,
+                                    width = 3.5,
+                                    height = 1.7,
+                                    depth = 3,
+                                },
+                            },
+                        },
+                    },
+                },
                 processFrame = {
                     ["Start"] = {
-                        time = 0,
+                        time = 1,
                         priority = 99,
                     },
                     ["PlayEffect"] = {
-                        time = 0,
+                        time = 0.176,
                         priority = 1,
                         data = {
                             [1] = {
                                 type = 1,
-                                id = 33,
+                                id = 1010202,
                             },
                         },
+                    },
+                    ["CacheBegin"] = {
+                        time = 0.8,
+                        priority = 99,
+                    },
+                    ["SectionOver"] = {
+                        time = 1,
+                        priority = 1,
                     },
                     ["End"] = {
                         time = 1.267,
@@ -359,18 +509,139 @@ AnimClipData.data = {
             },
             ["skill_03_1"] = {
                 iPoolType = GameConstant.POOL_ANIM_ATTACK,
+                keyframe = {
+                    [1] = {
+                        name = "Hit",
+                        time = 0.42,
+                        priority = 1,
+                        data = {
+                            [4] = {
+                                [1] = {
+                                    x = 0,
+                                    y = 0,
+                                    z = 0,
+                                    width = 3.5,
+                                    height = 1.7,
+                                    depth = 3,
+                                },
+                            },
+                        },
+                    },
+                    [2] = {
+                        name = "Hit",
+                        time = 0.5,
+                        priority = 2,
+                        data = {
+                            [4] = {
+                                [1] = {
+                                    x = 0,
+                                    y = 0,
+                                    z = 0,
+                                    width = 3.5,
+                                    height = 1.7,
+                                    depth = 3,
+                                },
+                            },
+                        },
+                    },
+                    [3] = {
+                        name = "Hit",
+                        time = 0.6,
+                        priority = 3,
+                        data = {
+                            [4] = {
+                                [1] = {
+                                    x = 0,
+                                    y = 0,
+                                    z = 0,
+                                    width = 3.5,
+                                    height = 1.7,
+                                    depth = 3,
+                                },
+                            },
+                        },
+                    },
+                    [4] = {
+                        name = "Hit",
+                        time = 0.7,
+                        priority = 4,
+                        data = {
+                            [4] = {
+                                [1] = {
+                                    x = 0,
+                                    y = 0,
+                                    z = 0,
+                                    width = 3.5,
+                                    height = 1.7,
+                                    depth = 3,
+                                },
+                            },
+                        },
+                    },
+                    [5] = {
+                        name = "Hit",
+                        time = 0.8,
+                        priority = 4,
+                        data = {
+                            [4] = {
+                                [1] = {
+                                    x = 0,
+                                    y = 0,
+                                    z = 0,
+                                    width = 3.5,
+                                    height = 1.7,
+                                    depth = 3,
+                                },
+                            },
+                        },
+                    },
+                    [6] = {
+                        name = "Hit",
+                        time = 0.9,
+                        priority = 4,
+                        data = {
+                            [4] = {
+                                [1] = {
+                                    x = 0,
+                                    y = 0,
+                                    z = 0,
+                                    width = 3.5,
+                                    height = 1.7,
+                                    depth = 3,
+                                },
+                            },
+                        },
+                    },
+                    [7] = {
+                        name = "Hit",
+                        time = 1,
+                        priority = 4,
+                        data = {
+                            [4] = {
+                                [1] = {
+                                    x = 0,
+                                    y = 0,
+                                    z = 0,
+                                    width = 3.5,
+                                    height = 1.7,
+                                    depth = 3,
+                                },
+                            },
+                        },
+                    },
+                },
                 processFrame = {
                     ["Start"] = {
                         time = 0,
                         priority = 99,
                     },
                     ["PlayEffect"] = {
-                        time = 0,
+                        time = 0.2,
                         priority = 1,
                         data = {
                             [1] = {
                                 type = 1,
-                                id = 34,
+                                id = 1010301,
                             },
                         },
                     },
@@ -382,20 +653,47 @@ AnimClipData.data = {
             },
             ["skill_03_2"] = {
                 iPoolType = GameConstant.POOL_ANIM_ATTACK,
+                keyframe = {
+                    [1] = {
+                        name = "Hit",
+                        time = 0.4,
+                        priority = 1,
+                        data = {
+                            [4] = {
+                                [1] = {
+                                    x = 0,
+                                    y = 0,
+                                    z = 0,
+                                    width = 3.5,
+                                    height = 1.7,
+                                    depth = 3,
+                                },
+                            },
+                        },
+                    },
+                },
                 processFrame = {
                     ["Start"] = {
                         time = 0,
                         priority = 99,
                     },
                     ["PlayEffect"] = {
-                        time = 0,
+                        time = 0.23,
                         priority = 1,
                         data = {
                             [1] = {
                                 type = 1,
-                                id = 35,
+                                id = 1010302,
                             },
                         },
+                    },
+                    ["CacheBegin"] = {
+                        time = 1,
+                        priority = 99,
+                    },
+                    ["SectionOver"] = {
+                        time = 1.2,
+                        priority = 1,
                     },
                     ["End"] = {
                         time = 2.067,
@@ -476,18 +774,87 @@ AnimClipData.data = {
             ["2HAttack"] = {
                 iPoolType = GameConstant.POOL_ANIM_ATTACK,
                 keyframe = {
-                    ["Hit"] = {
+                    [1] = {
+                        name = "Hit",
                         time = 0.3,
                         priority = 1,
                         data = {
                             [4] = {
                                 [1] = {
-                                    x = -1.4,
+                                    x = 0,
                                     y = 0,
                                     z = 0,
-                                    width = 3.5,
+                                    width = 5,
                                     height = 1.7,
-                                    depth = 2,
+                                    depth = 3,
+                                },
+                            },
+                        },
+                    },
+                    [2] = {
+                        name = "Hit",
+                        time = 0.6,
+                        priority = 2,
+                        data = {
+                            [4] = {
+                                [1] = {
+                                    x = 0,
+                                    y = 0,
+                                    z = 0,
+                                    width = 5,
+                                    height = 1.7,
+                                    depth = 3,
+                                },
+                            },
+                        },
+                    },
+                    [3] = {
+                        name = "Hit",
+                        time = 0.84,
+                        priority = 3,
+                        data = {
+                            [4] = {
+                                [1] = {
+                                    x = 0,
+                                    y = 0,
+                                    z = 0,
+                                    width = 5,
+                                    height = 1.7,
+                                    depth = 3,
+                                },
+                            },
+                        },
+                    },
+                    [4] = {
+                        name = "Hit",
+                        time = 1.08,
+                        priority = 4,
+                        data = {
+                            [4] = {
+                                [1] = {
+                                    x = 0,
+                                    y = 0,
+                                    z = 0,
+                                    width = 5,
+                                    height = 1.7,
+                                    depth = 3,
+                                },
+                            },
+                        },
+                    },
+                    [5] = {
+                        name = "Hit",
+                        time = 1.32,
+                        priority = 5,
+                        data = {
+                            [4] = {
+                                [1] = {
+                                    x = 0,
+                                    y = 0,
+                                    z = 0,
+                                    width = 5,
+                                    height = 1.7,
+                                    depth = 3,
                                 },
                             },
                         },
@@ -495,8 +862,8 @@ AnimClipData.data = {
                 },
                 processFrame = {
                     ["Start"] = {
-                        time = 0.1,
-                        priority = 1,
+                        time = 0,
+                        priority = 99,
                     },
                     ["PlayEffect"] = {
                         time = 0,
@@ -504,24 +871,12 @@ AnimClipData.data = {
                         data = {
                             [1] = {
                                 type = 1,
-                                id = 11,
-                            },
-                            [2] = {
-                                type = 3,
-                                id = 100,
+                                id = 1010101,
                             },
                         },
                     },
-                    ["CacheBegin"] = {
-                        time = 0.2,
-                        priority = 99,
-                    },
-                    ["SectionOver"] = {
-                        time = 0.27,
-                        priority = 1,
-                    },
                     ["End"] = {
-                        time = 0.967,
+                        time = 1.467,
                         priority = 1,
                     },
                 },
