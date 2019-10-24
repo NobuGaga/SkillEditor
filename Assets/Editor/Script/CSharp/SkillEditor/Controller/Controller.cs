@@ -208,7 +208,7 @@ namespace SkillEditor {
                 return;
             float time = m_modelAnimation.PlayTime;
             var list = LuaAnimClipModel.ListCollision;
-            float minTime = list[0].Key - Config.FramesPerSecond;
+            float minTime = list[0].Key;
             float maxTime = list[list.Count - 1].Key + Config.FramesPerSecond;
             if (time < minTime || time > maxTime)
                 return;
@@ -219,8 +219,8 @@ namespace SkillEditor {
         }
 
         private static bool IsInCollisionTime(float curTime, float collisionTime) {
-            float minTime = collisionTime - Config.FramesPerSecond;
-            float maxTime = collisionTime + Config.FramesPerSecond;
+            float minTime = collisionTime;
+            float maxTime = collisionTime + Config.FramesPerSecond * 2;
             return curTime >= minTime && curTime <= maxTime;
         }
 
