@@ -116,7 +116,7 @@
             if (IsNoSelectClip || LuaAnimClipModel.ClipDataState == State.None)
                 return;
             Space();
-            HorizontalLayoutUI(FrameKeyNameUI);
+            HorizontalLayoutUI(StateGroupUI);
             FrameListUI();
             Space();
             HorizontalLayoutUI(AnimationUI);
@@ -141,7 +141,7 @@
             State lastState = LuaAnimClipModel.ClipDataState;
             State selectState = (State)EnumPopup(lastState);
             if (selectState != lastState)
-                Controller.SetAnimClipData(selectState);
+                Controller.SetAnimationStateData(selectState);
         }
 
         private void WeaponUI(string modelName) {
@@ -157,32 +157,62 @@
             }
         }
 
-        private void FrameKeyNameUI() {
+        private void StateGroupUI() {
             SpaceWithLabel(LabelFrameGroupType);
             m_lastFrameIndex = IntPopup(m_lastFrameIndex, FrameKeyNameArray, FrameKeyNameIndexArray);
             if (IsNoSelectFrameGroup)
                 return;
-            if (SpaceWithButton(BtnAdd))
-                Controller.AddNewKeyFrameData(FrameGroupKey);
+            if (SpaceWithButton(BtnAdd)) {
+                switch (FrameGroupKey) {
+                    case ClipData.Key_KeyFrame:
+                        Controller.AddNewKeyFrameData();
+                        break;
+                    case ClipData.Key_ProcessFrame:
+                        Controller.AddNewProcessFrameData();
+                        break;
+                }
+            }
         }
 
         private void FrameListUI() {
             if (IsNoSelectFrameGroup)
                 return;
-            KeyFrameData[] array = LuaAnimClipModel.ClipData.GetKeyFrameList(FrameGroupKey);
-            if (array == null || array.Length == 0)
-                return;
-            for (int index = 0; index < array.Length; index++) {
-                Space();
-                KeyFrameData data = (KeyFrameData)HorizontalLayoutUI(FrameUI, index);
-                if (data.dataList != null)
-                    CustomDataListUI(data.dataList);
-                Controller.SetAnimClipData(FrameGroupKey, index, data);
+            switch (FrameGroupKey) {
+                case ClipData.Key_KeyFrame:
+                    KeyFrameData[] arrayKeyFrame = LuaAnimClipModel.ClipData.GetKeyFrameList();
+                    if (arrayKeyFrame == null || arrayKeyFrame.Length == 0)
+                        break;
+                    for (int index = 0; index < arrayKeyFrame.Length; index++)
+                        KeyFrameUI(index);
+                    break;
+                case ClipData.Key_ProcessFrame:
+                    ProcessFrameData[] arrayProcessFrame = LuaAnimClipModel.ClipData.GetProcessFrameList();
+                    if (arrayProcessFrame == null || arrayProcessFrame.Length == 0)
+                        break;
+                    for (int index = 0; index < arrayProcessFrame.Length; index++)
+                        ProcessFrameUI(index);
+                    break;
             }
         }
 
-        private object FrameUI(int index) {
-            KeyFrameData data = LuaAnimClipModel.GetKeyFrameData(FrameGroupKey, index);
+        private void KeyFrameUI(int index) {
+            Space();
+            KeyFrameData data = (KeyFrameData)HorizontalLayoutUI(KeyFrameDataUI, index);
+            if (data.dataList != null)
+                CustomDataListUI(data.dataList);
+            Controller.SetKeyFrameData(index, data);
+        }
+
+        private void ProcessFrameUI(int index) {
+            Space();
+            ProcessFrameData data = (ProcessFrameData)HorizontalLayoutUI(ProcessFrameDataUI, index);
+            if (data.dataList != null)
+                CustomDataListUI(data.dataList);
+            Controller.SetProcessFrameData(index, data);
+        }
+
+        private object KeyFrameDataUI(int index) {
+            KeyFrameData data = LuaAnimClipModel.GetKeyFrameData(index);
             SpaceWithLabel(LabelFrameType);
             data.frameType = CheckFrameType((FrameType)EnumPopup(data.frameType), data.frameType);
             SpaceWithLabel(LabelTime);
@@ -192,7 +222,23 @@
             if ((data.frameType == FrameType.PlayEffect || data.frameType == FrameType.Hit) && 
                 SpaceWithButton(BtnAdd)) {
                 OnAddCustomDataButton(data.frameType, index);
-                return LuaAnimClipModel.GetKeyFrameData(FrameGroupKey, index);
+                return LuaAnimClipModel.GetKeyFrameData(index);
+            }
+            return data;
+        }
+
+        private object ProcessFrameDataUI(int index) {
+            ProcessFrameData data = LuaAnimClipModel.GetProcessFrameData(index);
+            SpaceWithLabel(LabelFrameType);
+            data.frameType = CheckFrameType((FrameType)EnumPopup(data.frameType), data.frameType);
+            SpaceWithLabel(LabelTime);
+            data.time = TextField(data.time);
+            SpaceWithLabel(LabelPriority);
+            data.priority = (short)TextField(data.priority);
+            if ((data.frameType == FrameType.PlayEffect || data.frameType == FrameType.Hit) && 
+                SpaceWithButton(BtnAdd)) {
+                OnAddCustomDataButton(data.frameType, index);
+                return LuaAnimClipModel.GetProcessFrameData(index);
             }
             return data;
         }

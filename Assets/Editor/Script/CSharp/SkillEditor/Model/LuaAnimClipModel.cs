@@ -131,28 +131,52 @@ namespace SkillEditor {
             return leftData.state.CompareTo(rightData.state);
         }
 
-        public static void AddNewKeyFrameData(string key) {
-            KeyFrameData[] array = ClipData.GetKeyFrameList(key);
+        public static void AddNewKeyFrameData() {
+            KeyFrameData[] array = ClipData.GetKeyFrameList();
             if (array == null) {
                 array = new KeyFrameData[] { new KeyFrameData() };
-                m_curClipData.SetTableKeyValue(key, array);
+                m_curClipData.SetTableKeyValue(ClipData.Key_KeyFrame, array);
                 return;
             }
             List<KeyFrameData> list = new List<KeyFrameData>(array);
             list.Add(new KeyFrameData());
-            m_curClipData.SetTableKeyValue(key, list.ToArray());
+            m_curClipData.SetTableKeyValue(ClipData.Key_KeyFrame, list.ToArray());
         }
 
-        public static void SetKeyFrameData(string key, int index, KeyFrameData data) {
-            KeyFrameData[] array = ClipData.GetKeyFrameList(key);
+        public static void AddNewProcessFrameData() {
+            ProcessFrameData[] array = ClipData.GetProcessFrameList();
+            if (array == null) {
+                array = new ProcessFrameData[] { new ProcessFrameData() };
+                m_curClipData.SetTableKeyValue(ClipData.Key_ProcessFrame, array);
+                return;
+            }
+            List<ProcessFrameData> list = new List<ProcessFrameData>(array);
+            list.Add(new ProcessFrameData());
+            m_curClipData.SetTableKeyValue(ClipData.Key_ProcessFrame, list.ToArray());
+        }
+
+        public static void SetKeyFrameData(int index, KeyFrameData data) {
+            KeyFrameData[] array = ClipData.GetKeyFrameList();
             array[index] = data;
-            m_curClipData.SetTableKeyValue(key, array);
-            if (key == ClipData.Key_KeyFrame)
-                SetCollisionList();
+            m_curClipData.SetTableKeyValue(ClipData.Key_KeyFrame, array);
+            SetCollisionList();
         }
 
-        public static KeyFrameData GetKeyFrameData(string key, int index) {
-            KeyFrameData[] list = ClipData.GetKeyFrameList(key);
+        public static void SetProcessFrameData(int index, ProcessFrameData data) {
+            ProcessFrameData[] array = ClipData.GetProcessFrameList();
+            array[index] = data;
+            m_curClipData.SetTableKeyValue(ClipData.Key_ProcessFrame, array);
+        }
+
+        public static KeyFrameData GetKeyFrameData(int index) {
+            KeyFrameData[] list = ClipData.GetKeyFrameList();
+            if (list == null && index >= 0 && index < list.Length)
+                return default;
+            return list[index];
+        }
+
+        public static ProcessFrameData GetProcessFrameData(int index) {
+            ProcessFrameData[] list = ClipData.GetProcessFrameList();
             if (list == null && index >= 0 && index < list.Length)
                 return default;
             return list[index];
@@ -188,24 +212,24 @@ namespace SkillEditor {
         }
 
         public static void AddNewEffectData(int index) {
-            KeyFrameData[] arrayProcessFrameData = ClipData.GetProcessFrameList();
-            KeyFrameData keyFrameData = arrayProcessFrameData[index];
+            ProcessFrameData[] arrayProcessFrameData = ClipData.GetProcessFrameList();
+            ProcessFrameData processFrameData = arrayProcessFrameData[index];
             CustomData customData = new CustomData();
             customData.data = new EffectData();
-            if (keyFrameData.dataList == null) {
+            if (processFrameData.dataList == null) {
                 customData.index = 1;
-                keyFrameData.dataList = new CustomData[] { customData };
+                processFrameData.dataList = new CustomData[] { customData };
             }
             else {
                 m_listCustomData.Clear();
-                CustomData[] arrayCustomData = keyFrameData.dataList as CustomData[];
+                CustomData[] arrayCustomData = processFrameData.dataList as CustomData[];
                 for (int customDataIndex = 0; customDataIndex < arrayCustomData.Length; customDataIndex++)
                     m_listCustomData.Add(arrayCustomData[customDataIndex]);
                 customData.index = arrayCustomData.Length + 1;
                 m_listCustomData.Add(customData);
-                keyFrameData.dataList = m_listCustomData.ToArray();
+                processFrameData.dataList = m_listCustomData.ToArray();
             }
-            arrayProcessFrameData[index] = keyFrameData;
+            arrayProcessFrameData[index] = processFrameData;
         }
 
         public static void AddNewCubeData(int index) {

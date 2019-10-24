@@ -105,9 +105,9 @@ namespace SkillEditor.LuaStructure {
         public string clipName;
         public PoolType poolType;
         public KeyFrameData[] keyFrameList;
-        public KeyFrameData[] processFrameList;
+        public ProcessFrameData[] processFrameList;
 
-        public ClipData(string clipName, PoolType poolType, KeyFrameData[] keyFrameList, KeyFrameData[] processFrameList) {
+        public ClipData(string clipName, PoolType poolType, KeyFrameData[] keyFrameList, ProcessFrameData[] processFrameList) {
             this.clipName = clipName;
             this.poolType = poolType;
             this.keyFrameList = keyFrameList;
@@ -143,18 +143,8 @@ namespace SkillEditor.LuaStructure {
             return keyFrameList;
         }
 
-        public KeyFrameData[] GetProcessFrameList() {
+        public ProcessFrameData[] GetProcessFrameList() {
             return processFrameList;
-        }
-
-        public KeyFrameData[] GetKeyFrameList(string key) {
-            switch (key) {
-                case Key_KeyFrame:
-                    return keyFrameList;
-                case Key_ProcessFrame:
-                    return processFrameList;
-            }
-            return null;
         }
 
         public void Clear() {
@@ -168,22 +158,18 @@ namespace SkillEditor.LuaStructure {
             return clipName == string.Empty || poolType == PoolType.None;
         }
 
-        private bool CheckKeyFrameArrayIsNull(string key) {
-            KeyFrameData[] array = GetKeyFrameList(key);
+        private bool CheckFrameArrayIsNull<T>(T[] array) where T : INullTable {
             if (array == null)
                 return true;
-            bool isAllDataNuul = true;
             for (int index = 0; index < array.Length; index++)
-                if (!array[index].IsNullTable()) {
-                    isAllDataNuul = false;
-                    break;
-                }
-            return isAllDataNuul;
+                if (!array[index].IsNullTable())
+                    return false;
+            return true;
         }
 
-        private bool IsNoKeyFrameGroupData => CheckKeyFrameArrayIsNull(Key_KeyFrame);
+        private bool IsNoKeyFrameGroupData => CheckFrameArrayIsNull(keyFrameList);
 
-        private bool IsNoProcessFrameGroupData => CheckKeyFrameArrayIsNull(Key_ProcessFrame);
+        private bool IsNoProcessFrameGroupData => CheckFrameArrayIsNull(processFrameList);
 
         private static readonly StringBuilder m_staticBuilder = new StringBuilder(Config.FrameListStringLength);
         public override string ToString() {
@@ -229,7 +215,7 @@ namespace SkillEditor.LuaStructure {
                     keyFrameList = value as KeyFrameData[];
                     return;
                 case Key_ProcessFrame:
-                    processFrameList = value as KeyFrameData[];
+                    processFrameList = value as ProcessFrameData[];
                     return;
             }
         }
@@ -270,12 +256,97 @@ namespace SkillEditor.LuaStructure {
     }
 
     internal struct KeyFrameData : ITable, INullTable {
+        public int index;
         public FrameType frameType;
         public float time;
         public short priority;
         public CustomData[] dataList;
 
-        public KeyFrameData(FrameType frameType, float time, short priority, CustomData[] dataList) {
+        public KeyFrameData(int index, FrameType frameType, float time, short priority, CustomData[] dataList) {
+            this.index = index;
+            this.frameType = frameType;
+            this.time = time;
+            this.priority = priority;
+            this.dataList = dataList;
+        }
+
+        private void SetFrameType(string frameTypeString) {
+            frameType = (FrameType)Enum.Parse(typeof(FrameType), frameTypeString);
+        }
+
+        private static readonly StringBuilder m_staticBuilder = new StringBuilder(Config.CustomDataListStringLength);
+        public override string ToString() {
+            string dataListString = string.Empty;
+            string format;
+            string frameDataString = Tool.GetTabString(AnimClipLuaLayer.FrameData);
+            if (dataList != null) {
+                format = "{0}data = {1}{3}{2},\n";
+                dataListString = Tool.GetArrayString(m_staticBuilder, AnimClipLuaLayer.FrameData, dataList);
+                dataListString = string.Format(format, frameDataString,
+                                               LuaFormat.CurlyBracesPair.start,
+                                               LuaFormat.CurlyBracesPair.end,
+                                               dataListString);
+            }
+            format = "{0}[{4}] = {2}\n{1}name = \"{5}\",\n{1}time = {6},\n{1}priority = {7},\n{8}{0}{3},\n";
+            string frameTypeTabString = Tool.GetTabString(AnimClipLuaLayer.FrameType);
+            string toString = string.Format(format, frameTypeTabString,
+                                            frameDataString,
+                                            LuaFormat.CurlyBracesPair.start,
+                                            LuaFormat.CurlyBracesPair.end,
+                                            index,
+                                            frameType.ToString(),
+                                            time,
+                                            priority,
+                                            dataListString);
+            return Tool.GetCacheString(toString);
+        }
+
+        public bool IsNullTable() {
+            return index == 0 || frameType == FrameType.None || priority == 0;
+        }
+
+        public void SetTableKeyValue(string key, object value) {
+            switch (key) {
+                case Key_Name:
+                    SetFrameType(value as string);
+                    return;
+                case Key_Time:
+                    time = (float)value;
+                    return;
+                case Key_Priority:
+                    priority = (short)(int)value;
+                    return;
+                case Key_Data:
+                    dataList = value as CustomData[];
+                    return;
+            }
+        }
+
+        private const string Key_Name = "name";
+        private const string Key_Time = "time";
+        private const string Key_Priority = "priority";
+        private const string Key_Data = "data";
+
+        private static LuaTableKeyValue[] m_arraykeyValue;
+        public LuaTableKeyValue[] GetTableKeyValueList() {
+            if (m_arraykeyValue != null)
+                return m_arraykeyValue;
+            m_arraykeyValue = new LuaTableKeyValue[4];
+            m_arraykeyValue[0] = new LuaTableKeyValue(Key_Name, LuaFormat.Type.LuaString);
+            m_arraykeyValue[1] = new LuaTableKeyValue(Key_Time, LuaFormat.Type.LuaNumber);
+            m_arraykeyValue[2] = new LuaTableKeyValue(Key_Priority, LuaFormat.Type.LuaInt);
+            m_arraykeyValue[3] = new LuaTableKeyValue(Key_Data, LuaFormat.Type.LuaTable);
+            return m_arraykeyValue;
+        }
+    }
+
+    internal struct ProcessFrameData : ITable, INullTable {
+        public FrameType frameType;
+        public float time;
+        public short priority;
+        public CustomData[] dataList;
+
+        public ProcessFrameData(FrameType frameType, float time, short priority, CustomData[] dataList) {
             this.frameType = frameType;
             this.time = time;
             this.priority = priority;

@@ -72,9 +72,14 @@ namespace SkillEditor {
                 case AnimClipLuaLayer.FrameType:
                     return AnalyseKeyFrameListData(luaText, ref index);
                 case AnimClipLuaLayer.FrameData:
-                    return AnalyseKeyFrameData(luaText, ref index, (KeyFrameData)data);
+                    return AnalyseKeyFrameData(luaText, ref index, (ITable)data);
                 case AnimClipLuaLayer.CustomeData:
-                    return AnalyseCustomData(luaText, ref index, ((KeyFrameData)data).frameType);
+                    FrameType frameType;
+                    if (data is KeyFrameData)
+                        frameType = ((KeyFrameData)data).frameType;
+                    else
+                        frameType = ((ProcessFrameData)data).frameType;
+                    return AnalyseCustomData(luaText, ref index, frameType);
                 case AnimClipLuaLayer.Effect:
                     return AnalyseEffectData(luaText, ref index, (FrameType)data);
                 case AnimClipLuaLayer.Rect:
@@ -145,24 +150,47 @@ namespace SkillEditor {
         }
 
         private static List<KeyFrameData> m_listKeyFrameDataCache = new List<KeyFrameData>(Config.ModelStateClipFrameCount);
+        private static List<ProcessFrameData> m_listProcessFrameDataCache = new List<ProcessFrameData>(Config.ModelStateClipFrameCount);
         private static object AnalyseKeyFrameListData(string luaText, ref int index) {
             int endIndex = FindLuaTableEndIndex(luaText, index);
-            m_listKeyFrameDataCache.Clear();
+            int tempIndex = FindLuaTableKeyStartIndex(luaText, index, endIndex);
+            if (tempIndex == Config.ErrorIndex)
+                return default;
+            bool isProcessFrame = luaText[tempIndex] == LuaFormat.QuotationPair.start;
+            if (isProcessFrame)
+                m_listProcessFrameDataCache.Clear();
+            else
+                m_listKeyFrameDataCache.Clear();
             for (; index < luaText.Length; index++) {
-                string frameName = ReadLuaTableHashKey(luaText, ref index, endIndex);
-                if (frameName == string.Empty)
-                    break;
-                KeyFrameData data = new KeyFrameData();
-                data.SetFrameType(frameName);
-                EnterLuaTable(luaText, ref index);
-                data = (KeyFrameData)AnalyseAnimClipData(luaText, ref index, data);
-                ExitLuaTable(luaText, ref index);
-                m_listKeyFrameDataCache.Add(data);
+                if (isProcessFrame) {
+                    string frameName = ReadLuaTableHashKey(luaText, ref index, endIndex);
+                    if (frameName == string.Empty)
+                        break;
+                    ProcessFrameData data = new ProcessFrameData();
+                    data.SetFrameType(frameName);
+                    EnterLuaTable(luaText, ref index);
+                    data = (ProcessFrameData)AnalyseAnimClipData(luaText, ref index, data);
+                    ExitLuaTable(luaText, ref index);
+                    m_listProcessFrameDataCache.Add(data);
+                }
+                else {
+                    int frameIndex = ReadLuaTableArrayKey(luaText, ref index, endIndex);
+                    if (frameIndex == Config.ErrorIndex)
+                        break;
+                    KeyFrameData data = new KeyFrameData();
+                    data.index = frameIndex;
+                    EnterLuaTable(luaText, ref index);
+                    data = (KeyFrameData)AnalyseAnimClipData(luaText, ref index, data);
+                    ExitLuaTable(luaText, ref index);
+                    m_listKeyFrameDataCache.Add(data);
+                }
             }
+            if (isProcessFrame)
+                return m_listProcessFrameDataCache.ToArray();
             return m_listKeyFrameDataCache.ToArray();
         }
 
-        private static object AnalyseKeyFrameData(string luaText, ref int index, KeyFrameData data) {
+        private static object AnalyseKeyFrameData(string luaText, ref int index, ITable data) {
             return ReadLuaTable(luaText, ref index, data);
         }
 
@@ -206,6 +234,16 @@ namespace SkillEditor {
 
         private static object AnalyseCubeData(string luaText, ref int index) {
             return ReadLuaTable(luaText, ref index, new CubeData());
+        }
+
+        private static int FindLuaTableKeyStartIndex(string luaText, int index, int endIndex) {
+            FilterNotesLine(luaText, ref index);
+            PairStringChar symbol = LuaFormat.SquareBracketPair;
+            index = luaText.IndexOf(symbol.start, index, StringComparison.Ordinal);
+            if (index >= endIndex || index == Config.ErrorIndex)
+                return Config.ErrorIndex;
+            index += symbol.start.Length;
+            return index;
         }
 
         private static int ReadLuaTableArrayKey(string luaText, ref int index, int endIndex) {

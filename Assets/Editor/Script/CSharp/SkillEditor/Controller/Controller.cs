@@ -120,16 +120,24 @@ namespace SkillEditor {
             LuaAnimClipModel.SetCurrentEditClipName(AnimationModel.SelectAnimationClipName);
         }
 
-        public static void SetAnimClipData(State state) {
+        public static void SetAnimationStateData(State state) {
             LuaAnimClipModel.ClipDataState = state;
         }
 
-        public static void AddNewKeyFrameData(string key) {
-            LuaAnimClipModel.AddNewKeyFrameData(key);
+        public static void AddNewKeyFrameData() {
+            LuaAnimClipModel.AddNewKeyFrameData();
         }
 
-        public static void SetAnimClipData(string key, int index, KeyFrameData data) {
-            LuaAnimClipModel.SetKeyFrameData(key, index, data);
+        public static void AddNewProcessFrameData() {
+            LuaAnimClipModel.AddNewProcessFrameData();
+        }
+
+        public static void SetKeyFrameData(int index, KeyFrameData data) {
+            LuaAnimClipModel.SetKeyFrameData(index, data);
+        }
+
+        public static void SetProcessFrameData(int index, ProcessFrameData data) {
+            LuaAnimClipModel.SetProcessFrameData(index, data);
         }
 
         public static void AddNewEffectData(int index) {
