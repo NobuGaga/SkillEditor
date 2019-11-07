@@ -88,28 +88,6 @@ namespace SkillEditor {
             return GetCacheString(path.Substring(0, subIndex));
         }
 
-        internal static string GetTabString(AnimClipLuaLayer layer) {
-            int layerInt = (int)layer;
-            string tabString = string.Empty;
-            for (int index = 0; index < layerInt; index++)
-                tabString = GetCacheString(tabString + LuaFormat.TabString);
-            return tabString;
-        }
-
-        internal static string GetArrayString<T>(StringBuilder builder, AnimClipLuaLayer layer, T[] list) {
-            string tabString = GetTabString(layer);
-            builder.Clear();
-            builder.Append(LuaFormat.LineSymbol);
-            for (int index = 0; index < list.Length; index++) {
-                T data = list[index];
-                if (data is INullTable && ((INullTable)data).IsNullTable())
-                    continue;
-                builder.Append(data.ToString());
-            }
-            builder.Append(tabString);
-            return GetCacheString(builder.ToString());
-        }
-
         internal static string GetCacheString(string text) {
             return string.Intern(text);
         }

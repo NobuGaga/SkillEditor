@@ -8,7 +8,7 @@ using SkillEditor.LuaStructure;
 
 namespace Lua {
 
-    using LuaTableKeyValue = LuaFormat.LuaTableKeyValue;
+    using FieldKeyTable = LuaFormat.FieldKeyTable;
 
     public static class LuaReader {
 
@@ -281,8 +281,8 @@ namespace Lua {
         private static ITable ReadLuaTable(string luaText, ref int index, ITable table) {
             int maxIndex = index;
             int endIndex = FindLuaTableEndIndex(luaText, index);
-            LuaTableKeyValue[] array = table.GetTableKeyValueList();
-            foreach (LuaTableKeyValue tableKeyValue in array) {
+            FieldKeyTable[] array = table.GetTableKeyValueList();
+            foreach (FieldKeyTable tableKeyValue in array) {
                 int keyIndex = luaText.IndexOf(tableKeyValue.key, index, StringComparison.Ordinal);
                 if (keyIndex == Config.ErrorIndex || keyIndex >= endIndex)
                     continue;
@@ -302,21 +302,21 @@ namespace Lua {
             return table;
         }
 
-        private static void SetLuaTableData(string luaText, ref int keyIndex, LuaTableKeyValue keyValue, ref ITable table) {
+        private static void SetLuaTableData(string luaText, ref int keyIndex, FieldKeyTable keyValue, ref ITable table) {
             switch (keyValue.type) {
-                case LuaFormat.Type.LuaString:
+                case LuaFormat.ValueType.String:
                     table.SetTableKeyValue(keyValue.key, GetLuaTextString(luaText, ref keyIndex));
                     return;
-                case LuaFormat.Type.LuaInt:
+                case LuaFormat.ValueType.Int:
                     table.SetTableKeyValue(keyValue.key, GetLuaTextInt(luaText, ref keyIndex));
                     return;
-                case LuaFormat.Type.LuaNumber:
+                case LuaFormat.ValueType.Number:
                     table.SetTableKeyValue(keyValue.key, GetLuaTextNumber(luaText, ref keyIndex));
                     return;
-                case LuaFormat.Type.LuaReference:
+                case LuaFormat.ValueType.Reference:
                     table.SetTableKeyValue(keyValue.key, GetLuaTextReferenceString(luaText, ref keyIndex));
                     return;
-                case LuaFormat.Type.LuaTable:
+                case LuaFormat.ValueType.Table:
                     EnterLuaTable(luaText, ref keyIndex);
                     int endIndex = FindLuaTableEndIndex(luaText, keyIndex);
                     if (!CheckNullTable(luaText, keyIndex, endIndex))

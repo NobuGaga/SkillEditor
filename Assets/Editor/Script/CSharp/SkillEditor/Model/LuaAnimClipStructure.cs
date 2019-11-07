@@ -2,10 +2,9 @@
 using System;
 using System.Text;
 using Lua;
-using LuaTableKeyValue = Lua.LuaFormat.LuaTableKeyValue;
+using FieldKeyTable = Lua.LuaFormat.FieldKeyTable;
 
 namespace SkillEditor.LuaStructure {
-
 
     internal enum AnimClipLuaLayer {
         EnterTable = 0,
@@ -18,34 +17,6 @@ namespace SkillEditor.LuaStructure {
         CustomeData = 7,
         Effect = 8,
         Rect = 9,
-    }
-
-    internal struct AnimClipData {
-        public string modelName;
-        public StateData[] stateList;
-
-        public AnimClipData(string modelName, StateData[] stateList) {
-            this.modelName = modelName;
-            this.stateList = stateList;
-        }
-
-        private static readonly StringBuilder m_staticBuilder = new StringBuilder(Config.StateListStringLength);
-        public override string ToString() {
-            if (stateList == null)
-                return string.Empty;
-            m_staticBuilder.Clear();
-            for (int index = 0; index < stateList.Length; index++)
-                m_staticBuilder.Append(stateList[index].ToString());
-            string stateListString = m_staticBuilder.ToString();
-            string tabString = Tool.GetTabString(AnimClipLuaLayer.Model);
-            string format = "{0}[\"{1}\"] = {2}\n{3}{0}{4},\n";
-            string toString = string.Format(format, tabString,
-                                            modelName,
-                                            LuaFormat.CurlyBracesPair.start,
-                                            stateListString,
-                                            LuaFormat.CurlyBracesPair.end);
-            return Tool.GetCacheString(toString);
-        }
     }
 
     internal enum State {
@@ -225,14 +196,14 @@ namespace SkillEditor.LuaStructure {
         public const string Key_KeyFrame = "keyframe";
         public const string Key_ProcessFrame = "processFrame";
 
-        private static LuaTableKeyValue[] m_arraykeyValue;
-        public LuaTableKeyValue[] GetTableKeyValueList() {
+        private static FieldKeyTable[] m_arraykeyValue;
+        public FieldKeyTable[] GetTableKeyValueList() {
             if (m_arraykeyValue != null)
                 return m_arraykeyValue;
-            m_arraykeyValue = new LuaTableKeyValue[3];
-            m_arraykeyValue[0] = new LuaTableKeyValue(Key_IPoolType, LuaFormat.Type.LuaReference);
-            m_arraykeyValue[1] = new LuaTableKeyValue(Key_KeyFrame, LuaFormat.Type.LuaTable);
-            m_arraykeyValue[2] = new LuaTableKeyValue(Key_ProcessFrame, LuaFormat.Type.LuaTable);
+            m_arraykeyValue = new FieldKeyTable[3];
+            m_arraykeyValue[0] = new FieldKeyTable(Key_IPoolType, LuaFormat.ValueType.Reference);
+            m_arraykeyValue[1] = new FieldKeyTable(Key_KeyFrame, LuaFormat.ValueType.Table);
+            m_arraykeyValue[2] = new FieldKeyTable(Key_ProcessFrame, LuaFormat.ValueType.Table);
             return m_arraykeyValue;
         }
 
@@ -328,15 +299,15 @@ namespace SkillEditor.LuaStructure {
         private const string Key_Priority = "priority";
         private const string Key_Data = "data";
 
-        private static LuaTableKeyValue[] m_arraykeyValue;
-        public LuaTableKeyValue[] GetTableKeyValueList() {
+        private static FieldKeyTable[] m_arraykeyValue;
+        public FieldKeyTable[] GetTableKeyValueList() {
             if (m_arraykeyValue != null)
                 return m_arraykeyValue;
-            m_arraykeyValue = new LuaTableKeyValue[4];
-            m_arraykeyValue[0] = new LuaTableKeyValue(Key_Name, LuaFormat.Type.LuaString);
-            m_arraykeyValue[1] = new LuaTableKeyValue(Key_Time, LuaFormat.Type.LuaNumber);
-            m_arraykeyValue[2] = new LuaTableKeyValue(Key_Priority, LuaFormat.Type.LuaInt);
-            m_arraykeyValue[3] = new LuaTableKeyValue(Key_Data, LuaFormat.Type.LuaTable);
+            m_arraykeyValue = new FieldKeyTable[4];
+            m_arraykeyValue[0] = new FieldKeyTable(Key_Name, LuaFormat.ValueType.String);
+            m_arraykeyValue[1] = new FieldKeyTable(Key_Time, LuaFormat.ValueType.Number);
+            m_arraykeyValue[2] = new FieldKeyTable(Key_Priority, LuaFormat.ValueType.Int);
+            m_arraykeyValue[3] = new FieldKeyTable(Key_Data, LuaFormat.ValueType.Table);
             return m_arraykeyValue;
         }
     }
@@ -406,14 +377,14 @@ namespace SkillEditor.LuaStructure {
         private const string Key_Priority = "priority";
         private const string Key_Data = "data";
 
-        private static LuaTableKeyValue[] m_arraykeyValue;
-        public LuaTableKeyValue[] GetTableKeyValueList() {
+        private static FieldKeyTable[] m_arraykeyValue;
+        public FieldKeyTable[] GetTableKeyValueList() {
             if (m_arraykeyValue != null)
                 return m_arraykeyValue;
-            m_arraykeyValue = new LuaTableKeyValue[3];
-            m_arraykeyValue[0] = new LuaTableKeyValue(Key_Time, LuaFormat.Type.LuaNumber);
-            m_arraykeyValue[1] = new LuaTableKeyValue(Key_Priority, LuaFormat.Type.LuaInt);
-            m_arraykeyValue[2] = new LuaTableKeyValue(Key_Data, LuaFormat.Type.LuaTable);
+            m_arraykeyValue = new FieldKeyTable[3];
+            m_arraykeyValue[0] = new FieldKeyTable(Key_Time, LuaFormat.ValueType.Number);
+            m_arraykeyValue[1] = new FieldKeyTable(Key_Priority, LuaFormat.ValueType.Int);
+            m_arraykeyValue[2] = new FieldKeyTable(Key_Data, LuaFormat.ValueType.Table);
             return m_arraykeyValue;
         }
     }
@@ -516,13 +487,13 @@ namespace SkillEditor.LuaStructure {
         private const string Key_Type = "type";
         private const string Key_Id = "id";
 
-        private static LuaTableKeyValue[] m_arraykeyValue;
-        public LuaTableKeyValue[] GetTableKeyValueList() {
+        private static FieldKeyTable[] m_arraykeyValue;
+        public FieldKeyTable[] GetTableKeyValueList() {
             if (m_arraykeyValue != null)
                 return m_arraykeyValue;
-            m_arraykeyValue = new LuaTableKeyValue[2];
-            m_arraykeyValue[0] = new LuaTableKeyValue(Key_Type, LuaFormat.Type.LuaInt);
-            m_arraykeyValue[1] = new LuaTableKeyValue(Key_Id, LuaFormat.Type.LuaInt);
+            m_arraykeyValue = new FieldKeyTable[2];
+            m_arraykeyValue[0] = new FieldKeyTable(Key_Type, LuaFormat.ValueType.Int);
+            m_arraykeyValue[1] = new FieldKeyTable(Key_Id, LuaFormat.ValueType.Int);
             return m_arraykeyValue;
         }
     }
@@ -585,17 +556,17 @@ namespace SkillEditor.LuaStructure {
         private const string Key_Height = "height";
         private const string Key_Depth = "depth";
 
-        private static LuaTableKeyValue[] m_arraykeyValue;
-        public LuaTableKeyValue[] GetTableKeyValueList() {
+        private static FieldKeyTable[] m_arraykeyValue;
+        public FieldKeyTable[] GetTableKeyValueList() {
             if (m_arraykeyValue != null)
                 return m_arraykeyValue;
-            m_arraykeyValue = new LuaTableKeyValue[6];
-            m_arraykeyValue[0] = new LuaTableKeyValue(Key_X, LuaFormat.Type.LuaNumber);
-            m_arraykeyValue[1] = new LuaTableKeyValue(Key_Y, LuaFormat.Type.LuaNumber);
-            m_arraykeyValue[2] = new LuaTableKeyValue(Key_Z, LuaFormat.Type.LuaNumber);
-            m_arraykeyValue[3] = new LuaTableKeyValue(Key_Width, LuaFormat.Type.LuaNumber);
-            m_arraykeyValue[4] = new LuaTableKeyValue(Key_Height, LuaFormat.Type.LuaNumber);
-            m_arraykeyValue[5] = new LuaTableKeyValue(Key_Depth, LuaFormat.Type.LuaInt);
+            m_arraykeyValue = new FieldKeyTable[6];
+            m_arraykeyValue[0] = new FieldKeyTable(Key_X, LuaFormat.ValueType.Number);
+            m_arraykeyValue[1] = new FieldKeyTable(Key_Y, LuaFormat.ValueType.Number);
+            m_arraykeyValue[2] = new FieldKeyTable(Key_Z, LuaFormat.ValueType.Number);
+            m_arraykeyValue[3] = new FieldKeyTable(Key_Width, LuaFormat.ValueType.Number);
+            m_arraykeyValue[4] = new FieldKeyTable(Key_Height, LuaFormat.ValueType.Number);
+            m_arraykeyValue[5] = new FieldKeyTable(Key_Depth, LuaFormat.ValueType.Int);
             return m_arraykeyValue;
         }
 
@@ -619,16 +590,5 @@ namespace SkillEditor.LuaStructure {
                 return m_sizeCache;
             }
         }
-    }
-
-    internal interface INullTable {
-
-        bool IsNullTable();
-    }
-
-    public interface ITable {
-
-        void SetTableKeyValue(string key, object value);
-        LuaTableKeyValue[] GetTableKeyValueList();
     }
 }

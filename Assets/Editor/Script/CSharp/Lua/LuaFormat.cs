@@ -1,6 +1,6 @@
 ﻿namespace Lua {
 
-    public static class LuaFormat {
+    internal static class LuaFormat {
 
         public const char EqualSymbol = '=';
         public const char SpaceSymbol = ' ';
@@ -31,64 +31,44 @@
         public const ushort NumberPoint = '.';
         public const string TabString = "    ";
 
-        public enum Type {
-            LuaString,
-            LuaInt,
-            LuaNumber,
-            LuaReference,
-            LuaTable,
-        }
+        public struct PairChar {
+            public char start;
+            public char end;
 
-        public struct LuaTableKeyValue {
-            public string key;
-            public Type type;
-
-            public int KeyLength => key.Length;
-
-            public LuaTableKeyValue(string key, Type type) {
-                this.key = key;
-                this.type = type;
+            public PairChar(char start, char end) {
+                this.start = start;
+                this.end = end;
             }
         }
-    }
 
-    public struct PairChar {
-        public char start;
-        public char end;
+        public struct PairStringChar {
+            public string start;
+            public char end;
 
-        public PairChar(char start, char end) {
-            this.start = start;
-            this.end = end;
-        }
-    }
+            public PairStringChar(string start, char end) {
+                this.start = start;
+                this.end = end;
+            }
 
-    public struct PairStringChar {
-        public string start;
-        public char end;
-
-        public PairStringChar(string start, char end) {
-            this.start = start;
-            this.end = end;
+            public PairStringChar(char start, char end) {
+                this.start = new string(new char[] { start });
+                this.end = end;
+            }
         }
 
-        public PairStringChar(char start, char end) {
-            this.start = new string(new char[] { start });
-            this.end = end;
-        }
-    }
+        public struct PairString {
+            public string start;
+            public string end;
 
-    public struct PairString {
-        public string start;
-        public string end;
+            public PairString(string start, string end) {
+                this.start = start;
+                this.end = end;
+            }
 
-        public PairString(string start, string end) {
-            this.start = start;
-            this.end = end;
-        }
-
-        public PairString(char startChar1, char startChar2, char endChar1, char endChar2) {
-            start = new string(new char[] { startChar1, startChar2 });
-            end = new string(new char[] { endChar1, endChar2 });
+            public PairString(char startChar1, char startChar2, char endChar1, char endChar2) {
+                start = new string(new char[] { startChar1, startChar2 });
+                end = new string(new char[] { endChar1, endChar2 });
+            }
         }
     }
 }

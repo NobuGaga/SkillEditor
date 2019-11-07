@@ -45,8 +45,10 @@
     <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
   </PropertyGroup>
   <ItemGroup>     <Compile Include="Assets\Editor\Script\CSharp\Base\BaseEditorWindow.cs" />
+     <Compile Include="Assets\Editor\Script\CSharp\Lua\AnimClipData\AnimClipData.cs" />
      <Compile Include="Assets\Editor\Script\CSharp\Lua\LuaFormat.cs" />
      <Compile Include="Assets\Editor\Script\CSharp\Lua\LuaReader.cs" />
+     <Compile Include="Assets\Editor\Script\CSharp\Lua\LuaTable.cs" />
      <Compile Include="Assets\Editor\Script\CSharp\Lua\LuaWriter.cs" />
      <Compile Include="Assets\Editor\Script\CSharp\SkillEditor\Animation\BaseAnimation.cs" />
      <Compile Include="Assets\Editor\Script\CSharp\SkillEditor\Animation\SkillAnimator.cs" />
