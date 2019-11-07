@@ -19,60 +19,6 @@ namespace SkillEditor.LuaStructure {
         Rect = 9,
     }
 
-    internal enum State {
-        None,
-        Atk,
-        UseSkill,
-        Hit,
-        Dead
-    }
-
-    internal struct StateData : INullTable {
-        public State state;
-        public ClipData[] clipList;
-
-        public StateData(State state, ClipData[] clipList) {
-            this.state = state;
-            this.clipList = clipList;
-        }
-
-        public void SetState(string originKey) {
-            if (!originKey.Contains(StateHeadString + LuaFormat.PointSymbol))
-                return;
-            string stateString = originKey.Substring(StateHeadString.Length + 1);
-            state = (State)Enum.Parse(typeof(State), stateString);
-        }
-
-        public void Clear() {
-            state = State.None;
-            clipList = null;
-        }
-
-        public bool IsNullTable() {
-            return state == State.None || clipList == null;
-        }
-
-        private static readonly StringBuilder m_staticBuilder = new StringBuilder(Config.ClipListStringLength);
-        public override string ToString() {
-            if (IsNullTable())
-                return string.Empty;
-            m_staticBuilder.Clear();
-            for (int index = 0; index < clipList.Length; index++)
-                m_staticBuilder.Append(clipList[index].ToString());
-            string clipListString = m_staticBuilder.ToString();
-            string tabString = Tool.GetTabString(AnimClipLuaLayer.State);
-            string format = "{0}[\"{1}{2}{3}\"] = {4}\n{5}{0}{6},\n";
-            string toString = string.Format(format, tabString,
-                                            StateHeadString, LuaFormat.PointSymbol, state.ToString(),
-                                            LuaFormat.CurlyBracesPair.start,
-                                            clipListString,
-                                            LuaFormat.CurlyBracesPair.end);
-            return Tool.GetCacheString(toString);
-        }
-
-        private const string StateHeadString = "EntityStateDefine";
-    }
-
     internal struct ClipData : ITable, INullTable {
         public string clipName;
         public PoolType poolType;

@@ -1,7 +1,7 @@
 using System.Text;
 using SkillEditor;
 
-namespace Lua {
+namespace Lua.AnimClipData {
 
     public struct AnimClipData : ITable {
         public string modelName;
@@ -14,7 +14,12 @@ namespace Lua {
 
         public ushort GetLayer() => 1;
         public KeyType GetKeyType() => KeyType.String;
-        public bool IsNullTable() => modelName == null || modelName == string.Empty || stateList == null;
+        public bool IsNullTable() => modelName == null || modelName == string.Empty || 
+                                        stateList == null || stateList.Length == 0;
+        public void Clear() {
+            modelName = null;
+            stateList = null;
+        }
 
         private static StringBuilder m_staticBuilder = new StringBuilder(16384);
         public override string ToString() {

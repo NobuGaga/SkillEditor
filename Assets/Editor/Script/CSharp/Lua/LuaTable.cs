@@ -40,6 +40,7 @@ namespace Lua {
         ushort GetLayer();
         KeyType GetKeyType();
         bool IsNullTable();
+        void Clear();
         string ToString();
     }
 
