@@ -45,15 +45,15 @@
     <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
   </PropertyGroup>
   <ItemGroup>     <Compile Include="Assets\Editor\Script\CSharp\Base\BaseEditorWindow.cs" />
+     <Compile Include="Assets\Editor\Script\CSharp\Lua\LuaFormat.cs" />
+     <Compile Include="Assets\Editor\Script\CSharp\Lua\LuaReader.cs" />
+     <Compile Include="Assets\Editor\Script\CSharp\Lua\LuaWriter.cs" />
      <Compile Include="Assets\Editor\Script\CSharp\SkillEditor\Animation\BaseAnimation.cs" />
      <Compile Include="Assets\Editor\Script\CSharp\SkillEditor\Animation\SkillAnimator.cs" />
      <Compile Include="Assets\Editor\Script\CSharp\SkillEditor\Animation\SkillClip.cs" />
      <Compile Include="Assets\Editor\Script\CSharp\SkillEditor\Controller\Controller.cs" />
      <Compile Include="Assets\Editor\Script\CSharp\SkillEditor\Controller\Manager.cs" />
      <Compile Include="Assets\Editor\Script\CSharp\SkillEditor\EditorMenu.cs" />
-     <Compile Include="Assets\Editor\Script\CSharp\SkillEditor\Lua\LuaFormat.cs" />
-     <Compile Include="Assets\Editor\Script\CSharp\SkillEditor\Lua\LuaReader.cs" />
-     <Compile Include="Assets\Editor\Script\CSharp\SkillEditor\Lua\LuaWriter.cs" />
      <Compile Include="Assets\Editor\Script\CSharp\SkillEditor\Manager\AnimatorControllerManager.cs" />
      <Compile Include="Assets\Editor\Script\CSharp\SkillEditor\Manager\ModelManager.cs" />
      <Compile Include="Assets\Editor\Script\CSharp\SkillEditor\Model\AnimationModel.cs" />

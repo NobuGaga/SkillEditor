@@ -3,13 +3,14 @@ using System.IO;
 using System.Text;
 using System.Collections.Generic;
 using StringComparison = System.StringComparison;
+using SkillEditor;
 using SkillEditor.LuaStructure;
 
-namespace SkillEditor {
+namespace Lua {
 
     using LuaTableKeyValue = LuaFormat.LuaTableKeyValue;
 
-    internal static class LuaReader {
+    public static class LuaReader {
 
         private static int m_tableLayer;
 

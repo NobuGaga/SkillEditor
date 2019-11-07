@@ -4,7 +4,7 @@ using StringComparison = System.StringComparison;
 
 namespace SkillEditor {
 
-    internal static class Config {
+    public static class Config {
 
         // Common
         private static readonly int ProjectPathSubIndex = Application.dataPath.IndexOf("Assets", StringComparison.Ordinal);

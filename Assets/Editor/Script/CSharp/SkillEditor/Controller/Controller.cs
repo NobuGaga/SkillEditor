@@ -3,6 +3,7 @@ using UnityEngine;
 using System.IO;
 using System.Collections.Generic;
 using SkillEditor.LuaStructure;
+using Lua;
 
 namespace SkillEditor {
 

@@ -1,6 +1,6 @@
-﻿namespace SkillEditor {
+﻿namespace Lua {
 
-    internal static class LuaFormat {
+    public static class LuaFormat {
 
         public const char EqualSymbol = '=';
         public const char SpaceSymbol = ' ';
@@ -52,7 +52,7 @@
         }
     }
 
-    internal struct PairChar {
+    public struct PairChar {
         public char start;
         public char end;
 
@@ -62,7 +62,7 @@
         }
     }
 
-    internal struct PairStringChar {
+    public struct PairStringChar {
         public string start;
         public char end;
 
@@ -77,7 +77,7 @@
         }
     }
 
-    internal struct PairString {
+    public struct PairString {
         public string start;
         public string end;
 

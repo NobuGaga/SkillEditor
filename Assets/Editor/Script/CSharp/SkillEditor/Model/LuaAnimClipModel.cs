@@ -2,6 +2,7 @@
 using System.Text;
 using System.Collections.Generic;
 using SkillEditor.LuaStructure;
+using Lua;
 
 namespace SkillEditor {
 

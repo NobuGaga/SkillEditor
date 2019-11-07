@@ -3,6 +3,7 @@ using System;
 using System.Text;
 using System.Reflection;
 using SkillEditor.LuaStructure;
+using Lua;
 
 namespace SkillEditor {
 

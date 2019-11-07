@@ -1,10 +1,11 @@
 ﻿using UnityEngine;
 using System;
 using System.Text;
+using Lua;
+using LuaTableKeyValue = Lua.LuaFormat.LuaTableKeyValue;
 
 namespace SkillEditor.LuaStructure {
 
-    using LuaTableKeyValue = LuaFormat.LuaTableKeyValue;
 
     internal enum AnimClipLuaLayer {
         EnterTable = 0,
@@ -625,7 +626,7 @@ namespace SkillEditor.LuaStructure {
         bool IsNullTable();
     }
 
-    internal interface ITable {
+    public interface ITable {
 
         void SetTableKeyValue(string key, object value);
         LuaTableKeyValue[] GetTableKeyValueList();

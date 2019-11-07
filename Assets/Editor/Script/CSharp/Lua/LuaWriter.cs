@@ -1,10 +1,11 @@
 ﻿using System.IO;
 using System.Text;
 using System.Collections.Generic;
+using SkillEditor;
 
-namespace SkillEditor {
+namespace Lua {
 
-    internal static class LuaWriter {
+    public static class LuaWriter {
 
         private static Dictionary<string, string> m_dicPathFileHead = new Dictionary<string, string>(Config.ReadFileCount);
 
