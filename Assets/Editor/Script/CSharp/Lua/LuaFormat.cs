@@ -32,6 +32,7 @@
         public const string TabString = "    ";
 
         public struct PairChar {
+
             public char start;
             public char end;
 
@@ -42,6 +43,7 @@
         }
 
         public struct PairStringChar {
+
             public string start;
             public char end;
 
@@ -57,6 +59,7 @@
         }
 
         public struct PairString {
+            
             public string start;
             public string end;
 

@@ -53,7 +53,5 @@ namespace Lua.AnimClipData {
         None,
         Atk,
         UseSkill,
-        Hit,
-        Dead,
     }
 }
