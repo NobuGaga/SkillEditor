@@ -5,7 +5,36 @@ namespace Lua {
 
     internal static class LuaTable {
 
-        internal static string GetArrayString<T>(StringBuilder builder, T[] list) where T : ITable {
+        public static string GetNotFieldKeyTableText<OuterType, InnerType>(StringBuilder builder, OuterType self, string key, 
+                                                    InnerType[] tableList) where OuterType : ITable where InnerType : ITable {
+            if (self.IsNullTable() || self.GetKeyType() == KeyType.Field)
+                return string.Empty;
+            builder.Clear();
+            for (int index = 0; index < tableList.Length; index++)
+                builder.Append(tableList[index].ToString());
+            string stateListString = builder.ToString();
+            string tabString = LuaTable.GetTabString(self.GetLayer());
+            string format = null;
+            switch (self.GetKeyType()) {
+                case KeyType.Array:
+                    format = "{0}[{1}] = {2}\n{3}{0}{4},\n";
+                    break;
+                case KeyType.String:
+                    format = "{0}[\"{1}\"] = {2}\n{3}{0}{4},\n";
+                    break;
+                case KeyType.Reference:
+                    format = "{0}{1} = {2}\n{3}{0}{4},\n";
+                    break;
+            }
+            string toString = string.Format(format, tabString,
+                                            key,
+                                            LuaFormat.CurlyBracesPair.start,
+                                            stateListString,
+                                            LuaFormat.CurlyBracesPair.end);
+            return Tool.GetCacheString(toString);
+        }
+
+        public static string GetArrayString<T>(StringBuilder builder, T[] list) where T : ITable {
             if (list == null || list.Length == 0)
                 return string.Empty;
             ushort layer = list[0].GetLayer();
@@ -22,12 +51,12 @@ namespace Lua {
             return Tool.GetCacheString(builder.ToString());
         }
 
-        internal static string GetTabString(ITable table) {
+        public static string GetTabString(ITable table) {
             ushort layer = table.GetLayer();
             return GetTabString(layer);
         }
 
-        internal static string GetTabString(ushort layer) {
+        public static string GetTabString(ushort layer) {
             string tabString = string.Empty;
             for (int index = 0; index < layer; index++)
                 tabString = Tool.GetCacheString(tabString + LuaFormat.TabString);

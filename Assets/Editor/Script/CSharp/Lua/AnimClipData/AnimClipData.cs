@@ -1,9 +1,10 @@
+using System;
 using System.Text;
-using SkillEditor;
 
 namespace Lua.AnimClipData {
 
     public struct AnimClipData : ITable {
+        
         public string modelName;
         public StateData[] stateList;
 
@@ -21,22 +22,9 @@ namespace Lua.AnimClipData {
             stateList = null;
         }
 
-        private static StringBuilder m_staticBuilder = new StringBuilder(16384);
+        private static StringBuilder m_staticBuilder = new StringBuilder((UInt16)Math.Pow(2, 16));
         public override string ToString() {
-            if (stateList == null)
-                return string.Empty;
-            m_staticBuilder.Clear();
-            for (int index = 0; index < stateList.Length; index++)
-                m_staticBuilder.Append(stateList[index].ToString());
-            string stateListString = m_staticBuilder.ToString();
-            string tabString = LuaTable.GetTabString(GetLayer());
-            string format = "{0}[\"{1}\"] = {2}\n{3}{0}{4},\n";
-            string toString = string.Format(format, tabString,
-                                            modelName,
-                                            LuaFormat.CurlyBracesPair.start,
-                                            stateListString,
-                                            LuaFormat.CurlyBracesPair.end);
-            return Tool.GetCacheString(toString);
+            return LuaTable.GetNotFieldKeyTableText(m_staticBuilder, this, modelName, stateList);
         }
     }
 }

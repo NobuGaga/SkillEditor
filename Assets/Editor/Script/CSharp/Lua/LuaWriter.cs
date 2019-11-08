@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Text;
 using System.Collections.Generic;
 using SkillEditor;
@@ -16,7 +17,7 @@ namespace Lua {
                 m_dicPathFileHead[path] = headText;
         }
 
-        private static StringBuilder m_stringBuilder = new StringBuilder(Config.AnimClipLuaFileLength);
+        private static StringBuilder m_stringBuilder = new StringBuilder((UInt16)Math.Pow(2, 16));
 
         public static void Write() {
             foreach (var keyValue in m_dicPathFileHead) {

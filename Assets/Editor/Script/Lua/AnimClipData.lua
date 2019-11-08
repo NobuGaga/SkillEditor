@@ -5,7 +5,7 @@ AnimClipData.data = {
             ["attack_1"] = {
                 [1] = {
                     time = 0,
-                    ["PlayEffect"] = {
+                    PlayEffect = {
                         priority = 1,
                         data = {
                             [1] = {
@@ -17,7 +17,7 @@ AnimClipData.data = {
                 },
                 [2] = {
                     time = 0.133,
-                    ["Hit"] = {
+                    Hit = {
                         type = 1,
                         priority = 1,
                         data = {
@@ -31,7 +31,7 @@ AnimClipData.data = {
                             },
                         },
                     },
-                    ["PlayEffect"] = {
+                    PlayEffect = {
                         priority = 99,
                         data = {
                             [1] = {
@@ -48,7 +48,7 @@ AnimClipData.data = {
                 },
                 [3] = {
                     time = 0.163,
-                    ["Hit"] = {
+                    Hit = {
                         type = 1,
                         priority = 1,
                         data = {
@@ -62,7 +62,7 @@ AnimClipData.data = {
                             },
                         },
                     },
-                    ["PlayEffect"] = {
+                    PlayEffect = {
                         priority = 99,
                         data = {
                             [1] = {
@@ -79,7 +79,7 @@ AnimClipData.data = {
                 },
                 [4] = {
                     time = 0.193,
-                    ["Hit"] = {
+                    Hit = {
                         type = 1,
                         priority = 1,
                         data = {
@@ -93,7 +93,7 @@ AnimClipData.data = {
                             },
                         },
                     },
-                    ["PlayEffect"] = {
+                    PlayEffect = {
                         priority = 99,
                         data = {
                             [1] = {
@@ -110,7 +110,7 @@ AnimClipData.data = {
                 },
                 [5] = {
                     time = 0.223,
-                    ["Hit"] = {
+                    Hit = {
                         type = 1,
                         priority = 1,
                         data = {
@@ -124,7 +124,7 @@ AnimClipData.data = {
                             },
                         },
                     },
-                    ["PlayEffect"] = {
+                    PlayEffect = {
                         priority = 99,
                         data = {
                             [1] = {
@@ -141,13 +141,13 @@ AnimClipData.data = {
                 },
                 [6] = {
                     time = 0.2,
-                    ["CacheBegin"] = {
+                    CacheBegin = {
                         priority = 99,
                     },
                 },
                 [7] = {
                     time = 0.27,
-                    ["SectionOver"] = {
+                    SectionOver = {
                         priority = 1,
                     },
                 },
@@ -155,7 +155,7 @@ AnimClipData.data = {
             ["attack_2"] = {
                 [1] = {
                     time = 0,
-                    ["PlayEffect"] = {
+                    PlayEffect = {
                         priority = 1,
                         data = {
                             [1] = {
@@ -171,7 +171,7 @@ AnimClipData.data = {
                 },
                 [2] = {
                     time = 0.108,
-                    ["Hit"] = {
+                    Hit = {
                         type = 1,
                         priority = 1,
                         data = {
@@ -185,7 +185,7 @@ AnimClipData.data = {
                             },
                         },
                     },
-                    ["PlayEffect"] = {
+                    PlayEffect = {
                         priority = 99,
                         data = {
                             [1] = {
@@ -202,7 +202,7 @@ AnimClipData.data = {
                 },
                 [3] = {
                     time = 0.138,
-                    ["Hit"] = {
+                    Hit = {
                         type = 1,
                         priority = 1,
                         data = {
@@ -216,7 +216,7 @@ AnimClipData.data = {
                             },
                         },
                     },
-                    ["PlayEffect"] = {
+                    PlayEffect = {
                         priority = 99,
                         data = {
                             [1] = {
@@ -233,7 +233,7 @@ AnimClipData.data = {
                 },
                 [4] = {
                     time = 0.168,
-                    ["Hit"] = {
+                    Hit = {
                         type = 1,
                         priority = 1,
                         data = {
@@ -247,7 +247,7 @@ AnimClipData.data = {
                             },
                         },
                     },
-                    ["PlayEffect"] = {
+                    PlayEffect = {
                         priority = 99,
                         data = {
                             [1] = {
@@ -264,7 +264,7 @@ AnimClipData.data = {
                 },
                 [5] = {
                     time = 0.198,
-                    ["Hit"] = {
+                    Hit = {
                         type = 1,
                         priority = 1,
                         data = {
@@ -278,7 +278,7 @@ AnimClipData.data = {
                             },
                         },
                     },
-                    ["PlayEffect"] = {
+                    PlayEffect = {
                         priority = 99,
                         data = {
                             [1] = {
@@ -295,13 +295,13 @@ AnimClipData.data = {
                 },
                 [6] = {
                     time = 0.2,
-                    ["CacheBegin"] = {
+                    CacheBegin = {
                         priority = 99,
                     },
                 },
                 [7] = {
                     time = 0.27,
-                    ["SectionOver"] = {
+                    SectionOver = {
                         priority = 1,
                     },
                 },
@@ -309,7 +309,7 @@ AnimClipData.data = {
             ["attack_3"] = {
                 [1] = {
                     time = 0,
-                    ["PlayEffect"] = {
+                    PlayEffect = {
                         priority = 1,
                         data = {
                             [1] = {
@@ -325,7 +325,7 @@ AnimClipData.data = {
                 },
                 [2] = {
                     time = 0.39,
-                    ["Hit"] = {
+                    Hit = {
                         type = 1,
                         priority = 1,
                         data = {
@@ -339,7 +339,7 @@ AnimClipData.data = {
                             },
                         },
                     },
-                    ["PlayEffect"] = {
+                    PlayEffect = {
                         priority = 99,
                         data = {
                             [1] = {
@@ -356,7 +356,7 @@ AnimClipData.data = {
                 },
                 [3] = {
                     time = 0.42,
-                    ["Hit"] = {
+                    Hit = {
                         type = 1,
                         priority = 1,
                         data = {
@@ -370,7 +370,7 @@ AnimClipData.data = {
                             },
                         },
                     },
-                    ["PlayEffect"] = {
+                    PlayEffect = {
                         priority = 99,
                         data = {
                             [1] = {
@@ -387,7 +387,7 @@ AnimClipData.data = {
                 },
                 [4] = {
                     time = 0.45,
-                    ["Hit"] = {
+                    Hit = {
                         type = 1,
                         priority = 1,
                         data = {
@@ -401,7 +401,7 @@ AnimClipData.data = {
                             },
                         },
                     },
-                    ["PlayEffect"] = {
+                    PlayEffect = {
                         priority = 99,
                         data = {
                             [1] = {
@@ -418,7 +418,7 @@ AnimClipData.data = {
                 },
                 [5] = {
                     time = 0.48,
-                    ["Hit"] = {
+                    Hit = {
                         type = 1,
                         priority = 1,
                         data = {
@@ -432,7 +432,7 @@ AnimClipData.data = {
                             },
                         },
                     },
-                    ["PlayEffect"] = {
+                    PlayEffect = {
                         priority = 99,
                         data = {
                             [1] = {
@@ -449,13 +449,13 @@ AnimClipData.data = {
                 },
                 [6] = {
                     time = 0.4,
-                    ["CacheBegin"] = {
+                    CacheBegin = {
                         priority = 99,
                     },
                 },
                 [7] = {
                     time = 0.8,
-                    ["SectionOver"] = {
+                    SectionOver = {
                         priority = 1,
                     },
                 },
@@ -463,7 +463,7 @@ AnimClipData.data = {
             ["attack_4_1"] = {
                 [1] = {
                     time = 0,
-                    ["PlayEffect"] = {
+                    PlayEffect = {
                         priority = 1,
                         data = {
                             [1] = {
@@ -475,7 +475,7 @@ AnimClipData.data = {
                 },
                 [2] = {
                     time = 0.233,
-                    ["Hit"] = {
+                    Hit = {
                         type = 1,
                         priority = 1,
                         data = {
@@ -489,7 +489,7 @@ AnimClipData.data = {
                             },
                         },
                     },
-                    ["PlayEffect"] = {
+                    PlayEffect = {
                         priority = 99,
                         data = {
                             [1] = {
@@ -506,7 +506,7 @@ AnimClipData.data = {
                 },
                 [3] = {
                     time = 0.433,
-                    ["Hit"] = {
+                    Hit = {
                         type = 1,
                         priority = 1,
                         data = {
@@ -520,7 +520,7 @@ AnimClipData.data = {
                             },
                         },
                     },
-                    ["PlayEffect"] = {
+                    PlayEffect = {
                         priority = 99,
                         data = {
                             [1] = {
@@ -539,7 +539,7 @@ AnimClipData.data = {
             ["attack_4_2"] = {
                 [1] = {
                     time = 0,
-                    ["PlayEffect"] = {
+                    PlayEffect = {
                         priority = 1,
                         data = {
                             [1] = {
@@ -551,7 +551,7 @@ AnimClipData.data = {
                 },
                 [2] = {
                     time = 0.233,
-                    ["Hit"] = {
+                    Hit = {
                         type = 1,
                         priority = 1,
                         data = {
@@ -565,7 +565,7 @@ AnimClipData.data = {
                             },
                         },
                     },
-                    ["PlayEffect"] = {
+                    PlayEffect = {
                         priority = 99,
                         data = {
                             [1] = {
@@ -582,13 +582,13 @@ AnimClipData.data = {
                 },
                 [3] = {
                     time = 0.368,
-                    ["CacheBegin"] = {
+                    CacheBegin = {
                         priority = 99,
                     },
                 },
                 [4] = {
                     time = 0.368,
-                    ["SectionOver"] = {
+                    SectionOver = {
                         priority = 1,
                     },
                 },
@@ -598,7 +598,7 @@ AnimClipData.data = {
             ["skill_01_1"] = {
                 [1] = {
                     time = 0,
-                    ["PlayEffect"] = {
+                    PlayEffect = {
                         priority = 1,
                         data = {
                             [1] = {
@@ -610,7 +610,7 @@ AnimClipData.data = {
                 },
                 [2] = {
                     time = 0.3,
-                    ["Hit"] = {
+                    Hit = {
                         type = 1,
                         priority = 1,
                         data = {
@@ -624,7 +624,7 @@ AnimClipData.data = {
                             },
                         },
                     },
-                    ["PlayEffect"] = {
+                    PlayEffect = {
                         priority = 99,
                         data = {
                             [1] = {
@@ -641,7 +641,7 @@ AnimClipData.data = {
                 },
                 [3] = {
                     time = 0.48,
-                    ["Hit"] = {
+                    Hit = {
                         type = 1,
                         priority = 2,
                         data = {
@@ -655,7 +655,7 @@ AnimClipData.data = {
                             },
                         },
                     },
-                    ["PlayEffect"] = {
+                    PlayEffect = {
                         priority = 99,
                         data = {
                             [1] = {
@@ -672,7 +672,7 @@ AnimClipData.data = {
                 },
                 [4] = {
                     time = 0.6,
-                    ["Hit"] = {
+                    Hit = {
                         type = 1,
                         priority = 2,
                         data = {
@@ -686,7 +686,7 @@ AnimClipData.data = {
                             },
                         },
                     },
-                    ["PlayEffect"] = {
+                    PlayEffect = {
                         priority = 99,
                         data = {
                             [1] = {
@@ -703,7 +703,7 @@ AnimClipData.data = {
                 },
                 [5] = {
                     time = 0.75,
-                    ["Hit"] = {
+                    Hit = {
                         type = 1,
                         priority = 2,
                         data = {
@@ -717,7 +717,7 @@ AnimClipData.data = {
                             },
                         },
                     },
-                    ["PlayEffect"] = {
+                    PlayEffect = {
                         priority = 99,
                         data = {
                             [1] = {
@@ -734,7 +734,7 @@ AnimClipData.data = {
                 },
                 [6] = {
                     time = 0.9,
-                    ["Hit"] = {
+                    Hit = {
                         type = 1,
                         priority = 2,
                         data = {
@@ -748,7 +748,7 @@ AnimClipData.data = {
                             },
                         },
                     },
-                    ["PlayEffect"] = {
+                    PlayEffect = {
                         priority = 99,
                         data = {
                             [1] = {
@@ -765,7 +765,7 @@ AnimClipData.data = {
                 },
                 [7] = {
                     time = 1.05,
-                    ["Hit"] = {
+                    Hit = {
                         type = 1,
                         priority = 3,
                         data = {
@@ -779,7 +779,7 @@ AnimClipData.data = {
                             },
                         },
                     },
-                    ["PlayEffect"] = {
+                    PlayEffect = {
                         priority = 99,
                         data = {
                             [1] = {
@@ -796,7 +796,7 @@ AnimClipData.data = {
                 },
                 [8] = {
                     time = 1.2,
-                    ["Hit"] = {
+                    Hit = {
                         type = 1,
                         priority = 4,
                         data = {
@@ -810,7 +810,7 @@ AnimClipData.data = {
                             },
                         },
                     },
-                    ["PlayEffect"] = {
+                    PlayEffect = {
                         priority = 99,
                         data = {
                             [1] = {
@@ -827,7 +827,7 @@ AnimClipData.data = {
                 },
                 [9] = {
                     time = 1.32,
-                    ["Hit"] = {
+                    Hit = {
                         type = 1,
                         priority = 5,
                         data = {
@@ -841,7 +841,7 @@ AnimClipData.data = {
                             },
                         },
                     },
-                    ["PlayEffect"] = {
+                    PlayEffect = {
                         priority = 99,
                         data = {
                             [1] = {
@@ -860,7 +860,7 @@ AnimClipData.data = {
             ["skill_01_2"] = {
                 [1] = {
                     time = 0,
-                    ["PlayEffect"] = {
+                    PlayEffect = {
                         priority = 1,
                         data = {
                             [1] = {
@@ -872,7 +872,7 @@ AnimClipData.data = {
                 },
                 [2] = {
                     time = 0.5,
-                    ["Hit"] = {
+                    Hit = {
                         type = 1,
                         priority = 1,
                         data = {
@@ -886,7 +886,7 @@ AnimClipData.data = {
                             },
                         },
                     },
-                    ["PlayEffect"] = {
+                    PlayEffect = {
                         priority = 99,
                         data = {
                             [1] = {
@@ -903,13 +903,13 @@ AnimClipData.data = {
                 },
                 [3] = {
                     time = 0.8,
-                    ["CacheBegin"] = {
+                    CacheBegin = {
                         priority = 99,
                     },
                 },
                 [4] = {
                     time = 1,
-                    ["SectionOver"] = {
+                    SectionOver = {
                         priority = 1,
                     },
                 },
@@ -917,7 +917,7 @@ AnimClipData.data = {
             ["skill_02_1"] = {
                 [1] = {
                     time = 0,
-                    ["PlayEffect"] = {
+                    PlayEffect = {
                         priority = 1,
                         data = {
                             [1] = {
@@ -931,7 +931,7 @@ AnimClipData.data = {
             ["skill_02_2"] = {
                 [1] = {
                     time = 0.146,
-                    ["PlayEffect"] = {
+                    PlayEffect = {
                         priority = 1,
                         data = {
                             [1] = {
@@ -943,7 +943,7 @@ AnimClipData.data = {
                 },
                 [2] = {
                     time = 0.2,
-                    ["Hit"] = {
+                    Hit = {
                         type = 1,
                         priority = 1,
                         data = {
@@ -957,7 +957,7 @@ AnimClipData.data = {
                             },
                         },
                     },
-                    ["PlayEffect"] = {
+                    PlayEffect = {
                         priority = 99,
                         data = {
                             [1] = {
@@ -974,7 +974,7 @@ AnimClipData.data = {
                 },
                 [3] = {
                     time = 0.176,
-                    ["PlayEffect"] = {
+                    PlayEffect = {
                         priority = 1,
                         data = {
                             [1] = {
@@ -990,13 +990,13 @@ AnimClipData.data = {
                 },
                 [4] = {
                     time = 0.8,
-                    ["CacheBegin"] = {
+                    CacheBegin = {
                         priority = 99,
                     },
                 },
                 [5] = {
                     time = 1,
-                    ["SectionOver"] = {
+                    SectionOver = {
                         priority = 1,
                     },
                 },
@@ -1004,7 +1004,7 @@ AnimClipData.data = {
             ["skill_03_1"] = {
                 [1] = {
                     time = 0.42,
-                    ["Hit"] = {
+                    Hit = {
                         type = 1,
                         priority = 1,
                         data = {
@@ -1018,7 +1018,7 @@ AnimClipData.data = {
                             },
                         },
                     },
-                    ["PlayEffect"] = {
+                    PlayEffect = {
                         priority = 99,
                         data = {
                             [1] = {
@@ -1035,7 +1035,7 @@ AnimClipData.data = {
                 },
                 [2] = {
                     time = 0.5,
-                    ["Hit"] = {
+                    Hit = {
                         type = 1,
                         priority = 2,
                         data = {
@@ -1049,7 +1049,7 @@ AnimClipData.data = {
                             },
                         },
                     },
-                    ["PlayEffect"] = {
+                    PlayEffect = {
                         priority = 99,
                         data = {
                             [1] = {
@@ -1066,7 +1066,7 @@ AnimClipData.data = {
                 },
                 [3] = {
                     time = 0.6,
-                    ["Hit"] = {
+                    Hit = {
                         type = 1,
                         priority = 3,
                         data = {
@@ -1080,7 +1080,7 @@ AnimClipData.data = {
                             },
                         },
                     },
-                    ["PlayEffect"] = {
+                    PlayEffect = {
                         priority = 99,
                         data = {
                             [1] = {
@@ -1097,7 +1097,7 @@ AnimClipData.data = {
                 },
                 [4] = {
                     time = 0.7,
-                    ["Hit"] = {
+                    Hit = {
                         type = 1,
                         priority = 4,
                         data = {
@@ -1111,7 +1111,7 @@ AnimClipData.data = {
                             },
                         },
                     },
-                    ["PlayEffect"] = {
+                    PlayEffect = {
                         priority = 99,
                         data = {
                             [1] = {
@@ -1128,7 +1128,7 @@ AnimClipData.data = {
                 },
                 [5] = {
                     time = 0.8,
-                    ["Hit"] = {
+                    Hit = {
                         type = 1,
                         priority = 4,
                         data = {
@@ -1142,7 +1142,7 @@ AnimClipData.data = {
                             },
                         },
                     },
-                    ["PlayEffect"] = {
+                    PlayEffect = {
                         priority = 99,
                         data = {
                             [1] = {
@@ -1159,7 +1159,7 @@ AnimClipData.data = {
                 },
                 [6] = {
                     time = 0.9,
-                    ["Hit"] = {
+                    Hit = {
                         type = 1,
                         priority = 4,
                         data = {
@@ -1173,7 +1173,7 @@ AnimClipData.data = {
                             },
                         },
                     },
-                    ["PlayEffect"] = {
+                    PlayEffect = {
                         priority = 99,
                         data = {
                             [1] = {
@@ -1190,7 +1190,7 @@ AnimClipData.data = {
                 },
                 [7] = {
                     time = 1,
-                    ["Hit"] = {
+                    Hit = {
                         type = 1,
                         priority = 4,
                         data = {
@@ -1204,7 +1204,7 @@ AnimClipData.data = {
                             },
                         },
                     },
-                    ["PlayEffect"] = {
+                    PlayEffect = {
                         priority = 99,
                         data = {
                             [1] = {
@@ -1221,7 +1221,7 @@ AnimClipData.data = {
                 },
                 [8] = {
                     time = 1.1,
-                    ["Hit"] = {
+                    Hit = {
                         type = 1,
                         priority = 4,
                         data = {
@@ -1235,7 +1235,7 @@ AnimClipData.data = {
                             },
                         },
                     },
-                    ["PlayEffect"] = {
+                    PlayEffect = {
                         priority = 99,
                         data = {
                             [1] = {
@@ -1252,7 +1252,7 @@ AnimClipData.data = {
                 },
                 [9] = {
                     time = 0.2,
-                    ["PlayEffect"] = {
+                    PlayEffect = {
                         priority = 1,
                         data = {
                             [1] = {
@@ -1266,7 +1266,7 @@ AnimClipData.data = {
             ["skill_03_2"] = {
                 [1] = {
                     time = 0.4,
-                    ["Hit"] = {
+                    Hit = {
                         type = 1,
                         priority = 1,
                         data = {
@@ -1280,7 +1280,7 @@ AnimClipData.data = {
                             },
                         },
                     },
-                    ["PlayEffect"] = {
+                    PlayEffect = {
                         priority = 99,
                         data = {
                             [1] = {
@@ -1297,7 +1297,7 @@ AnimClipData.data = {
                 },
                 [2] = {
                     time = 0.23,
-                    ["PlayEffect"] = {
+                    PlayEffect = {
                         priority = 1,
                         data = {
                             [1] = {
@@ -1309,13 +1309,13 @@ AnimClipData.data = {
                 },
                 [3] = {
                     time = 1,
-                    ["CacheBegin"] = {
+                    CacheBegin = {
                         priority = 99,
                     },
                 },
                 [4] = {
                     time = 1.2,
-                    ["SectionOver"] = {
+                    SectionOver = {
                         priority = 1,
                     },
                 },
@@ -1323,7 +1323,7 @@ AnimClipData.data = {
             ["skill_04_1"] = {
                 [1] = {
                     time = 0.42,
-                    ["Hit"] = {
+                    Hit = {
                         type = 1,
                         priority = 1,
                         data = {
@@ -1337,7 +1337,7 @@ AnimClipData.data = {
                             },
                         },
                     },
-                    ["PlayEffect"] = {
+                    PlayEffect = {
                         priority = 99,
                         data = {
                             [1] = {
@@ -1354,7 +1354,7 @@ AnimClipData.data = {
                 },
                 [2] = {
                     time = 0,
-                    ["PlayEffect"] = {
+                    PlayEffect = {
                         priority = 1,
                         data = {
                             [1] = {
@@ -1368,7 +1368,7 @@ AnimClipData.data = {
             ["skill_04_2"] = {
                 [1] = {
                     time = 0.2,
-                    ["Hit"] = {
+                    Hit = {
                         type = 1,
                         priority = 1,
                         data = {
@@ -1382,7 +1382,7 @@ AnimClipData.data = {
                             },
                         },
                     },
-                    ["PlayEffect"] = {
+                    PlayEffect = {
                         priority = 99,
                         data = {
                             [1] = {
@@ -1399,7 +1399,7 @@ AnimClipData.data = {
                 },
                 [2] = {
                     time = 0.67,
-                    ["Hit"] = {
+                    Hit = {
                         type = 1,
                         priority = 1,
                         data = {
@@ -1413,7 +1413,7 @@ AnimClipData.data = {
                             },
                         },
                     },
-                    ["PlayEffect"] = {
+                    PlayEffect = {
                         priority = 99,
                         data = {
                             [1] = {
@@ -1430,7 +1430,7 @@ AnimClipData.data = {
                 },
                 [3] = {
                     time = 1.04,
-                    ["Hit"] = {
+                    Hit = {
                         type = 1,
                         priority = 1,
                         data = {
@@ -1444,7 +1444,7 @@ AnimClipData.data = {
                             },
                         },
                     },
-                    ["PlayEffect"] = {
+                    PlayEffect = {
                         priority = 99,
                         data = {
                             [1] = {
@@ -1461,7 +1461,7 @@ AnimClipData.data = {
                 },
                 [4] = {
                     time = 1.27,
-                    ["Hit"] = {
+                    Hit = {
                         type = 1,
                         priority = 2,
                         data = {
@@ -1475,7 +1475,7 @@ AnimClipData.data = {
                             },
                         },
                     },
-                    ["PlayEffect"] = {
+                    PlayEffect = {
                         priority = 99,
                         data = {
                             [1] = {
@@ -1492,7 +1492,7 @@ AnimClipData.data = {
                 },
                 [5] = {
                     time = 1.64,
-                    ["Hit"] = {
+                    Hit = {
                         type = 1,
                         priority = 2,
                         data = {
@@ -1506,7 +1506,7 @@ AnimClipData.data = {
                             },
                         },
                     },
-                    ["PlayEffect"] = {
+                    PlayEffect = {
                         priority = 99,
                         data = {
                             [1] = {
@@ -1523,7 +1523,7 @@ AnimClipData.data = {
                 },
                 [6] = {
                     time = 0,
-                    ["PlayEffect"] = {
+                    PlayEffect = {
                         priority = 1,
                         data = {
                             [1] = {
@@ -1535,7 +1535,7 @@ AnimClipData.data = {
                 },
                 [7] = {
                     time = 0,
-                    ["PlayEffect"] = {
+                    PlayEffect = {
                         priority = 1,
                         data = {
                             [1] = {
@@ -1549,7 +1549,7 @@ AnimClipData.data = {
             ["skill_04_3"] = {
                 [1] = {
                     time = 1,
-                    ["Hit"] = {
+                    Hit = {
                         type = 1,
                         priority = 1,
                         data = {
@@ -1563,7 +1563,7 @@ AnimClipData.data = {
                             },
                         },
                     },
-                    ["PlayEffect"] = {
+                    PlayEffect = {
                         priority = 99,
                         data = {
                             [1] = {
@@ -1580,7 +1580,7 @@ AnimClipData.data = {
                 },
                 [2] = {
                     time = 0.8,
-                    ["PlayEffect"] = {
+                    PlayEffect = {
                         priority = 1,
                         data = {
                             [1] = {
@@ -1592,13 +1592,13 @@ AnimClipData.data = {
                 },
                 [3] = {
                     time = 1,
-                    ["CacheBegin"] = {
+                    CacheBegin = {
                         priority = 99,
                     },
                 },
                 [4] = {
                     time = 1.2,
-                    ["SectionOver"] = {
+                    SectionOver = {
                         priority = 1,
                     },
                 },
@@ -1609,17 +1609,8 @@ AnimClipData.data = {
         ["EntityStateDefine.Atk"] = {
             ["attack_1"] = {
                 [1] = {
-                    time = 0,
-                    ["PlayEffect"] = {
-                        priority = 1,
-                        data = {
-                            
-                        },
-                    },
-                },
-                [2] = {
                     time = 0.43,
-                    ["Hit"] = {
+                    Hit = {
                         type = 1,
                         priority = 1,
                         data = {
@@ -1634,15 +1625,15 @@ AnimClipData.data = {
                         },
                     },
                 },
-                [3] = {
+                [2] = {
                     time = 1,
-                    ["CacheBegin"] = {
+                    CacheBegin = {
                         priority = 99,
                     },
                 },
-                [4] = {
+                [3] = {
                     time = 1.1,
-                    ["SectionOver"] = {
+                    SectionOver = {
                         priority = 1,
                     },
                 },
@@ -1650,7 +1641,7 @@ AnimClipData.data = {
             ["attack_2"] = {
                 [1] = {
                     time = 0.37,
-                    ["Hit"] = {
+                    Hit = {
                         type = 1,
                         priority = 1,
                         data = {
@@ -1667,13 +1658,13 @@ AnimClipData.data = {
                 },
                 [2] = {
                     time = 1,
-                    ["CacheBegin"] = {
+                    CacheBegin = {
                         priority = 99,
                     },
                 },
                 [3] = {
                     time = 1.1,
-                    ["SectionOver"] = {
+                    SectionOver = {
                         priority = 1,
                     },
                 },
