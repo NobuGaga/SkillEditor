@@ -47,6 +47,7 @@
   <ItemGroup>     <Compile Include="Assets\Editor\Script\CSharp\Base\BaseEditorWindow.cs" />
      <Compile Include="Assets\Editor\Script\CSharp\Lua\AnimClipData\AnimClipData.cs" />
      <Compile Include="Assets\Editor\Script\CSharp\Lua\AnimClipData\ClipData.cs" />
+     <Compile Include="Assets\Editor\Script\CSharp\Lua\AnimClipData\FrameData.cs" />
      <Compile Include="Assets\Editor\Script\CSharp\Lua\AnimClipData\StateData.cs" />
      <Compile Include="Assets\Editor\Script\CSharp\Lua\LuaFormat.cs" />
      <Compile Include="Assets\Editor\Script\CSharp\Lua\LuaReader.cs" />
