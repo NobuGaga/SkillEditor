@@ -103,7 +103,7 @@ namespace SkillEditor.LuaStructure {
             return Tool.GetCacheString(toString);
         }
 
-        public void SetTableKeyValue(string key, object value) {
+        public void SetFieldKeyTable(string key, object value) {
             switch (key) {
                 case Key_Type:
                     type = (short)(int)value;
@@ -118,7 +118,7 @@ namespace SkillEditor.LuaStructure {
         private const string Key_Id = "id";
 
         private static FieldKeyTable[] m_arraykeyValue;
-        public FieldKeyTable[] GetTableKeyValueList() {
+        public FieldKeyTable[] GetFieldKeyTables() {
             if (m_arraykeyValue != null)
                 return m_arraykeyValue;
             m_arraykeyValue = new FieldKeyTable[2];
@@ -156,7 +156,7 @@ namespace SkillEditor.LuaStructure {
             return Tool.GetCacheString(toString);
         }
 
-        public void SetTableKeyValue(string key, object value) {
+        public void SetFieldKeyTable(string key, object value) {
             switch (key) {
                 case Key_X:
                     x = (float)value;
@@ -187,7 +187,7 @@ namespace SkillEditor.LuaStructure {
         private const string Key_Depth = "depth";
 
         private static FieldKeyTable[] m_arraykeyValue;
-        public FieldKeyTable[] GetTableKeyValueList() {
+        public FieldKeyTable[] GetFieldKeyTables() {
             if (m_arraykeyValue != null)
                 return m_arraykeyValue;
             m_arraykeyValue = new FieldKeyTable[6];

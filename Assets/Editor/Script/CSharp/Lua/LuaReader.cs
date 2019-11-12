@@ -281,7 +281,7 @@ namespace Lua {
         private static ITable ReadLuaTable(string luaText, ref int index, ITable table) {
             int maxIndex = index;
             int endIndex = FindLuaTableEndIndex(luaText, index);
-            FieldKeyTable[] array = table.GetTableKeyValueList();
+            FieldKeyTable[] array = table.GetFieldKeyTables();
             foreach (FieldKeyTable tableKeyValue in array) {
                 int keyIndex = luaText.IndexOf(tableKeyValue.key, index, StringComparison.Ordinal);
                 if (keyIndex == Config.ErrorIndex || keyIndex >= endIndex)
@@ -305,22 +305,22 @@ namespace Lua {
         private static void SetLuaTableData(string luaText, ref int keyIndex, FieldKeyTable keyValue, ref ITable table) {
             switch (keyValue.type) {
                 case LuaFormat.ValueType.String:
-                    table.SetTableKeyValue(keyValue.key, GetLuaTextString(luaText, ref keyIndex));
+                    table.SetFieldKeyTable(keyValue.key, GetLuaTextString(luaText, ref keyIndex));
                     return;
                 case LuaFormat.ValueType.Int:
-                    table.SetTableKeyValue(keyValue.key, GetLuaTextInt(luaText, ref keyIndex));
+                    table.SetFieldKeyTable(keyValue.key, GetLuaTextInt(luaText, ref keyIndex));
                     return;
                 case LuaFormat.ValueType.Number:
-                    table.SetTableKeyValue(keyValue.key, GetLuaTextNumber(luaText, ref keyIndex));
+                    table.SetFieldKeyTable(keyValue.key, GetLuaTextNumber(luaText, ref keyIndex));
                     return;
                 case LuaFormat.ValueType.Reference:
-                    table.SetTableKeyValue(keyValue.key, GetLuaTextReferenceString(luaText, ref keyIndex));
+                    table.SetFieldKeyTable(keyValue.key, GetLuaTextReferenceString(luaText, ref keyIndex));
                     return;
                 case LuaFormat.ValueType.Table:
                     EnterLuaTable(luaText, ref keyIndex);
                     int endIndex = FindLuaTableEndIndex(luaText, keyIndex);
                     if (!CheckNullTable(luaText, keyIndex, endIndex))
-                        table.SetTableKeyValue(keyValue.key, AnalyseAnimClipData(luaText, ref keyIndex, table));
+                        table.SetFieldKeyTable(keyValue.key, AnalyseAnimClipData(luaText, ref keyIndex, table));
                     ExitLuaTable(luaText, ref keyIndex);
                     return;
             }

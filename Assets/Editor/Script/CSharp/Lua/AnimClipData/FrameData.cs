@@ -3,10 +3,13 @@ using System.Text;
 
 namespace Lua.AnimClipData {
 
-    public struct FrameData : ITable, FieldKeyTable {
+    public struct FrameData : ITable, IFieldKeyTable {
 
         public float time;
-
+        public HitFrameData hitFrameData;
+        public EffectFrameData effectFrameData;
+        public CacheFrameData cacheFrameData;
+        public SectionFrameData sectionFrameData;
         public FrameData(float time) {
             this.time = time;
         }
@@ -24,34 +27,43 @@ namespace Lua.AnimClipData {
             return string.Empty;
         }
 
-        public void SetTableKeyValue(string key, object value) {
+        public void SetFieldKeyTable(string key, object value) {
             FrameType frameType = FrameType.None;
-            Enum.TryParse(key, false, out frameType);
-            switch (key) {
-                case Key_Name:
-                    SetFrameType(value as string);
+            if (!Enum.TryParse(key, false, out frameType)) {
+                UnityEngine.Debug.LogError("FrameData::SetFieldKeyTable not exit key : " + key);
+                return;
+            }
+            switch (frameType) {
+                case FrameType.Hit:
+                    hitFrameData = (HitFrameData)value;
                     return;
-                case Key_Time:
-                    time = (float)value;
+                case FrameType.PlayEffect:
+                    effectFrameData = (EffectFrameData)value;
                     return;
-                case Key_Priority:
-                    priority = (short)(int)value;
+                case FrameType.CacheBegin:
+                    cacheFrameData = (CacheFrameData)value;
                     return;
-                case Key_Data:
-                    dataList = value as CustomData[];
+                case FrameType.SectionOver:
+                    sectionFrameData = (SectionFrameData)value;
                     return;
             }
         }
 
         private static FieldKeyTable[] m_arraykeyValue;
-        public FieldKeyTable[] GetTableKeyValueList() {
+        public FieldKeyTable[] GetFieldKeyTables() {
             if (m_arraykeyValue != null)
                 return m_arraykeyValue;
-            m_arraykeyValue = new FieldKeyTable[4];
-            m_arraykeyValue[0] = new FieldKeyTable(Key_Name, LuaFormat.ValueType.String);
-            m_arraykeyValue[1] = new FieldKeyTable(Key_Time, LuaFormat.ValueType.Number);
-            m_arraykeyValue[2] = new FieldKeyTable(Key_Priority, LuaFormat.ValueType.Int);
-            m_arraykeyValue[3] = new FieldKeyTable(Key_Data, LuaFormat.ValueType.Table);
+            Array arrayframeType = Enum.GetValues(typeof(FrameType));
+            m_arraykeyValue = new FieldKeyTable[arrayframeType.Length - 1];
+            short keyIndex = 0;
+            for (short frameTypeIndex = 0; frameTypeIndex < arrayframeType.Length; frameTypeIndex++, keyIndex++) {
+                FrameType frameType = (FrameType)arrayframeType.GetValue(frameTypeIndex);
+                if (frameType == FrameType.None) {
+                    keyIndex--;
+                    continue;
+                }
+                m_arraykeyValue[keyIndex] = new FieldKeyTable(frameType.ToString(), ValueType.Table);    
+            }
             return m_arraykeyValue;
         }
     }
@@ -62,44 +74,5 @@ namespace Lua.AnimClipData {
         PlayEffect,
         CacheBegin,
         SectionOver,
-    }
-
-    internal struct KeyFrameData : ITable, INullTable {
-        public int index;
-        public FrameType frameType;
-        public float time;
-        public short priority;
-        public CustomData[] dataList;
-
-        private void SetFrameType(string frameTypeString) {
-            frameType = (FrameType)Enum.Parse(typeof(FrameType), frameTypeString);
-        }
-
-        private static readonly StringBuilder m_staticBuilder = new StringBuilder(Config.CustomDataListStringLength);
-        public override string ToString() {
-            string dataListString = string.Empty;
-            string format;
-            string frameDataString = Tool.GetTabString(AnimClipLuaLayer.FrameData);
-            if (dataList != null) {
-                format = "{0}data = {1}{3}{2},\n";
-                dataListString = Tool.GetArrayString(m_staticBuilder, AnimClipLuaLayer.FrameData, dataList);
-                dataListString = string.Format(format, frameDataString,
-                                               LuaFormat.CurlyBracesPair.start,
-                                               LuaFormat.CurlyBracesPair.end,
-                                               dataListString);
-            }
-            format = "{0}[{4}] = {2}\n{1}name = \"{5}\",\n{1}time = {6},\n{1}priority = {7},\n{8}{0}{3},\n";
-            string frameTypeTabString = Tool.GetTabString(AnimClipLuaLayer.FrameType);
-            string toString = string.Format(format, frameTypeTabString,
-                                            frameDataString,
-                                            LuaFormat.CurlyBracesPair.start,
-                                            LuaFormat.CurlyBracesPair.end,
-                                            index,
-                                            frameType.ToString(),
-                                            time,
-                                            priority,
-                                            dataListString);
-            return Tool.GetCacheString(toString);
-        }
     }
 }

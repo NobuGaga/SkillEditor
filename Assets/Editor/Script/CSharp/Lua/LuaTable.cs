@@ -75,7 +75,7 @@ namespace Lua {
 
     public interface IFieldKeyTable {
         
-        void SetFieldKeyTable(string key, ValueType type);
+        void SetFieldKeyTable(string key, object type);
         FieldKeyTable[] GetFieldKeyTables();
     }
 

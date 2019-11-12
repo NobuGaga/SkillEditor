@@ -136,37 +136,37 @@ namespace SkillEditor {
             KeyFrameData[] array = ClipData.GetKeyFrameList();
             if (array == null) {
                 array = new KeyFrameData[] { new KeyFrameData() };
-                m_curClipData.SetTableKeyValue(ClipData.Key_KeyFrame, array);
+                m_curClipData.SetFieldKeyTable(ClipData.Key_KeyFrame, array);
                 return;
             }
             List<KeyFrameData> list = new List<KeyFrameData>(array);
             list.Add(new KeyFrameData());
-            m_curClipData.SetTableKeyValue(ClipData.Key_KeyFrame, list.ToArray());
+            m_curClipData.SetFieldKeyTable(ClipData.Key_KeyFrame, list.ToArray());
         }
 
         public static void AddNewProcessFrameData() {
             ProcessFrameData[] array = ClipData.GetProcessFrameList();
             if (array == null) {
                 array = new ProcessFrameData[] { new ProcessFrameData() };
-                m_curClipData.SetTableKeyValue(ClipData.Key_ProcessFrame, array);
+                m_curClipData.SetFieldKeyTable(ClipData.Key_ProcessFrame, array);
                 return;
             }
             List<ProcessFrameData> list = new List<ProcessFrameData>(array);
             list.Add(new ProcessFrameData());
-            m_curClipData.SetTableKeyValue(ClipData.Key_ProcessFrame, list.ToArray());
+            m_curClipData.SetFieldKeyTable(ClipData.Key_ProcessFrame, list.ToArray());
         }
 
         public static void SetKeyFrameData(int index, KeyFrameData data) {
             KeyFrameData[] array = ClipData.GetKeyFrameList();
             array[index] = data;
-            m_curClipData.SetTableKeyValue(ClipData.Key_KeyFrame, array);
+            m_curClipData.SetFieldKeyTable(ClipData.Key_KeyFrame, array);
             SetCollisionList();
         }
 
         public static void SetProcessFrameData(int index, ProcessFrameData data) {
             ProcessFrameData[] array = ClipData.GetProcessFrameList();
             array[index] = data;
-            m_curClipData.SetTableKeyValue(ClipData.Key_ProcessFrame, array);
+            m_curClipData.SetFieldKeyTable(ClipData.Key_ProcessFrame, array);
         }
 
         public static KeyFrameData GetKeyFrameData(int index) {
