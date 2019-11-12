@@ -4,7 +4,7 @@ using SkillEditor;
 
 namespace Lua.AnimClipData {
 
-    public struct StateData : ITable {
+    public struct StateData : IRepeatKeyTable {
         
         public State state;
         public ClipData[] clipList;
@@ -23,6 +23,8 @@ namespace Lua.AnimClipData {
 
         public ushort GetLayer() => 2;
         public KeyType GetKeyType() => KeyType.String;
+        public string GetKey() => Tool.GetCacheString("EntityStateDefine" + LuaFormat.PointSymbol + state.ToString());
+
         public bool IsNullTable() => state == State.None || clipList == null || clipList.Length == 0;
         public void Clear() {
             state = State.None;
@@ -32,10 +34,8 @@ namespace Lua.AnimClipData {
         private static readonly StringBuilder m_staticBuilder = new StringBuilder((UInt16)Math.Pow(2, 15));
         public override string ToString() {
             string key = Tool.GetCacheString(StateHeadString + LuaFormat.PointSymbol + state.ToString());
-            return LuaTable.GetNotFieldKeyTableText(m_staticBuilder, this, key, clipList);
+            return LuaTable.GetNotFieldKeyTableText(m_staticBuilder, this);
         }
-
-        private const string StateHeadString = "EntityStateDefine";
     }
 
     public enum State {

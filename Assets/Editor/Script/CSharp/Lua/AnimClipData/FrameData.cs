@@ -3,8 +3,9 @@ using System.Text;
 
 namespace Lua.AnimClipData {
 
-    public struct FrameData : ITable, IFieldKeyTable {
+    public struct FrameData : IFieldKeyTable {
 
+        public ushort index;
         public float time;
         public HitFrameData hitFrameData;
         public EffectFrameData effectFrameData;
@@ -26,6 +27,10 @@ namespace Lua.AnimClipData {
         public override string ToString() {
             return string.Empty;
         }
+
+        public void SetOuterField(object outerKey) => index = (ushort)outerKey;
+
+        public KeyType GetOuterField() => KeyType.Array;
 
         public void SetFieldKeyTable(string key, object value) {
             FrameType frameType = FrameType.None;
@@ -68,7 +73,7 @@ namespace Lua.AnimClipData {
         }
     }
 
-    internal enum FrameType {
+    public enum FrameType {
         None,
         Hit,
         PlayEffect,

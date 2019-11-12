@@ -3,7 +3,7 @@ using System.Text;
 
 namespace Lua.AnimClipData {
 
-    public struct ClipData : ITable {
+    public struct ClipData : IRepeatKeyTable {
 
         public string clipName;
         public FrameData[] frameList;
