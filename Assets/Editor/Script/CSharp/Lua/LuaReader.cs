@@ -305,22 +305,22 @@ namespace Lua {
         private static void SetLuaTableData(string luaText, ref int keyIndex, FieldKeyTable keyValue, ref ITable table) {
             switch (keyValue.type) {
                 case LuaFormat.ValueType.String:
-                    table.SetFieldKeyTable(keyValue.key, GetLuaTextString(luaText, ref keyIndex));
+                    table.SetFieldKeyTableValue(keyValue.key, GetLuaTextString(luaText, ref keyIndex));
                     return;
                 case LuaFormat.ValueType.Int:
-                    table.SetFieldKeyTable(keyValue.key, GetLuaTextInt(luaText, ref keyIndex));
+                    table.SetFieldKeyTableValue(keyValue.key, GetLuaTextInt(luaText, ref keyIndex));
                     return;
                 case LuaFormat.ValueType.Number:
-                    table.SetFieldKeyTable(keyValue.key, GetLuaTextNumber(luaText, ref keyIndex));
+                    table.SetFieldKeyTableValue(keyValue.key, GetLuaTextNumber(luaText, ref keyIndex));
                     return;
                 case LuaFormat.ValueType.Reference:
-                    table.SetFieldKeyTable(keyValue.key, GetLuaTextReferenceString(luaText, ref keyIndex));
+                    table.SetFieldKeyTableValue(keyValue.key, GetLuaTextReferenceString(luaText, ref keyIndex));
                     return;
                 case LuaFormat.ValueType.Table:
                     EnterLuaTable(luaText, ref keyIndex);
                     int endIndex = FindLuaTableEndIndex(luaText, keyIndex);
                     if (!CheckNullTable(luaText, keyIndex, endIndex))
-                        table.SetFieldKeyTable(keyValue.key, AnalyseAnimClipData(luaText, ref keyIndex, table));
+                        table.SetFieldKeyTableValue(keyValue.key, AnalyseAnimClipData(luaText, ref keyIndex, table));
                     ExitLuaTable(luaText, ref keyIndex);
                     return;
             }

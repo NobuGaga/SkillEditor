@@ -3,7 +3,7 @@ using System.Text;
 
 namespace Lua.AnimClipData {
 
-    public struct AnimClipData : IRepeatKeyTable {
+    public struct AnimClipData : IRepeatKeyTable<StateData> {
         
         public string modelName;
         public StateData[] stateList;
@@ -13,8 +13,11 @@ namespace Lua.AnimClipData {
             this.stateList = stateList;
         }
 
+        #region ITable Function
+        public string GetTableName() => "AnimClipData";
         public ushort GetLayer() => 1;
         public KeyType GetKeyType() => KeyType.String;
+        public void SetKey(object key) => modelName = key as string;
         public string GetKey() => modelName;
         public bool IsNullTable() => modelName == null || modelName == string.Empty || 
                                         stateList == null || stateList.Length == 0;
@@ -24,10 +27,11 @@ namespace Lua.AnimClipData {
         }
 
         private static StringBuilder m_staticBuilder = new StringBuilder((UInt16)Math.Pow(2, 16));
-        public override string ToString() {
-            return LuaTable.GetNotFieldKeyTableText(m_staticBuilder, this);
-        }
-
+        public override string ToString() => LuaTable.GetRepeatKeyTableText(m_staticBuilder, this);
+        #endregion
+    
+        #region IRepeatKeyTable Function
         public StateData[] GetTableList() => stateList;
+        #endregion
     }
 }
