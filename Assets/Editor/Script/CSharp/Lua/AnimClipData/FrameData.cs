@@ -9,8 +9,8 @@ namespace Lua.AnimClipData {
         public float time;
         public HitFrameData hitFrameData;
         public EffectFrameData effectFrameData;
-        public CacheFrameData cacheFrameData;
-        public SectionFrameData sectionFrameData;
+        public PriorityFrameData cacheFrameData;
+        public PriorityFrameData sectionFrameData;
         public FrameData(float time) {
             index = 0;
             this.time = time;
@@ -56,10 +56,10 @@ namespace Lua.AnimClipData {
                     effectFrameData = (EffectFrameData)value;
                     return;
                 case FrameType.CacheBegin:
-                    cacheFrameData = (CacheFrameData)value;
+                    cacheFrameData = (PriorityFrameData)value;
                     return;
                 case FrameType.SectionOver:
-                    sectionFrameData = (SectionFrameData)value;
+                    sectionFrameData = (PriorityFrameData)value;
                     return;
             }
         }

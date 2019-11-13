@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Text;
+using System.Collections.Generic;
 using SkillEditor;
 
 namespace Lua {
@@ -119,15 +120,15 @@ namespace Lua {
             return Tool.GetCacheString(builder.ToString());
         }
 
-        public static void SetTableKey(ref ITable table, string outerKey) {
+        public static void SetTableKey(ref ITable table, string keyString) {
             switch (table.GetKeyType()) {
                 case KeyType.Array:
-                    if (ushort.TryParse(outerKey, out ushort key))
+                    if (ushort.TryParse(keyString, out ushort key))
                         table.SetKey(key);
                     return;
                 case KeyType.String:
                 case KeyType.Reference:
-                    table.SetKey(outerKey);
+                    table.SetKey(keyString);
                     return;
             }
         }
@@ -143,6 +144,13 @@ namespace Lua {
         bool IsNullTable();
         void Clear();
         string ToString();
+    }
+
+    public interface ILuaFile<T> where T : ITable {
+        
+        string GetLuaFilePath();
+        string GetLuaFileHeadStart();
+        List<T> GetModel();
     }
 
     public interface IRepeatKeyTable<T> : ITable where T : ITable {

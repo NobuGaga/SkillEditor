@@ -1,13 +1,12 @@
 ﻿using UnityEditorInternal;
 using UnityEngine;
-using StringComparison = System.StringComparison;
 
 namespace SkillEditor {
 
     public static class Config {
 
         // Common
-        private static readonly int ProjectPathSubIndex = Application.dataPath.IndexOf("Assets", StringComparison.Ordinal);
+        private static readonly int ProjectPathSubIndex = Application.dataPath.IndexOf("Assets");
         public static readonly string ProjectPath = Application.dataPath.Substring(0, ProjectPathSubIndex);
         public const string AnimatorControllerFolder = "animatorcontroller";
         public const string AnimationClipFolder = "models";
@@ -31,7 +30,7 @@ namespace SkillEditor {
                 m_prefabFullPath = value;
                 if (m_prefabFullPath == string.Empty)
                     return;
-                int subIndex = m_prefabFullPath.IndexOf("prefabs/", StringComparison.Ordinal);
+                int subIndex = m_prefabFullPath.IndexOf("prefabs/");
                 string modelFileGroupFullPath = m_prefabFullPath.Substring(0, subIndex);
                 m_clipFullPath = Tool.CombinePath(modelFileGroupFullPath, "models");
                 m_controllerPath = Tool.CombinePath(modelFileGroupFullPath, AnimatorControllerFolder);

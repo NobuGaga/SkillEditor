@@ -53,6 +53,7 @@
      <Compile Include="Assets\Editor\Script\CSharp\Lua\AnimClipData\EffectFrameData.cs" />
      <Compile Include="Assets\Editor\Script\CSharp\Lua\AnimClipData\FrameData.cs" />
      <Compile Include="Assets\Editor\Script\CSharp\Lua\AnimClipData\HitFrameData.cs" />
+     <Compile Include="Assets\Editor\Script\CSharp\Lua\AnimClipData\PriorityFrameData.cs" />
      <Compile Include="Assets\Editor\Script\CSharp\Lua\AnimClipData\StateData.cs" />
      <Compile Include="Assets\Editor\Script\CSharp\Lua\LuaFormat.cs" />
      <Compile Include="Assets\Editor\Script\CSharp\Lua\LuaReader.cs" />

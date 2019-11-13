@@ -2,47 +2,37 @@
 using System.IO;
 using System.Text;
 using System.Collections.Generic;
-using StringComparison = System.StringComparison;
 using SkillEditor;
-using SkillEditor.LuaStructure;
 
 namespace Lua {
-
-    using FieldKeyTable = LuaFormat.FieldKeyTable;
 
     public static class LuaReader {
 
         private static int m_tableLayer;
 
-        public static void Read<T>() {
-            string luaFilePath = string.Empty;
-            string luaFileHeadStart = string.Empty;
-            object list = null;
-            string typeName = typeof(T).Name;
-            string animClipDataTypeName = typeof(AnimClipData).Name;
-            if (typeName == animClipDataTypeName) {
-                luaFilePath = Config.AnimDataFilePath;
-                luaFileHeadStart = Config.LuaFileHeadStart;
-                list = LuaAnimClipModel.AnimClipList;
-            }
+        public static void Read<T>() where T : ILuaFile<T> {
+            T luaFile = default;
+            string luaFilePath = luaFile.GetLuaFilePath();
+            string luaFileHeadStart = luaFile.GetLuaFileHeadStart();
+            List<T> list = luaFile.GetModel();
             if (!File.Exists(luaFilePath)) {
                 Debug.LogError("LuaReader::Read path file is not exit. path : " + luaFilePath);
                 return;
             }
-            AnalyseLuaText(luaFilePath, luaFileHeadStart, list);
+            ReadLuaFileHeadText(luaFilePath, luaFileHeadStart, list);
         }
 
         private static StringBuilder m_luaTextHeadStringBuilder = new StringBuilder(Config.LuaFileHeadLength);
-        private static void AnalyseLuaText(string luaFilePath, string luaFileHeadStart, object list) {
+        private static void ReadLuaFileHeadText<T>(string luaFilePath, string luaFileHeadStart, List<T> list) where T : ILuaFile<T> {
             string luaText = File.ReadAllText(luaFilePath);
-            int index = luaText.IndexOf(luaFileHeadStart, StringComparison.Ordinal);
+            int index = luaText.IndexOf(luaFileHeadStart);
             if (index == Config.ErrorIndex) {
-                Debug.LogError("LuaReader::AnalyseLuaText lua file start text is not found. text " + luaFileHeadStart);
+                Debug.LogError("LuaReader::ReadLuaFileHeadText lua file start text is not found. text " + luaFileHeadStart);
                 return;
             }
-            index += Config.LuaFileHeadStart.Length;
+            index += luaFileHeadStart.Length;
             m_luaTextHeadStringBuilder.Clear();
-            m_luaTextHeadStringBuilder.Append(Config.LuaFileHeadStart);
+            m_luaTextHeadStringBuilder.Append(luaFileHeadStart);
             for (; index < luaText.Length; index++) {
                 char curChar = luaText[index];
                 if (curChar == LuaFormat.CurlyBracesPair.start)
@@ -51,16 +41,18 @@ namespace Lua {
             }
             LuaWriter.AddHeadText(luaFilePath, m_luaTextHeadStringBuilder.ToString());
             m_tableLayer = 0;
-            AnalyseAnimClipData(luaText, ref index, list);
+            EnterLuaTable(luaText, ref index);
+            ReadLuaFileValueText(luaText, ref index, list);
+            ExitLuaTable(luaText, ref index);
         }
 
-        private static object AnalyseAnimClipData(string luaText, ref int index, object data = null) {
+        private static void ReadLuaFileValueText(string luaText, ref int index, object data = null) {
             switch ((AnimClipLuaLayer)m_tableLayer) {
                 case AnimClipLuaLayer.EnterTable:
                     AnalyseEntry(luaText, ref index, data);
                     break;
                 case AnimClipLuaLayer.Model:
-                    AnalyseModelData(luaText, ref index, data as List<AnimClipData>);
+                    AnalyseModelData(luaText, ref index, data as List<Lua.AnimClipData.AnimClipData>);
                     break;
                 case AnimClipLuaLayer.State:
                     AnalyseStateData(luaText, ref index, data as List<StateData>);
@@ -89,24 +81,18 @@ namespace Lua {
             return null;
         }
 
-        private static void AnalyseEntry(string luaText, ref int index, object data) {
-            EnterLuaTable(luaText, ref index);
-            AnalyseAnimClipData(luaText, ref index, data);
-            ExitLuaTable(luaText, ref index);
-        }
-
         private static List<StateData> m_listStateCache = new List<StateData>(Config.ModelStateCount);
-        private static void AnalyseModelData(string luaText, ref int index, List<AnimClipData> list) {
+        private static void AnalyseModelData(string luaText, ref int index, List<Lua.AnimClipData.AnimClipData> list) {
             int endIndex = FindLuaTableEndIndex(luaText, index);
             for (; index < luaText.Length; index++) {
                 string modelName = ReadLuaTableHashKey(luaText, ref index, endIndex);
                 if (modelName == string.Empty)
                     break;
-                AnimClipData data = new AnimClipData();
+                Lua.AnimClipData.AnimClipData data = new Lua.AnimClipData.AnimClipData();
                 data.modelName = modelName;
                 m_listStateCache.Clear();
                 EnterLuaTable(luaText, ref index);
-                AnalyseAnimClipData(luaText, ref index, m_listStateCache);
+                ReadLuaFileValueText(luaText, ref index, m_listStateCache);
                 ExitLuaTable(luaText, ref index);
                 data.stateList = m_listStateCache.ToArray();
                 list.Add(data);
@@ -124,7 +110,7 @@ namespace Lua {
                 data.SetState(stateName);
                 m_listClipCache.Clear();
                 EnterLuaTable(luaText, ref index);
-                AnalyseAnimClipData(luaText, ref index, m_listClipCache);
+                ReadLuaFileValueText(luaText, ref index, m_listClipCache);
                 ExitLuaTable(luaText, ref index);
                 data.clipList = m_listClipCache.ToArray();
                 list.Add(data);
@@ -225,7 +211,7 @@ namespace Lua {
                         if (ReadLuaTableArrayKey(luaText, ref index, endIndex) == Config.ErrorIndex)
                             break;
                         EnterLuaTable(luaText, ref index);
-                        m_listCubeDataCache.Add((CubeData)AnalyseAnimClipData(luaText, ref index));
+                        m_listCubeDataCache.Add((CubeData)ReadLuaFileValueText(luaText, ref index));
                         ExitLuaTable(luaText, ref index);
                     }
                     return m_listCubeDataCache.ToArray();
@@ -240,7 +226,7 @@ namespace Lua {
         private static int FindLuaTableKeyStartIndex(string luaText, int index, int endIndex) {
             FilterNotesLine(luaText, ref index);
             PairStringChar symbol = LuaFormat.SquareBracketPair;
-            index = luaText.IndexOf(symbol.start, index, StringComparison.Ordinal);
+            index = luaText.IndexOf(symbol.start, index);
             if (index >= endIndex || index == Config.ErrorIndex)
                 return Config.ErrorIndex;
             index += symbol.start.Length;
@@ -251,7 +237,7 @@ namespace Lua {
             int copyIndex = index;
             FilterNotesLine(luaText, ref index);
             PairStringChar symbol = LuaFormat.SquareBracketPair;
-            index = luaText.IndexOf(symbol.start, index, StringComparison.Ordinal);
+            index = luaText.IndexOf(symbol.start, index);
             if (index >= endIndex || index == Config.ErrorIndex) {
                 index = copyIndex;
                 return Config.ErrorIndex;
@@ -266,7 +252,7 @@ namespace Lua {
             int copyIndex = index;
             FilterNotesLine(luaText, ref index);
             PairString symbol = LuaFormat.HashKeyPair;
-            index = luaText.IndexOf(symbol.start, index, StringComparison.Ordinal);
+            index = luaText.IndexOf(symbol.start, index);
             if (index >= endIndex || index == Config.ErrorIndex) {
                 index = copyIndex;
                 return string.Empty;
@@ -283,7 +269,7 @@ namespace Lua {
             int endIndex = FindLuaTableEndIndex(luaText, index);
             FieldKeyTable[] array = table.GetFieldKeyTables();
             foreach (FieldKeyTable tableKeyValue in array) {
-                int keyIndex = luaText.IndexOf(tableKeyValue.key, index, StringComparison.Ordinal);
+                int keyIndex = luaText.IndexOf(tableKeyValue.key, index);
                 if (keyIndex == Config.ErrorIndex || keyIndex >= endIndex)
                     continue;
                 keyIndex += tableKeyValue.KeyLength;
@@ -320,7 +306,7 @@ namespace Lua {
                     EnterLuaTable(luaText, ref keyIndex);
                     int endIndex = FindLuaTableEndIndex(luaText, keyIndex);
                     if (!CheckNullTable(luaText, keyIndex, endIndex))
-                        table.SetFieldKeyTableValue(keyValue.key, AnalyseAnimClipData(luaText, ref keyIndex, table));
+                        table.SetFieldKeyTableValue(keyValue.key, ReadLuaFileValueText(luaText, ref keyIndex, table));
                     ExitLuaTable(luaText, ref keyIndex);
                     return;
             }
@@ -471,8 +457,8 @@ namespace Lua {
             return index;
         }
 
-        private static void PrintErrorWhithLayer(string text, int index) {
-            Debug.LogError(string.Format("{0} 当前层为 {1}, 索引值为 {2}", text, (AnimClipLuaLayer)m_tableLayer, index));
+        private static void PrintErrorWhithLayer(string text, int index, int layer) {
+            Debug.LogError(string.Format("{0} 当前层为 {1}, 索引值为 {2}", text, layer, index));
         }
     }
 }

@@ -21,7 +21,7 @@ namespace SkillEditor {
         }
 
         public static string FullPathToProjectPath(string fullPath) {
-            int subIndex = fullPath.IndexOf("Assets/", StringComparison.Ordinal);
+            int subIndex = fullPath.IndexOf("Assets/");
             return GetCacheString(fullPath.Substring(subIndex));
         }
 

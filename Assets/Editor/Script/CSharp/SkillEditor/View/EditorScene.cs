@@ -1,10 +1,9 @@
 ﻿using UnityEditor;
 using UnityEngine;
 using System.Collections.Generic;
+using Lua.AnimClipData;
 
 namespace SkillEditor {
-
-    using LuaStructure;
 
     internal static class EditorScene {
 

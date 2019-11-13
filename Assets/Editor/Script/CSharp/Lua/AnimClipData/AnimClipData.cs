@@ -1,9 +1,11 @@
 using System;
 using System.Text;
+using System.Collections.Generic;
+using SkillEditor;
 
 namespace Lua.AnimClipData {
 
-    public struct AnimClipData : IRepeatKeyTable<StateData> {
+    public struct AnimClipData : IRepeatKeyTable<StateData>, ILuaFile<AnimClipData> {
         
         public string modelName;
         public StateData[] stateList;
@@ -32,6 +34,12 @@ namespace Lua.AnimClipData {
     
         #region IRepeatKeyTable Function
         public StateData[] GetTableList() => stateList;
+        #endregion
+    
+        #region ILuaFile Function
+        public string GetLuaFilePath() => Config.AnimDataFilePath;
+        public string GetLuaFileHeadStart() => Config.LuaFileHeadStart;
+        public List<AnimClipData> GetModel() => LuaAnimClipModel.AnimClipList;
         #endregion
     }
 }
