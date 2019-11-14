@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Lua.AnimClipData {
 
-    public struct CubeData : IFieldKeyTable {
+    public struct CubeData : IFieldValueTable {
 
         private ushort index;
         public float x;
@@ -48,13 +48,14 @@ namespace Lua.AnimClipData {
         #region ITable Function
         public string GetTableName() => "CubeData";
         public ushort GetLayer() => 7;
+        public ReadType GetReadType() => ReadType.FixedField;
         public KeyType GetKeyType() => KeyType.Array;
         public void SetKey(object key) => index = (ushort)key;
         public string GetKey() => index.ToString();
         public bool IsNullTable() => Size == Vector3.zero;
         public void Clear() => x = y = z = width = height = depth = 0;
 
-        private static readonly StringBuilder m_staticBuilder = new StringBuilder((UInt16)Math.Pow(2, 9));
+        private static readonly StringBuilder m_staticBuilder = new StringBuilder((ushort)Math.Pow(2, 9));
         public override string ToString() => LuaTable.GetFieldKeyTableText(m_staticBuilder, this);
         #endregion
 
@@ -66,7 +67,7 @@ namespace Lua.AnimClipData {
         private const string Key_Height = "height";
         private const string Key_Depth = "depth";
         
-        public void SetFieldKeyTableValue(string key, object value) {
+        public void SetFieldValueTableValue(string key, object value) {
             switch (key) {
                 case Key_X:
                     x = (float)value;
@@ -89,7 +90,7 @@ namespace Lua.AnimClipData {
             }
         }
 
-        public object GetFieldKeyTableValue(string key) {
+        public object GetFieldValueTableValue(string key) {
             switch (key) {
                 case Key_X:
                     return x;
@@ -104,22 +105,22 @@ namespace Lua.AnimClipData {
                 case Key_Depth:
                     return depth;
                 default:
-                    Debug.LogError("CubeData::GetFieldKeyTableValue key is not exit. key " + key);
+                    Debug.LogError("CubeData::GetFieldValueTableValue key is not exit. key " + key);
                     return null;
             }
         }
 
-        private static FieldKeyTable[] m_arraykeyValue;
-        public FieldKeyTable[] GetFieldKeyTables() {
+        private static FieldValueTableInfo[] m_arraykeyValue;
+        public FieldValueTableInfo[] GetFieldValueTableInfo() {
             if (m_arraykeyValue != null)
                 return m_arraykeyValue;
-            m_arraykeyValue = new FieldKeyTable[6];
-            m_arraykeyValue[0] = new FieldKeyTable(Key_X, ValueType.Number);
-            m_arraykeyValue[1] = new FieldKeyTable(Key_Y, ValueType.Number);
-            m_arraykeyValue[2] = new FieldKeyTable(Key_Z, ValueType.Number);
-            m_arraykeyValue[3] = new FieldKeyTable(Key_Width, ValueType.Number);
-            m_arraykeyValue[4] = new FieldKeyTable(Key_Height, ValueType.Number);
-            m_arraykeyValue[5] = new FieldKeyTable(Key_Depth, ValueType.Int);
+            m_arraykeyValue = new FieldValueTableInfo[6];
+            m_arraykeyValue[0] = new FieldValueTableInfo(Key_X, ValueType.Number);
+            m_arraykeyValue[1] = new FieldValueTableInfo(Key_Y, ValueType.Number);
+            m_arraykeyValue[2] = new FieldValueTableInfo(Key_Z, ValueType.Number);
+            m_arraykeyValue[3] = new FieldValueTableInfo(Key_Width, ValueType.Number);
+            m_arraykeyValue[4] = new FieldValueTableInfo(Key_Height, ValueType.Number);
+            m_arraykeyValue[5] = new FieldValueTableInfo(Key_Depth, ValueType.Int);
             return m_arraykeyValue;
         }
         #endregion

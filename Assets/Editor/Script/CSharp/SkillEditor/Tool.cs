@@ -88,5 +88,23 @@ namespace SkillEditor {
         internal static string GetCacheString(string text) {
             return string.Intern(text);
         }
+
+        public static Type GetGenericityInterface(Type type, Type @interface) {
+            Type[] interfaces = type.GetInterfaces();
+            if (interfaces == null)
+                return null;
+            for (int index = 0; index < interfaces.Length; index++) {
+                Type implementType = interfaces[index];
+                if (implementType.IsGenericType)
+                    implementType = implementType.GetGenericTypeDefinition();
+                if (implementType == @interface)
+                    return implementType;
+            }
+            return null;
+        }
+
+        public static bool IsImplementInterface(Type type, Type @interface) {
+            return GetGenericityInterface(type, @interface) != null;
+        }
     }
 }

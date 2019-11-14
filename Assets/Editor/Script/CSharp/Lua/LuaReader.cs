@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
+using System;
 using System.IO;
 using System.Text;
+using System.Reflection;
 using System.Collections.Generic;
 using SkillEditor;
 
@@ -10,7 +12,7 @@ namespace Lua {
 
         private static int m_tableLayer;
 
-        public static void Read<T>() where T : ILuaFile<T> {
+        public static void Read<T>() where T : ITable, ILuaFile<T> {
             T luaFile = default;
             string luaFilePath = luaFile.GetLuaFilePath();
             string luaFileHeadStart = luaFile.GetLuaFileHeadStart();
@@ -19,13 +21,16 @@ namespace Lua {
                 Debug.LogError("LuaReader::Read path file is not exit. path : " + luaFilePath);
                 return;
             }
-            ReadLuaFileHeadText(luaFilePath, luaFileHeadStart, list);
+            string luaText = File.ReadAllText(luaFilePath);
+            int index = 0;
+            m_tableLayer = 0;
+            ReadLuaFileHeadText(luaText, luaFilePath, luaFileHeadStart, ref index);
+            ReadLuaFileTable(luaText, ref index, list);
         }
 
         private static StringBuilder m_luaTextHeadStringBuilder = new StringBuilder(Config.LuaFileHeadLength);
-        private static void ReadLuaFileHeadText<T>(string luaFilePath, string luaFileHeadStart, List<T> list) where T : ILuaFile<T> {
-            string luaText = File.ReadAllText(luaFilePath);
-            int index = luaText.IndexOf(luaFileHeadStart);
+        private static void ReadLuaFileHeadText(string luaText, string luaFilePath, string luaFileHeadStart, ref int index) {
+            index = luaText.IndexOf(luaFileHeadStart);
             if (index == Config.ErrorIndex) {
                 Debug.LogError("LuaReader::ReadLuaFileHeadText lua file start text is not found. text " + luaFileHeadStart);
                 return;
@@ -40,203 +45,98 @@ namespace Lua {
                 m_luaTextHeadStringBuilder.Append(curChar);
             }
             LuaWriter.AddHeadText(luaFilePath, m_luaTextHeadStringBuilder.ToString());
-            m_tableLayer = 0;
+        }
+
+        private static ITable ReadLuaFileTable<T>(string luaText, ref int index, List<T> list = null) where T : ITable {
             EnterLuaTable(luaText, ref index);
-            ReadLuaFileValueText(luaText, ref index, list);
+            T table = default;
+            switch (table.GetReadType()) {
+                case ReadType.Repeat:
+                    ReadLuaFileRepeatTable(luaText, ref index, list);
+                    break;
+                case ReadType.FixedField:
+                    table = ReadLuaFileFixedFieldTable<T>(luaText, ref index);
+                    break;
+            }
             ExitLuaTable(luaText, ref index);
+            return table;
         }
 
-        private static void ReadLuaFileValueText(string luaText, ref int index, object data = null) {
-            switch ((AnimClipLuaLayer)m_tableLayer) {
-                case AnimClipLuaLayer.EnterTable:
-                    AnalyseEntry(luaText, ref index, data);
+        private static MethodInfo m_readLuaFileValueTextMethod = typeof(LuaReader).GetMethod("ReadLuaFileTable");
+        private static void ReadLuaFileRepeatTable<T>(string luaText, ref int index, List<T> list) where T : ITable {
+            Type repeatType = Tool.GetGenericityInterface(typeof(T), typeof(IRepeatKeyTable<>));
+            T table = default;
+            if (repeatType == null) {
+                Debug.LogError(string.Format("LuaReader::ReadLuaFileRepeatTable table {0} is not implement interface IRepeatKeyTable<>",
+                                            table.GetTableName()));
+                return;
+            }
+            object staticList = repeatType.GetMethod("GetStaticCacheList").Invoke(table, null);
+            MethodInfo clearStaticListMethod = staticList.GetType().GetMethod("Clear");
+            Type tableListType = repeatType.GetMethod("GetTableListType").Invoke(table, null) as Type;
+            MethodInfo readLuaFileValueTextMethod = m_readLuaFileValueTextMethod.MakeGenericMethod(new Type[] { tableListType });
+            int endIndex = FindLuaTableEndIndex(luaText, index);
+            for (; index < luaText.Length; index++) {
+                table = InitTableAndhKey<T>(luaText, ref index, endIndex, out bool isSuccess);
+                if (!isSuccess)
                     break;
-                case AnimClipLuaLayer.Model:
-                    AnalyseModelData(luaText, ref index, data as List<Lua.AnimClipData.AnimClipData>);
-                    break;
-                case AnimClipLuaLayer.State:
-                    AnalyseStateData(luaText, ref index, data as List<StateData>);
-                    break;
-                case AnimClipLuaLayer.Clip:
-                    AnalyseClipListData(luaText, ref index, data as List<ClipData>);
-                    break;
-                case AnimClipLuaLayer.FrameGroup:
-                    return AnalyseClipData(luaText, ref index, (ClipData)data);
-                case AnimClipLuaLayer.FrameType:
-                    return AnalyseKeyFrameListData(luaText, ref index);
-                case AnimClipLuaLayer.FrameData:
-                    return AnalyseKeyFrameData(luaText, ref index, (ITable)data);
-                case AnimClipLuaLayer.CustomeData:
-                    FrameType frameType;
-                    if (data is KeyFrameData)
-                        frameType = ((KeyFrameData)data).frameType;
+                clearStaticListMethod.Invoke(staticList, null);
+                readLuaFileValueTextMethod.Invoke(null, new object[] { luaText, index, staticList });
+                repeatType.GetMethod("SetTableList").Invoke(table, null);
+                list.Add(table);
+            }
+        }
+
+        private static MethodInfo m_readFixedFieldTableValueMethod = typeof(LuaReader).GetMethod("ReadFixedFieldTableValue");
+        private static Type m_IFieldValueTable = typeof(IFieldValueTable);
+        private static T ReadLuaFileFixedFieldTable<T>(string luaText, ref int index) where T : ITable {
+            T table = default;
+            if (Tool.IsImplementInterface(typeof(T), typeof(IFieldValueTable))) {
+                Debug.LogError(string.Format("LuaReader::ReadLuaFileFixedFieldTable table {0} is not implement interface IFieldValueTable",
+                                                                                                                    table.GetTableName()));
+                return table;
+            }
+            int endIndex = FindLuaTableEndIndex(luaText, index);
+            table = InitTableAndhKey<T>(luaText, ref index, endIndex, out bool isSuccess);
+            if (!isSuccess) {
+                Debug.LogError("LuaReader::ReadLuaFileFixedFieldTable read key error. table " + table.GetTableName());
+                return table;
+            }
+            EnterLuaTable(luaText, ref index);
+            m_readFixedFieldTableValueMethod.Invoke(null, new object[] { luaText, index, m_IFieldValueTable });
+            ExitLuaTable(luaText, ref index);
+            return table;
+        }
+
+        private static T InitTableAndhKey<T>(string luaText, ref int index, int endIndex, out bool isSuccess) where T : ITable {
+            T table = default;
+            isSuccess = true;
+            switch (table.GetKeyType()) {
+                case KeyType.Array:
+                    int arrayKey = ReadLuaTableArrayKey(luaText, ref index, endIndex);
+                    if (arrayKey == Config.ErrorIndex)
+                        isSuccess = false;
                     else
-                        frameType = ((ProcessFrameData)data).frameType;
-                    return AnalyseCustomData(luaText, ref index, frameType);
-                case AnimClipLuaLayer.Effect:
-                    return AnalyseEffectData(luaText, ref index, (FrameType)data);
-                case AnimClipLuaLayer.Rect:
-                    return AnalyseCubeData(luaText, ref index);
-            }
-            return null;
-        }
-
-        private static List<StateData> m_listStateCache = new List<StateData>(Config.ModelStateCount);
-        private static void AnalyseModelData(string luaText, ref int index, List<Lua.AnimClipData.AnimClipData> list) {
-            int endIndex = FindLuaTableEndIndex(luaText, index);
-            for (; index < luaText.Length; index++) {
-                string modelName = ReadLuaTableHashKey(luaText, ref index, endIndex);
-                if (modelName == string.Empty)
+                        table.SetKey(arrayKey);              
                     break;
-                Lua.AnimClipData.AnimClipData data = new Lua.AnimClipData.AnimClipData();
-                data.modelName = modelName;
-                m_listStateCache.Clear();
-                EnterLuaTable(luaText, ref index);
-                ReadLuaFileValueText(luaText, ref index, m_listStateCache);
-                ExitLuaTable(luaText, ref index);
-                data.stateList = m_listStateCache.ToArray();
-                list.Add(data);
-            }
-        }
-
-        private static List<ClipData> m_listClipCache = new List<ClipData>(Config.ModelStateClipCount);
-        private static void AnalyseStateData(string luaText, ref int index, List<StateData> list) {
-            int endIndex = FindLuaTableEndIndex(luaText, index);
-            for (; index < luaText.Length; index++) {
-                string stateName = ReadLuaTableHashKey(luaText, ref index, endIndex);
-                if (stateName == string.Empty)
+                case KeyType.Reference:
+                case KeyType.String:
+                    string stringKey = ReadLuaTableStringKey(luaText, ref index, endIndex);
+                    if (stringKey == string.Empty)
+                        isSuccess = false;
+                    else
+                        table.SetKey(stringKey);
                     break;
-                StateData data = new StateData();
-                data.SetState(stateName);
-                m_listClipCache.Clear();
-                EnterLuaTable(luaText, ref index);
-                ReadLuaFileValueText(luaText, ref index, m_listClipCache);
-                ExitLuaTable(luaText, ref index);
-                data.clipList = m_listClipCache.ToArray();
-                list.Add(data);
-            }
-        }
-
-        private static void AnalyseClipListData(string luaText, ref int index, List<ClipData> list) {
-            int endIndex = FindLuaTableEndIndex(luaText, index);
-            for (; index < luaText.Length; index++) {
-                string clipName = ReadLuaTableHashKey(luaText, ref index, endIndex);
-                if (clipName == string.Empty)
+                case KeyType.FixedField:
                     break;
-                ClipData data = new ClipData();
-                data.clipName = clipName;
-                EnterLuaTable(luaText, ref index);
-                data = (ClipData)AnalyseAnimClipData(luaText, ref index, data);
-                ExitLuaTable(luaText, ref index);
-                list.Add(data);
             }
-        }
-
-        private static object AnalyseClipData(string luaText, ref int index, ClipData clipData) {
-            return ReadLuaTable(luaText, ref index, clipData);
-        }
-
-        private static List<KeyFrameData> m_listKeyFrameDataCache = new List<KeyFrameData>(Config.ModelStateClipFrameCount);
-        private static List<ProcessFrameData> m_listProcessFrameDataCache = new List<ProcessFrameData>(Config.ModelStateClipFrameCount);
-        private static object AnalyseKeyFrameListData(string luaText, ref int index) {
-            int endIndex = FindLuaTableEndIndex(luaText, index);
-            int tempIndex = FindLuaTableKeyStartIndex(luaText, index, endIndex);
-            if (tempIndex == Config.ErrorIndex)
-                return default;
-            bool isProcessFrame = luaText[tempIndex] == LuaFormat.QuotationPair.start;
-            if (isProcessFrame)
-                m_listProcessFrameDataCache.Clear();
-            else
-                m_listKeyFrameDataCache.Clear();
-            for (; index < luaText.Length; index++) {
-                if (isProcessFrame) {
-                    string frameName = ReadLuaTableHashKey(luaText, ref index, endIndex);
-                    if (frameName == string.Empty)
-                        break;
-                    ProcessFrameData data = new ProcessFrameData();
-                    data.SetFrameType(frameName);
-                    EnterLuaTable(luaText, ref index);
-                    data = (ProcessFrameData)AnalyseAnimClipData(luaText, ref index, data);
-                    ExitLuaTable(luaText, ref index);
-                    m_listProcessFrameDataCache.Add(data);
-                }
-                else {
-                    int frameIndex = ReadLuaTableArrayKey(luaText, ref index, endIndex);
-                    if (frameIndex == Config.ErrorIndex)
-                        break;
-                    KeyFrameData data = new KeyFrameData();
-                    data.index = frameIndex;
-                    EnterLuaTable(luaText, ref index);
-                    data = (KeyFrameData)AnalyseAnimClipData(luaText, ref index, data);
-                    ExitLuaTable(luaText, ref index);
-                    m_listKeyFrameDataCache.Add(data);
-                }
-            }
-            if (isProcessFrame)
-                return m_listProcessFrameDataCache.ToArray();
-            return m_listKeyFrameDataCache.ToArray();
-        }
-
-        private static object AnalyseKeyFrameData(string luaText, ref int index, ITable data) {
-            return ReadLuaTable(luaText, ref index, data);
-        }
-
-        private static List<CustomData> m_listCustomDataCache = new List<CustomData>(Config.ModelClipFrameCustomDataCount);
-        private static object AnalyseCustomData(string luaText, ref int index, FrameType frameType) {
-            m_listCustomDataCache.Clear();
-            int endIndex = FindLuaTableEndIndex(luaText, index);
-            for (; index < luaText.Length; index++) {
-                int customDataIndex = ReadLuaTableArrayKey(luaText, ref index, endIndex);
-                if (customDataIndex == Config.ErrorIndex)
-                    break;
-                CustomData data = new CustomData();
-                data.index = customDataIndex;
-                EnterLuaTable(luaText, ref index);
-                data.data = AnalyseAnimClipData(luaText, ref index, frameType);
-                ExitLuaTable(luaText, ref index);
-                m_listCustomDataCache.Add(data);
-            }
-            return m_listCustomDataCache.ToArray();
-        }
-
-        private static List<CubeData> m_listCubeDataCache = new List<CubeData>(Config.ModelClipFrameCubeDataCount);
-        private static object AnalyseEffectData(string luaText, ref int index, FrameType frameType) {
-            switch (frameType) {
-                case FrameType.PlayEffect:
-                    return ReadLuaTable(luaText, ref index, new EffectData());
-                case FrameType.Hit:
-                    m_listCubeDataCache.Clear();
-                    int endIndex = FindLuaTableEndIndex(luaText, index);
-                    for (; index < luaText.Length; index++) {
-                        if (ReadLuaTableArrayKey(luaText, ref index, endIndex) == Config.ErrorIndex)
-                            break;
-                        EnterLuaTable(luaText, ref index);
-                        m_listCubeDataCache.Add((CubeData)ReadLuaFileValueText(luaText, ref index));
-                        ExitLuaTable(luaText, ref index);
-                    }
-                    return m_listCubeDataCache.ToArray();
-            }
-            return null;
-        }
-
-        private static object AnalyseCubeData(string luaText, ref int index) {
-            return ReadLuaTable(luaText, ref index, new CubeData());
-        }
-
-        private static int FindLuaTableKeyStartIndex(string luaText, int index, int endIndex) {
-            FilterNotesLine(luaText, ref index);
-            PairStringChar symbol = LuaFormat.SquareBracketPair;
-            index = luaText.IndexOf(symbol.start, index);
-            if (index >= endIndex || index == Config.ErrorIndex)
-                return Config.ErrorIndex;
-            index += symbol.start.Length;
-            return index;
+            return table;
         }
 
         private static int ReadLuaTableArrayKey(string luaText, ref int index, int endIndex) {
             int copyIndex = index;
             FilterNotesLine(luaText, ref index);
-            PairStringChar symbol = LuaFormat.SquareBracketPair;
+            LuaFormat.PairStringChar symbol = LuaFormat.SquareBracketPair;
             index = luaText.IndexOf(symbol.start, index);
             if (index >= endIndex || index == Config.ErrorIndex) {
                 index = copyIndex;
@@ -248,10 +148,10 @@ namespace Lua {
             return resultIndex;
         }
 
-        private static string ReadLuaTableHashKey(string luaText, ref int index, int endIndex) {
+        private static string ReadLuaTableStringKey(string luaText, ref int index, int endIndex) {
             int copyIndex = index;
             FilterNotesLine(luaText, ref index);
-            PairString symbol = LuaFormat.HashKeyPair;
+            LuaFormat.PairString symbol = LuaFormat.HashKeyPair;
             index = luaText.IndexOf(symbol.start, index);
             if (index >= endIndex || index == Config.ErrorIndex) {
                 index = copyIndex;
@@ -263,102 +163,54 @@ namespace Lua {
             return key;
         }
 
-        // table unsupport contain keyword notes
-        private static ITable ReadLuaTable(string luaText, ref int index, ITable table) {
+        private static void ReadFixedFieldTableValue<T>(string luaText, ref int index, ref T table) where T : IFieldValueTable {
             int maxIndex = index;
             int endIndex = FindLuaTableEndIndex(luaText, index);
-            FieldKeyTable[] array = table.GetFieldKeyTables();
-            foreach (FieldKeyTable tableKeyValue in array) {
-                int keyIndex = luaText.IndexOf(tableKeyValue.key, index);
-                if (keyIndex == Config.ErrorIndex || keyIndex >= endIndex)
+            FieldValueTableInfo[] array = table.GetFieldValueTableInfo();
+            foreach (FieldValueTableInfo keyValue in array) {
+                int valueIndex = luaText.IndexOf(keyValue.key, index);
+                if (valueIndex == Config.ErrorIndex || valueIndex >= endIndex)
                     continue;
-                keyIndex += tableKeyValue.KeyLength;
-                FilterSpaceSymbol(luaText, ref keyIndex);
-                if (luaText[keyIndex] != LuaFormat.EqualSymbol) {
-                    PrintErrorWhithLayer("关键帧配置表关键帧 Lua table 配置错误", keyIndex);
+                valueIndex += keyValue.KeyLength;
+                FilterSpaceSymbol(luaText, ref valueIndex);
+                if (luaText[valueIndex] != LuaFormat.EqualSymbol) {
+                    PrintErrorWhithLayer("关键帧配置表关键帧 Lua table 配置错误", valueIndex);
                     break;
                 }
-                keyIndex++;
-                FilterSpaceSymbol(luaText, ref keyIndex);
-                SetLuaTableData(luaText, ref keyIndex, tableKeyValue, ref table);
-                if (keyIndex > maxIndex)
-                    maxIndex = keyIndex;
+                valueIndex++;
+                FilterSpaceSymbol(luaText, ref valueIndex);
+                SetFixedFieldTableValue(luaText, ref valueIndex, keyValue, ref table);
+                if (valueIndex > maxIndex)
+                    maxIndex = valueIndex;
             }
             index = maxIndex;
-            return table;
         }
 
-        private static void SetLuaTableData(string luaText, ref int keyIndex, FieldKeyTable keyValue, ref ITable table) {
+        private static void SetFixedFieldTableValue<T>(string luaText, ref int valueIndex, FieldValueTableInfo keyValue, ref T table)
+                                                                                            where T : IFieldValueTable{
+            object value = default;
             switch (keyValue.type) {
-                case LuaFormat.ValueType.String:
-                    table.SetFieldKeyTableValue(keyValue.key, GetLuaTextString(luaText, ref keyIndex));
-                    return;
-                case LuaFormat.ValueType.Int:
-                    table.SetFieldKeyTableValue(keyValue.key, GetLuaTextInt(luaText, ref keyIndex));
-                    return;
-                case LuaFormat.ValueType.Number:
-                    table.SetFieldKeyTableValue(keyValue.key, GetLuaTextNumber(luaText, ref keyIndex));
-                    return;
-                case LuaFormat.ValueType.Reference:
-                    table.SetFieldKeyTableValue(keyValue.key, GetLuaTextReferenceString(luaText, ref keyIndex));
-                    return;
-                case LuaFormat.ValueType.Table:
-                    EnterLuaTable(luaText, ref keyIndex);
-                    int endIndex = FindLuaTableEndIndex(luaText, keyIndex);
-                    if (!CheckNullTable(luaText, keyIndex, endIndex))
-                        table.SetFieldKeyTableValue(keyValue.key, ReadLuaFileValueText(luaText, ref keyIndex, table));
-                    ExitLuaTable(luaText, ref keyIndex);
-                    return;
-            }
-        }
-
-        private static void FilterNotesLine(string luaText, ref int index) {
-            while (luaText[index] == LuaFormat.NotesSymbolStart && index < luaText.Length) {
-                index++;
-                if (index >= luaText.Length || luaText[index] != LuaFormat.NotesSymbolStart)
+                case ValueType.Int:
+                    value = GetLuaTextInt(luaText, ref valueIndex);
                     break;
-                for (; index < luaText.Length; index++)
-                    if (luaText[index] == LuaFormat.NotesLinePair.end)
-                        break;
-                index++;
-            }
-        }
-
-        private static void FilterSpaceSymbol(string luaText, ref int index) {
-            for (; index < luaText.Length; index++)
-                if (luaText[index] != LuaFormat.SpaceSymbol)
+                case ValueType.Number:
+                    value = GetLuaTextNumber(luaText, ref valueIndex);
                     break;
-        }
-
-        private static bool CheckNullTable(string luaText, int tableStartIndex, int tableEndIndex) {
-            if (tableEndIndex - tableStartIndex <= 1)
-                return true;
-            for (; tableStartIndex < tableEndIndex; tableStartIndex++) {
-                char curChar = luaText[tableStartIndex];
-                if (curChar != LuaFormat.NotesSymbolStart && curChar != LuaFormat.SpaceSymbol &&
-                    curChar != LuaFormat.LineSymbol)
-                    return false;
-            }
-            return true;
-        }
-
-        private static string GetLuaTextString(string luaText, ref int index) {
-            if (luaText[index] != LuaFormat.QuotationPair.start) {
-                PrintErrorWhithLayer("关键帧配置表读取字符串错误", index);
-                return string.Empty;
-            }
-            index++;
-            int startIndex = index;
-            for (; index < luaText.Length; index++)
-                if (luaText[index] == LuaFormat.QuotationPair.end)
+                case ValueType.String:
+                    value = GetLuaTextString(luaText, ref valueIndex);
                     break;
-            string result = luaText.Substring(startIndex, index - startIndex);
-            index++;
-            if (luaText[index] == LuaFormat.CommaSymbol)
-                index++;
-            if (luaText[index] == LuaFormat.LineSymbol)
-                index++;
-            return result;
+                case ValueType.Reference:
+                    value = GetLuaTextReferenceString(luaText, ref valueIndex);
+                    break;;
+                case ValueType.Table:
+                    Type valueType = LuaTable.GetFieldValueTableValueType(table, keyValue.key);
+                    if (valueType == null)
+                        return;
+                    MethodInfo readLuaFileValueTextMethod = m_readLuaFileValueTextMethod.MakeGenericMethod(new Type[] { valueType });
+                    value = readLuaFileValueTextMethod.Invoke(null, new object[] { luaText, valueIndex });
+                    break;
+            }
+            table.SetFieldValueTableValue(keyValue.key, value);
         }
 
         private static int GetLuaTextInt(string luaText, ref int index) {
@@ -394,6 +246,25 @@ namespace Lua {
             if (luaText[index] == LuaFormat.LineSymbol)
                 index++;
             return number;
+        }
+
+        private static string GetLuaTextString(string luaText, ref int index) {
+            if (luaText[index] != LuaFormat.QuotationPair.start) {
+                PrintErrorWhithLayer("关键帧配置表读取字符串错误", index);
+                return string.Empty;
+            }
+            index++;
+            int startIndex = index;
+            for (; index < luaText.Length; index++)
+                if (luaText[index] == LuaFormat.QuotationPair.end)
+                    break;
+            string result = luaText.Substring(startIndex, index - startIndex);
+            index++;
+            if (luaText[index] == LuaFormat.CommaSymbol)
+                index++;
+            if (luaText[index] == LuaFormat.LineSymbol)
+                index++;
+            return result;
         }
 
         private static string GetLuaTextReferenceString(string luaText, ref int index) {
@@ -457,7 +328,26 @@ namespace Lua {
             return index;
         }
 
-        private static void PrintErrorWhithLayer(string text, int index, int layer) {
+        private static void FilterNotesLine(string luaText, ref int index) {
+            while (luaText[index] == LuaFormat.NotesSymbolStart && index < luaText.Length) {
+                index++;
+                if (index >= luaText.Length || luaText[index] != LuaFormat.NotesSymbolStart)
+                    break;
+                for (; index < luaText.Length; index++)
+                    if (luaText[index] == LuaFormat.NotesLinePair.end)
+                        break;
+                index++;
+            }
+        }
+
+        private static void FilterSpaceSymbol(string luaText, ref int index) {
+            for (; index < luaText.Length; index++)
+                if (luaText[index] != LuaFormat.SpaceSymbol)
+                    break;
+        }
+
+        private static void PrintErrorWhithLayer(string text, int index) {
+            int layer = 0;
             Debug.LogError(string.Format("{0} 当前层为 {1}, 索引值为 {2}", text, layer, index));
         }
     }

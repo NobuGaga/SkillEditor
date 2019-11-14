@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System;
 using System.Text;
 using System.Collections.Generic;
 using SkillEditor;
@@ -7,16 +8,16 @@ namespace Lua {
 
     internal static class LuaTable {
 
-        public static string GetFieldKeyTableText(StringBuilder builder, IFieldKeyTable table) {
+        public static string GetFieldKeyTableText(StringBuilder builder, IFieldValueTable table) {
             if (table.IsNullTable())
                 return string.Empty;
             builder.Clear();
             ushort layer = (ushort)(table.GetLayer() + 1);
             string tabString = GetTabString(layer);
-            FieldKeyTable[] array = table.GetFieldKeyTables();
+            FieldValueTableInfo[] array = table.GetFieldValueTableInfo();
             for (int index = 0; index < array.Length; index++) {
-                FieldKeyTable keyValue = array[index];
-                object value = table.GetFieldKeyTableValue(keyValue.key);
+                FieldValueTableInfo keyValue = array[index];
+                object value = table.GetFieldValueTableValue(keyValue.key);
                 if (keyValue.type == ValueType.Table) {
                     ITable valueTable = value as ITable;
                     if (!valueTable.IsNullTable())
@@ -28,7 +29,7 @@ namespace Lua {
             return GetTableText(table, builder.ToString());
         }
 
-        private static void SetBaseValueTableString(StringBuilder builder, FieldKeyTable keyValue, string tabString, object value) {
+        private static void SetBaseValueTableString(StringBuilder builder, FieldValueTableInfo keyValue, string tabString, object value) {
             builder.Append(tabString);
             builder.Append(keyValue.key);
             builder.Append(LuaFormat.SpaceSymbol);
@@ -84,6 +85,7 @@ namespace Lua {
                 case KeyType.String:
                     return "{0}[\"{1}\"] = {2}\n{3}{0}{4},\n";
                 case KeyType.Reference:
+                case KeyType.FixedField:
                     return "{0}{1} = {2}\n{3}{0}{4},\n";
                 default:
                     Debug.LogError("table key type error. table name " + table.GetTableName());
@@ -103,34 +105,11 @@ namespace Lua {
             return tabString;
         }
 
-        public static string GetArrayString<T>(StringBuilder builder, T[] list) where T : ITable {
-            if (list == null || list.Length == 0)
-                return string.Empty;
-            ushort layer = list[0].GetLayer();
-            string tabString = GetTabString(layer);
-            builder.Clear();
-            builder.Append(LuaFormat.LineSymbol);
-            for (int index = 0; index < list.Length; index++) {
-                T data = list[index];
-                if (data.IsNullTable())
-                    continue;
-                builder.Append(data.ToString());
-            }
-            builder.Append(tabString);
-            return Tool.GetCacheString(builder.ToString());
-        }
-
-        public static void SetTableKey(ref ITable table, string keyString) {
-            switch (table.GetKeyType()) {
-                case KeyType.Array:
-                    if (ushort.TryParse(keyString, out ushort key))
-                        table.SetKey(key);
-                    return;
-                case KeyType.String:
-                case KeyType.Reference:
-                    table.SetKey(keyString);
-                    return;
-            }
+        public static Type GetFieldValueTableValueType(IFieldValueTable table, string key) {
+            object value = table.GetFieldValueTableValue(key);
+            if (value == null)
+                return null;
+            return value.GetType();
         }
     }
 
@@ -138,6 +117,7 @@ namespace Lua {
 
         string GetTableName();
         ushort GetLayer();
+        ReadType GetReadType();
         KeyType GetKeyType();
         void SetKey(object key);
         string GetKey();
@@ -155,20 +135,35 @@ namespace Lua {
 
     public interface IRepeatKeyTable<T> : ITable where T : ITable {
         
+        Type GetTableListType();
+        List<T> GetStaticCacheList();
+        void SetTableList();
         T[] GetTableList();
     }
 
-    public interface IFieldKeyTable : ITable {
+    public interface IFieldValueTable : ITable {
         
-        void SetFieldKeyTableValue(string key, object type);
-        object GetFieldKeyTableValue(string key);
-        FieldKeyTable[] GetFieldKeyTables();
+        void SetFieldValueTableValue(string key, object value);
+        object GetFieldValueTableValue(string key);
+        FieldValueTableInfo[] GetFieldValueTableInfo();
+    }
+
+    public enum ReadType {
+        /// <summary>
+        /// Only read array or hash data
+        /// </summary>
+        Repeat,
+        /// <summary>
+        /// Only read fixed field data
+        /// </summary>
+        FixedField,
     }
 
     public enum KeyType {
         Array,
         String,
         Reference,
+        FixedField,
     }
 
     public enum ValueType {
@@ -179,14 +174,14 @@ namespace Lua {
         Table,
     }
 
-    public struct FieldKeyTable {
+    public struct FieldValueTableInfo {
 
         public string key;
         public ValueType type;
 
         public int KeyLength => key.Length;
 
-        public FieldKeyTable(string key, ValueType type) {
+        public FieldValueTableInfo(string key, ValueType type) {
             this.key = key;
             this.type = type;
         }

@@ -54,7 +54,7 @@ namespace SkillEditor {
             }
             get => m_curStateData.state;
         }
-        private static List<StateData> m_listState = new List<StateData>(Config.ModelStateCount);
+        private static List<StateData> m_listState = new List<StateData>(2);
 
         private static int m_curClipIndex;
         private static ClipData m_curClipData;
@@ -65,11 +65,11 @@ namespace SkillEditor {
             }
             get => m_curClipData;
         }
-        public static List<ClipData> m_listClip = new List<ClipData>(Config.ModelStateClipCount);
+        public static List<ClipData> m_listClip = new List<ClipData>(16);
 
         // private static List<CustomData> m_listCustomData = new List<CustomData>(Config.ModelClipFrameCustomDataCount);
 
-        private static List<CubeData> m_listCubeData = new List<CubeData>(Config.ModelClipFrameCubeDataCount);
+        private static List<CubeData> m_listCubeData = new List<CubeData>(2);
 
         public static void SetCurrentEditClipName(string clipName) {
             if (clipName != m_curClipData.clipName)
@@ -135,37 +135,37 @@ namespace SkillEditor {
         //     KeyFrameData[] array = ClipData.GetKeyFrameList();
         //     if (array == null) {
         //         array = new KeyFrameData[] { new KeyFrameData() };
-        //         m_curClipData.SetFieldKeyTableValue(ClipData.Key_KeyFrame, array);
+        //         m_curClipData.SetFieldValueTableValue(ClipData.Key_KeyFrame, array);
         //         return;
         //     }
         //     List<KeyFrameData> list = new List<KeyFrameData>(array);
         //     list.Add(new KeyFrameData());
-        //     m_curClipData.SetFieldKeyTableValue(ClipData.Key_KeyFrame, list.ToArray());
+        //     m_curClipData.SetFieldValueTableValue(ClipData.Key_KeyFrame, list.ToArray());
         // }
 
         // public static void AddNewProcessFrameData() {
         //     ProcessFrameData[] array = ClipData.GetProcessFrameList();
         //     if (array == null) {
         //         array = new ProcessFrameData[] { new ProcessFrameData() };
-        //         m_curClipData.SetFieldKeyTableValue(ClipData.Key_ProcessFrame, array);
+        //         m_curClipData.SetFieldValueTableValue(ClipData.Key_ProcessFrame, array);
         //         return;
         //     }
         //     List<ProcessFrameData> list = new List<ProcessFrameData>(array);
         //     list.Add(new ProcessFrameData());
-        //     m_curClipData.SetFieldKeyTableValue(ClipData.Key_ProcessFrame, list.ToArray());
+        //     m_curClipData.SetFieldValueTableValue(ClipData.Key_ProcessFrame, list.ToArray());
         // }
 
         // public static void SetKeyFrameData(int index, KeyFrameData data) {
         //     KeyFrameData[] array = ClipData.GetKeyFrameList();
         //     array[index] = data;
-        //     m_curClipData.SetFieldKeyTableValue(ClipData.Key_KeyFrame, array);
+        //     m_curClipData.SetFieldValueTableValue(ClipData.Key_KeyFrame, array);
         //     SetCollisionList();
         // }
 
         // public static void SetProcessFrameData(int index, ProcessFrameData data) {
         //     ProcessFrameData[] array = ClipData.GetProcessFrameList();
         //     array[index] = data;
-        //     m_curClipData.SetFieldKeyTableValue(ClipData.Key_ProcessFrame, array);
+        //     m_curClipData.SetFieldValueTableValue(ClipData.Key_ProcessFrame, array);
         // }
 
         // public static KeyFrameData GetKeyFrameData(int index) {

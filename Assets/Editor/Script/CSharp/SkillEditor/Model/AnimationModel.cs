@@ -36,13 +36,13 @@ namespace SkillEditor {
             return BaseAnimation.IsGenericState(sampleClip);
         }
 
-        private static List<string> m_listAnimationClipNames = new List<string>(Config.ModelStateClipCount);
+        private static List<string> m_listAnimationClipNames = new List<string>(16);
         private static string[] m_aAnimationClipNames;
         public static string[] AnimationClipNames {
             get { return m_aAnimationClipNames; }
         }
 
-        private static List<int> m_listAnimationClipIndexs = new List<int>(Config.ModelStateClipCount);
+        private static List<int> m_listAnimationClipIndexs = new List<int>(16);
         private static int[] m_aAnimationClipIndexs;
         public static int[] AnimationClipIndexs {
             get { return m_aAnimationClipIndexs; }

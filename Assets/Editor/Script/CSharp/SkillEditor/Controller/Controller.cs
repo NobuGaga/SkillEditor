@@ -68,7 +68,7 @@ namespace SkillEditor {
             }
         }
 
-        private static List<AnimationClip> m_listAnimationClip = new List<AnimationClip>(Config.ModelStateClipCount);
+        private static List<AnimationClip> m_listAnimationClip = new List<AnimationClip>(16);
         private static AnimationClip[] GetAllAnimationClip() {
             string[] fileNames = Directory.GetFiles(Config.ClipGroupFullPath);
             m_listAnimationClip.Clear();
@@ -226,7 +226,7 @@ namespace SkillEditor {
         }
 
         private static void WriteAnimClipData() {
-            LuaWriter.Write();
+            LuaWriter.Write<AnimClipData>();
         }
 
         public static void Reset() {

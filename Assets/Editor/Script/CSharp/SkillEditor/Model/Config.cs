@@ -85,11 +85,6 @@ namespace SkillEditor {
         public const short LuaFileHeadLength = 64;
         public const string LuaFileHeadStart = "AnimClipData = AnimClipData or {}";
         public const short ModelCount = 2;
-        public const short ModelStateCount = 4;
-        public const short ModelStateClipCount = 8;
-        public const short ModelStateClipFrameCount = 8;
-        public const short ModelClipFrameCustomDataCount = 4;
-        public const short ModelClipFrameCubeDataCount = 2;
 
         // Lua
         public const short ReadFileCount = 4;

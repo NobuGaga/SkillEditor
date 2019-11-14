@@ -1,5 +1,6 @@
 using System;
 using System.Text;
+using System.Collections.Generic;
 
 namespace Lua.AnimClipData {
 
@@ -16,6 +17,7 @@ namespace Lua.AnimClipData {
         #region ITable Function
         public string GetTableName() => "ClipData";
         public ushort GetLayer() => 3;
+        public ReadType GetReadType() => ReadType.Repeat;
         public KeyType GetKeyType() => KeyType.String;
         public void SetKey(object key) => clipName = key as string;
         public string GetKey() => clipName;
@@ -27,11 +29,15 @@ namespace Lua.AnimClipData {
             frameList = null;
         }
 
-        private static readonly StringBuilder m_staticBuilder = new StringBuilder((UInt16)Math.Pow(2, 14));
+        private static readonly StringBuilder m_staticBuilder = new StringBuilder((ushort)Math.Pow(2, 14));
         public override string ToString() => LuaTable.GetRepeatKeyTableText(m_staticBuilder, this);
         #endregion
 
         #region IRepeatKeyTable Function
+        public Type GetTableListType() => typeof(FrameData);
+        private static List<FrameData> m_listCache = new List<FrameData>((ushort)Math.Pow(2, 4));
+        public List<FrameData> GetStaticCacheList() => m_listCache;
+        public void SetTableList() => frameList = m_listCache.ToArray();
         public FrameData[] GetTableList() => frameList;
         #endregion
     }

@@ -3,7 +3,7 @@ using System.Text;
 
 namespace Lua.AnimClipData {
 
-    public struct FrameData : IFieldKeyTable {
+    public struct FrameData : IFieldValueTable {
 
         private ushort index;
         public float time;
@@ -25,6 +25,7 @@ namespace Lua.AnimClipData {
         #region ITable Function
         public string GetTableName() => "FrameData";
         public ushort GetLayer() => 4;
+        public ReadType GetReadType() => ReadType.Repeat;
         public KeyType GetKeyType() => KeyType.Array;
         public void SetKey(object key) => index = (ushort)key;
         public string GetKey() => index.ToString();
@@ -37,15 +38,15 @@ namespace Lua.AnimClipData {
             sectionFrameData.Clear();
         }
 
-        private static readonly StringBuilder m_staticBuilder = new StringBuilder((UInt16)Math.Pow(2, 11));
+        private static readonly StringBuilder m_staticBuilder = new StringBuilder((ushort)Math.Pow(2, 11));
         public override string ToString() => LuaTable.GetFieldKeyTableText(m_staticBuilder, this);
         #endregion
 
         #region IFieldKeyTable Function
-        public void SetFieldKeyTableValue(string key, object value) {
+        public void SetFieldValueTableValue(string key, object value) {
             FrameType frameType = FrameType.None;
             if (!Enum.TryParse(key, false, out frameType)) {
-                UnityEngine.Debug.LogError("FrameData::SetFieldKeyTableValue not exit key : " + key);
+                UnityEngine.Debug.LogError("FrameData::SetFieldValueTableValue not exit key : " + key);
                 return;
             }
             switch (frameType) {
@@ -64,10 +65,10 @@ namespace Lua.AnimClipData {
             }
         }
 
-        public object GetFieldKeyTableValue(string key) {
+        public object GetFieldValueTableValue(string key) {
             FrameType frameType = FrameType.None;
             if (!Enum.TryParse(key, false, out frameType)) {
-                UnityEngine.Debug.LogError("FrameData::GetFieldKeyTableValue not exit key : " + key);
+                UnityEngine.Debug.LogError("FrameData::GetFieldValueTableValue not exit key : " + key);
                 return null;
             }
             switch (frameType) {
@@ -84,12 +85,12 @@ namespace Lua.AnimClipData {
             }
         }
 
-        private static FieldKeyTable[] m_arraykeyValue;
-        public FieldKeyTable[] GetFieldKeyTables() {
+        private static FieldValueTableInfo[] m_arraykeyValue;
+        public FieldValueTableInfo[] GetFieldValueTableInfo() {
             if (m_arraykeyValue != null)
                 return m_arraykeyValue;
             Array arrayframeType = Enum.GetValues(typeof(FrameType));
-            m_arraykeyValue = new FieldKeyTable[arrayframeType.Length - 1];
+            m_arraykeyValue = new FieldValueTableInfo[arrayframeType.Length - 1];
             short keyIndex = 0;
             for (short frameTypeIndex = 0; frameTypeIndex < arrayframeType.Length; frameTypeIndex++, keyIndex++) {
                 FrameType frameType = (FrameType)arrayframeType.GetValue(frameTypeIndex);
@@ -97,7 +98,7 @@ namespace Lua.AnimClipData {
                     keyIndex--;
                     continue;
                 }
-                m_arraykeyValue[keyIndex] = new FieldKeyTable(frameType.ToString(), ValueType.Table);    
+                m_arraykeyValue[keyIndex] = new FieldValueTableInfo(frameType.ToString(), ValueType.Table);    
             }
             return m_arraykeyValue;
         }

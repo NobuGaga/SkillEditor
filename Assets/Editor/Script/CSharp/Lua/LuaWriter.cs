@@ -1,4 +1,5 @@
-﻿using System;
+﻿using UnityEngine;
+using System;
 using System.IO;
 using System.Text;
 using System.Collections.Generic;
@@ -19,21 +20,22 @@ namespace Lua {
 
         private static StringBuilder m_stringBuilder = new StringBuilder((UInt16)Math.Pow(2, 16));
 
-        public static void Write() {
-            foreach (var keyValue in m_dicPathFileHead) {
-                string path = keyValue.Key;
-                if (path != Config.AnimDataFilePath)
-                    continue;
-                m_stringBuilder.Clear();
-                string headText = keyValue.Value;
-                m_stringBuilder.Append(headText);
-                string fileString = LuaAnimClipModel.GetWriteFileString(m_stringBuilder);
-                FileStream file = new FileStream(path, FileMode.Create);
-                StreamWriter fileWriter = new StreamWriter(file);
-                fileWriter.Write(fileString);
-                fileWriter.Close();
-                fileWriter.Dispose();
+        public static void Write<T>() where T : ITable, ILuaFile<T> {
+            T luaFile = default;
+            string luaFilePath = luaFile.GetLuaFilePath();
+            if (!m_dicPathFileHead.ContainsKey(luaFilePath)) {
+                Debug.Log("LuaWriter::Write lua file head text path is not exit. lua file path " + luaFilePath);
+                return;
             }
+            m_stringBuilder.Clear();
+            string headText = m_dicPathFileHead[luaFilePath];
+            m_stringBuilder.Append(headText);
+            string fileString = LuaAnimClipModel.GetWriteFileString(m_stringBuilder);
+            FileStream file = new FileStream(luaFilePath, FileMode.Create);
+            StreamWriter fileWriter = new StreamWriter(file);
+            fileWriter.Write(fileString);
+            fileWriter.Close();
+            fileWriter.Dispose();
         }
     }
 }

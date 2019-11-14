@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Lua.AnimClipData {
 
-    public struct HitFrameData : IFieldKeyTable {
+    public struct HitFrameData : IFieldValueTable {
 
         public ushort type;
         public ushort priority;
@@ -19,6 +19,7 @@ namespace Lua.AnimClipData {
         #region ITable Function
         public string GetTableName() => "HitFrameData";
         public ushort GetLayer() => 5;
+        public ReadType GetReadType() => ReadType.FixedField;
         public KeyType GetKeyType() => KeyType.Reference;
         public void SetKey(object key) { }
         public string GetKey() => FrameType.Hit.ToString();
@@ -28,7 +29,7 @@ namespace Lua.AnimClipData {
             cubeDatas.Clear();
         }
 
-        private static readonly StringBuilder m_staticBuilder = new StringBuilder((UInt16)Math.Pow(2, 9));
+        private static readonly StringBuilder m_staticBuilder = new StringBuilder((ushort)Math.Pow(2, 9));
         public override string ToString() => LuaTable.GetFieldKeyTableText(m_staticBuilder, this);
         #endregion
 
@@ -36,7 +37,7 @@ namespace Lua.AnimClipData {
         private const string Key_Type = "type";
         private const string Key_Priority = "priority";
         private const string Key_CubeData = "data";
-        public void SetFieldKeyTableValue(string key, object value) {
+        public void SetFieldValueTableValue(string key, object value) {
             switch (key) {
                 case Key_Type:
                     type = (ushort)(int)value;
@@ -50,7 +51,7 @@ namespace Lua.AnimClipData {
             }
         }
 
-        public object GetFieldKeyTableValue(string key) {
+        public object GetFieldValueTableValue(string key) {
             switch (key) {
                 case Key_Type:
                     return type;
@@ -59,19 +60,19 @@ namespace Lua.AnimClipData {
                 case Key_CubeData:
                     return cubeDatas;
                 default:
-                    Debug.LogError("HitFrameData::GetFieldKeyTableValue key is not exit. key " + key);
+                    Debug.LogError("HitFrameData::GetFieldValueTableValue key is not exit. key " + key);
                     return null;
             }
         }
 
-        private static FieldKeyTable[] m_arraykeyValue;
-        public FieldKeyTable[] GetFieldKeyTables() {
+        private static FieldValueTableInfo[] m_arraykeyValue;
+        public FieldValueTableInfo[] GetFieldValueTableInfo() {
             if (m_arraykeyValue != null)
                 return m_arraykeyValue;
-            m_arraykeyValue = new FieldKeyTable[3];
-            m_arraykeyValue[0] = new FieldKeyTable(Key_Type, ValueType.Int);
-            m_arraykeyValue[1] = new FieldKeyTable(Key_Priority, ValueType.Int);
-            m_arraykeyValue[2] = new FieldKeyTable(Key_CubeData, ValueType.Table);
+            m_arraykeyValue = new FieldValueTableInfo[3];
+            m_arraykeyValue[0] = new FieldValueTableInfo(Key_Type, ValueType.Int);
+            m_arraykeyValue[1] = new FieldValueTableInfo(Key_Priority, ValueType.Int);
+            m_arraykeyValue[2] = new FieldValueTableInfo(Key_CubeData, ValueType.Table);
             return m_arraykeyValue;
         }
         #endregion
