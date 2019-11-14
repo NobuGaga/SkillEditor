@@ -71,17 +71,21 @@ namespace Lua {
                                             table.GetTableName()));
                 return;
             }
-            object staticList = repeatType.GetMethod("GetStaticCacheList").Invoke(table, null);
+            MethodInfo getTableListTypeMethod = table.GetType().GetMethod("GetTableListType");
+            Type tableListType = getTableListTypeMethod.Invoke(table, null) as Type;
+            MethodInfo getStaticCacheListMethod = table.GetType().GetMethod("GetStaticCacheList");
+            object staticList = getStaticCacheListMethod.Invoke(table, null);
             MethodInfo clearStaticListMethod = staticList.GetType().GetMethod("Clear");
-            Type tableListType = repeatType.GetMethod("GetTableListType").Invoke(table, null) as Type;
-            MethodInfo readLuaFileValueTextMethod = m_readLuaFileValueTextMethod.MakeGenericMethod(new Type[] { tableListType });
+            // MethodInfo readLuaFileValueTextMethod = m_readLuaFileValueTextMethod.MakeGenericMethod(new Type[] { tableListType });
             int endIndex = FindLuaTableEndIndex(luaText, index);
             for (; index < luaText.Length; index++) {
                 table = InitTableAndhKey<T>(luaText, ref index, endIndex, out bool isSuccess);
                 if (!isSuccess)
                     break;
                 clearStaticListMethod.Invoke(staticList, null);
-                readLuaFileValueTextMethod.Invoke(null, new object[] { luaText, index, staticList });
+                Type thisType = typeof(LuaReader);
+                MethodInfo method = thisType.GetMethod("ReadLuaFileTable");
+                method.Invoke(null, new object[] { luaText, index, staticList });
                 repeatType.GetMethod("SetTableList").Invoke(table, null);
                 list.Add(table);
             }
