@@ -44,6 +44,8 @@ namespace Lua {
             LuaWriter.AddHeadText(luaFilePath, m_luaTextHeadStringBuilder.ToString());
         }
 
+        private static MethodInfo m_readLuaFileTableMethod = typeof(LuaReader).GetMethod("ReadLuaFileTable",
+                                                                        BindingFlags.NonPublic | BindingFlags.Static);
         private static ITable ReadLuaFileTable<T>(string luaText, ref int index, List<T> list) where T : ITable {
             EnterLuaTable(luaText, ref index);
             T table = default;
@@ -65,8 +67,6 @@ namespace Lua {
             return table;
         }
 
-        private static MethodInfo m_readLuaFileTableMethod = typeof(LuaReader).GetMethod("ReadLuaFileTable",
-                                                                        BindingFlags.NonPublic | BindingFlags.Static);
         private static void ReadLuaFileRepeatTable<T>(string luaText, ref int index, List<T> list) where T : ITable {
             T table = default;
             if (!IsImplementIRepeatKeyTable(typeof(T), table.GetTableName()))
@@ -78,14 +78,13 @@ namespace Lua {
                 if (!isSuccess)
                     break;
                 ClearStaticListMethod.Invoke(staticList, null);
-                ReadLuaFileTableMethod.Invoke(null, new object[] { luaText, index, staticList });
+                SetReadLuaFileTableArg(luaText, index, staticList);
+                ReadLuaFileTableMethod.Invoke(null, GetReadLuaFileTableArg());
                 SetTableListMethod.Invoke(table, null);
                 list.Add(table);
             }
         }
 
-        private static MethodInfo m_readFixedFieldTableValueMethod = typeof(LuaReader).GetMethod("ReadFixedFieldTableValue",
-                                                                                BindingFlags.NonPublic | BindingFlags.Static);
         private static void ReadLuaFileRepeatToFixedFieldTable<T>(string luaText, ref int index, List<T> list) where T : ITable {
             T table = default;
             if (!IsImplementIFieldValueTable(typeof(T), table.GetTableName()))
@@ -96,7 +95,8 @@ namespace Lua {
                 if (!isSuccess)
                     break;
                 EnterLuaTable(luaText, ref index);
-                m_readFixedFieldTableValueMethod.Invoke(null, new object[] { luaText, index, table });
+                SetReadLuaFileTableArg(luaText, index, table);
+                m_readFixedFieldTableValueMethod.Invoke(null, GetReadLuaFileTableArg());
                 ExitLuaTable(luaText, ref index);
                 list.Add(table);
             }
@@ -112,7 +112,8 @@ namespace Lua {
                 Debug.LogError("LuaReader::ReadLuaFileFixedFieldTable read key error. table " + table.GetTableName());
                 return table;
             }
-            m_readFixedFieldTableValueMethod.Invoke(null, new object[] { luaText, index, table });
+            SetReadLuaFileTableArg(luaText, index, table);
+            m_readFixedFieldTableValueMethod.Invoke(null, GetReadLuaFileTableArg());
             return table;
         }
 
@@ -123,9 +124,13 @@ namespace Lua {
             object staticList = GetStaticListAndSetRepeatTableMethod<T>();
             int endIndex = FindLuaTableEndIndex(luaText, index);
             for (; index < luaText.Length; index++) {
-                // TODO endindex judge
-                object subTable = ReadLuaFileTableMethod.Invoke(null, new object[] { luaText, index, null });
-                AddStaticListMethod.Invoke(staticList, new object[] { subTable });
+                table = InitTableAndhKey<T>(luaText, ref index, endIndex, out bool isSuccess);
+                if (!isSuccess)
+                    break;
+                SetReadLuaFileTableArg(luaText, index);
+                object subTable = ReadLuaFileTableMethod.Invoke(null, GetReadLuaFileTableArg());
+                SetReadLuaFileTableArg(subTable);
+                AddStaticListMethod.Invoke(staticList, GetReadLuaFileTableArg());
             }
             SetTableListMethod.Invoke(table, null);
             return table;
@@ -145,28 +150,49 @@ namespace Lua {
             return isImplement;
         }
 
-        private static MethodInfo[] m_repeatKeyTableMethod = new MethodInfo[4];
+        private static MethodInfo[] m_repeatKeyTableMethod = new MethodInfo[5];
         private const ushort ClearStaticListMethodIndex = 0;
         private const ushort AddStaticListMethodIndex = 1;
         private const ushort SetTableListMethodIndex = 2;
         private const ushort ReadLuaFileTableIndex = 3;
+        private const ushort InitTableAndhKeyIndex = 4;
         private static MethodInfo ClearStaticListMethod => m_repeatKeyTableMethod[ClearStaticListMethodIndex];
         private static MethodInfo AddStaticListMethod => m_repeatKeyTableMethod[AddStaticListMethodIndex];
         private static MethodInfo SetTableListMethod => m_repeatKeyTableMethod[SetTableListMethodIndex];
         private static MethodInfo ReadLuaFileTableMethod => m_repeatKeyTableMethod[ReadLuaFileTableIndex];
+        private static MethodInfo InitTableAndhKeyMethod => m_repeatKeyTableMethod[InitTableAndhKeyIndex];
         private static object GetStaticListAndSetRepeatTableMethod<T>() where T :ITable {
             T table = default;
             MethodInfo getStaticCacheListMethod = table.GetType().GetMethod("GetStaticCacheList");
             object staticList = getStaticCacheListMethod.Invoke(table, null);
             MethodInfo getTableListTypeMethod = table.GetType().GetMethod("GetTableListType");
             Type tableListType = getTableListTypeMethod.Invoke(table, null) as Type;
+            SetTypeCache(tableListType);
             m_repeatKeyTableMethod[ClearStaticListMethodIndex] = staticList.GetType().GetMethod("Clear");
             m_repeatKeyTableMethod[AddStaticListMethodIndex] = staticList.GetType().GetMethod("Add");
             m_repeatKeyTableMethod[SetTableListMethodIndex] = table.GetType().GetMethod("SetTableList");
-            m_repeatKeyTableMethod[ReadLuaFileTableIndex] = m_readLuaFileTableMethod.MakeGenericMethod(new Type[] { tableListType });
+            m_repeatKeyTableMethod[ReadLuaFileTableIndex] = m_readLuaFileTableMethod.MakeGenericMethod(m_typeCache);
+            m_repeatKeyTableMethod[InitTableAndhKeyIndex] = m_initTableAndhKeyMethod.MakeGenericMethod(m_typeCache);
             return staticList;
         }
+        private static Type[] m_typeCache = new Type[1];
+        private static void SetTypeCache(Type value) => m_typeCache[0] = value;
+        private static Type[] GetTypeCache() => m_typeCache;
+        private static object[] m_methodArgOne = new object[1];
+        private static void SetReadLuaFileTableArg(object value) => m_methodArgOne[0] = value;
+        private static object[] GetReadFixedFieldTableValueArg => m_methodArgOne;
+        private static object[] m_readLuaFileTableArg = new object[3];
+        private static void SetReadLuaFileTableArg(params object[] args) {
+            for (int index = 0; index < m_readLuaFileTableArg.Length; index++)
+                if (args == null || index >= args.Length)
+                    m_readLuaFileTableArg[index] = null;
+                else
+                    m_readLuaFileTableArg[index] = args[index];
+        }
+        private static object[] GetReadLuaFileTableArg() => m_readLuaFileTableArg;
 
+        private static MethodInfo m_initTableAndhKeyMethod = typeof(LuaReader).GetMethod("InitTableAndhKey",
+                                                                                BindingFlags.NonPublic | BindingFlags.Static);
         private static T InitTableAndhKey<T>(string luaText, ref int index, int endIndex, out bool isSuccess) where T : ITable {
             T table = default;
             isSuccess = true;
@@ -222,6 +248,8 @@ namespace Lua {
             return key;
         }
 
+        private static MethodInfo m_readFixedFieldTableValueMethod = typeof(LuaReader).GetMethod("ReadFixedFieldTableValue",
+                                                                                BindingFlags.NonPublic | BindingFlags.Static);
         private static void ReadFixedFieldTableValue(string luaText, ref int index, ref IFieldValueTable table) {
             int maxIndex = index;
             int endIndex = FindLuaTableEndIndex(luaText, index);
@@ -264,8 +292,10 @@ namespace Lua {
                     Type valueType = LuaTable.GetFieldValueTableValueType(table, keyValue.key);
                     if (valueType == null)
                         return;
-                    MethodInfo readLuaFileValueTextMethod = m_readLuaFileTableMethod.MakeGenericMethod(new Type[] { valueType });
-                    value = readLuaFileValueTextMethod.Invoke(null, new object[] { luaText, valueIndex, null });
+                    SetTypeCache(valueType);
+                    MethodInfo readLuaFileValueTextMethod = m_readLuaFileTableMethod.MakeGenericMethod(GetTypeCache());
+                    SetReadLuaFileTableArg(luaText, valueIndex);
+                    value = readLuaFileValueTextMethod.Invoke(null, GetReadLuaFileTableArg());
                     break;
             }
             table.SetFieldValueTableValue(keyValue.key, value);
