@@ -6,7 +6,7 @@ namespace Lua.AnimClipData {
 
     public struct CubeData : IFieldValueTable {
 
-        private ushort index;
+        public ushort index;
         public float x;
         public float y;
         public float z;
@@ -48,9 +48,9 @@ namespace Lua.AnimClipData {
         #region ITable Function
         public string GetTableName() => "CubeData";
         public ushort GetLayer() => 7;
-        public ReadType GetReadType() => ReadType.FixedField;
+        public ReadType GetReadType() => ReadType.Fixed;
         public KeyType GetKeyType() => KeyType.Array;
-        public void SetKey(object key) => index = (ushort)key;
+        public void SetKey(object key) => index = (ushort)(int)key;
         public string GetKey() => index.ToString();
         public bool IsNullTable() => Size == Vector3.zero;
         public void Clear() => x = y = z = width = height = depth = 0;

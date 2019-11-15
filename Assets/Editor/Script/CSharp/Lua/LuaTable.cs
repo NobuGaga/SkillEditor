@@ -154,9 +154,17 @@ namespace Lua {
         /// </summary>
         Repeat,
         /// <summary>
-        /// Only read fixed field data
+        /// Repeat table to fixed table
         /// </summary>
-        FixedField,
+        RepeatToFixed,
+        /// <summary>
+        /// Only read fixed key and value
+        /// </summary>
+        Fixed,
+        /// <summary>
+        /// Fixed table to repeat table
+        /// </summary>
+        FixedToRepeat,
     }
 
     public enum KeyType {

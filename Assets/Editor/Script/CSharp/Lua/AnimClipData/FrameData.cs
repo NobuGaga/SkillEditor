@@ -5,7 +5,7 @@ namespace Lua.AnimClipData {
 
     public struct FrameData : IFieldValueTable {
 
-        private ushort index;
+        public ushort index;
         public float time;
         public HitFrameData hitFrameData;
         public EffectFrameData effectFrameData;
@@ -25,9 +25,9 @@ namespace Lua.AnimClipData {
         #region ITable Function
         public string GetTableName() => "FrameData";
         public ushort GetLayer() => 4;
-        public ReadType GetReadType() => ReadType.Repeat;
+        public ReadType GetReadType() => ReadType.RepeatToFixed;
         public KeyType GetKeyType() => KeyType.Array;
-        public void SetKey(object key) => index = (ushort)key;
+        public void SetKey(object key) => index = (ushort)(int)key;
         public string GetKey() => index.ToString();
         public bool IsNullTable() => time == NullTableFlag;
         public void Clear() {
@@ -43,7 +43,12 @@ namespace Lua.AnimClipData {
         #endregion
 
         #region IFieldKeyTable Function
+        private const string Key_Time = "time";
         public void SetFieldValueTableValue(string key, object value) {
+            if (key == Key_Time) {
+                time = (float)value;
+                return;
+            }
             FrameType frameType = FrameType.None;
             if (!Enum.TryParse(key, false, out frameType)) {
                 UnityEngine.Debug.LogError("FrameData::SetFieldValueTableValue not exit key : " + key);
@@ -66,6 +71,8 @@ namespace Lua.AnimClipData {
         }
 
         public object GetFieldValueTableValue(string key) {
+            if (key == Key_Time)
+                return time;
             FrameType frameType = FrameType.None;
             if (!Enum.TryParse(key, false, out frameType)) {
                 UnityEngine.Debug.LogError("FrameData::GetFieldValueTableValue not exit key : " + key);
@@ -90,7 +97,7 @@ namespace Lua.AnimClipData {
             if (m_arraykeyValue != null)
                 return m_arraykeyValue;
             Array arrayframeType = Enum.GetValues(typeof(FrameType));
-            m_arraykeyValue = new FieldValueTableInfo[arrayframeType.Length - 1];
+            m_arraykeyValue = new FieldValueTableInfo[arrayframeType.Length];
             short keyIndex = 0;
             for (short frameTypeIndex = 0; frameTypeIndex < arrayframeType.Length; frameTypeIndex++, keyIndex++) {
                 FrameType frameType = (FrameType)arrayframeType.GetValue(frameTypeIndex);
@@ -100,6 +107,7 @@ namespace Lua.AnimClipData {
                 }
                 m_arraykeyValue[keyIndex] = new FieldValueTableInfo(frameType.ToString(), ValueType.Table);    
             }
+            m_arraykeyValue[arrayframeType.Length - 1] = new FieldValueTableInfo(Key_Time, ValueType.Number);
             return m_arraykeyValue;
         }
         #endregion

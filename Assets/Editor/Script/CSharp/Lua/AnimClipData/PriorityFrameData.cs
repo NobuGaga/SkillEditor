@@ -6,7 +6,7 @@ namespace Lua.AnimClipData {
 
     public struct PriorityFrameData : IFieldValueTable {
 
-        private FrameType frameType;
+        public FrameType frameType;
         public ushort priority;
 
         public PriorityFrameData(FrameType frameType, ushort priority) {
@@ -17,8 +17,8 @@ namespace Lua.AnimClipData {
         #region ITable Function
         public string GetTableName() => "PriorityFrameData";
         public ushort GetLayer() => 5;
-        public ReadType GetReadType() => ReadType.FixedField;
-        public KeyType GetKeyType() => KeyType.Reference;
+        public ReadType GetReadType() => ReadType.Fixed;
+        public KeyType GetKeyType() => KeyType.FixedField;
         public void SetKey(object key) => Enum.TryParse(key as string, false, out frameType);
         public string GetKey() => frameType.ToString();
         public bool IsNullTable() => priority <= 0;

@@ -19,8 +19,8 @@ namespace Lua.AnimClipData {
         #region ITable Function
         public string GetTableName() => "HitFrameData";
         public ushort GetLayer() => 5;
-        public ReadType GetReadType() => ReadType.FixedField;
-        public KeyType GetKeyType() => KeyType.Reference;
+        public ReadType GetReadType() => ReadType.Fixed;
+        public KeyType GetKeyType() => KeyType.FixedField;
         public void SetKey(object key) { }
         public string GetKey() => FrameType.Hit.ToString();
         public bool IsNullTable() => priority <= 0 || cubeDatas.IsNullTable();

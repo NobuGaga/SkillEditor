@@ -6,7 +6,12 @@ namespace SkillEditor {
 
         [MenuItem("技能编辑器/选择模型预设")]
         private static void SelectPrefab() {
-            Manager.SelectPrefab();
+            Lua.LuaReader.Read<Lua.AnimClipData.AnimClipData>();
+            var list = LuaAnimClipModel.AnimClipList;
+            foreach (var data in list)
+                UnityEngine.Debug.Log(data);
+            // Lua.LuaWriter.Write<Lua.AnimClipData.AnimClipData>();
+            // Manager.SelectPrefab();
 	    }
 
         [MenuItem("技能编辑器/打开技能编辑窗口")]

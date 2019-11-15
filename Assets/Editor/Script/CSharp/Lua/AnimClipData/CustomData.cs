@@ -15,7 +15,7 @@ namespace Lua.AnimClipData {
         #region ITable Function
         public string GetTableName() => "CustomData";
         public ushort GetLayer() => 6;
-        public ReadType GetReadType() => ReadType.Repeat;
+        public ReadType GetReadType() => ReadType.FixedToRepeat;
         public KeyType GetKeyType() => KeyType.FixedField;
         public void SetKey(object key) { }
         public string GetKey() => "data";

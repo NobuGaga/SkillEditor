@@ -6,7 +6,7 @@ namespace Lua.AnimClipData {
 
     public struct EffectData : IFieldValueTable {
 
-        private ushort index;
+        public ushort index;
         public short type;
         public int id;
 
@@ -19,9 +19,9 @@ namespace Lua.AnimClipData {
         #region ITable Function
         public string GetTableName() => "EffectData";
         public ushort GetLayer() => 7;
-        public ReadType GetReadType() => ReadType.FixedField;
+        public ReadType GetReadType() => ReadType.Fixed;
         public KeyType GetKeyType() => KeyType.Array;
-        public void SetKey(object key) => index = (ushort)key;
+        public void SetKey(object key) => index = (ushort)(int)key;
         public string GetKey() => index.ToString();
         public bool IsNullTable() => type == 0 || id == 0;
         public void Clear() => id = type = 0;

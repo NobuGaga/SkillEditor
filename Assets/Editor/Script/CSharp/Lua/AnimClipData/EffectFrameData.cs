@@ -17,8 +17,8 @@ namespace Lua.AnimClipData {
         #region ITable Function
         public string GetTableName() => "EffectFrameData";
         public ushort GetLayer() => 5;
-        public ReadType GetReadType() => ReadType.FixedField;
-        public KeyType GetKeyType() => KeyType.Reference;
+        public ReadType GetReadType() => ReadType.Fixed;
+        public KeyType GetKeyType() => KeyType.FixedField;
         public void SetKey(object key) { }
         public string GetKey() => FrameType.PlayEffect.ToString();
         public bool IsNullTable() => priority <= 0 || effectDatas.IsNullTable();
