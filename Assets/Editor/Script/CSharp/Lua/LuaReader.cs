@@ -344,10 +344,10 @@ namespace Lua {
                     if (valueType == null)
                         return;
                     SetTypeCache(valueType);
-                    MethodInfo readLuaFileValueTextMethod = m_readLuaFileTableMethod.MakeGenericMethod(GetTypeCache());
+                    MethodInfo readLuaFileTableMethod = m_readLuaFileTableMethod.MakeGenericMethod(GetTypeCache());
                     SetThreeArgMethodArg(luaText, valueIndex);
                     object[] args = GetThreeArgMethodArg();
-                    value = readLuaFileValueTextMethod.Invoke(null, args);
+                    value = readLuaFileTableMethod.Invoke(null, args);
                     break;
             }
             table.SetFieldValueTableValue(keyValue.key, value);
