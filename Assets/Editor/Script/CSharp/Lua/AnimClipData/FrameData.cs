@@ -63,9 +63,11 @@ namespace Lua.AnimClipData {
                     return;
                 case FrameType.CacheBegin:
                     cacheFrameData = (PriorityFrameData)value;
+                    cacheFrameData.frameType = FrameType.CacheBegin;
                     return;
                 case FrameType.SectionOver:
                     sectionFrameData = (PriorityFrameData)value;
+                    sectionFrameData.frameType = FrameType.SectionOver;
                     return;
             }
         }
@@ -99,6 +101,7 @@ namespace Lua.AnimClipData {
             Array arrayframeType = Enum.GetValues(typeof(FrameType));
             m_arraykeyValue = new FieldValueTableInfo[arrayframeType.Length];
             short keyIndex = 0;
+            m_arraykeyValue[keyIndex++] = new FieldValueTableInfo(Key_Time, ValueType.Number);
             for (short frameTypeIndex = 0; frameTypeIndex < arrayframeType.Length; frameTypeIndex++, keyIndex++) {
                 FrameType frameType = (FrameType)arrayframeType.GetValue(frameTypeIndex);
                 if (frameType == FrameType.None) {
@@ -107,7 +110,6 @@ namespace Lua.AnimClipData {
                 }
                 m_arraykeyValue[keyIndex] = new FieldValueTableInfo(frameType.ToString(), ValueType.Table);    
             }
-            m_arraykeyValue[arrayframeType.Length - 1] = new FieldValueTableInfo(Key_Time, ValueType.Number);
             return m_arraykeyValue;
         }
         #endregion
