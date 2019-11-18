@@ -4,13 +4,10 @@ namespace SkillEditor {
 
     internal static class EditorMenu {
 
-        [MenuItem("技能编辑器/选择模型预设")]
+        [MenuItem("技能编辑器/选择模型预设 #N")]
         private static void SelectPrefab() {
             Lua.LuaReader.Read<Lua.AnimClipData.AnimClipData>();
-            var list = LuaAnimClipModel.AnimClipList;
-            foreach (var data in list)
-                UnityEngine.Debug.Log(data);
-            // Lua.LuaWriter.Write<Lua.AnimClipData.AnimClipData>();
+            Lua.LuaWriter.Write<Lua.AnimClipData.AnimClipData>();
             // Manager.SelectPrefab();
 	    }
 

@@ -51,6 +51,7 @@
      <Compile Include="Assets\Editor\Script\CSharp\Lua\AnimClipData\CustomData.cs" />
      <Compile Include="Assets\Editor\Script\CSharp\Lua\AnimClipData\EffectData.cs" />
      <Compile Include="Assets\Editor\Script\CSharp\Lua\AnimClipData\EffectFrameData.cs" />
+     <Compile Include="Assets\Editor\Script\CSharp\Lua\AnimClipData\EffectRotationData.cs" />
      <Compile Include="Assets\Editor\Script\CSharp\Lua\AnimClipData\FrameData.cs" />
      <Compile Include="Assets\Editor\Script\CSharp\Lua\AnimClipData\HitFrameData.cs" />
      <Compile Include="Assets\Editor\Script\CSharp\Lua\AnimClipData\PriorityFrameData.cs" />

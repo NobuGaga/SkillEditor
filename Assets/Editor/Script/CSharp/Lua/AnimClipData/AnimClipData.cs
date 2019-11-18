@@ -37,7 +37,10 @@ namespace Lua.AnimClipData {
         public Type GetTableListType() => typeof(StateData);
         private static List<StateData> m_listCache = new List<StateData>((ushort)Math.Pow(2, 1));
         public List<StateData> GetStaticCacheList() => m_listCache;
-        public void SetTableList() => stateList = m_listCache.ToArray();
+        public object SetTableList() {
+            stateList = m_listCache.ToArray();
+            return this;
+        }
         public StateData[] GetTableList() => stateList;
         #endregion
     

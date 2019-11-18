@@ -35,22 +35,7 @@ namespace Lua {
             builder.Append(LuaFormat.SpaceSymbol);
             builder.Append(LuaFormat.EqualSymbol);
             builder.Append(LuaFormat.SpaceSymbol);
-            switch (keyValue.type) {
-                case ValueType.Int:
-                    builder.Append((int)value);
-                    break;
-                case ValueType.Number:
-                    builder.Append((float)value);
-                    break;
-                case ValueType.Reference:
-                    builder.Append(value as string);
-                    break;
-                case ValueType.String:
-                    builder.Append(LuaFormat.QuotationPair.start);
-                    builder.Append(value as string);
-                    builder.Append(LuaFormat.QuotationPair.end);
-                    break;
-            }
+            builder.Append(value);
             builder.Append(LuaFormat.CommaSymbol);
             builder.Append(LuaFormat.LineSymbol);
         }
@@ -137,7 +122,7 @@ namespace Lua {
         
         Type GetTableListType();
         List<T> GetStaticCacheList();
-        void SetTableList();
+        object SetTableList();
         T[] GetTableList();
     }
 
