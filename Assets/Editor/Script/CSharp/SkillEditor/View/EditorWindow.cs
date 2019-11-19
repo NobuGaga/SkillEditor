@@ -14,9 +14,10 @@ namespace SkillEditor {
         private const string LabelModelClipTips = "动画 ";
         private const string LabelModelClipStateTips = "状态组 ";
 
-        private const string LabelFrameGroupType = "帧类型组 ";
+        private const string BtnAddFrame = "增加时间轴数据";
+        private const string BtnAddEffect = "增加特效";
+        private const string BtnAddCube = "增加碰撞框";
         private const string BtnAdd = "增加";
-        private const string LabelFrameType = "帧类型 ";
         private const string LabelTime = "触发时间点 ";
         private const string LabelPriority = "优先级 ";
         private const string LabelEffect = "特效";
@@ -42,19 +43,6 @@ namespace SkillEditor {
         private static string[] m_animationClipNames;
         private static int[] m_animationClipIndexs;
 
-        private static int m_lastFrameIndex;
-        private static bool IsNoSelectFrameGroup => m_lastFrameIndex == Config.ErrorIndex;
-        private static readonly string[] FrameKeyArray = { ClipData.Key_KeyFrame, ClipData.Key_ProcessFrame };
-        private static readonly string[] FrameKeyNameArray = { "关键帧", "动画帧" };
-        private static readonly int[] FrameKeyNameIndexArray = { 0, 1 };
-        private static string FrameGroupKey {
-            get {
-                if (IsNoSelectFrameGroup)
-                    return default;
-                return FrameKeyArray[m_lastFrameIndex];
-            }
-        }
-
         public static void Open() {
             Open<EditorWindow>(WindowName);
         }
@@ -72,8 +60,6 @@ namespace SkillEditor {
             m_lastClipIndex = Config.ErrorIndex;
             m_animationClipNames = null;
             m_animationClipIndexs = null;
-
-            m_lastFrameIndex = Config.ErrorIndex;
         }
 
         public static void InitData(string[] animationClipNames, int[] animationClipIndexs) {
@@ -116,7 +102,6 @@ namespace SkillEditor {
             if (IsNoSelectClip || LuaAnimClipModel.ClipDataState == State.None)
                 return;
             Space();
-            HorizontalLayoutUI(StateGroupUI);
             FrameListUI();
             Space();
             HorizontalLayoutUI(AnimationUI);
@@ -157,113 +142,55 @@ namespace SkillEditor {
             }
         }
 
-        private void StateGroupUI() {
-            SpaceWithLabel(LabelFrameGroupType);
-            m_lastFrameIndex = IntPopup(m_lastFrameIndex, FrameKeyNameArray, FrameKeyNameIndexArray);
-            if (IsNoSelectFrameGroup)
-                return;
-            if (SpaceWithButton(BtnAdd)) {
-                switch (FrameGroupKey) {
-                    case ClipData.Key_KeyFrame:
-                        Controller.AddNewKeyFrameData();
-                        break;
-                    case ClipData.Key_ProcessFrame:
-                        Controller.AddNewProcessFrameData();
-                        break;
-                }
-            }
-        }
-
         private void FrameListUI() {
-            if (IsNoSelectFrameGroup)
+            if (SpaceWithButton(BtnAddFrame))
+                OnAddFrameDataButton();
+            ClipData clipData = LuaAnimClipModel.ClipData;
+            if (clipData.frameList == null || clipData.frameList.Length == 0)
                 return;
-            switch (FrameGroupKey) {
-                case ClipData.Key_KeyFrame:
-                    KeyFrameData[] arrayKeyFrame = LuaAnimClipModel.ClipData.GetKeyFrameList();
-                    if (arrayKeyFrame == null || arrayKeyFrame.Length == 0)
-                        break;
-                    for (int index = 0; index < arrayKeyFrame.Length; index++)
-                        KeyFrameUI(index);
-                    break;
-                case ClipData.Key_ProcessFrame:
-                    ProcessFrameData[] arrayProcessFrame = LuaAnimClipModel.ClipData.GetProcessFrameList();
-                    if (arrayProcessFrame == null || arrayProcessFrame.Length == 0)
-                        break;
-                    for (int index = 0; index < arrayProcessFrame.Length; index++)
-                        ProcessFrameUI(index);
-                    break;
+            for (int index = 0; index < clipData.frameList.Length; index++) {
+                Space();
+                FrameData data = (FrameData)HorizontalLayoutUI(FrameDataUI, index);
+                if (!data.effectFrameData.IsNullTable())
+                    data.effectFrameData = (EffectFrameData)HorizontalLayoutUI(EffectFrameDataUI, index);
+                Controller.SetFrameData(index, data);
             }
         }
 
-        private void KeyFrameUI(int index) {
-            Space();
-            KeyFrameData data = (KeyFrameData)HorizontalLayoutUI(KeyFrameDataUI, index);
-            if (data.dataList != null)
-                CustomDataListUI(data.dataList);
-            Controller.SetKeyFrameData(index, data);
-        }
-
-        private void ProcessFrameUI(int index) {
-            Space();
-            ProcessFrameData data = (ProcessFrameData)HorizontalLayoutUI(ProcessFrameDataUI, index);
-            if (data.dataList != null)
-                CustomDataListUI(data.dataList);
-            Controller.SetProcessFrameData(index, data);
-        }
-
-        private object KeyFrameDataUI(int index) {
-            KeyFrameData data = LuaAnimClipModel.GetKeyFrameData(index);
-            SpaceWithLabel(LabelFrameType);
-            data.frameType = CheckFrameType((FrameType)EnumPopup(data.frameType), data.frameType);
+        private object FrameDataUI(int index) {
+            FrameData data = LuaAnimClipModel.GetFrameData(index);
             SpaceWithLabel(LabelTime);
             data.time = TextField(data.time);
-            SpaceWithLabel(LabelPriority);
-            data.priority = (short)TextField(data.priority);
-            if ((data.frameType == FrameType.PlayEffect || data.frameType == FrameType.Hit) && 
-                SpaceWithButton(BtnAdd)) {
-                OnAddCustomDataButton(data.frameType, index);
-                return LuaAnimClipModel.GetKeyFrameData(index);
-            }
+            if (SpaceWithButton(BtnAddEffect))
+                OnAddEffectDataButton(index);
+            if (SpaceWithButton(BtnAddCube))
+                OnAddCubeDataButton(index);
+            if (SpaceWithButton(BtnAddCube))
+                OnAddCubeDataButton(index);
+            if (SpaceWithButton(BtnAddCube))
+                OnAddCubeDataButton(index);
             return data;
         }
 
-        private object ProcessFrameDataUI(int index) {
-            ProcessFrameData data = LuaAnimClipModel.GetProcessFrameData(index);
-            SpaceWithLabel(LabelFrameType);
-            data.frameType = CheckFrameType((FrameType)EnumPopup(data.frameType), data.frameType);
-            SpaceWithLabel(LabelTime);
-            data.time = TextField(data.time);
+        private object EffectFrameDataUI(int index) {
+            FrameData data = LuaAnimClipModel.GetFrameData(index);
+            EffectFrameData effectFrameData = data.effectFrameData;
+            EffectData[] dataList = effectFrameData.effectData.dataList;
+            SpaceWithLabel(Label);
             SpaceWithLabel(LabelPriority);
-            data.priority = (short)TextField(data.priority);
-            if ((data.frameType == FrameType.PlayEffect || data.frameType == FrameType.Hit) && 
-                SpaceWithButton(BtnAdd)) {
-                OnAddCustomDataButton(data.frameType, index);
-                return LuaAnimClipModel.GetProcessFrameData(index);
+            effectFrameData.priority = (ushort)TextField(effectFrameData.priority);
+            if (SpaceWithButton(BtnAdd)) {
+                OnAddEffectDataButton(index);
+                return LuaAnimClipModel.GetFrameData(index);
             }
-            return data;
+            return effectFrameData;
         }
 
-        private FrameType CheckFrameType(FrameType newType, FrameType originType) {
-            switch (newType) {
-                case FrameType.None:
-                    return newType;
-                case FrameType.Hit:
-                    return FrameGroupKey == ClipData.Key_KeyFrame ? newType : originType;
-                default:
-                    return FrameGroupKey == ClipData.Key_KeyFrame ? originType : newType;
-            }
-        }
+        private void OnAddFrameDataButton() => Controller.AddFrameData();
 
-        private void OnAddCustomDataButton(FrameType frameType, int index) {
-            switch (frameType) {
-                case FrameType.PlayEffect:
-                    Controller.AddNewEffectData(index);
-                    break;
-                case FrameType.Hit:
-                    Controller.AddNewCubeData(index);
-                    break;
-            }
-        }
+        private void OnAddEffectDataButton(int index) => Controller.AddNewEffectData(index);
+
+        private void OnAddCubeDataButton(int index) => Controller.AddNewCubeData(index);
 
         private void CustomDataListUI(CustomData[] array) {
             for (int index = 0; index < array.Length; index++) {

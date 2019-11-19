@@ -7,11 +7,11 @@ namespace Lua.AnimClipData {
     public struct EffectFrameData : IFieldValueTable {
 
         public ushort priority;
-        public CustomData<EffectData> effectDatas;
+        public CustomData<EffectData> effectData;
 
         public EffectFrameData(ushort type, ushort priority, CustomData<EffectData> effectDatas) {
             this.priority = priority;
-            this.effectDatas = effectDatas;
+            this.effectData = effectDatas;
         }
 
         #region ITable Function
@@ -21,10 +21,10 @@ namespace Lua.AnimClipData {
         public KeyType GetKeyType() => KeyType.FixedField;
         public void SetKey(object key) { }
         public string GetKey() => FrameType.PlayEffect.ToString();
-        public bool IsNullTable() => priority <= 0 || effectDatas.IsNullTable();
+        public bool IsNullTable() => priority <= 0 || effectData.IsNullTable();
         public void Clear() {
             priority = 0;
-            effectDatas.Clear();
+            effectData.Clear();
         }
 
         private static readonly StringBuilder m_staticBuilder = new StringBuilder((ushort)Math.Pow(2, 9));
@@ -40,7 +40,7 @@ namespace Lua.AnimClipData {
                     priority = (ushort)(int)value;
                     return;
                 case Key_EffectData:
-                    effectDatas = (CustomData<EffectData>)value;
+                    effectData = (CustomData<EffectData>)value;
                     return;
             }
         }
@@ -50,7 +50,7 @@ namespace Lua.AnimClipData {
                 case Key_Priority:
                     return priority;
                 case Key_EffectData:
-                    return effectDatas;
+                    return effectData;
                 default:
                     Debug.LogError("EffectFrameData::GetFieldValueTableValue key is not exit. key " + key);
                     return null;

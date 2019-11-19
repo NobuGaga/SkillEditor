@@ -125,20 +125,12 @@ namespace SkillEditor {
             LuaAnimClipModel.ClipDataState = state;
         }
 
-        public static void AddNewKeyFrameData() {
-            LuaAnimClipModel.AddNewKeyFrameData();
+        public static void AddFrameData() {
+            LuaAnimClipModel.AddFrameData();
         }
 
-        public static void AddNewProcessFrameData() {
-            LuaAnimClipModel.AddNewProcessFrameData();
-        }
-
-        public static void SetKeyFrameData(int index, KeyFrameData data) {
-            LuaAnimClipModel.SetKeyFrameData(index, data);
-        }
-
-        public static void SetProcessFrameData(int index, ProcessFrameData data) {
-            LuaAnimClipModel.SetProcessFrameData(index, data);
+        public static void SetFrameData(int index, FrameData data) {
+            LuaAnimClipModel.SetFrameData(index, data);
         }
 
         public static void AddNewEffectData(int index) {
@@ -213,15 +205,19 @@ namespace SkillEditor {
             float maxTime = list[list.Count - 1].Key + Config.FramesPerSecond;
             if (time < minTime || time > maxTime)
                 return;
-            for (int index = 0; index < list.Count; index++)
-                if (IsInCollisionTime(time, list[index].Key))
-                    m_listDrawCubeData.Add(list[index].Value);
+            for (int index = 0; index < list.Count; index++) {
+                if (!IsInCollisionTime(time, list[index].Key))
+                    continue;
+                var array = list[index].Value;
+                foreach (var data in array)
+                    m_listDrawCubeData.Add(data);
+            }
             EditorScene.SetDrawCubeData(m_listDrawCubeData);
         }
 
         private static bool IsInCollisionTime(float curTime, float collisionTime) {
             float minTime = collisionTime;
-            float maxTime = collisionTime + Config.FramesPerSecond * 2;
+            float maxTime = collisionTime + Config.FramesPerSecond;
             return curTime >= minTime && curTime <= maxTime;
         }
 
