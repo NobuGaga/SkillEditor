@@ -125,29 +125,29 @@ namespace SkillEditor {
             LuaAnimClipModel.ClipDataState = state;
         }
 
-        // public static void AddNewKeyFrameData() {
-        //     LuaAnimClipModel.AddNewKeyFrameData();
-        // }
+        public static void AddNewKeyFrameData() {
+            LuaAnimClipModel.AddNewKeyFrameData();
+        }
 
-        // public static void AddNewProcessFrameData() {
-        //     LuaAnimClipModel.AddNewProcessFrameData();
-        // }
+        public static void AddNewProcessFrameData() {
+            LuaAnimClipModel.AddNewProcessFrameData();
+        }
 
-        // public static void SetKeyFrameData(int index, KeyFrameData data) {
-        //     LuaAnimClipModel.SetKeyFrameData(index, data);
-        // }
+        public static void SetKeyFrameData(int index, KeyFrameData data) {
+            LuaAnimClipModel.SetKeyFrameData(index, data);
+        }
 
-        // public static void SetProcessFrameData(int index, ProcessFrameData data) {
-        //     LuaAnimClipModel.SetProcessFrameData(index, data);
-        // }
+        public static void SetProcessFrameData(int index, ProcessFrameData data) {
+            LuaAnimClipModel.SetProcessFrameData(index, data);
+        }
 
-        // public static void AddNewEffectData(int index) {
-        //     LuaAnimClipModel.AddNewEffectData(index);
-        // }
+        public static void AddNewEffectData(int index) {
+            LuaAnimClipModel.AddNewEffectData(index);
+        }
 
-        // public static void AddNewCubeData(int index) {
-        //     LuaAnimClipModel.AddNewCubeData(index);
-        // }
+        public static void AddNewCubeData(int index) {
+            LuaAnimClipModel.AddNewCubeData(index);
+        }
 
         public static void Play() {
             if (m_modelAnimation.IsPlaying)
