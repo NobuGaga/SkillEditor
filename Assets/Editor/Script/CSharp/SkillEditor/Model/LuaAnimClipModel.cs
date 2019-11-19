@@ -150,6 +150,15 @@ namespace SkillEditor {
             return list[index];
         }
 
+        public static void SetFrameDataTime(int index, float time) {
+            FrameData[] array = ClipData.frameList;
+            FrameData data = array[index];
+            data.time = time;
+            array[index] = data;
+            m_curClipData.frameList = array;
+            SetCollisionList();
+        }
+
         public static void AddNewEffectData(int index) {
             FrameData[] arrayFrameData = ClipData.frameList;
             FrameData frameData = arrayFrameData[index];
@@ -157,6 +166,7 @@ namespace SkillEditor {
             EffectData effectData = default;
             if (dataList == null) {
                 effectData.index = 1;
+                frameData.effectFrameData.priority = 1;
                 frameData.effectFrameData.effectData.dataList = new EffectData[] { effectData };
             }
             else {
@@ -175,6 +185,7 @@ namespace SkillEditor {
             CubeData cubeData = default;
             if (dataList == null) {
                 cubeData.index = 1;
+                frameData.hitFrameData.priority = 1;
                 frameData.hitFrameData.cubeData.dataList = new CubeData[] { cubeData };
             }
             else {
@@ -183,6 +194,20 @@ namespace SkillEditor {
                 list.Add(cubeData);
                 frameData.hitFrameData.cubeData.dataList = list.ToArray();
             }
+            arrayFrameData[index] = frameData;
+        }
+
+        public static void AddNewCacheData(int index) {
+            FrameData[] arrayFrameData = ClipData.frameList;
+            FrameData frameData = arrayFrameData[index];
+            frameData.cacheFrameData.priority = 1;
+            arrayFrameData[index] = frameData;
+        }
+
+        public static void AddNewSectionData(int index) {
+            FrameData[] arrayFrameData = ClipData.frameList;
+            FrameData frameData = arrayFrameData[index];
+            frameData.sectionFrameData.priority = 1;
             arrayFrameData[index] = frameData;
         }
 

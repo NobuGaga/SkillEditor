@@ -133,12 +133,24 @@ namespace SkillEditor {
             LuaAnimClipModel.SetFrameData(index, data);
         }
 
+        public static void SetFrameDataTime(int index, float time) {
+            LuaAnimClipModel.SetFrameDataTime(index, time);
+        }
+
         public static void AddNewEffectData(int index) {
             LuaAnimClipModel.AddNewEffectData(index);
         }
 
         public static void AddNewCubeData(int index) {
             LuaAnimClipModel.AddNewCubeData(index);
+        }
+
+        public static void AddNewCacheData(int index) {
+            LuaAnimClipModel.AddNewCacheData(index);
+        }
+
+        public static void AddNewSectionData(int index) {
+            LuaAnimClipModel.AddNewSectionData(index);
         }
 
         public static void Play() {

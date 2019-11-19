@@ -17,7 +17,8 @@ namespace SkillEditor {
         private const string BtnAddFrame = "增加时间轴数据";
         private const string BtnAddEffect = "增加特效";
         private const string BtnAddCube = "增加碰撞框";
-        private const string BtnAdd = "增加";
+        private const string BtnAddCache = "增加 Cache Begin";
+        private const string BtnAddSection = "增加 Section Over";
         private const string LabelTime = "触发时间点 ";
         private const string LabelPriority = "优先级 ";
         private const string LabelEffect = "特效";
@@ -150,39 +151,39 @@ namespace SkillEditor {
                 return;
             for (int index = 0; index < clipData.frameList.Length; index++) {
                 Space();
-                FrameData data = (FrameData)HorizontalLayoutUI(FrameDataUI, index);
+                HorizontalLayoutUI(FrameDataUI, index);
+                FrameData data = LuaAnimClipModel.GetFrameData(index);
                 if (!data.effectFrameData.IsNullTable())
-                    data.effectFrameData = (EffectFrameData)HorizontalLayoutUI(EffectFrameDataUI, index);
+                    data.effectFrameData = (EffectFrameData)HorizontalLayoutUI(EffectFrameDataUI, data.effectFrameData);
                 Controller.SetFrameData(index, data);
             }
         }
 
-        private object FrameDataUI(int index) {
+        private void FrameDataUI(int index) {
             FrameData data = LuaAnimClipModel.GetFrameData(index);
-            SpaceWithLabel(LabelTime);
-            data.time = TextField(data.time);
+            SpaceWithLabel(LabelTime); 
+            float time = TextField(data.time);
+            if (time != data.time)
+                Controller.SetFrameDataTime(index, time);
             if (SpaceWithButton(BtnAddEffect))
                 OnAddEffectDataButton(index);
             if (SpaceWithButton(BtnAddCube))
                 OnAddCubeDataButton(index);
-            if (SpaceWithButton(BtnAddCube))
-                OnAddCubeDataButton(index);
-            if (SpaceWithButton(BtnAddCube))
-                OnAddCubeDataButton(index);
-            return data;
+            if (SpaceWithButton(BtnAddCache))
+                OnAddCacheDataButton(index);
+            if (SpaceWithButton(BtnAddSection))
+                OnAddSectionDataButton(index);
         }
 
-        private object EffectFrameDataUI(int index) {
-            FrameData data = LuaAnimClipModel.GetFrameData(index);
-            EffectFrameData effectFrameData = data.effectFrameData;
+        private object EffectFrameDataUI(object data) {
+            EffectFrameData effectFrameData = (EffectFrameData)data;
             EffectData[] dataList = effectFrameData.effectData.dataList;
-            SpaceWithLabel(Label);
+            SpaceWithLabel(LabelEffect);
             SpaceWithLabel(LabelPriority);
             effectFrameData.priority = (ushort)TextField(effectFrameData.priority);
-            if (SpaceWithButton(BtnAdd)) {
-                OnAddEffectDataButton(index);
-                return LuaAnimClipModel.GetFrameData(index);
-            }
+            for (int index = 0; index < dataList.Length; index++)
+                EffectDataUI(ref dataList[index]);
+            effectFrameData.effectData.dataList = dataList;
             return effectFrameData;
         }
 
@@ -191,37 +192,17 @@ namespace SkillEditor {
         private void OnAddEffectDataButton(int index) => Controller.AddNewEffectData(index);
 
         private void OnAddCubeDataButton(int index) => Controller.AddNewCubeData(index);
+        
+        private void OnAddCacheDataButton(int index) => Controller.AddNewCacheData(index);
 
-        private void CustomDataListUI(CustomData[] array) {
-            for (int index = 0; index < array.Length; index++) {
-                CustomData customData = array[index];
-                if (customData.data is EffectData) {
-                    Space();
-                    customData.data = HorizontalLayoutUI(EffectDataUI, customData.data);
-                }
-                else if (customData.data is CubeData[]) {
-                    CubeData[] arrayCubeData = customData.data as CubeData[];
-                    if (arrayCubeData.Length == 0)
-                        continue;
-                    for (int cubeDataIndex = 0; cubeDataIndex < arrayCubeData.Length; cubeDataIndex++) {
-                        CubeData cubeData = arrayCubeData[cubeDataIndex];
-                        Space();
-                        arrayCubeData[cubeDataIndex] = (CubeData)HorizontalLayoutUI(CubeDataUI, cubeData);
-                    }
-                    customData.data = arrayCubeData;
-                }
-                array[index] = customData;
-            }
-        }
+        private void OnAddSectionDataButton(int index) => Controller.AddNewSectionData(index);
 
-        private object EffectDataUI(object data) {
-            EffectData effectData = (EffectData)data;
+        private void EffectDataUI(ref EffectData data) {
             SpaceWithLabel(LabelEffect);
             SpaceWithLabel(LabelEffectType);
-            effectData.type = TextField(effectData.type);
+            data.type = TextField(data.type);
             SpaceWithLabel(LabelEffectID);
-            effectData.id = TextField(effectData.id);
-            return effectData;
+            data.id = TextField(data.id);
         }
 
         private object CubeDataUI(object data) {
