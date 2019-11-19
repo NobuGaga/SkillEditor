@@ -86,6 +86,7 @@ namespace Lua {
                 object[] args = GetThreeArgMethodArg();
                 readLuaFileTableMethod.Invoke(null, args);
                 table = (T)setTableListMethod.Invoke(table, null);
+                index = (int)args[1];
                 list.Add(table);
             }
         }
@@ -103,6 +104,7 @@ namespace Lua {
                 SetThreeArgMethodArg(luaText, index, table);
                 object[] args = GetThreeArgMethodArg();
                 table = (T)m_readFixedFieldTableValueMethod.Invoke(null, args);
+                index = (int)args[1];
                 ExitLuaTable(luaText, ref index);
                 list.Add(table);
             }
@@ -120,7 +122,9 @@ namespace Lua {
             }
             SetThreeArgMethodArg(luaText, index, table);
             object[] args = GetThreeArgMethodArg();
-            return (T)m_readFixedFieldTableValueMethod.Invoke(null, args);
+            table = (T)m_readFixedFieldTableValueMethod.Invoke(null, args);
+            index = (int)args[1];
+            return table;
         }
 
         private static T ReadLuaFileFixedToRepeatTable<T>(string luaText, ref int index) where T : ITable {
@@ -139,15 +143,17 @@ namespace Lua {
             for (; index < luaText.Length; index++) {
                 object subTable = Activator.CreateInstance(GetTypeCacheOne());
                 SetFourArgMethodArg(luaText, index, endIndex, isSuccess);
+                int copyIndex = index;
                 subTable = initTableAndhKeyMethod.Invoke(null, GetFourArgMethodArg());
                 EnterLuaTable(luaText, ref index);
                 if (index >= endIndex) { // Reflection Method out isSuccess can not assignment
-                    index = endIndex;
+                    index = copyIndex;
                     break;
                 }
                 SetThreeArgMethodArg(luaText, index, subTable);
                 object[] args = GetThreeArgMethodArg();
                 subTable = m_readFixedFieldTableValueMethod.Invoke(null, args);
+                index = (int)args[1];
                 ExitLuaTable(luaText, ref index);
                 SetOneArgMethodArg(subTable);
                 addStaticListMethod.Invoke(staticList, GetOneArgMethodArg());
@@ -348,6 +354,7 @@ namespace Lua {
                     SetThreeArgMethodArg(luaText, valueIndex);
                     object[] args = GetThreeArgMethodArg();
                     value = readLuaFileTableMethod.Invoke(null, args);
+                    valueIndex = (int)args[1];
                     break;
             }
             table.SetFieldValueTableValue(keyValue.key, value);
