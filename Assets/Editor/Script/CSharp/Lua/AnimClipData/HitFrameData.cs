@@ -8,12 +8,12 @@ namespace Lua.AnimClipData {
 
         public ushort type;
         public ushort priority;
-        public CustomData<CubeData> cubeDatas;
+        public CustomData<CubeData> cubeData;
 
         public HitFrameData(ushort type, ushort priority, CustomData<CubeData> cubeDatas) {
             this.type = type;
             this.priority = priority;
-            this.cubeDatas = cubeDatas;
+            this.cubeData = cubeDatas;
         }
 
         #region ITable Function
@@ -23,10 +23,10 @@ namespace Lua.AnimClipData {
         public KeyType GetKeyType() => KeyType.FixedField;
         public void SetKey(object key) { }
         public string GetKey() => FrameType.Hit.ToString();
-        public bool IsNullTable() => priority <= 0 || cubeDatas.IsNullTable();
+        public bool IsNullTable() => priority <= 0 || cubeData.IsNullTable();
         public void Clear() {
             priority = 0;
-            cubeDatas.Clear();
+            cubeData.Clear();
         }
 
         private static readonly StringBuilder m_staticBuilder = new StringBuilder((ushort)Math.Pow(2, 9));
@@ -46,7 +46,7 @@ namespace Lua.AnimClipData {
                     priority = (ushort)(int)value;
                     return;
                 case Key_CubeData:
-                    cubeDatas = (CustomData<CubeData>)value;
+                    cubeData = (CustomData<CubeData>)value;
                     return;
             }
         }
@@ -58,7 +58,7 @@ namespace Lua.AnimClipData {
                 case Key_Priority:
                     return priority;
                 case Key_CubeData:
-                    return cubeDatas;
+                    return cubeData;
                 default:
                     Debug.LogError("HitFrameData::GetFieldValueTableValue key is not exit. key " + key);
                     return null;

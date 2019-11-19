@@ -30,7 +30,11 @@ namespace Lua {
             m_stringBuilder.Clear();
             string headText = m_dicPathFileHead[luaFilePath];
             m_stringBuilder.Append(headText);
-            string fileString = LuaAnimClipModel.GetWriteFileString(m_stringBuilder);
+            string fileString = null;
+            if (luaFile is AnimClipData.AnimClipData)
+                fileString = LuaAnimClipModel.GetWriteFileString(m_stringBuilder);
+            if (fileString == null)
+                return;
             FileStream file = new FileStream(luaFilePath, FileMode.Create);
             StreamWriter fileWriter = new StreamWriter(file);
             fileWriter.Write(fileString);
