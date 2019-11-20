@@ -129,17 +129,15 @@ namespace SkillEditor {
 
         public static void AddNewEffectData(int index) => LuaAnimClipModel.AddNewEffectData(index);
         public static void DeleteEffectData(int frameIndex, int effectIndex) => LuaAnimClipModel.DeleteEffectData(frameIndex, effectIndex);
-        public static void SetEffectFramePriorityData(int index, ushort priority) => LuaAnimClipModel.SetEffectFramePriorityData(index, priority);
 
         public static void AddNewCubeData(int index) => LuaAnimClipModel.AddNewCubeData(index);
         public static void DeleteCubeData(int frameIndex, int cubeIndex) => LuaAnimClipModel.DeleteCubeData(frameIndex, cubeIndex);
-        public static void SetHitFramePriorityData(int index, ushort priority) => LuaAnimClipModel.SetHitFramePriorityData(index, priority);
 
         public static void AddNewCacheData(int index) => LuaAnimClipModel.AddNewCacheData(index);
-        public static void SetCacheFramePriorityData(int index, ushort priority) => LuaAnimClipModel.SetCacheFramePriorityData(index, priority);
 
         public static void AddNewSectionData(int index) => LuaAnimClipModel.AddNewSectionData(index);
-        public static void SetSectionFramePriorityData(int index, ushort priority) => LuaAnimClipModel.SetSectionFramePriorityData(index, priority);
+
+        public static void SetFramePriorityData(int index, FrameType frameType, ushort priority) => LuaAnimClipModel.SetFramePriorityData(index, frameType, priority);
 
         public static void Play() {
             if (m_modelAnimation.IsPlaying)

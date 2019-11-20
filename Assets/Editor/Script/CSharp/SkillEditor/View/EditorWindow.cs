@@ -1,4 +1,5 @@
-﻿using Lua.AnimClipData;
+﻿using Lua;
+using Lua.AnimClipData;
 
 namespace SkillEditor {
 
@@ -93,16 +94,10 @@ namespace SkillEditor {
         private void UnselectPrefabUI() {
             Label(LabelSelectTips);
             if (Button(BtnSelectPrefab))
-                OnSelectPrefabButton();
+                Manager.SelectPrefab();
         }
 
-        private void NoAnimationClipUI() {
-            Label(LabelNoClipTips);
-        }
-
-        private void OnSelectPrefabButton() {
-            Manager.SelectPrefab();
-        }
+        private void NoAnimationClipUI() => Label(LabelNoClipTips);
 
         private void EditorWindowUI() {
             Space();
@@ -118,13 +113,7 @@ namespace SkillEditor {
             string modelName = Config.TempModelName;
             SpaceWithLabel(Tool.GetCacheString(LabelModelName + modelName));
             WeaponUI(modelName);
-            if (!IsNoSelectClip) {
-                SpaceWithLabel(LabelModelClipStateTips);
-                State lastState = LuaAnimClipModel.ClipDataState;
-                State selectState = (State)EnumPopup(lastState);
-                if (selectState != lastState)
-                    Controller.SetAnimationStateData(selectState);
-            }
+            StateGroupUI();
             SpaceWithLabel(LabelModelClipTips);
             int selectIndex = m_lastClipIndex;
             if (m_animationClipNames != null && m_animationClipIndexs != null)
@@ -136,13 +125,11 @@ namespace SkillEditor {
             if (IsNoSelectClip)
                 return;
             if (SpaceWithButton(BtnAddFrame))
-                OnAddFrameDataButton();
+                Controller.AddFrameData();
             if (SpaceWithButton(BtnSave))
-                OnSaveButton();
+                Controller.WriteAnimClipData();
             Space();
         }
-        private void OnAddFrameDataButton() => Controller.AddFrameData();
-        private void OnSaveButton() => Controller.WriteAnimClipData();
 
         private void WeaponUI(string modelName) {
             string[] arrayWeaponName = WeaponModel.GetAllWeaponName(modelName);
@@ -155,6 +142,16 @@ namespace SkillEditor {
                 m_lastWeaponIndex = tempIndex;
                 Controller.SetWeapon(m_lastWeaponIndex);
             }
+        }
+
+        private void StateGroupUI() {
+            if (IsNoSelectClip)
+                return;
+            SpaceWithLabel(LabelModelClipStateTips);
+            State lastState = LuaAnimClipModel.ClipDataState;
+            State selectState = (State)EnumPopup(lastState);
+            if (selectState != lastState)
+                Controller.SetAnimationStateData(selectState);
         }
 
         private FrameData GetFrameData(int index) => LuaAnimClipModel.GetFrameData(index);
@@ -172,7 +169,7 @@ namespace SkillEditor {
                     VerticalLayoutUI(EffectFrameDataUI, index);
                 }
                 if (!data.hitFrameData.IsNullTable()) {
-                    HorizontalLayoutUI(HitFrameDataTitleUI, data.hitFrameData);
+                    HorizontalLayoutUI(HitFrameDataTitleUI, index);
                     VerticalLayoutUI(HitFrameDataUI, data);
                 }
                 if (!data.cacheFrameData.IsNullTable())
@@ -186,21 +183,16 @@ namespace SkillEditor {
             FrameData data = GetFrameData(index);
             SpaceWithLabel(LabelFrameData + (index + 1));
             if (SpaceWithButton(BtnAddEffect))
-                OnAddEffectDataButton(index);
+                Controller.AddNewEffectData(index);
             if (SpaceWithButton(BtnAddCube))
-                OnAddCubeDataButton(index);
+                Controller.AddNewCubeData(index);
             if (data.cacheFrameData.IsNullTable() && SpaceWithButton(BtnAddCache))
-                OnAddCacheDataButton(index);
+                Controller.AddNewCacheData(index);
             if (data.sectionFrameData.IsNullTable() && SpaceWithButton(BtnAddSection))
-                OnAddSectionDataButton(index);
+                Controller.AddNewSectionData(index);
             if (SpaceWithButton(BtnDelete))
-                OnDeleteFrameDataButton(index);
+                Controller.DeleteFrameData(index);
         }
-        private void OnAddEffectDataButton(int index) => Controller.AddNewEffectData(index);
-        private void OnAddCubeDataButton(int index) => Controller.AddNewCubeData(index);
-        private void OnAddCacheDataButton(int index) => Controller.AddNewCacheData(index);
-        private void OnAddSectionDataButton(int index) => Controller.AddNewSectionData(index);
-        private void OnDeleteFrameDataButton(int index) => Controller.DeleteFrameData(index);
 
         private void FrameDataUI(int index) {
             FrameData data = GetFrameData(index);
@@ -210,21 +202,13 @@ namespace SkillEditor {
                 Controller.SetFrameDataTime(index, time);
         }
 
-        private void EffectFrameDataTitleUI(int index) {
+        private void EffectFrameDataTitleUI(int index) => PriorityFrameDataTitleUI(index, FrameType.PlayEffect);
+
+        private void EffectFrameDataUI(int index) {
             FrameData frameData = GetFrameData(index);
             EffectFrameData effectFrameData = frameData.effectFrameData;
-            SpaceWithLabel(LabelEffect);
-            SpaceWithLabel(LabelPriority);
-            ushort priority = (ushort)TextField(effectFrameData.priority);
-            if (priority != effectFrameData.priority)
-                Controller.SetEffectFramePriorityData(index, priority);
-        }
-
-        private void EffectFrameDataUI(object data) {
-            FrameData frameData = (FrameData)data;
-            EffectFrameData effectFrameData = frameData.effectFrameData;
             EffectData[] dataList = effectFrameData.effectData.dataList;
-            for (int index = 0; index < dataList.Length; index++)
+            for (index = 0; index < dataList.Length; index++)
                 dataList[index] = (EffectData)HorizontalLayoutUI(EffectDataUI, dataList[index], frameData.index - 1);
         }
 
@@ -243,19 +227,12 @@ namespace SkillEditor {
             rotationData.z = TextField(rotationData.z);
             data.rotation = rotationData;
             if (SpaceWithButton(BtnDelete))
-                OnDeleteEffectDataButton(framIndex, (int)data.index - 1);
+                Controller.DeleteEffectData(framIndex, (int)data.index - 1);
             Space();
             return data;
         }
-        private void OnDeleteEffectDataButton(int framIndex, int effectIndex) => Controller.DeleteEffectData(framIndex, effectIndex);
 
-        private object HitFrameDataTitleUI(object data) {
-            HitFrameData hitFrameData = (HitFrameData)data;
-            SpaceWithLabel(LabelCollision);
-            SpaceWithLabel(LabelPriority);
-            hitFrameData.priority = (ushort)TextField(hitFrameData.priority);
-            return hitFrameData;
-        }
+        private void HitFrameDataTitleUI(int index) => PriorityFrameDataTitleUI(index, FrameType.Hit);
 
         private void HitFrameDataUI(object data) {
             FrameData frameData = (FrameData)data;
@@ -281,11 +258,10 @@ namespace SkillEditor {
             SpaceWithLabel(LabelDepth);
             data.depth = TextField(data.depth);
             if (SpaceWithButton(BtnDelete))
-                OnDeleteCubetDataButton(frameIndex, (int)data.index - 1);
+                Controller.DeleteEffectData(frameIndex, (int)data.index - 1);
             Space();
             return data;
         }
-        private void OnDeleteCubetDataButton(int frameIndex, int effectIndex) => Controller.DeleteEffectData(frameIndex, effectIndex);
 
         private object PriorityFrameDataUI(object data) {
             PriorityFrameData priorityFrameData = (PriorityFrameData)data;
@@ -295,13 +271,34 @@ namespace SkillEditor {
             return priorityFrameData;
         }
 
+        private void PriorityFrameDataTitleUI(int index, FrameType frameType) {
+            FrameData frameData = GetFrameData(index);
+            IFieldValueTable table = (IFieldValueTable)frameData.GetFieldValueTableValue(frameType.ToString());
+            ushort originPriority = (ushort)table.GetFieldValueTableValue(PriorityFrameData.Key_Priority);
+            switch (frameType) {
+                case FrameType.PlayEffect:
+                    SpaceWithLabel(LabelEffect);
+                    break;
+                case FrameType.Hit:
+                    SpaceWithLabel(LabelCollision);
+                    break;
+                default:
+                    SpaceWithLabel(table.GetKey());
+                    break;
+            }
+            SpaceWithLabel(LabelPriority);
+            ushort newPriority = (ushort)TextField(originPriority);
+            if (newPriority != originPriority)
+                Controller.SetFramePriorityData(index, frameType, newPriority);
+        }
+
         private void AnimationUI() {
             if (SpaceWithButton(BtnPlay))
-                OnPlayButton();
+                Controller.Play();
             if (SpaceWithButton(BtnPause))
-                OnPauseButton();
+                Controller.Pause();
             if (SpaceWithButton(BtnStop))
-                OnStopButton();
+                Controller.Stop();
             Space();
             float playTime = Controller.PlayTime;
             float clipTime = AnimationModel.SelectAnimationClipTime;
@@ -310,8 +307,5 @@ namespace SkillEditor {
             float time = Slider(playTime, clipTime);
             Controller.SetAnimationPlayTime(time);
         }
-        private void OnPlayButton() => Controller.Play();
-        private void OnPauseButton() => Controller.Pause();
-        private void OnStopButton() => Controller.Stop();
     }
 }

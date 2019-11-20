@@ -137,6 +137,16 @@ public class BaseEditorWindow : EditorWindow {
         EditorGUILayout.EndVertical();
     }
 
+    protected void VerticalLayoutUI(Action<int> uiFunction, int index, Layout layout = Layout.Top) {
+        EditorGUILayout.BeginVertical();
+        if (layout != Layout.Top)
+            FlexibleSpace();
+        uiFunction(index);
+        if (layout != Layout.Bottom)
+            FlexibleSpace();
+        EditorGUILayout.EndVertical();
+    }
+
     protected void VerticalLayoutUI(Action<object> uiFunction, object data, Layout layout = Layout.Left) {
         EditorGUILayout.BeginVertical();
         if (layout != Layout.Left)

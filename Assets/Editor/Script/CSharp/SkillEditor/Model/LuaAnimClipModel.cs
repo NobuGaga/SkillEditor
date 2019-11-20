@@ -255,11 +255,7 @@ namespace SkillEditor {
             SetFrameData(index, frameData, false);
         }
 
-        public static void SetEffectFramePriorityData(int index, ushort priority) => SetFramePriorityData(index, FrameType.PlayEffect, priority);
-        public static void SetHitFramePriorityData(int index, ushort priority) => SetFramePriorityData(index, FrameType.Hit, priority);
-        public static void SetCacheFramePriorityData(int index, ushort priority) => SetFramePriorityData(index, FrameType.CacheBegin, priority);
-        public static void SetSectionFramePriorityData(int index, ushort priority) => SetFramePriorityData(index, FrameType.SectionOver, priority);
-        private static void SetFramePriorityData(int index, FrameType frameType, ushort priority) {
+        public static void SetFramePriorityData(int index, FrameType frameType, ushort priority) {
             FrameData frameData = GetFrameData(index);
             IFieldValueTable table = (IFieldValueTable)frameData.GetFieldValueTableValue(frameType.ToString());
             table.SetFieldValueTableValue(PriorityFrameData.Key_Priority, priority);
