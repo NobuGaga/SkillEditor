@@ -29,6 +29,14 @@ namespace SkillEditor {
             Controller.Start(prefabPath);
         }
 
+        public static void WriteAnimClipData() {
+            if (!isEditorMode) {
+                Debug.LogError("不在技能编辑器模式下不能保存编辑");
+                return;
+            }
+            Controller.WriteAnimClipData();
+        }
+
         public static void CopyLocalLayoutFileToProject() {
             if (!File.Exists(Config.EditorLayoutFilePath)) {
                 Debug.LogError("本地不存在技能编辑器布局文件");

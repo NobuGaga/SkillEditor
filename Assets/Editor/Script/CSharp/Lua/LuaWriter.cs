@@ -24,7 +24,7 @@ namespace Lua {
             T luaFile = default;
             string luaFilePath = luaFile.GetLuaFilePath();
             if (!m_dicPathFileHead.ContainsKey(luaFilePath)) {
-                Debug.Log("LuaWriter::Write lua file head text path is not exit. lua file path " + luaFilePath);
+                Debug.LogError("LuaWriter::Write lua file head text path is not exit. lua file path " + luaFilePath);
                 return;
             }
             m_stringBuilder.Clear();

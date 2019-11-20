@@ -14,6 +14,11 @@ namespace SkillEditor {
             EditorWindow.Open();
 	    }
 
+        [MenuItem("技能编辑器/保存编辑到 Lua 文件 #S")]
+        private static void WriteAnimClipData() {
+            Manager.WriteAnimClipData();
+        }
+
         [MenuItem("技能编辑器/复制本地布局文件到项目")]
         private static void CopyLocalLayoutFileToProject() {
             Manager.CopyLocalLayoutFileToProject();

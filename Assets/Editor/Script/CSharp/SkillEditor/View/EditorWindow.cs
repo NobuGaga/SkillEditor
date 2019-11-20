@@ -16,6 +16,7 @@ namespace SkillEditor {
 
         private const string LabelFrameData = "帧数据 ";
         private const string BtnAddFrame = "增加帧数据";
+        private const string BtnSave = "保存";
         private const string BtnAddEffect = "增加特效";
         private const string BtnAddCube = "增加碰撞框";
         private const string BtnAddCache = "增加 Cache Begin";
@@ -135,9 +136,12 @@ namespace SkillEditor {
                 return;
             if (SpaceWithButton(BtnAddFrame))
                 OnAddFrameDataButton();
+            if (SpaceWithButton(BtnSave))
+                OnSaveButton();
             Space();
         }
         private void OnAddFrameDataButton() => Controller.AddFrameData();
+        private void OnSaveButton() => Controller.WriteAnimClipData();
 
         private void WeaponUI(string modelName) {
             string[] arrayWeaponName = WeaponModel.GetAllWeaponName(modelName);

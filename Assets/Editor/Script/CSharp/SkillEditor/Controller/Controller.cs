@@ -233,7 +233,7 @@ namespace SkillEditor {
             return curTime >= minTime && curTime <= maxTime;
         }
 
-        private static void WriteAnimClipData() {
+        public static void WriteAnimClipData() {
             LuaWriter.Write<AnimClipData>();
         }
 
@@ -251,7 +251,6 @@ namespace SkillEditor {
         }
 
         public static void Exit() {
-            WriteAnimClipData();
             Reset();
             EditorApplication.update = null;
             EditorWindow.CloseWindow();
