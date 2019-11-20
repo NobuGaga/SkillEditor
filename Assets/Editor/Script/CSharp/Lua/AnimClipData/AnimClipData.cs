@@ -22,8 +22,14 @@ namespace Lua.AnimClipData {
         public KeyType GetKeyType() => KeyType.String;
         public void SetKey(object key) => modelName = key as string;
         public string GetKey() => modelName;
-        public bool IsNullTable() => modelName == null || modelName == string.Empty ||
-                                            stateList == null || stateList.Length == 0;
+        public bool IsNullTable() {
+            if (modelName == null || modelName == string.Empty || stateList == null || stateList.Length == 0)
+                return true;
+            for (int index = 0; index < stateList.Length; index++)
+                if (!stateList[index].IsNullTable())
+                    return false;
+            return true;
+        }
         public void Clear() {
             modelName = null;
             stateList = null;

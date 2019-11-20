@@ -33,7 +33,15 @@ namespace Lua.AnimClipData {
         public void SetKey(object key) => SetState(key as string);
         public string GetKey() => Tool.GetCacheString(StateHeadString + LuaFormat.PointSymbol + state.ToString());
 
-        public bool IsNullTable() => state == State.None || clipList == null || clipList.Length == 0;
+        public bool IsNullTable() {
+            if (state == State.None || clipList == null || clipList.Length == 0)
+                return true;
+            for (int index = 0; index < clipList.Length; index++)
+                if (!clipList[index].IsNullTable())
+                    return false;
+            return true;
+        }
+
         public void Clear() {
             state = State.None;
             clipList = null;

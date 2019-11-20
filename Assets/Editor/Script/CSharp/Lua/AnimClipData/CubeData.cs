@@ -12,9 +12,9 @@ namespace Lua.AnimClipData {
         public float z;
         public float width;
         public float height;
-        public short depth;
+        public int depth;
 
-        public CubeData(float x, float y, float z, float width, float height, short depth) {
+        public CubeData(float x, float y, float z, float width, float height, int depth) {
             index = 0;
             this.x = x;
             this.y = y;
@@ -85,7 +85,7 @@ namespace Lua.AnimClipData {
                     height = (float)value;
                     return;
                 case Key_Depth:
-                    depth = (short)(int)value;
+                    depth = (int)value;
                     return;
             }
         }

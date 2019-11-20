@@ -126,14 +126,17 @@ namespace SkillEditor {
 
         public static void AddFrameData() {
             FrameData[] array = ClipData.frameList;
+            FrameData data = new FrameData();
             if (array == null) {
-                array = new FrameData[] { new FrameData() };
+                data.index = 1;
+                array = new FrameData[] { data };
                 m_curClipData.frameList = array;
                 return;
             }
+            data.index = (ushort)array.Length;
             List<FrameData> list = new List<FrameData>(array);
             list.Add(new FrameData());
-            m_curClipData.frameList = array;
+            m_curClipData.frameList = list.ToArray();
         }
 
         public static void SetFrameData(int index, FrameData data, bool isRefresHitFrame) {
