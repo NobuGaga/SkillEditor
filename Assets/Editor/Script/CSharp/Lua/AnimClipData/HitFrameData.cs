@@ -35,7 +35,7 @@ namespace Lua.AnimClipData {
 
         #region IFieldKeyTable Function
         private const string Key_Type = "type";
-        private const string Key_Priority = "priority";
+        private const string Key_Priority = PriorityFrameData.Key_Priority;
         private const string Key_CubeData = "data";
         public void SetFieldValueTableValue(string key, object value) {
             switch (key) {

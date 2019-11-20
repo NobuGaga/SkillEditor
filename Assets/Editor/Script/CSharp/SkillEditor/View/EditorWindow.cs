@@ -17,6 +17,7 @@ namespace SkillEditor {
         private const string LabelFrameData = "帧数据 ";
         private const string BtnAddFrame = "增加帧数据";
         private const string BtnSave = "保存";
+        private const string BtnDelete = "删除";
         private const string BtnAddEffect = "增加特效";
         private const string BtnAddCube = "增加碰撞框";
         private const string BtnAddCache = "增加 Cache Begin";
@@ -156,6 +157,7 @@ namespace SkillEditor {
             }
         }
 
+        private FrameData GetFrameData(int index) => LuaAnimClipModel.GetFrameData(index);
         private void FrameListUI() {
             ClipData clipData = LuaAnimClipModel.ClipData;
             if (clipData.frameList == null || clipData.frameList.Length == 0)
@@ -164,25 +166,24 @@ namespace SkillEditor {
                 Space();
                 HorizontalLayoutUI(FrameDataTitleUI, index);
                 HorizontalLayoutUI(FrameDataUI, index);
-                FrameData data = LuaAnimClipModel.GetFrameData(index);
+                FrameData data = GetFrameData(index);
                 if (!data.effectFrameData.IsNullTable()) {
-                    data.effectFrameData = (EffectFrameData)HorizontalLayoutUI(EffectFrameDataTitleUI, data.effectFrameData);
-                    data.effectFrameData = (EffectFrameData)VerticalLayoutUI(EffectFrameDataUI, data.effectFrameData);
+                    HorizontalLayoutUI(EffectFrameDataTitleUI, index);
+                    VerticalLayoutUI(EffectFrameDataUI, index);
                 }
                 if (!data.hitFrameData.IsNullTable()) {
-                    data.hitFrameData = (HitFrameData)HorizontalLayoutUI(HitFrameDataTitleUI, data.hitFrameData);
-                    data.hitFrameData = (HitFrameData)VerticalLayoutUI(HitFrameDataUI, data.hitFrameData);
+                    HorizontalLayoutUI(HitFrameDataTitleUI, data.hitFrameData);
+                    VerticalLayoutUI(HitFrameDataUI, data);
                 }
                 if (!data.cacheFrameData.IsNullTable())
-                    data.cacheFrameData = (PriorityFrameData)HorizontalLayoutUI(PriorityFrameDataUI, data.cacheFrameData);
+                    HorizontalLayoutUI(PriorityFrameDataUI, data.cacheFrameData);
                 if (!data.sectionFrameData.IsNullTable())
-                    data.sectionFrameData = (PriorityFrameData)HorizontalLayoutUI(PriorityFrameDataUI, data.sectionFrameData);
-                Controller.SetFrameData(index, data);
+                    HorizontalLayoutUI(PriorityFrameDataUI, data.sectionFrameData);
             }
         }
 
         private void FrameDataTitleUI(int index) {
-            FrameData data = LuaAnimClipModel.GetFrameData(index);
+            FrameData data = GetFrameData(index);
             SpaceWithLabel(LabelFrameData + (index + 1));
             if (SpaceWithButton(BtnAddEffect))
                 OnAddEffectDataButton(index);
@@ -192,45 +193,61 @@ namespace SkillEditor {
                 OnAddCacheDataButton(index);
             if (data.sectionFrameData.IsNullTable() && SpaceWithButton(BtnAddSection))
                 OnAddSectionDataButton(index);
+            if (SpaceWithButton(BtnDelete))
+                OnDeleteFrameDataButton(index);
         }
         private void OnAddEffectDataButton(int index) => Controller.AddNewEffectData(index);
         private void OnAddCubeDataButton(int index) => Controller.AddNewCubeData(index);
         private void OnAddCacheDataButton(int index) => Controller.AddNewCacheData(index);
         private void OnAddSectionDataButton(int index) => Controller.AddNewSectionData(index);
+        private void OnDeleteFrameDataButton(int index) => Controller.DeleteFrameData(index);
 
         private void FrameDataUI(int index) {
-            FrameData data = LuaAnimClipModel.GetFrameData(index);
+            FrameData data = GetFrameData(index);
             SpaceWithLabel(LabelTime); 
             float time = TextField(data.time);
             if (time != data.time)
                 Controller.SetFrameDataTime(index, time);
         }
 
-        private object EffectFrameDataTitleUI(object data) {
-            EffectFrameData effectFrameData = (EffectFrameData)data;
+        private void EffectFrameDataTitleUI(int index) {
+            FrameData frameData = GetFrameData(index);
+            EffectFrameData effectFrameData = frameData.effectFrameData;
             SpaceWithLabel(LabelEffect);
             SpaceWithLabel(LabelPriority);
-            effectFrameData.priority = (ushort)TextField(effectFrameData.priority);
-            return effectFrameData;
+            ushort priority = (ushort)TextField(effectFrameData.priority);
+            if (priority != effectFrameData.priority)
+                Controller.SetEffectFramePriorityData(index, priority);
         }
 
-        private object EffectFrameDataUI(object data) {
-            EffectFrameData effectFrameData = (EffectFrameData)data;
+        private void EffectFrameDataUI(object data) {
+            FrameData frameData = (FrameData)data;
+            EffectFrameData effectFrameData = frameData.effectFrameData;
             EffectData[] dataList = effectFrameData.effectData.dataList;
             for (int index = 0; index < dataList.Length; index++)
-                dataList[index] = (EffectData)HorizontalLayoutUI(EffectDataUI, dataList[index]);
-            effectFrameData.effectData.dataList = dataList;
-            return effectFrameData;
+                dataList[index] = (EffectData)HorizontalLayoutUI(EffectDataUI, dataList[index], frameData.index - 1);
         }
 
-        private object EffectDataUI(object @object) {
+        private object EffectDataUI(object @object, int framIndex) {
             EffectData data = (EffectData)@object;
             SpaceWithLabel(LabelEffectType);
             data.type = TextField(data.type);
             SpaceWithLabel(LabelEffectID);
             data.id = TextField(data.id);
+            EffectRotationData rotationData = data.rotation;
+            SpaceWithLabel(LabelX);
+            rotationData.x = TextField(rotationData.x);
+            SpaceWithLabel(LabelY);
+            rotationData.y = TextField(rotationData.y);
+            SpaceWithLabel(LabelZ);
+            rotationData.z = TextField(rotationData.z);
+            data.rotation = rotationData;
+            if (SpaceWithButton(BtnDelete))
+                OnDeleteEffectDataButton(framIndex, (int)data.index - 1);
+            Space();
             return data;
         }
+        private void OnDeleteEffectDataButton(int framIndex, int effectIndex) => Controller.DeleteEffectData(framIndex, effectIndex);
 
         private object HitFrameDataTitleUI(object data) {
             HitFrameData hitFrameData = (HitFrameData)data;
@@ -240,16 +257,16 @@ namespace SkillEditor {
             return hitFrameData;
         }
 
-        private object HitFrameDataUI(object data) {
-            HitFrameData hitFrameData = (HitFrameData)data;
+        private void HitFrameDataUI(object data) {
+            FrameData frameData = (FrameData)data;
+            HitFrameData hitFrameData = frameData.hitFrameData;
             CubeData[] dataList = hitFrameData.cubeData.dataList;
             for (int index = 0; index < dataList.Length; index++)
-                dataList[index] = (CubeData)HorizontalLayoutUI(CubeDataUI, dataList[index]);
+                dataList[index] = (CubeData)HorizontalLayoutUI(CubeDataUI, dataList[index], frameData.index - 1);
             hitFrameData.cubeData.dataList = dataList;
-            return hitFrameData;
         }
 
-        private object CubeDataUI(object @object) {
+        private object CubeDataUI(object @object, int frameIndex) {
             CubeData data = (CubeData)@object;
             SpaceWithLabel(LabelX);
             data.x = TextField(data.x);
@@ -263,8 +280,12 @@ namespace SkillEditor {
             data.height = TextField(data.height);
             SpaceWithLabel(LabelDepth);
             data.depth = TextField(data.depth);
+            if (SpaceWithButton(BtnDelete))
+                OnDeleteCubetDataButton(frameIndex, (int)data.index - 1);
+            Space();
             return data;
         }
+        private void OnDeleteCubetDataButton(int frameIndex, int effectIndex) => Controller.DeleteEffectData(frameIndex, effectIndex);
 
         private object PriorityFrameDataUI(object data) {
             PriorityFrameData priorityFrameData = (PriorityFrameData)data;

@@ -139,7 +139,23 @@ namespace SkillEditor {
             m_curClipData.frameList = list.ToArray();
         }
 
-        public static void SetFrameData(int index, FrameData data, bool isRefresHitFrame) {
+        public static void DeleteFrameData(int index) {
+            FrameData[] array = ClipData.frameList;
+            if (array.Length <= 1)
+                m_curClipData.frameList = null;
+            else {
+                List<FrameData> list = new List<FrameData>(array);
+                list.RemoveAt(index);
+                for (index = 0; index < list.Count; index++) {
+                    FrameData data = list[index];
+                    data.index = (ushort)(index + 1);
+                    list[index] = data;
+                }
+                m_curClipData.frameList = list.ToArray();
+            }
+        }
+
+        private static void SetFrameData(int index, FrameData data, bool isRefresHitFrame) {
             FrameData[] array = ClipData.frameList;
             array[index] = data;
             m_curClipData.frameList = array;
@@ -178,6 +194,19 @@ namespace SkillEditor {
             SetFrameData(index, frameData, false);
         }
 
+        public static void DeleteEffectData(int frameIndex, int effectIndex) {
+            FrameData frameData = GetFrameData(frameIndex);
+            EffectData[] dataList = frameData.effectFrameData.effectData.dataList;
+            if (dataList.Length <= 1)
+                frameData.effectFrameData.effectData.dataList = null;
+            else {
+                List<EffectData> list = new List<EffectData>(dataList);
+                list.RemoveAt(effectIndex);
+                frameData.effectFrameData.effectData.dataList = list.ToArray();
+            }
+            SetFrameData(frameIndex, frameData, false);
+        }
+
         public static void AddNewCubeData(int index) {
             FrameData frameData = GetFrameData(index);
             CubeData[] dataList = frameData.hitFrameData.cubeData.dataList;
@@ -196,6 +225,19 @@ namespace SkillEditor {
             SetFrameData(index, frameData, false);
         }
 
+        public static void DeleteCubeData(int frameIndex, int cubeIndex) {
+            FrameData frameData = GetFrameData(frameIndex);
+            CubeData[] dataList = frameData.hitFrameData.cubeData.dataList;
+            if (dataList.Length <= 1)
+                frameData.hitFrameData.cubeData.dataList = null;
+            else {    
+                List<CubeData> list = new List<CubeData>(dataList);
+                list.RemoveAt(cubeIndex);
+                frameData.hitFrameData.cubeData.dataList = list.ToArray();
+            }
+            SetFrameData(frameIndex, frameData, true);
+        }
+
         public static void AddNewCacheData(int index) => AddPriorityFrameData(index, FrameType.CacheBegin);
         public static void AddNewSectionData(int index) => AddPriorityFrameData(index, FrameType.SectionOver);
         private static void AddPriorityFrameData(int index, FrameType frameType) {
@@ -210,6 +252,18 @@ namespace SkillEditor {
                     frameData.sectionFrameData.frameType = FrameType.SectionOver;
                     break;
             }
+            SetFrameData(index, frameData, false);
+        }
+
+        public static void SetEffectFramePriorityData(int index, ushort priority) => SetFramePriorityData(index, FrameType.PlayEffect, priority);
+        public static void SetHitFramePriorityData(int index, ushort priority) => SetFramePriorityData(index, FrameType.Hit, priority);
+        public static void SetCacheFramePriorityData(int index, ushort priority) => SetFramePriorityData(index, FrameType.CacheBegin, priority);
+        public static void SetSectionFramePriorityData(int index, ushort priority) => SetFramePriorityData(index, FrameType.SectionOver, priority);
+        private static void SetFramePriorityData(int index, FrameType frameType, ushort priority) {
+            FrameData frameData = GetFrameData(index);
+            IFieldValueTable table = (IFieldValueTable)frameData.GetFieldValueTableValue(frameType.ToString());
+            table.SetFieldValueTableValue(PriorityFrameData.Key_Priority, priority);
+            frameData.SetFieldValueTableValue(frameType.ToString(), table);
             SetFrameData(index, frameData, false);
         }
 

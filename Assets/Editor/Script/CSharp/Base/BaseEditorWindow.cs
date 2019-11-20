@@ -105,32 +105,22 @@ public class BaseEditorWindow : EditorWindow {
         EditorGUILayout.EndHorizontal();
     }
 
-    protected void HorizontalLayoutUI(Action<object> uiFunction, object data, Layout layout = Layout.Left) {
+    protected object HorizontalLayoutUI(Func<object, object> uiFunction, object data, Layout layout = Layout.Left) {
         EditorGUILayout.BeginHorizontal();
         if (layout != Layout.Left)
             FlexibleSpace();
-        uiFunction(data);
-        if (layout != Layout.Right)
-            FlexibleSpace();
-        EditorGUILayout.EndHorizontal();
-    }
-
-    protected object HorizontalLayoutUI(Func<int, object> uiFunction, int index, Layout layout = Layout.Left) {
-        EditorGUILayout.BeginHorizontal();
-        if (layout != Layout.Left)
-            FlexibleSpace();
-        object result = uiFunction(index);
+        object result = uiFunction(data);
         if (layout != Layout.Right)
             FlexibleSpace();
         EditorGUILayout.EndHorizontal();
         return result;
     }
 
-    protected object HorizontalLayoutUI(Func<object, object> uiFunction, object data, Layout layout = Layout.Left) {
+    protected object HorizontalLayoutUI(Func<object, int, object> uiFunction, object data, int index, Layout layout = Layout.Left) {
         EditorGUILayout.BeginHorizontal();
         if (layout != Layout.Left)
             FlexibleSpace();
-        object result = uiFunction(data);
+        object result = uiFunction(data, index);
         if (layout != Layout.Right)
             FlexibleSpace();
         EditorGUILayout.EndHorizontal();
@@ -155,17 +145,6 @@ public class BaseEditorWindow : EditorWindow {
         if (layout != Layout.Right)
             FlexibleSpace();
         EditorGUILayout.EndVertical();
-    }
-
-    protected object VerticalLayoutUI(Func<object, object> uiFunction, object data, Layout layout = Layout.Left) {
-        EditorGUILayout.BeginVertical();
-        if (layout != Layout.Left)
-            FlexibleSpace();
-        object result = uiFunction(data);
-        if (layout != Layout.Right)
-            FlexibleSpace();
-        EditorGUILayout.EndVertical();
-        return result;
     }
 
     protected void CenterLayoutUI(Action uiFunction) {

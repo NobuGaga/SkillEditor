@@ -29,7 +29,7 @@ namespace Lua.AnimClipData {
         #endregion
 
         #region IFieldKeyTable Function
-        private const string Key_Priority = "priority";
+        public const string Key_Priority = "priority";
         public void SetFieldValueTableValue(string key, object value) {
             switch (key) {
                 case Key_Priority:
