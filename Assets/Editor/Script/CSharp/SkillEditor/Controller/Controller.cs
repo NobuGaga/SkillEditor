@@ -130,7 +130,7 @@ namespace SkillEditor {
         }
 
         public static void SetFrameData(int index, FrameData data) {
-            LuaAnimClipModel.SetFrameData(index, data);
+            LuaAnimClipModel.SetFrameData(index, data, true);
         }
 
         public static void SetFrameDataTime(int index, float time) {

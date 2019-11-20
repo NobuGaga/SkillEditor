@@ -53,6 +53,10 @@ namespace SkillEditor {
             GetWindow<EditorWindow>().Close();
         }
 
+        public static void RefreshRepaint() {
+            GetWindow<EditorWindow>().Repaint();
+        } 
+
         public static void Clear() {
             m_isSelectPrefab = false;
             m_isNoAnimationClip = false;
@@ -155,9 +159,16 @@ namespace SkillEditor {
                 FrameData data = LuaAnimClipModel.GetFrameData(index);
                 if (!data.effectFrameData.IsNullTable())
                     data.effectFrameData = (EffectFrameData)HorizontalLayoutUI(EffectFrameDataUI, data.effectFrameData);
+                if (!data.hitFrameData.IsNullTable())
+                    data.hitFrameData = (HitFrameData)HorizontalLayoutUI(HitFrameDataUI, data.hitFrameData);
+                if (!data.cacheFrameData.IsNullTable())
+                    data.cacheFrameData = (PriorityFrameData)HorizontalLayoutUI(PriorityFrameDataUI, data.cacheFrameData);
+                if (!data.sectionFrameData.IsNullTable())
+                    data.sectionFrameData = (PriorityFrameData)HorizontalLayoutUI(PriorityFrameDataUI, data.sectionFrameData);
                 Controller.SetFrameData(index, data);
             }
         }
+        private void OnAddFrameDataButton() => Controller.AddFrameData();
 
         private void FrameDataUI(int index) {
             FrameData data = LuaAnimClipModel.GetFrameData(index);
@@ -174,6 +185,10 @@ namespace SkillEditor {
             if (SpaceWithButton(BtnAddSection))
                 OnAddSectionDataButton(index);
         }
+        private void OnAddEffectDataButton(int index) => Controller.AddNewEffectData(index);
+        private void OnAddCubeDataButton(int index) => Controller.AddNewCubeData(index);
+        private void OnAddCacheDataButton(int index) => Controller.AddNewCacheData(index);
+        private void OnAddSectionDataButton(int index) => Controller.AddNewSectionData(index);
 
         private object EffectFrameDataUI(object data) {
             EffectFrameData effectFrameData = (EffectFrameData)data;
@@ -187,40 +202,46 @@ namespace SkillEditor {
             return effectFrameData;
         }
 
-        private void OnAddFrameDataButton() => Controller.AddFrameData();
-
-        private void OnAddEffectDataButton(int index) => Controller.AddNewEffectData(index);
-
-        private void OnAddCubeDataButton(int index) => Controller.AddNewCubeData(index);
-        
-        private void OnAddCacheDataButton(int index) => Controller.AddNewCacheData(index);
-
-        private void OnAddSectionDataButton(int index) => Controller.AddNewSectionData(index);
-
         private void EffectDataUI(ref EffectData data) {
-            SpaceWithLabel(LabelEffect);
             SpaceWithLabel(LabelEffectType);
             data.type = TextField(data.type);
             SpaceWithLabel(LabelEffectID);
             data.id = TextField(data.id);
         }
 
-        private object CubeDataUI(object data) {
-            CubeData cubeData = (CubeData)data;
+        private object HitFrameDataUI(object data) {
+            HitFrameData hitFrameData = (HitFrameData)data;
             SpaceWithLabel(LabelCollision);
+            SpaceWithLabel(LabelPriority);
+            hitFrameData.priority = (ushort)TextField(hitFrameData.priority);
+            CubeData[] dataList = hitFrameData.cubeData.dataList;
+            for (int index = 0; index < dataList.Length; index++)
+                CubeDataUI(ref dataList[index]);
+            hitFrameData.cubeData.dataList = dataList;
+            return hitFrameData;
+        }
+
+        private void CubeDataUI(ref CubeData data) {
             SpaceWithLabel(LabelX);
-            cubeData.x = TextField(cubeData.x);
+            data.x = TextField(data.x);
             SpaceWithLabel(LabelY);
-            cubeData.y = TextField(cubeData.y);
+            data.y = TextField(data.y);
             SpaceWithLabel(LabelZ);
-            cubeData.z = TextField(cubeData.z);
+            data.z = TextField(data.z);
             SpaceWithLabel(LabelWidth);
-            cubeData.width = TextField(cubeData.width);
+            data.width = TextField(data.width);
             SpaceWithLabel(LabelHeight);
-            cubeData.height = TextField(cubeData.height);
+            data.height = TextField(data.height);
             SpaceWithLabel(LabelDepth);
-            cubeData.depth = TextField(cubeData.depth);
-            return cubeData;
+            data.depth = TextField(data.depth);
+        }
+
+        private object PriorityFrameDataUI(object data) {
+            PriorityFrameData priorityFrameData = (PriorityFrameData)data;
+            SpaceWithLabel(priorityFrameData.GetKey());
+            SpaceWithLabel(LabelPriority);
+            priorityFrameData.priority = (ushort)TextField(priorityFrameData.priority);
+            return priorityFrameData;
         }
 
         private void AnimationUI() {
@@ -238,15 +259,8 @@ namespace SkillEditor {
             float time = Slider(playTime, clipTime);
             Controller.SetAnimationPlayTime(time);
         }
-
-        public static void RefreshRepaint() {
-            GetWindow<EditorWindow>().Repaint();
-        } 
-
         private void OnPlayButton() => Controller.Play();
-
         private void OnPauseButton() => Controller.Pause();
-
         private void OnStopButton() => Controller.Stop();
     }
 }

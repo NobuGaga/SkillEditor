@@ -136,11 +136,12 @@ namespace SkillEditor {
             m_curClipData.frameList = array;
         }
 
-        public static void SetFrameData(int index, FrameData data) {
+        public static void SetFrameData(int index, FrameData data, bool isRefresHitFrame) {
             FrameData[] array = ClipData.frameList;
             array[index] = data;
             m_curClipData.frameList = array;
-            SetCollisionList();
+            if (isRefresHitFrame)
+                SetCollisionList();
         }
 
         public static FrameData GetFrameData(int index) {
@@ -151,17 +152,13 @@ namespace SkillEditor {
         }
 
         public static void SetFrameDataTime(int index, float time) {
-            FrameData[] array = ClipData.frameList;
-            FrameData data = array[index];
+            FrameData data = GetFrameData(index);
             data.time = time;
-            array[index] = data;
-            m_curClipData.frameList = array;
-            SetCollisionList();
+            SetFrameData(index, data, false);
         }
 
         public static void AddNewEffectData(int index) {
-            FrameData[] arrayFrameData = ClipData.frameList;
-            FrameData frameData = arrayFrameData[index];
+            FrameData frameData = GetFrameData(index);
             EffectData[] dataList = frameData.effectFrameData.effectData.dataList;
             EffectData effectData = default;
             if (dataList == null) {
@@ -175,12 +172,11 @@ namespace SkillEditor {
                 list.Add(effectData);
                 frameData.effectFrameData.effectData.dataList = list.ToArray();
             }
-            arrayFrameData[index] = frameData;
+            SetFrameData(index, frameData, false);
         }
 
         public static void AddNewCubeData(int index) {
-            FrameData[] arrayFrameData = ClipData.frameList;
-            FrameData frameData = arrayFrameData[index];
+            FrameData frameData = GetFrameData(index);
             CubeData[] dataList = frameData.hitFrameData.cubeData.dataList;
             CubeData cubeData = default;
             if (dataList == null) {
@@ -194,26 +190,26 @@ namespace SkillEditor {
                 list.Add(cubeData);
                 frameData.hitFrameData.cubeData.dataList = list.ToArray();
             }
-            arrayFrameData[index] = frameData;
+            SetFrameData(index, frameData, false);
         }
 
-        public static void AddNewCacheData(int index) {
-            FrameData[] arrayFrameData = ClipData.frameList;
-            FrameData frameData = arrayFrameData[index];
-            frameData.cacheFrameData.priority = 1;
-            arrayFrameData[index] = frameData;
-        }
-
-        public static void AddNewSectionData(int index) {
-            FrameData[] arrayFrameData = ClipData.frameList;
-            FrameData frameData = arrayFrameData[index];
-            frameData.sectionFrameData.priority = 1;
-            arrayFrameData[index] = frameData;
+        public static void AddNewCacheData(int index) => AddPriorityFrameData(index, FrameType.CacheBegin);
+        public static void AddNewSectionData(int index) => AddPriorityFrameData(index, FrameType.SectionOver);
+        private static void AddPriorityFrameData(int index, FrameType frameType) {
+            FrameData frameData = GetFrameData(index);
+            switch (frameType) {
+                case FrameType.CacheBegin:
+                    frameData.cacheFrameData.priority = 1;
+                    break;
+                case FrameType.SectionOver:
+                    frameData.sectionFrameData.priority = 1;
+                    break;
+            }
+            SetFrameData(index, frameData, false);
         }
 
         private static List<KeyValuePair<float, CubeData[]>> m_listCollision = new List<KeyValuePair<float, CubeData[]>>();
         public static List<KeyValuePair<float, CubeData[]>> ListCollision => m_listCollision;
-        private static List<CubeData> m_listCubeData = new List<CubeData>(2);
 
         private static void SetCollisionList() {
             m_listCollision.Clear();
