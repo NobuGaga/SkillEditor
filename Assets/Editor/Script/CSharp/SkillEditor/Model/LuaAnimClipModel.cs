@@ -200,9 +200,11 @@ namespace SkillEditor {
             switch (frameType) {
                 case FrameType.CacheBegin:
                     frameData.cacheFrameData.priority = 1;
+                    frameData.cacheFrameData.frameType = FrameType.CacheBegin;
                     break;
                 case FrameType.SectionOver:
                     frameData.sectionFrameData.priority = 1;
+                    frameData.sectionFrameData.frameType = FrameType.SectionOver;
                     break;
             }
             SetFrameData(index, frameData, false);

@@ -157,6 +157,17 @@ public class BaseEditorWindow : EditorWindow {
         EditorGUILayout.EndVertical();
     }
 
+    protected object VerticalLayoutUI(Func<object, object> uiFunction, object data, Layout layout = Layout.Left) {
+        EditorGUILayout.BeginVertical();
+        if (layout != Layout.Left)
+            FlexibleSpace();
+        object result = uiFunction(data);
+        if (layout != Layout.Right)
+            FlexibleSpace();
+        EditorGUILayout.EndVertical();
+        return result;
+    }
+
     protected void CenterLayoutUI(Action uiFunction) {
         EditorGUILayout.BeginHorizontal();
         FlexibleSpace();
