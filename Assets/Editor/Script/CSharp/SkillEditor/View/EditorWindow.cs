@@ -1,4 +1,5 @@
-﻿using System;
+﻿using UnityEngine;
+using System;
 using System.Reflection;
 using Lua;
 using Lua.AnimClipData;
@@ -157,10 +158,12 @@ namespace SkillEditor {
         }
 
         private FrameData GetFrameData(int index) => LuaAnimClipModel.GetFrameData(index);
+        private Vector2 m_lastFrameListScrollPos;
         private void FrameListUI() {
             ClipData clipData = LuaAnimClipModel.ClipData;
             if (clipData.frameList == null || clipData.frameList.Length == 0)
                 return;
+            m_lastFrameListScrollPos = BeginVerticalScrollView(m_lastFrameListScrollPos);
             for (int index = 0; index < clipData.frameList.Length; index++) {
                 Space();
                 if (HorizontalLayoutUI(FrameDataTitleUI, index))
@@ -180,6 +183,7 @@ namespace SkillEditor {
                 if (!data.sectionFrameData.IsNullTable())
                     HorizontalLayoutUI(SectionFrameDataTitleUI, index);
             }
+            EndVerticalScrollView();
         }
 
         private bool FrameDataTitleUI(int index) {

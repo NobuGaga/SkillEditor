@@ -124,6 +124,12 @@ public class BaseEditorWindow : EditorWindow {
         EditorGUILayout.EndVertical();
     }
 
+    protected Vector2 BeginVerticalScrollView(Vector2 pos) => EditorGUILayout.BeginScrollView(pos, false, true);
+
+    protected void EndVerticalScrollView() {
+        EditorGUILayout.EndScrollView();
+    }
+
     protected void VerticalLayoutUI(Action uiFunction, Layout layout = Layout.Top) {
         BeginVertical(layout);
         uiFunction();
