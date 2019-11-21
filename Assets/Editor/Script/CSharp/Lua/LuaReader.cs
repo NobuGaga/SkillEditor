@@ -27,6 +27,7 @@ namespace Lua {
 
         private static StringBuilder m_luaTextHeadStringBuilder = new StringBuilder(Config.LuaFileHeadLength);
         private static void ReadLuaFileHeadText(string luaText, string luaFilePath, string luaFileHeadStart, ref int index) {
+            FilterNotesLine(luaText, ref index);
             index = luaText.IndexOf(luaFileHeadStart);
             if (index == Config.ErrorIndex) {
                 Debug.LogError("LuaReader::ReadLuaFileHeadText lua file start text is not found. text " + luaFileHeadStart);

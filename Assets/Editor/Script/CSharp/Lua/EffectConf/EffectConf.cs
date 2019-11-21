@@ -20,7 +20,7 @@ namespace Lua.EffectConf {
 
         public string GetTableName() => "EffectData";
         public ushort GetLayer() => 1;
-        public ReadType GetReadType() => ReadType.Repeat;
+        public ReadType GetReadType() => ReadType.RepeatToFixed;
         public KeyType GetKeyType() => KeyType.Array;
         public void SetKey(object key) => id = (uint)(int)key;
         public string GetKey() => id.ToString();
