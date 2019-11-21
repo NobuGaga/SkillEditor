@@ -199,9 +199,19 @@ namespace SkillEditor {
         private static MethodInfo CustomDataSetTableListMethod;
         private static MethodInfo CustomDataClearMethod;
         private static MethodInfo CustomDataStaticCacheListAddMethod;
+        private static MethodInfo CustomDataSetTableListDataMethod;
         private static object[] m_staticCacheListAddArg = new object[1];
         private static void SetStaticCacheListAddArg(object value) => m_staticCacheListAddArg[0] = value;
         private static object[] GetStaticCacheListAddArg() => m_staticCacheListAddArg;
+        private static object[] m_setTableListDataArg = new object[2];
+        private static void SetSetTableListDataArg(params object[] args) {
+            for (ushort index = 0; index < m_setTableListDataArg.Length; index++)
+                if (args == null || index >= args.Length)
+                     m_setTableListDataArg[index] = null;
+                else
+                     m_setTableListDataArg[index] = args[index];
+        }
+        private static object[] GetSetTableListDataArg() => m_setTableListDataArg;
         private static object[] m_customDataCache = new object[3];
         private const ushort CustomDataIndex = 0;
         private const ushort CustomDataStaticListIndex = 1;
@@ -222,6 +232,7 @@ namespace SkillEditor {
             Type customDataType = customData.GetType();
             CustomDataClearMethod = customDataType.GetMethod("Clear");
             CustomDataSetTableListMethod = customDataType.GetMethod("SetTableList");
+            CustomDataSetTableListDataMethod = customDataType.GetMethod("SetTableListData");
 
             m_customDataCache[CustomDataStaticListIndex] = customDataType.GetMethod("GetStaticCacheList").Invoke(customData, null);
             object staticList = m_customDataCache[CustomDataStaticListIndex];
@@ -296,16 +307,15 @@ namespace SkillEditor {
             FrameData frameData = GetFrameData(frameIndex);
             IFieldValueTable table = (IFieldValueTable)frameData.GetFieldValueTableValue(frameType.ToString());
             SetCustomDataMethodAndData(table);
-            Array dataList = GetCustomDataList() as Array;
             string key = data.GetKey();
-            if (!ushort.TryParse(key, out ushort subDataIndex)) {
+            if (!ushort.TryParse(key, out ushort dataIndex)) {
                 Debug.LogError("LuaAnimClipModel::SetCustomeSubData try parse key error");
                 return;
             }
-            dataList.SetValue(data, subDataIndex - 1);
+            dataIndex--;
             object customData = GetCustomData();
-            var info = customData.GetType().GetProperty("dataList");
-            info.SetValue(customData, dataList);
+            SetSetTableListDataArg(dataIndex, data);
+            CustomDataSetTableListDataMethod.Invoke(customData, GetSetTableListDataArg());
             table.SetFieldValueTableValue(Key_Data, customData);
             frameData.SetFieldValueTableValue(frameType.ToString(), table);
             SetFrameData(frameIndex, frameData, false);

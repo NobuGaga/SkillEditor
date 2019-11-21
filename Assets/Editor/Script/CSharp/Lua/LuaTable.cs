@@ -123,6 +123,7 @@ namespace Lua {
         Type GetTableListType();
         List<T> GetStaticCacheList();
         object SetTableList();
+        void SetTableListData(ushort index, T data);
         T[] GetTableList();
     }
 

@@ -59,6 +59,7 @@ namespace Lua.AnimClipData {
             clipList = m_listCache.ToArray();
             return this;
         }
+        public void SetTableListData(ushort index, ClipData data) => clipList[index] = data;
         public ClipData[] GetTableList() => clipList;
         #endregion
     }
