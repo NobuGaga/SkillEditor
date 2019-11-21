@@ -20,9 +20,7 @@ public class BaseEditorWindow : EditorWindow {
         return guiStyle;
     }
 
-    protected void Label(string text) {
-        GUILayout.Label(text);
-    }
+    protected void Label(string text) => GUILayout.Label(text);
 
     protected void SpaceWithLabel(string text, float space = DefaultSpace) {
         Space(space);
@@ -30,54 +28,45 @@ public class BaseEditorWindow : EditorWindow {
     }
 
     protected short TextField(short shortNumber) {
-        string shortNumberString = EditorGUILayout.TextField(shortNumber.ToString());
+        string shortNumberString = TextField(shortNumber.ToString());
         if (short.TryParse(shortNumberString, out short result))
             return result;
         return shortNumber;
     }
 
     protected int TextField(int interge) {
-        string intString = EditorGUILayout.TextField(interge.ToString());
+        string intString = TextField(interge.ToString());
         if (int.TryParse(intString, out int result))
             return result;
         return interge;
     }
 
     protected float TextField(float number) {
-        string floatString = EditorGUILayout.TextField(number.ToString());
+        string floatString = TextField(number.ToString());
         if (float.TryParse(floatString, out float result))
             return result;
         return number;
     }
 
-    protected bool Button(string buttonName, Style style = Style.PreButton) {
-        return GUILayout.Button(buttonName, GetGUIStyle(style));
-    }
+    protected string TextField(string text) => EditorGUILayout.TextField(text);
+
+    protected bool Button(string buttonName, Style style = Style.PreButton) => GUILayout.Button(buttonName, GetGUIStyle(style));
 
     protected bool SpaceWithButton(string buttonName, Style style = Style.PreButton, float space = DefaultSpace) {
         Space(space);
         return Button(buttonName, style);
     }
 
-    protected int IntPopup(int selectIndex, string[] arrayText, int[] arrayIndex, Style style = Style.PreDropDown) {
-        return EditorGUILayout.IntPopup(selectIndex, arrayText, arrayIndex, GetGUIStyle(style));
-    }
+    protected int IntPopup(int selectIndex, string[] arrayText, int[] arrayIndex, Style style = Style.PreDropDown) =>
+                                        EditorGUILayout.IntPopup(selectIndex, arrayText, arrayIndex, GetGUIStyle(style));
 
-    protected Enum EnumPopup(Enum enumType, Style style = Style.PreDropDown) {
-        return EditorGUILayout.EnumPopup(enumType, GetGUIStyle(style));
-    }
+    protected Enum EnumPopup(Enum enumType, Style style = Style.PreDropDown) => EditorGUILayout.EnumPopup(enumType, GetGUIStyle(style));
 
-    protected void FlexibleSpace() {
-        GUILayout.FlexibleSpace();
-    }
+    protected void FlexibleSpace() => GUILayout.FlexibleSpace();
 
-    protected void Space(float space = DefaultSpace) {
-        GUILayout.Space(space);
-    }
+    protected void Space(float space = DefaultSpace) => GUILayout.Space(space);
 
-    protected float Slider(float current, float maxValue) {
-        return EditorGUILayout.Slider(current, 0, maxValue);
-    }
+    protected float Slider(float current, float maxValue) => EditorGUILayout.Slider(current, 0, maxValue);
 
     protected void FadeLayoutUI(Action uiFunction, float value) {
         EditorGUILayout.BeginFadeGroup(value);
@@ -85,75 +74,58 @@ public class BaseEditorWindow : EditorWindow {
         EditorGUILayout.EndFadeGroup();
     }
 
-    protected void HorizontalLayoutUI(Action uiFunction, Layout layout = Layout.Left) {
+    protected void BeginHorizontal(Layout layout) {
         EditorGUILayout.BeginHorizontal();
         if (layout != Layout.Left)
             FlexibleSpace();
-        uiFunction();
+    }
+
+    protected void EndHorizontal(Layout layout) {
         if (layout != Layout.Right)
             FlexibleSpace();
         EditorGUILayout.EndHorizontal();
+    }
+
+    protected void HorizontalLayoutUI(Action uiFunction, Layout layout = Layout.Left) {
+        BeginHorizontal(layout);
+        uiFunction();
+        EndHorizontal(layout);
     }
 
     protected void HorizontalLayoutUI(Action<int> uiFunction, int data, Layout layout = Layout.Left) {
-        EditorGUILayout.BeginHorizontal();
-        if (layout != Layout.Left)
-            FlexibleSpace();
+        BeginHorizontal(layout);
         uiFunction(data);
-        if (layout != Layout.Right)
-            FlexibleSpace();
-        EditorGUILayout.EndHorizontal();
-    }
-
-    protected object HorizontalLayoutUI(Func<object, object> uiFunction, object data, Layout layout = Layout.Left) {
-        EditorGUILayout.BeginHorizontal();
-        if (layout != Layout.Left)
-            FlexibleSpace();
-        object result = uiFunction(data);
-        if (layout != Layout.Right)
-            FlexibleSpace();
-        EditorGUILayout.EndHorizontal();
-        return result;
+        EndHorizontal(layout);
     }
 
     protected void HorizontalLayoutUI(Action<int, object> uiFunction, int index, object data, Layout layout = Layout.Left) {
-        EditorGUILayout.BeginHorizontal();
-        if (layout != Layout.Left)
-            FlexibleSpace();
+        BeginHorizontal(layout);
         uiFunction(index, data);
-        if (layout != Layout.Right)
+        EndHorizontal(layout);
+    }
+
+    protected void BeginVertical(Layout layout = Layout.Top) {
+        EditorGUILayout.BeginVertical();
+        if (layout != Layout.Top)
             FlexibleSpace();
-        EditorGUILayout.EndHorizontal();
+    }
+
+    protected void EndVertical(Layout layout = Layout.Top) {
+        if (layout != Layout.Bottom)
+            FlexibleSpace();
+        EditorGUILayout.EndVertical();
     }
 
     protected void VerticalLayoutUI(Action uiFunction, Layout layout = Layout.Top) {
-        EditorGUILayout.BeginVertical();
-        if (layout != Layout.Top)
-            FlexibleSpace();
+        BeginVertical(layout);
         uiFunction();
-        if (layout != Layout.Bottom)
-            FlexibleSpace();
-        EditorGUILayout.EndVertical();
+        EndVertical(layout);
     }
 
     protected void VerticalLayoutUI(Action<int> uiFunction, int index, Layout layout = Layout.Top) {
-        EditorGUILayout.BeginVertical();
-        if (layout != Layout.Top)
-            FlexibleSpace();
+        BeginVertical(layout);
         uiFunction(index);
-        if (layout != Layout.Bottom)
-            FlexibleSpace();
-        EditorGUILayout.EndVertical();
-    }
-
-    protected void VerticalLayoutUI(Action<object> uiFunction, object data, Layout layout = Layout.Left) {
-        EditorGUILayout.BeginVertical();
-        if (layout != Layout.Left)
-            FlexibleSpace();
-        uiFunction(data);
-        if (layout != Layout.Right)
-            FlexibleSpace();
-        EditorGUILayout.EndVertical();
+        EndVertical(layout);
     }
 
     protected void CenterLayoutUI(Action uiFunction) {
