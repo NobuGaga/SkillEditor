@@ -175,7 +175,7 @@ namespace Lua {
             return isImplement;
         }
 
-        #region Reflection Method 
+        #region Reflection Method
         private static MethodInfo[] m_repeatKeyTableMethod = new MethodInfo[5];
         private const ushort ClearStaticListMethodIndex = 0;
         private const ushort AddStaticListMethodIndex = 1;

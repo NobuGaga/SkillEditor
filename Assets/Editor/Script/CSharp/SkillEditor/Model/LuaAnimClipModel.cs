@@ -228,6 +228,39 @@ namespace SkillEditor {
             SetFrameData(frameIndex, frameData, false);
         }
 
+        #region Reflection Method And Data
+        private static MethodInfo[] m_customDataMethod = new MethodInfo[6];
+        private const ushort GetTableListTypeMethodIndex = 0;
+        private const ushort GetStaticCacheListMethodIndex = 1;
+        private const ushort SetTableListMethodIndex = 2;
+        private const ushort GetTableListMethodIndex = 3;
+        private const ushort StaticCacheListClearMethodIndex = 4;
+        private const ushort StaticCacheListAddMethodIndex = 5;
+        private static object[] m_customDataCache = new object[3];
+        private const ushort CustomDataIndex = 0;
+        private const ushort StaticListIndex = 1;
+        private const ushort DatalistIndex = 2;
+        private static void SetCustomDataMethodAndData(FrameData frameData, FrameType frameType) {
+            IFieldValueTable table = (IFieldValueTable)frameData.GetFieldValueTableValue(frameType.ToString());
+            CustomData<EffectData> defaultCustomData = default;
+            string key_data = defaultCustomData.GetKey();
+            object customData = table.GetFieldValueTableValue(key_data);
+            Type customDataType = customData.GetType();
+
+            object staticList = customDataType.GetMethod("GetStaticCacheList").Invoke(customData, null);
+            Type staticListType = staticList.GetType();
+            staticListType.GetMethod("Clear").Invoke(staticList, null);
+
+            MethodInfo staticListAddMethod = staticListType.GetMethod("Add");
+            object[] argCache = new object[1];
+            Action<object> setArg = (object arg) => argCache[0] = arg;
+            Func<object[]> getArg = () => argCache;
+
+            object dataList = customDataType.GetMethod("GetTableList").Invoke(customData, null);
+            Type listType = customDataType.GetMethod("GetTableListType").Invoke(customData, null) as Type;
+            ITable data = (ITable)Activator.CreateInstance(listType);
+        }
+        #endregion       
         public static void AddNewCustomData(int index, FrameType frameType) {
             FrameData frameData = GetFrameData(index);
             IFieldValueTable table = (IFieldValueTable)frameData.GetFieldValueTableValue(frameType.ToString());
