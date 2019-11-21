@@ -1,4 +1,6 @@
-﻿using Lua;
+﻿using System;
+using System.Reflection;
+using Lua;
 using Lua.AnimClipData;
 
 namespace SkillEditor {
@@ -170,12 +172,12 @@ namespace SkillEditor {
                 }
                 if (!data.hitFrameData.IsNullTable()) {
                     HorizontalLayoutUI(HitFrameDataTitleUI, index);
-                    VerticalLayoutUI(HitFrameDataUI, data);
+                    VerticalLayoutUI(HitFrameDataUI, index);
                 }
                 if (!data.cacheFrameData.IsNullTable())
-                    HorizontalLayoutUI(PriorityFrameDataUI, data.cacheFrameData);
+                    HorizontalLayoutUI(CacheFrameDataTitleUI, index);
                 if (!data.sectionFrameData.IsNullTable())
-                    HorizontalLayoutUI(PriorityFrameDataUI, data.sectionFrameData);
+                    HorizontalLayoutUI(SectionFrameDataTitleUI, index);
             }
         }
 
@@ -183,9 +185,9 @@ namespace SkillEditor {
             FrameData data = GetFrameData(index);
             SpaceWithLabel(LabelFrameData + (index + 1));
             if (SpaceWithButton(BtnAddEffect))
-                Controller.AddNewEffectData(index);
+                Controller.AddNewCustomData(index, FrameType.PlayEffect);
             if (SpaceWithButton(BtnAddCube))
-                Controller.AddNewCubeData(index);
+                Controller.AddNewCustomData(index, FrameType.Hit);
             if (data.cacheFrameData.IsNullTable() && SpaceWithButton(BtnAddCache))
                 Controller.AddNewCacheData(index);
             if (data.sectionFrameData.IsNullTable() && SpaceWithButton(BtnAddSection))
@@ -203,16 +205,8 @@ namespace SkillEditor {
         }
 
         private void EffectFrameDataTitleUI(int index) => PriorityFrameDataTitleUI(index, FrameType.PlayEffect);
-
-        private void EffectFrameDataUI(int index) {
-            FrameData frameData = GetFrameData(index);
-            EffectFrameData effectFrameData = frameData.effectFrameData;
-            EffectData[] dataList = effectFrameData.effectData.dataList;
-            for (index = 0; index < dataList.Length; index++)
-                dataList[index] = (EffectData)HorizontalLayoutUI(EffectDataUI, dataList[index], frameData.index - 1);
-        }
-
-        private object EffectDataUI(object @object, int framIndex) {
+        private void EffectFrameDataUI(int frameIndex) => FrameDataListUI(frameIndex, FrameType.PlayEffect);
+        private void EffectDataUI(int frameIndex, object @object) {
             EffectData data = (EffectData)@object;
             SpaceWithLabel(LabelEffectType);
             data.type = TextField(data.type);
@@ -226,24 +220,15 @@ namespace SkillEditor {
             SpaceWithLabel(LabelZ);
             rotationData.z = TextField(rotationData.z);
             data.rotation = rotationData;
+            Controller.SetEffectData(frameIndex, data);
             if (SpaceWithButton(BtnDelete))
-                Controller.DeleteEffectData(framIndex, (int)data.index - 1);
+                Controller.DeleteEffectData(frameIndex, (int)data.index - 1);
             Space();
-            return data;
         }
 
         private void HitFrameDataTitleUI(int index) => PriorityFrameDataTitleUI(index, FrameType.Hit);
-
-        private void HitFrameDataUI(object data) {
-            FrameData frameData = (FrameData)data;
-            HitFrameData hitFrameData = frameData.hitFrameData;
-            CubeData[] dataList = hitFrameData.cubeData.dataList;
-            for (int index = 0; index < dataList.Length; index++)
-                dataList[index] = (CubeData)HorizontalLayoutUI(CubeDataUI, dataList[index], frameData.index - 1);
-            hitFrameData.cubeData.dataList = dataList;
-        }
-
-        private object CubeDataUI(object @object, int frameIndex) {
+        private void HitFrameDataUI(int frameIndex) => FrameDataListUI(frameIndex, FrameType.Hit);
+        private void CubeDataUI(int frameIndex, object  @object) {
             CubeData data = (CubeData)@object;
             SpaceWithLabel(LabelX);
             data.x = TextField(data.x);
@@ -257,20 +242,14 @@ namespace SkillEditor {
             data.height = TextField(data.height);
             SpaceWithLabel(LabelDepth);
             data.depth = TextField(data.depth);
+            Controller.SetCubeData(frameIndex, data);
             if (SpaceWithButton(BtnDelete))
-                Controller.DeleteEffectData(frameIndex, (int)data.index - 1);
+                Controller.DeleteCubeData(frameIndex, (int)data.index - 1);
             Space();
-            return data;
         }
 
-        private object PriorityFrameDataUI(object data) {
-            PriorityFrameData priorityFrameData = (PriorityFrameData)data;
-            SpaceWithLabel(priorityFrameData.GetKey());
-            SpaceWithLabel(LabelPriority);
-            priorityFrameData.priority = (ushort)TextField(priorityFrameData.priority);
-            return priorityFrameData;
-        }
-
+        private void CacheFrameDataTitleUI(int index) => PriorityFrameDataTitleUI(index, FrameType.CacheBegin);
+        private void SectionFrameDataTitleUI(int index) => PriorityFrameDataTitleUI(index, FrameType.SectionOver);
         private void PriorityFrameDataTitleUI(int index, FrameType frameType) {
             FrameData frameData = GetFrameData(index);
             IFieldValueTable table = (IFieldValueTable)frameData.GetFieldValueTableValue(frameType.ToString());
@@ -290,6 +269,26 @@ namespace SkillEditor {
             ushort newPriority = (ushort)TextField(originPriority);
             if (newPriority != originPriority)
                 Controller.SetFramePriorityData(index, frameType, newPriority);
+        }
+
+        private void FrameDataListUI(int frameIndex, FrameType frameType) {
+            FrameData frameData = GetFrameData(frameIndex);
+            IFieldValueTable table = (IFieldValueTable)frameData.GetFieldValueTableValue(frameType.ToString());
+            CustomData<EffectData> defaultCustomData = default;
+            object customData = table.GetFieldValueTableValue(defaultCustomData.GetKey());
+            MethodInfo getTableListMethod = customData.GetType().GetMethod("GetTableList");
+            Array dataList = getTableListMethod.Invoke(customData, null) as Array;
+            Action<int, object> uiFunction = default;
+            switch (frameType) {
+                case FrameType.PlayEffect:
+                    uiFunction = EffectDataUI;
+                    break;
+                case FrameType.Hit:
+                    uiFunction = CubeDataUI;
+                    break;
+            }
+            for (int index = 0; index < dataList.Length; index++)
+                HorizontalLayoutUI(uiFunction, frameData.index - 1, dataList.GetValue(index));
         }
 
         private void AnimationUI() {

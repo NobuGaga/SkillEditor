@@ -116,15 +116,14 @@ public class BaseEditorWindow : EditorWindow {
         return result;
     }
 
-    protected object HorizontalLayoutUI(Func<object, int, object> uiFunction, object data, int index, Layout layout = Layout.Left) {
+    protected void HorizontalLayoutUI(Action<int, object> uiFunction, int index, object data, Layout layout = Layout.Left) {
         EditorGUILayout.BeginHorizontal();
         if (layout != Layout.Left)
             FlexibleSpace();
-        object result = uiFunction(data, index);
+        uiFunction(index, data);
         if (layout != Layout.Right)
             FlexibleSpace();
         EditorGUILayout.EndHorizontal();
-        return result;
     }
 
     protected void VerticalLayoutUI(Action uiFunction, Layout layout = Layout.Top) {

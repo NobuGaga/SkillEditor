@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
+using System;
 using System.Text;
+using System.Reflection;
 using System.Collections.Generic;
 using Lua;
 using Lua.AnimClipData;
@@ -80,13 +82,13 @@ namespace SkillEditor {
                 for (int clipIndex = 0; clipIndex < stateData.clipList.Length; clipIndex++) {
                     ClipData clipData = stateData.clipList[clipIndex];
                     m_listClip.Add(clipData);
-                    if (clipData.clipName == clipName) {
-                        m_curStateIndex = stateIndex;
-                        m_curStateData = stateData;
-                        m_curClipIndex = clipIndex;
-                        m_curClipData = clipData;
-                        SetCollisionList();
-                    }
+                    if (clipData.clipName != clipName)
+                        continue;
+                    m_curStateIndex = stateIndex;
+                    m_curStateData = stateData;
+                    m_curClipIndex = clipIndex;
+                    m_curClipData = clipData;
+                    SetCollisionList();
                 }
             }
         }
@@ -176,24 +178,6 @@ namespace SkillEditor {
             SetFrameData(index, data, false);
         }
 
-        public static void AddNewEffectData(int index) {
-            FrameData frameData = GetFrameData(index);
-            EffectData[] dataList = frameData.effectFrameData.effectData.dataList;
-            EffectData effectData = default;
-            if (dataList == null) {
-                effectData.index = 1;
-                frameData.effectFrameData.priority = 1;
-                frameData.effectFrameData.effectData.dataList = new EffectData[] { effectData };
-            }
-            else {
-                List<EffectData> list = new List<EffectData>(dataList);
-                effectData.index = (ushort)list.Count;
-                list.Add(effectData);
-                frameData.effectFrameData.effectData.dataList = list.ToArray();
-            }
-            SetFrameData(index, frameData, false);
-        }
-
         public static void DeleteEffectData(int frameIndex, int effectIndex) {
             FrameData frameData = GetFrameData(frameIndex);
             EffectData[] dataList = frameData.effectFrameData.effectData.dataList;
@@ -202,27 +186,21 @@ namespace SkillEditor {
             else {
                 List<EffectData> list = new List<EffectData>(dataList);
                 list.RemoveAt(effectIndex);
+                for (int index = 0; index < list.Count; index++) {
+                    EffectData data = list[index];
+                    data.index = (ushort)(index + 1);
+                    list[index] = data;
+                }
                 frameData.effectFrameData.effectData.dataList = list.ToArray();
             }
             SetFrameData(frameIndex, frameData, false);
         }
 
-        public static void AddNewCubeData(int index) {
-            FrameData frameData = GetFrameData(index);
-            CubeData[] dataList = frameData.hitFrameData.cubeData.dataList;
-            CubeData cubeData = default;
-            if (dataList == null) {
-                cubeData.index = 1;
-                frameData.hitFrameData.priority = 1;
-                frameData.hitFrameData.cubeData.dataList = new CubeData[] { cubeData };
-            }
-            else {
-                List<CubeData> list = new List<CubeData>(dataList);
-                cubeData.index = (ushort)list.Count;
-                list.Add(cubeData);
-                frameData.hitFrameData.cubeData.dataList = list.ToArray();
-            }
-            SetFrameData(index, frameData, false);
+        public static void SetEffectData(int frameIndex, EffectData effectData) {
+            FrameData frameData = GetFrameData(frameIndex);
+            int effectIndex = effectData.index - 1;
+            frameData.effectFrameData.effectData.dataList[effectIndex] = effectData;
+            SetFrameData(frameIndex, frameData, false);
         }
 
         public static void DeleteCubeData(int frameIndex, int cubeIndex) {
@@ -233,25 +211,74 @@ namespace SkillEditor {
             else {    
                 List<CubeData> list = new List<CubeData>(dataList);
                 list.RemoveAt(cubeIndex);
+                for (int index = 0; index < list.Count; index++) {
+                    CubeData data = list[index];
+                    data.index = (ushort)(index + 1);
+                    list[index] = data;
+                }
                 frameData.hitFrameData.cubeData.dataList = list.ToArray();
             }
             SetFrameData(frameIndex, frameData, true);
+        }
+
+        public static void SetCubeData(int frameIndex, CubeData cubeData) {
+            FrameData frameData = GetFrameData(frameIndex);
+            int cubeIndex = cubeData.index - 1;
+            frameData.hitFrameData.cubeData.dataList[cubeIndex] = cubeData;
+            SetFrameData(frameIndex, frameData, false);
+        }
+
+        public static void AddNewCustomData(int index, FrameType frameType) {
+            FrameData frameData = GetFrameData(index);
+            IFieldValueTable table = (IFieldValueTable)frameData.GetFieldValueTableValue(frameType.ToString());
+            CustomData<EffectData> defaultCustomData = default;
+            string key_data = defaultCustomData.GetKey();
+            object customData = table.GetFieldValueTableValue(key_data);
+            Type customDataType = customData.GetType();
+
+            object staticList = customDataType.GetMethod("GetStaticCacheList").Invoke(customData, null);
+            Type staticListType = staticList.GetType();
+            staticListType.GetMethod("Clear").Invoke(staticList, null);
+
+            MethodInfo staticListAddMethod = staticListType.GetMethod("Add");
+            object[] argCache = new object[1];
+            Action<object> setArg = (object arg) => argCache[0] = arg;
+            Func<object[]> getArg = () => argCache;
+
+            object dataList = customDataType.GetMethod("GetTableList").Invoke(customData, null);
+            Type listType = customDataType.GetMethod("GetTableListType").Invoke(customData, null) as Type;
+            ITable data = (ITable)Activator.CreateInstance(listType);
+
+            if (dataList == null) {
+                data.SetKey(1);
+                SetFramePriorityData(index, frameType, 1);
+                setArg(data);
+                staticListAddMethod.Invoke(staticList, getArg());
+            }
+            else {
+                Array array = dataList as Array;
+                for (int arrayIndex = 0; arrayIndex < array.Length; arrayIndex++) {
+                    setArg(array.GetValue(arrayIndex));
+                    staticListAddMethod.Invoke(staticList, getArg());
+                }
+                data.SetKey(array.Length);
+                setArg(data);
+                staticListAddMethod.Invoke(staticList, getArg());
+            }
+
+            customData = customDataType.GetMethod("SetTableList").Invoke(customData, null);
+            table.SetFieldValueTableValue(key_data, customData);
+            frameData.SetFieldValueTableValue(frameType.ToString(), table);
+            SetFrameData(index, frameData, false);
         }
 
         public static void AddNewCacheData(int index) => AddPriorityFrameData(index, FrameType.CacheBegin);
         public static void AddNewSectionData(int index) => AddPriorityFrameData(index, FrameType.SectionOver);
         private static void AddPriorityFrameData(int index, FrameType frameType) {
             FrameData frameData = GetFrameData(index);
-            switch (frameType) {
-                case FrameType.CacheBegin:
-                    frameData.cacheFrameData.priority = 1;
-                    frameData.cacheFrameData.frameType = FrameType.CacheBegin;
-                    break;
-                case FrameType.SectionOver:
-                    frameData.sectionFrameData.priority = 1;
-                    frameData.sectionFrameData.frameType = FrameType.SectionOver;
-                    break;
-            }
+            PriorityFrameData priorityFrameData = (PriorityFrameData)frameData.GetFieldValueTableValue(frameType.ToString());
+            priorityFrameData.priority = 1;
+            frameData.SetFieldValueTableValue(frameType.ToString(), priorityFrameData);
             SetFrameData(index, frameData, false);
         }
 
