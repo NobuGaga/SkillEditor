@@ -176,6 +176,7 @@ namespace Lua {
         }
 
         #region Reflection Method
+
         private static MethodInfo[] m_repeatKeyTableMethod = new MethodInfo[5];
         private const ushort ClearStaticListMethodIndex = 0;
         private const ushort AddStaticListMethodIndex = 1;
@@ -187,6 +188,7 @@ namespace Lua {
         private static MethodInfo SetTableListMethod => m_repeatKeyTableMethod[SetTableListMethodIndex];
         private static MethodInfo ReadLuaFileTableMethod => m_repeatKeyTableMethod[ReadLuaFileTableIndex];
         private static MethodInfo InitTableAndhKeyMethod => m_repeatKeyTableMethod[InitTableAndhKeyIndex];
+
         private static object GetStaticListAndSetRepeatTableMethod<T>() where T :ITable {
             T table = default;
             MethodInfo getStaticCacheListMethod = table.GetType().GetMethod("GetStaticCacheList");
@@ -204,8 +206,10 @@ namespace Lua {
         #endregion
 
         #region Array Arg Cache (Get array cache function return a copy array. prevent cache has be modified)
+
         private static Type[] m_typeCache = new Type[1];
         private static void SetTypeCache(Type value) => m_typeCache[0] = value;
+
         private static Type[] GetTypeCache() {
             Type[] newArray = new Type[m_typeCache.Length];
             Array.Copy(m_typeCache, newArray, m_typeCache.Length);
@@ -219,6 +223,7 @@ namespace Lua {
             Array.Copy(m_methodArgOne, newArray, m_methodArgOne.Length);
             return newArray;
         }
+
         private static object[] m_methodArgThree = new object[3];
         private static void SetThreeArgMethodArg(params object[] args) {
             for (int index = 0; index < m_methodArgThree.Length; index++)
@@ -232,6 +237,7 @@ namespace Lua {
             Array.Copy(m_methodArgThree, newArray, m_methodArgThree.Length);
             return newArray;
         }
+        
         private static object[] m_methodArgFour = new object[4];
         private static void SetFourArgMethodArg(params object[] args) {
             for (int index = 0; index < m_methodArgFour.Length; index++)

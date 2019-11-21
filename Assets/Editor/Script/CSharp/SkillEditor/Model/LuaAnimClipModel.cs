@@ -178,136 +178,7 @@ namespace SkillEditor {
             SetFrameData(index, data, false);
         }
 
-        public static void DeleteEffectData(int frameIndex, int effectIndex) {
-            FrameData frameData = GetFrameData(frameIndex);
-            EffectData[] dataList = frameData.effectFrameData.effectData.dataList;
-            if (dataList.Length <= 1)
-                frameData.effectFrameData.effectData.dataList = null;
-            else {
-                List<EffectData> list = new List<EffectData>(dataList);
-                list.RemoveAt(effectIndex);
-                for (int index = 0; index < list.Count; index++) {
-                    EffectData data = list[index];
-                    data.index = (ushort)(index + 1);
-                    list[index] = data;
-                }
-                frameData.effectFrameData.effectData.dataList = list.ToArray();
-            }
-            SetFrameData(frameIndex, frameData, false);
-        }
-
-        public static void SetEffectData(int frameIndex, EffectData effectData) {
-            FrameData frameData = GetFrameData(frameIndex);
-            int effectIndex = effectData.index - 1;
-            frameData.effectFrameData.effectData.dataList[effectIndex] = effectData;
-            SetFrameData(frameIndex, frameData, false);
-        }
-
-        public static void DeleteCubeData(int frameIndex, int cubeIndex) {
-            FrameData frameData = GetFrameData(frameIndex);
-            CubeData[] dataList = frameData.hitFrameData.cubeData.dataList;
-            if (dataList.Length <= 1)
-                frameData.hitFrameData.cubeData.dataList = null;
-            else {    
-                List<CubeData> list = new List<CubeData>(dataList);
-                list.RemoveAt(cubeIndex);
-                for (int index = 0; index < list.Count; index++) {
-                    CubeData data = list[index];
-                    data.index = (ushort)(index + 1);
-                    list[index] = data;
-                }
-                frameData.hitFrameData.cubeData.dataList = list.ToArray();
-            }
-            SetFrameData(frameIndex, frameData, true);
-        }
-
-        public static void SetCubeData(int frameIndex, CubeData cubeData) {
-            FrameData frameData = GetFrameData(frameIndex);
-            int cubeIndex = cubeData.index - 1;
-            frameData.hitFrameData.cubeData.dataList[cubeIndex] = cubeData;
-            SetFrameData(frameIndex, frameData, false);
-        }
-
-        #region Reflection Method And Data
-        private static MethodInfo[] m_customDataMethod = new MethodInfo[6];
-        private const ushort GetTableListTypeMethodIndex = 0;
-        private const ushort GetStaticCacheListMethodIndex = 1;
-        private const ushort SetTableListMethodIndex = 2;
-        private const ushort GetTableListMethodIndex = 3;
-        private const ushort StaticCacheListClearMethodIndex = 4;
-        private const ushort StaticCacheListAddMethodIndex = 5;
-        private static object[] m_customDataCache = new object[3];
-        private const ushort CustomDataIndex = 0;
-        private const ushort StaticListIndex = 1;
-        private const ushort DatalistIndex = 2;
-        private static void SetCustomDataMethodAndData(FrameData frameData, FrameType frameType) {
-            IFieldValueTable table = (IFieldValueTable)frameData.GetFieldValueTableValue(frameType.ToString());
-            CustomData<EffectData> defaultCustomData = default;
-            string key_data = defaultCustomData.GetKey();
-            object customData = table.GetFieldValueTableValue(key_data);
-            Type customDataType = customData.GetType();
-
-            object staticList = customDataType.GetMethod("GetStaticCacheList").Invoke(customData, null);
-            Type staticListType = staticList.GetType();
-            staticListType.GetMethod("Clear").Invoke(staticList, null);
-
-            MethodInfo staticListAddMethod = staticListType.GetMethod("Add");
-            object[] argCache = new object[1];
-            Action<object> setArg = (object arg) => argCache[0] = arg;
-            Func<object[]> getArg = () => argCache;
-
-            object dataList = customDataType.GetMethod("GetTableList").Invoke(customData, null);
-            Type listType = customDataType.GetMethod("GetTableListType").Invoke(customData, null) as Type;
-            ITable data = (ITable)Activator.CreateInstance(listType);
-        }
-        #endregion       
-        public static void AddNewCustomData(int index, FrameType frameType) {
-            FrameData frameData = GetFrameData(index);
-            IFieldValueTable table = (IFieldValueTable)frameData.GetFieldValueTableValue(frameType.ToString());
-            CustomData<EffectData> defaultCustomData = default;
-            string key_data = defaultCustomData.GetKey();
-            object customData = table.GetFieldValueTableValue(key_data);
-            Type customDataType = customData.GetType();
-
-            object staticList = customDataType.GetMethod("GetStaticCacheList").Invoke(customData, null);
-            Type staticListType = staticList.GetType();
-            staticListType.GetMethod("Clear").Invoke(staticList, null);
-
-            MethodInfo staticListAddMethod = staticListType.GetMethod("Add");
-            object[] argCache = new object[1];
-            Action<object> setArg = (object arg) => argCache[0] = arg;
-            Func<object[]> getArg = () => argCache;
-
-            object dataList = customDataType.GetMethod("GetTableList").Invoke(customData, null);
-            Type listType = customDataType.GetMethod("GetTableListType").Invoke(customData, null) as Type;
-            ITable data = (ITable)Activator.CreateInstance(listType);
-
-            if (dataList == null) {
-                data.SetKey(1);
-                SetFramePriorityData(index, frameType, 1);
-                setArg(data);
-                staticListAddMethod.Invoke(staticList, getArg());
-            }
-            else {
-                Array array = dataList as Array;
-                for (int arrayIndex = 0; arrayIndex < array.Length; arrayIndex++) {
-                    setArg(array.GetValue(arrayIndex));
-                    staticListAddMethod.Invoke(staticList, getArg());
-                }
-                data.SetKey(array.Length);
-                setArg(data);
-                staticListAddMethod.Invoke(staticList, getArg());
-            }
-
-            customData = customDataType.GetMethod("SetTableList").Invoke(customData, null);
-            table.SetFieldValueTableValue(key_data, customData);
-            frameData.SetFieldValueTableValue(frameType.ToString(), table);
-            SetFrameData(index, frameData, false);
-        }
-
-        public static void AddNewCacheData(int index) => AddPriorityFrameData(index, FrameType.CacheBegin);
-        public static void AddNewSectionData(int index) => AddPriorityFrameData(index, FrameType.SectionOver);
-        private static void AddPriorityFrameData(int index, FrameType frameType) {
+        public static void AddPriorityFrameData(int index, FrameType frameType) {
             FrameData frameData = GetFrameData(index);
             PriorityFrameData priorityFrameData = (PriorityFrameData)frameData.GetFieldValueTableValue(frameType.ToString());
             priorityFrameData.priority = 1;
@@ -321,6 +192,123 @@ namespace SkillEditor {
             table.SetFieldValueTableValue(PriorityFrameData.Key_Priority, priority);
             frameData.SetFieldValueTableValue(frameType.ToString(), table);
             SetFrameData(index, frameData, false);
+        }
+
+        #region Reflection Method And Data
+
+        private static MethodInfo CustomDataSetTableListMethod;
+        private static MethodInfo CustomDataClearMethod;
+        private static MethodInfo CustomDataStaticCacheListAddMethod;
+        private static object[] m_staticCacheListAddArg = new object[1];
+        private static void SetStaticCacheListAddArg(object value) => m_staticCacheListAddArg[0] = value;
+        private static object[] GetStaticCacheListAddArg() => m_staticCacheListAddArg;
+        private static object[] m_customDataCache = new object[3];
+        private const ushort CustomDataIndex = 0;
+        private const ushort CustomDataStaticListIndex = 1;
+        private const ushort CustomDatalistIndex = 2;
+        private static object GetCustomData() => m_customDataCache[CustomDataIndex];
+        private static object GetCustomDataStaticList() => m_customDataCache[CustomDataStaticListIndex];
+        private static object GetCustomDataList() => m_customDataCache[CustomDatalistIndex];
+        private static Type ListType;
+        private static string Key_Data = null;
+        
+        private static void SetCustomDataMethodAndData(IFieldValueTable table) {
+            if (Key_Data == null) {
+                CustomData<EffectData> defaultCustomData = default;
+                Key_Data = defaultCustomData.GetKey();
+            }
+            m_customDataCache[CustomDataIndex] = table.GetFieldValueTableValue(Key_Data);
+            object customData = m_customDataCache[CustomDataIndex];
+            Type customDataType = customData.GetType();
+            CustomDataClearMethod = customDataType.GetMethod("Clear");
+            CustomDataSetTableListMethod = customDataType.GetMethod("SetTableList");
+
+            m_customDataCache[CustomDataStaticListIndex] = customDataType.GetMethod("GetStaticCacheList").Invoke(customData, null);
+            object staticList = m_customDataCache[CustomDataStaticListIndex];
+            Type staticListType = staticList.GetType();
+            staticListType.GetMethod("Clear").Invoke(staticList, null);
+            CustomDataStaticCacheListAddMethod = staticListType.GetMethod("Add");
+
+            m_customDataCache[CustomDatalistIndex] = customDataType.GetMethod("GetTableList").Invoke(customData, null);
+            ListType = customDataType.GetMethod("GetTableListType").Invoke(customData, null) as Type;
+        }
+        #endregion
+
+        public static void AddNewCustomSubData(int index, FrameType frameType) {
+            FrameData frameData = GetFrameData(index);
+            IFieldValueTable table = (IFieldValueTable)frameData.GetFieldValueTableValue(frameType.ToString());
+            SetCustomDataMethodAndData(table);
+            object customData = GetCustomData();
+            object staticList = GetCustomDataStaticList();
+            object dataList = GetCustomDataList();
+            ITable data = (ITable)Activator.CreateInstance(ListType);
+            if (dataList == null) {
+                data.SetKey(1);
+                SetFramePriorityData(index, frameType, 1);
+            }
+            else {
+                Array array = dataList as Array;
+                for (int arrayIndex = 0; arrayIndex < array.Length; arrayIndex++) {
+                    SetStaticCacheListAddArg(array.GetValue(arrayIndex));
+                    CustomDataStaticCacheListAddMethod.Invoke(staticList, GetStaticCacheListAddArg());
+                }
+                data.SetKey(array.Length);
+            }
+            SetStaticCacheListAddArg(data);
+            CustomDataStaticCacheListAddMethod.Invoke(staticList, GetStaticCacheListAddArg());
+            customData = CustomDataSetTableListMethod.Invoke(customData, null);
+            table.SetFieldValueTableValue(Key_Data, customData);
+            frameData.SetFieldValueTableValue(frameType.ToString(), table);
+            SetFrameData(index, frameData, false);
+        }
+
+        public static void DeleteCustomSubData(int frameIndex, int deleteIndex, FrameType frameType) {
+            FrameData frameData = GetFrameData(frameIndex);
+            IFieldValueTable table = (IFieldValueTable)frameData.GetFieldValueTableValue(frameType.ToString());
+            SetCustomDataMethodAndData(table);
+            object customData = GetCustomData();
+            object staticList = GetCustomDataStaticList();
+            Array dataList = GetCustomDataList() as Array;
+            if (dataList.Length <= 1)
+                customData = CustomDataClearMethod.Invoke(customData, null);
+            else {
+                for (int index = 0; index < dataList.Length; index++) {
+                    object key;
+                    if (index < deleteIndex)
+                        key = index + 1;
+                    else if (index == deleteIndex)
+                        continue;
+                    else
+                        key = index;
+                    ITable subTable = (ITable)dataList.GetValue(index);
+                    subTable.SetKey(key);
+                    SetStaticCacheListAddArg(subTable);
+                    CustomDataStaticCacheListAddMethod.Invoke(staticList, GetStaticCacheListAddArg());
+                }
+                customData = CustomDataSetTableListMethod.Invoke(customData, null);
+            }
+            table.SetFieldValueTableValue(Key_Data, customData);
+            frameData.SetFieldValueTableValue(frameType.ToString(), table);
+            SetFrameData(frameIndex, frameData, frameType == FrameType.Hit);
+        }
+
+        public static void SetCustomeSubData(int frameIndex, ITable data, FrameType frameType) {
+            FrameData frameData = GetFrameData(frameIndex);
+            IFieldValueTable table = (IFieldValueTable)frameData.GetFieldValueTableValue(frameType.ToString());
+            SetCustomDataMethodAndData(table);
+            Array dataList = GetCustomDataList() as Array;
+            string key = data.GetKey();
+            if (!ushort.TryParse(key, out ushort subDataIndex)) {
+                Debug.LogError("LuaAnimClipModel::SetCustomeSubData try parse key error");
+                return;
+            }
+            dataList.SetValue(data, subDataIndex - 1);
+            object customData = GetCustomData();
+            var info = customData.GetType().GetProperty("dataList");
+            info.SetValue(customData, dataList);
+            table.SetFieldValueTableValue(Key_Data, customData);
+            frameData.SetFieldValueTableValue(frameType.ToString(), table);
+            SetFrameData(frameIndex, frameData, false);
         }
 
         private static List<KeyValuePair<float, CubeData[]>> m_listCollision = new List<KeyValuePair<float, CubeData[]>>();

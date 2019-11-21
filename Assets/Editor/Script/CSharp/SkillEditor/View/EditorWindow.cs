@@ -189,9 +189,9 @@ namespace SkillEditor {
             if (SpaceWithButton(BtnAddCube))
                 Controller.AddNewCustomData(index, FrameType.Hit);
             if (data.cacheFrameData.IsNullTable() && SpaceWithButton(BtnAddCache))
-                Controller.AddNewCacheData(index);
+                Controller.AddPriorityFrameData(index, FrameType.CacheBegin);
             if (data.sectionFrameData.IsNullTable() && SpaceWithButton(BtnAddSection))
-                Controller.AddNewSectionData(index);
+                Controller.AddPriorityFrameData(index, FrameType.SectionOver);
             if (SpaceWithButton(BtnDelete))
                 Controller.DeleteFrameData(index);
         }
@@ -220,9 +220,9 @@ namespace SkillEditor {
             SpaceWithLabel(LabelZ);
             rotationData.z = TextField(rotationData.z);
             data.rotation = rotationData;
-            Controller.SetEffectData(frameIndex, data);
+            Controller.SetCustomeSubData(frameIndex, data, FrameType.PlayEffect);
             if (SpaceWithButton(BtnDelete))
-                Controller.DeleteEffectData(frameIndex, (int)data.index - 1);
+                Controller.DeleteCustomData(frameIndex, (int)data.index - 1, FrameType.PlayEffect);
             Space();
         }
 
@@ -242,9 +242,9 @@ namespace SkillEditor {
             data.height = TextField(data.height);
             SpaceWithLabel(LabelDepth);
             data.depth = TextField(data.depth);
-            Controller.SetCubeData(frameIndex, data);
+            Controller.SetCustomeSubData(frameIndex, data, FrameType.Hit);
             if (SpaceWithButton(BtnDelete))
-                Controller.DeleteCubeData(frameIndex, (int)data.index - 1);
+                Controller.DeleteCustomData(frameIndex, (int)data.index - 1, FrameType.Hit);
             Space();
         }
 
