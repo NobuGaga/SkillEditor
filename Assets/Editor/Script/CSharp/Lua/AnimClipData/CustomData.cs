@@ -13,6 +13,7 @@ namespace Lua.AnimClipData {
         }
 
         #region ITable Function
+        
         public string GetTableName() => "CustomData";
         public ushort GetLayer() => 6;
         public ReadType GetReadType() => ReadType.FixedToRepeat;
@@ -27,6 +28,7 @@ namespace Lua.AnimClipData {
         #endregion
     
         #region IRepeatKeyTable Function
+
         public Type GetTableListType() => typeof(T);
         private static List<T> m_listCache = new List<T>((ushort)Math.Pow(2, 1));
         public List<T> GetStaticCacheList() => m_listCache;

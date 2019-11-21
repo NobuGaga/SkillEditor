@@ -19,6 +19,7 @@ namespace Lua.AnimClipData {
         }
 
         #region ITable Function
+        
         public string GetTableName() => "EffectData";
         public ushort GetLayer() => 7;
         public ReadType GetReadType() => ReadType.Fixed;
@@ -36,6 +37,7 @@ namespace Lua.AnimClipData {
         #endregion
 
         #region IFieldKeyTable Function
+        
         private const string Key_Type = "type";
         private const string Key_Id = "id";
         private const string Key_Rotation = "rotation";

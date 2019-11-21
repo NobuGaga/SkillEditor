@@ -81,9 +81,11 @@ namespace SkillEditor {
 
         // Structure
         public static readonly string AnimDataFilePath = Tool.CombinePath(ProjectPath, "Assets/Editor/Script/Lua/AnimClipData.lua");
+        public static readonly string EffectConfFilePath = Tool.CombinePath(ProjectPath, "Assets/Editor/Script/Lua/EffectConf.lua");
         public const short ErrorIndex = -1;
         public const short LuaFileHeadLength = 64;
-        public const string LuaFileHeadStart = "AnimClipData = AnimClipData or {}";
+        public const string AnimClipDataFileHeadStart = "AnimClipData = AnimClipData or {}";
+        public const string EffectConfFileHeadStart = "EffectConf = Class(\"EffectConf\", ConfigBase)";
         public const short ModelCount = 2;
 
         // Lua

@@ -46,6 +46,7 @@ namespace Lua.AnimClipData {
         }
 
         #region ITable Function
+
         public string GetTableName() => "CubeData";
         public ushort GetLayer() => 7;
         public ReadType GetReadType() => ReadType.Fixed;
@@ -60,6 +61,7 @@ namespace Lua.AnimClipData {
         #endregion
 
         #region IFieldKeyTable Function
+        
         private const string Key_X = "x";
         private const string Key_Y = "y";
         private const string Key_Z = "z";

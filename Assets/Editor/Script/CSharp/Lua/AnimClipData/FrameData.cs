@@ -21,6 +21,7 @@ namespace Lua.AnimClipData {
         }
 
         #region ITable Function
+        
         public string GetTableName() => "FrameData";
         public ushort GetLayer() => 4;
         public ReadType GetReadType() => ReadType.RepeatToFixed;
@@ -53,7 +54,9 @@ namespace Lua.AnimClipData {
         #endregion
 
         #region IFieldKeyTable Function
+
         private const string Key_Time = "time";
+        
         public void SetFieldValueTableValue(string key, object value) {
             if (key == Key_Time) {
                 time = (float)value;

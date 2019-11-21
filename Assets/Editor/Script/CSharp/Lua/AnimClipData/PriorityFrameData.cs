@@ -15,6 +15,7 @@ namespace Lua.AnimClipData {
         }
 
         #region ITable Function
+        
         public string GetTableName() => "PriorityFrameData";
         public ushort GetLayer() => 5;
         public ReadType GetReadType() => ReadType.Fixed;
@@ -29,7 +30,9 @@ namespace Lua.AnimClipData {
         #endregion
 
         #region IFieldKeyTable Function
+
         public const string Key_Priority = "priority";
+        
         public void SetFieldValueTableValue(string key, object value) {
             switch (key) {
                 case Key_Priority:

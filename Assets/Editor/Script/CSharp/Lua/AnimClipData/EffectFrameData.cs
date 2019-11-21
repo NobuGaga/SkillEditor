@@ -15,6 +15,7 @@ namespace Lua.AnimClipData {
         }
 
         #region ITable Function
+        
         public string GetTableName() => "EffectFrameData";
         public ushort GetLayer() => 5;
         public ReadType GetReadType() => ReadType.Fixed;
@@ -32,6 +33,7 @@ namespace Lua.AnimClipData {
         #endregion
 
         #region IFieldKeyTable Function
+
         private const string Key_Priority = PriorityFrameData.Key_Priority;
         private const string Key_EffectData = "data";
         public void SetFieldValueTableValue(string key, object value) {
