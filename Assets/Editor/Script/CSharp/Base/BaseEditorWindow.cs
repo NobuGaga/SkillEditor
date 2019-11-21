@@ -98,10 +98,18 @@ public class BaseEditorWindow : EditorWindow {
         EndHorizontal(layout);
     }
 
-    protected void HorizontalLayoutUI(Action<int, object> uiFunction, int index, object data, Layout layout = Layout.Left) {
+    protected bool HorizontalLayoutUI(Func<int, bool> uiFunction, int data, Layout layout = Layout.Left) {
         BeginHorizontal(layout);
-        uiFunction(index, data);
+        bool result = uiFunction(data);
         EndHorizontal(layout);
+        return result;
+    }
+
+    protected bool HorizontalLayoutUI(Func<int, object, bool> uiFunction, int index, object data, Layout layout = Layout.Left) {
+        BeginHorizontal(layout);
+        bool result = uiFunction(index, data);
+        EndHorizontal(layout);
+        return result;
     }
 
     protected void BeginVertical(Layout layout = Layout.Top) {

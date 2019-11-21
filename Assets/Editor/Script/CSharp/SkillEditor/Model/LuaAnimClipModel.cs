@@ -281,7 +281,7 @@ namespace SkillEditor {
             object staticList = GetCustomDataStaticList();
             Array dataList = GetCustomDataList() as Array;
             if (dataList.Length <= 1)
-                customData = CustomDataClearMethod.Invoke(customData, null);
+                CustomDataClearMethod.Invoke(customData, null);
             else {
                 for (int index = 0; index < dataList.Length; index++) {
                     object key;

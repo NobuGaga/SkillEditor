@@ -163,7 +163,8 @@ namespace SkillEditor {
                 return;
             for (int index = 0; index < clipData.frameList.Length; index++) {
                 Space();
-                HorizontalLayoutUI(FrameDataTitleUI, index);
+                if (HorizontalLayoutUI(FrameDataTitleUI, index))
+                    break;
                 HorizontalLayoutUI(FrameDataUI, index);
                 FrameData data = GetFrameData(index);
                 if (!data.effectFrameData.IsNullTable()) {
@@ -181,7 +182,7 @@ namespace SkillEditor {
             }
         }
 
-        private void FrameDataTitleUI(int index) {
+        private bool FrameDataTitleUI(int index) {
             FrameData data = GetFrameData(index);
             SpaceWithLabel(LabelFrameData + (index + 1));
             if (SpaceWithButton(BtnAddEffect))
@@ -192,8 +193,11 @@ namespace SkillEditor {
                 Controller.AddPriorityFrameData(index, FrameType.CacheBegin);
             if (data.sectionFrameData.IsNullTable() && SpaceWithButton(BtnAddSection))
                 Controller.AddPriorityFrameData(index, FrameType.SectionOver);
-            if (SpaceWithButton(BtnDelete))
+            if (SpaceWithButton(BtnDelete)) {
                 Controller.DeleteFrameData(index);
+                return true;
+            }
+            return false;
         }
 
         private void FrameDataUI(int index) {
@@ -206,7 +210,7 @@ namespace SkillEditor {
 
         private void EffectFrameDataTitleUI(int index) => PriorityFrameDataTitleUI(index, FrameType.PlayEffect);
         private void EffectFrameDataUI(int frameIndex) => FrameDataListUI(frameIndex, FrameType.PlayEffect);
-        private void EffectDataUI(int frameIndex, object @object) {
+        private bool EffectDataUI(int frameIndex, object @object) {
             EffectData data = (EffectData)@object;
             SpaceWithLabel(LabelEffectType);
             data.type = TextField(data.type);
@@ -221,14 +225,16 @@ namespace SkillEditor {
             rotationData.z = TextField(rotationData.z);
             data.rotation = rotationData;
             Controller.SetCustomeSubData(frameIndex, data, FrameType.PlayEffect);
-            if (SpaceWithButton(BtnDelete))
+            bool isDelete = SpaceWithButton(BtnDelete);
+            if (isDelete)
                 Controller.DeleteCustomData(frameIndex, (int)data.index - 1, FrameType.PlayEffect);
             Space();
+            return isDelete;
         }
 
         private void HitFrameDataTitleUI(int index) => PriorityFrameDataTitleUI(index, FrameType.Hit);
         private void HitFrameDataUI(int frameIndex) => FrameDataListUI(frameIndex, FrameType.Hit);
-        private void CubeDataUI(int frameIndex, object  @object) {
+        private bool CubeDataUI(int frameIndex, object  @object) {
             CubeData data = (CubeData)@object;
             SpaceWithLabel(LabelX);
             data.x = TextField(data.x);
@@ -243,9 +249,11 @@ namespace SkillEditor {
             SpaceWithLabel(LabelDepth);
             data.depth = TextField(data.depth);
             Controller.SetCustomeSubData(frameIndex, data, FrameType.Hit);
-            if (SpaceWithButton(BtnDelete))
+            bool isDelete = SpaceWithButton(BtnDelete);
+            if (isDelete)
                 Controller.DeleteCustomData(frameIndex, (int)data.index - 1, FrameType.Hit);
             Space();
+            return isDelete;
         }
 
         private void CacheFrameDataTitleUI(int index) => PriorityFrameDataTitleUI(index, FrameType.CacheBegin);
@@ -278,7 +286,7 @@ namespace SkillEditor {
             object customData = table.GetFieldValueTableValue(defaultCustomData.GetKey());
             MethodInfo getTableListMethod = customData.GetType().GetMethod("GetTableList");
             Array dataList = getTableListMethod.Invoke(customData, null) as Array;
-            Action<int, object> uiFunction = default;
+            Func<int, object, bool> uiFunction = default;
             switch (frameType) {
                 case FrameType.PlayEffect:
                     uiFunction = EffectDataUI;
@@ -288,7 +296,8 @@ namespace SkillEditor {
                     break;
             }
             for (int index = 0; index < dataList.Length; index++)
-                HorizontalLayoutUI(uiFunction, frameData.index - 1, dataList.GetValue(index));
+                if (HorizontalLayoutUI(uiFunction, frameData.index - 1, dataList.GetValue(index)))
+                    break;
         }
 
         private void AnimationUI() {
