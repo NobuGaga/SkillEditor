@@ -120,6 +120,7 @@ namespace Lua {
         string GetLuaFilePath();
         string GetLuaFileHeadStart();
         List<T> GetModel();
+        string GetWriteFileString();
     }
 
     public interface IRepeatKeyTable<T> : ITable where T : ITable {

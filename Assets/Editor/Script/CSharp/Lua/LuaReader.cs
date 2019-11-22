@@ -314,7 +314,6 @@ namespace Lua {
         private static MethodInfo m_readFixedFieldTableValueMethod = typeof(LuaReader).GetMethod("ReadFixedFieldTableValue",
                                                                                 BindingFlags.NonPublic | BindingFlags.Static);
         private static IFieldValueTable ReadFixedFieldTableValue(string luaText, ref int index, IFieldValueTable table) {
-            int maxIndex = index;
             int endIndex = FindLuaTableEndIndex(luaText, index);
             FieldValueTableInfo[] array = table.GetFieldValueTableInfo();
             foreach (FieldValueTableInfo keyValue in array) {
@@ -330,10 +329,8 @@ namespace Lua {
                 valueIndex++;
                 FilterSpaceSymbol(luaText, ref valueIndex);
                 SetFixedFieldTableValue(luaText, ref valueIndex, keyValue, ref table);
-                if (valueIndex > maxIndex)
-                    maxIndex = valueIndex;
             }
-            index = maxIndex;
+            index = --endIndex;
             return table;
         }
 

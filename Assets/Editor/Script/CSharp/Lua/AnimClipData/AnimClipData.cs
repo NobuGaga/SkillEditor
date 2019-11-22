@@ -57,6 +57,7 @@ namespace Lua.AnimClipData {
         public string GetLuaFilePath() => Config.AnimDataFilePath;
         public string GetLuaFileHeadStart() => Config.AnimClipDataFileHeadStart;
         public List<AnimClipData> GetModel() => LuaAnimClipModel.AnimClipList;
+        public string GetWriteFileString() => LuaAnimClipModel.GetWriteFileString();
         #endregion
     }
 }

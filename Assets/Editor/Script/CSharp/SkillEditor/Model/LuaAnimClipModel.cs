@@ -345,16 +345,9 @@ namespace SkillEditor {
             return left.Key.CompareTo(right.Key);
         }
 
-        public static string GetWriteFileString(StringBuilder builder) {
+        public static string GetWriteFileString() {
             SaveCurrentClipData();
-            builder.Append(LuaFormat.CurlyBracesPair.start);
-            if (m_listAnimClip != null && m_listAnimClip.Count != 0) {
-                builder.Append(LuaFormat.LineSymbol);
-                for (int index = 0; index < m_listAnimClip.Count; index++)
-                    builder.Append(m_listAnimClip[index].ToString());
-            }
-            builder.Append(LuaFormat.CurlyBracesPair.end);
-            return builder.ToString();
+            return LuaWriter.GetWriteFileString(m_listAnimClip);
         }
 
         public static void Reset() {

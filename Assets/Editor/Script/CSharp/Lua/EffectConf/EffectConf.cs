@@ -43,7 +43,7 @@ namespace Lua.EffectConf {
         private const string Key_Name = "sName";
         private const string Key_PivotType = "iPivotType";
         private const string Key_PivotNodeName = "sPivot";
-        private const string Key_ParentPivotType = "iParentPivotType";
+        private const string Key_ParentPivotType = "iParenPivotType";
         private const string Key_ResourceName = "sResName";
         private const string Key_Loop = "iLoop";
         private const string Key_Break = "iBreak";
@@ -92,9 +92,9 @@ namespace Lua.EffectConf {
                 case Key_ResourceName:
                     return resourceName;
                 case Key_Loop:
-                    return isLoop;
+                    return isLoop ? 1 : 0;
                 case Key_Break:
-                    return isBreak;
+                    return isBreak ? 1 : 0;
                 default:
                     return null;
             }
@@ -108,11 +108,11 @@ namespace Lua.EffectConf {
             m_arraykeyValue[0] = new FieldValueTableInfo(Key_ID, ValueType.Int);
             m_arraykeyValue[1] = new FieldValueTableInfo(Key_Name, ValueType.String);
             m_arraykeyValue[2] = new FieldValueTableInfo(Key_PivotType, ValueType.Int);
-            m_arraykeyValue[3] = new FieldValueTableInfo(Key_PivotNodeName, ValueType.String);
-            m_arraykeyValue[4] = new FieldValueTableInfo(Key_ParentPivotType, ValueType.Int);
-            m_arraykeyValue[5] = new FieldValueTableInfo(Key_ResourceName, ValueType.String);
-            m_arraykeyValue[6] = new FieldValueTableInfo(Key_Loop, ValueType.Int);
-            m_arraykeyValue[7] = new FieldValueTableInfo(Key_Break, ValueType.Int);
+            m_arraykeyValue[3] = new FieldValueTableInfo(Key_ResourceName, ValueType.String);
+            m_arraykeyValue[4] = new FieldValueTableInfo(Key_PivotNodeName, ValueType.String);
+            m_arraykeyValue[5] = new FieldValueTableInfo(Key_Loop, ValueType.Int);
+            m_arraykeyValue[6] = new FieldValueTableInfo(Key_Break, ValueType.Int);
+            m_arraykeyValue[7] = new FieldValueTableInfo(Key_ParentPivotType, ValueType.Int);
             return m_arraykeyValue;
         }
         #endregion
@@ -122,6 +122,7 @@ namespace Lua.EffectConf {
         public string GetLuaFilePath() => Config.EffectConfFilePath;
         public string GetLuaFileHeadStart() => Config.EffectConfFileHeadStart;
         public List<EffectData> GetModel() => LuaEffectConfModel.EffectList;
+        public string GetWriteFileString() => LuaEffectConfModel.GetWriteFileString();
         #endregion
     }
 }

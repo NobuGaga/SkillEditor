@@ -221,6 +221,7 @@ namespace SkillEditor {
 
         public static void Reset() {
             LuaAnimClipModel.Reset();
+            LuaEffectConfModel.Reset();
             m_listDrawCubeData.Clear();
             if (m_model != null) {
                 Object.DestroyImmediate(m_model);
