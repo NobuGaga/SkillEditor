@@ -51,7 +51,7 @@ namespace Lua.EffectConf {
         public void SetFieldValueTableValue(string key, object value) {
             switch (key) {
                 case Key_ID:
-                    id = (ushort)(int)value;
+                    id = (uint)(int)value;
                     return;
                 case Key_Name:
                     name = value as string;
