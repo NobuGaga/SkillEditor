@@ -107,7 +107,7 @@ namespace Lua.EffectConf {
             m_arraykeyValue = new FieldValueTableInfo[8];
             m_arraykeyValue[0] = new FieldValueTableInfo(Key_ID, ValueType.Int);
             m_arraykeyValue[1] = new FieldValueTableInfo(Key_Name, ValueType.String);
-            m_arraykeyValue[1] = new FieldValueTableInfo(Key_PivotType, ValueType.Int);
+            m_arraykeyValue[2] = new FieldValueTableInfo(Key_PivotType, ValueType.Int);
             m_arraykeyValue[3] = new FieldValueTableInfo(Key_PivotNodeName, ValueType.String);
             m_arraykeyValue[4] = new FieldValueTableInfo(Key_ParentPivotType, ValueType.Int);
             m_arraykeyValue[5] = new FieldValueTableInfo(Key_ResourceName, ValueType.String);
