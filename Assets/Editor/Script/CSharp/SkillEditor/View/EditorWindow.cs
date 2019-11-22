@@ -41,6 +41,7 @@ namespace SkillEditor {
         private const string BtnPlay = "Play";
         private const string BtnPause = "Pause";
         private const string BtnStop = "Stop";
+        private const string LabelFrameFormat = "第 {0} 帧";
 
         private static bool m_isSelectPrefab;
         private static bool m_isNoAnimationClip;
@@ -317,6 +318,8 @@ namespace SkillEditor {
             if (playTime > clipTime)
                 playTime = clipTime;
             float time = Slider(playTime, clipTime);
+            ushort frameCount = (ushort)(time / Config.FramesPerSecond);
+            SpaceWithLabel(string.Format(LabelFrameFormat, frameCount));
             Controller.SetAnimationPlayTime(time);
         }
     }
