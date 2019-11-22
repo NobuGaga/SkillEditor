@@ -35,7 +35,11 @@ namespace Lua {
             builder.Append(LuaFormat.SpaceSymbol);
             builder.Append(LuaFormat.EqualSymbol);
             builder.Append(LuaFormat.SpaceSymbol);
+            if (keyValue.type == ValueType.String)
+                builder.Append(LuaFormat.QuotationPair.start);
             builder.Append(value);
+            if (keyValue.type == ValueType.String)
+                builder.Append(LuaFormat.QuotationPair.end);
             builder.Append(LuaFormat.CommaSymbol);
             builder.Append(LuaFormat.LineSymbol);
         }
