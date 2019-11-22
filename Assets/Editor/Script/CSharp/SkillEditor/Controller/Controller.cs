@@ -89,6 +89,7 @@ namespace SkillEditor {
             LuaReader.Read<AnimClipData>();
             LuaReader.Read<Lua.EffectConf.EffectData>();
             LuaAnimClipModel.SetCurrentEditModelName(m_model.name);
+            LuaEffectConfModel.Init();
         }
 
         public static void SetWeapon(int index) {

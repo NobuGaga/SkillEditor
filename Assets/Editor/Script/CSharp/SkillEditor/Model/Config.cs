@@ -47,6 +47,9 @@ namespace SkillEditor {
         public static readonly string WeaponAnimatorControllerPath = Tool.CombinePath(WeaponPath, AnimatorControllerFolder);
         public const short ModelWeaponCount = 2;
 
+        // Effect
+        public const string ModelSkillEffectPath = "Assets/fx/skill";
+
         // Scene
         private const string ScenePath = "Assets/Editor/Scene";
         private const string EditSceneName = "EditScene";

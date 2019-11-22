@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System;
-using System.Text;
 using System.Reflection;
+using System.Collections;
 using System.Collections.Generic;
 using Lua;
 using Lua.AnimClipData;
@@ -60,7 +60,7 @@ namespace SkillEditor {
         public static ClipData ClipData {
             set {
                 m_curClipData = value;
-                SetCollisionList();
+                SetFrameList<CubeData>(FrameType.Hit);
             }
             get => m_curClipData;
         }
@@ -88,7 +88,7 @@ namespace SkillEditor {
                     m_curStateData = stateData;
                     m_curClipIndex = clipIndex;
                     m_curClipData = clipData;
-                    SetCollisionList();
+                    SetFrameList<CubeData>(FrameType.Hit);
                 }
             }
         }
@@ -162,7 +162,7 @@ namespace SkillEditor {
             array[index] = data;
             m_curClipData.frameList = array;
             if (isRefresHitFrame)
-                SetCollisionList();
+                SetFrameList<CubeData>(FrameType.Hit);
         }
 
         public static FrameData GetFrameData(int index) {
@@ -321,27 +321,41 @@ namespace SkillEditor {
             SetFrameData(frameIndex, frameData, false);
         }
 
+        private static List<KeyValuePair<float, EffectData[]>> m_listEffect = new List<KeyValuePair<float, EffectData[]>>();
+        public static List<KeyValuePair<float, EffectData[]>> ListEffect => m_listEffect;
+
         private static List<KeyValuePair<float, CubeData[]>> m_listCollision = new List<KeyValuePair<float, CubeData[]>>();
         public static List<KeyValuePair<float, CubeData[]>> ListCollision => m_listCollision;
 
-        private static void SetCollisionList() {
-            m_listCollision.Clear();
+        private static void SetFrameList<T>(FrameType frameType) {
+            bool isEffect = frameType == FrameType.PlayEffect;
+            if (frameType != FrameType.Hit && !isEffect) {
+                Debug.LogError("LuaAnimClipModel::SetFrameList frame type error. type" + frameType);
+                return;
+            }
+            List<KeyValuePair<float,T[]>> list;
+            if (isEffect)
+                list = m_listEffect as List<KeyValuePair<float,T[]>>;
+            else
+                list = m_listCollision as List<KeyValuePair<float,T[]>>;
+            list.Clear();
             if (m_curClipData.frameList == null || m_curClipData.frameList.Length == 0)
                 return;
             FrameData[] frameList = m_curClipData.frameList;
             for (int index = 0; index < frameList.Length; index++) {
                 FrameData frameData = frameList[index];
-                CubeData[] dataList = frameData.hitFrameData.cubeData.dataList;
-                if (dataList == null || dataList.Length == 0)
-                    continue;
-                float time = frameData.time;
-                KeyValuePair<float, CubeData[]> timeCubeData = new KeyValuePair<float, CubeData[]>(time, dataList);
-                m_listCollision.Add(timeCubeData);
+                T[] dataList;
+                if (isEffect)
+                    dataList = frameData.effectFrameData.effectData.dataList as T[];
+                else
+                    dataList = frameData.hitFrameData.cubeData.dataList as T[];
+                KeyValuePair<float, T[]> timeCubeData = new KeyValuePair<float, T[]>(frameData.time, dataList);
+                list.Add(timeCubeData);
             }
-            m_listCollision.Sort(SortCollisionList);
+            list.Sort(SortFrameListByTime);
         }
 
-        private static int SortCollisionList(KeyValuePair<float, CubeData[]> left, KeyValuePair<float, CubeData[]> right) {
+        private static int SortFrameListByTime<T>(KeyValuePair<float, T[]> left, KeyValuePair<float, T[]> right) {
             return left.Key.CompareTo(right.Key);
         }
 
