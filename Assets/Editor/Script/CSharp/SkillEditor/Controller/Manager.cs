@@ -45,9 +45,20 @@ namespace SkillEditor {
             File.Copy(Config.EditorLayoutFilePath, Config.LocalEditorLayoutFilePath, true);
         }
 
+        private const ushort Save = 0;
+        private const ushort Cancel = 1;
+        private const ushort NotSave = 2;
+        private static string[] Button = new string[] { "保存", "取消", "不保存" };
+
         public static bool Exit() {
             if (!isEditorMode)
                 return true;
+            ushort result = (ushort)EditorUtility.DisplayDialogComplex("退出技能编辑器", "是否保存当前动作的更改",
+                                                                        Button[Save], Button[Cancel], Button[NotSave]);
+            if (result == Cancel)
+                return false;
+            if (result == Save)
+                Controller.WriteAnimClipData();
             AnimatorControllerManager.RevertAnimatorControllerFile();
             Controller.Exit();
             Config.Reset();
