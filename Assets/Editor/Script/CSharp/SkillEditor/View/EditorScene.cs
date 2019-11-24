@@ -11,9 +11,7 @@ namespace SkillEditor {
 
         private static List<CubeData> m_listDrawCubeData;
 
-        public static void SetDrawCubeData(List<CubeData> list) {
-            m_listDrawCubeData = list;
-        }
+        public static void SetDrawCubeData(List<CubeData> list) => m_listDrawCubeData = list;
 
         [DrawGizmo(GizmoType.NonSelected | GizmoType.NotInSelectionHierarchy)]
         public static void OnDrawCube(GameObject gameObject, GizmoType type) {
@@ -30,13 +28,9 @@ namespace SkillEditor {
             }
         }
 
-        public static void RegisterSceneGUI() {
-            SceneView.duringSceneGui += OnSceneGUI;
-        }
+        public static void RegisterSceneGUI() => SceneView.duringSceneGui += OnSceneGUI;
 
-        public static void UnregisterSceneGUI() {
-            SceneView.duringSceneGui -= OnSceneGUI;
-        }
+        public static void UnregisterSceneGUI() => SceneView.duringSceneGui -= OnSceneGUI;
 
         public static void OnSceneGUI(SceneView sceneView) {
             int controlID = GUIUtility.GetControlID(FocusType.Passive);

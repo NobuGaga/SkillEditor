@@ -8,13 +8,9 @@ namespace SkillEditor {
 
         private AnimationClip m_curClip;
 
-        public SkillClip(GameObject gameObject) {
-            Init(gameObject);
-        }
+        public SkillClip(GameObject gameObject) => Init(gameObject);
 
-        public override void Init<T>(T gameObject) {
-            m_gameObject = gameObject as GameObject;
-        }
+        public override void Init<T>(T gameObject) => m_gameObject = gameObject as GameObject;
 
         public override void Play(AnimationClip clip) {
             m_curClip = clip;
@@ -26,8 +22,6 @@ namespace SkillEditor {
             base.SetAnimationPlayTime(clip, time);
         }
 
-        protected override void SampleAnimation() {
-            m_curClip.SampleAnimation(m_gameObject, m_curPlayTime);
-        }
+        protected override void SampleAnimation() => m_curClip.SampleAnimation(m_gameObject, m_curPlayTime);
     }
 }

@@ -52,18 +52,14 @@ namespace SkillEditor {
         private static string[] m_animationClipNames;
         private static int[] m_animationClipIndexs;
 
-        public static void Open() {
-            Open<EditorWindow>(WindowName);
-        }
+        public static void Open() => Open<EditorWindow>(WindowName);
 
         public static void CloseWindow() {
             Clear();
             GetWindow<EditorWindow>().Close();
         }
 
-        public static void RefreshRepaint() {
-            GetWindow<EditorWindow>().Repaint();
-        } 
+        public static void RefreshRepaint() => GetWindow<EditorWindow>().Repaint();
 
         public static void Clear() {
             m_isSelectPrefab = false;

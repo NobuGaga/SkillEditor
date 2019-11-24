@@ -16,18 +16,16 @@ namespace SkillEditor {
             m_clearConsoleMethod.Invoke(null, null);
         }
 
-        public static string FileWithExtension(string fileName, string extension) {
-            return GetCacheString(string.Format("{0}.{1}", fileName, extension));
-        }
+        public static string FileWithExtension(string fileName, string extension) =>
+            GetCacheString(string.Format("{0}.{1}", fileName, extension));
 
         public static string FullPathToProjectPath(string fullPath) {
             int subIndex = fullPath.IndexOf("Assets/");
             return GetCacheString(fullPath.Substring(subIndex));
         }
 
-        public static string ProjectPathToFullPath(string projectPath) {
-            return GetCacheString(Config.ProjectPath + projectPath);
-        }
+        public static string ProjectPathToFullPath(string projectPath) =>
+            GetCacheString(Config.ProjectPath + projectPath);
 
         public static string CombinePath(string path1, string path2) {
             if (path1 == null || path1.Length == 0 || path2 == null || path2.Length == 0) {
@@ -76,18 +74,15 @@ namespace SkillEditor {
             return GetCacheString(fileName.Substring(0, subIndex));
         }
 
-        public static string GetFileNameWithoutPrefix(string fileName, string prefix) {
-            return GetCacheString(fileName.Substring(prefix.Length));
-        }
+        public static string GetFileNameWithoutPrefix(string fileName, string prefix) =>
+            GetCacheString(fileName.Substring(prefix.Length));
 
         public static string GetPathFromFilePath(string path, string fileName) {
             int subIndex = path.IndexOf(fileName);
             return GetCacheString(path.Substring(0, subIndex));
         }
 
-        internal static string GetCacheString(string text) {
-            return string.Intern(text);
-        }
+        internal static string GetCacheString(string text) => string.Intern(text);
 
         public static Type GetGenericityInterface(Type type, Type @interface) {
             Type[] interfaces = type.GetInterfaces();
@@ -103,8 +98,7 @@ namespace SkillEditor {
             return null;
         }
 
-        public static bool IsImplementInterface(Type type, Type @interface) {
-            return GetGenericityInterface(type, @interface) != null;
-        }
+        public static bool IsImplementInterface(Type type, Type @interface) =>
+            GetGenericityInterface(type, @interface) != null;
     }
 }

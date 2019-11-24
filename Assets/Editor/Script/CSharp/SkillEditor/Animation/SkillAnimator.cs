@@ -7,13 +7,9 @@ namespace SkillEditor {
         private Animator m_animator;
         private string m_clipName;
 
-        public SkillAnimator(Animator animator) {
-            Init(animator);
-        }
+        public SkillAnimator(Animator animator) => Init(animator);
 
-        public override void Init<T>(T animator) {
-            m_animator = animator as Animator;
-        }
+        public override void Init<T>(T animator) => m_animator = animator as Animator;
 
         private void CheckHasRecord(AnimationClip clip) {
             if (clip.name == m_clipName)

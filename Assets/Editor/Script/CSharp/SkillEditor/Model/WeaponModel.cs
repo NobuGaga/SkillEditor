@@ -14,9 +14,7 @@ namespace SkillEditor {
         private static string[] m_arrayWeapon;
         private static int[] m_arrayWeaponIndex;
 
-        static WeaponModel() {
-            Init();
-        }
+        static WeaponModel() => Init();
 
         private static void Init() {
             if (!Directory.Exists(Config.WeaponPath))
