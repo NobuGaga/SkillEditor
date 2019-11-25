@@ -19,7 +19,7 @@ namespace Lua.AnimClipData {
         #region ITable Function
 
         public string GetTableName() => "EffectRotationData";
-        public ushort GetLayer() => 8;
+        public ushort GetLayer() => 9;
         public ReadType GetReadType() => ReadType.Fixed;
         public KeyType GetKeyType() => KeyType.FixedField;
         public void SetKey(object key) { }
