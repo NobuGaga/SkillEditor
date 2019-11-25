@@ -102,7 +102,7 @@ namespace SkillEditor {
         private void EditorWindowUI() {
             Space();
             HorizontalLayoutUI(TitleUI);
-            if (IsNoSelectClip || LuaAnimClipModel.ClipDataState == State.None)
+            if (IsNoSelectClip || LuaAnimClipModel.CurrentState == State.None)
                 return;
             FrameListUI();
             Space();
@@ -148,7 +148,7 @@ namespace SkillEditor {
             if (IsNoSelectClip)
                 return;
             SpaceWithLabel(LabelModelClipStateTips);
-            State lastState = LuaAnimClipModel.ClipDataState;
+            State lastState = LuaAnimClipModel.CurrentState;
             State selectState = (State)EnumPopup(lastState);
             if (selectState != lastState)
                 Controller.SetAnimationStateData(selectState);
@@ -157,11 +157,11 @@ namespace SkillEditor {
         private FrameData GetFrameData(int index) => LuaAnimClipModel.GetFrameData(index);
         private Vector2 m_lastFrameListScrollPos;
         private void FrameListUI() {
-            ClipData clipData = LuaAnimClipModel.ClipData;
-            if (clipData.frameList == null || clipData.frameList.Length == 0)
+            FrameData[] frameList = LuaAnimClipModel.FrameList;
+            if (frameList == null || frameList.Length == 0)
                 return;
             m_lastFrameListScrollPos = BeginVerticalScrollView(m_lastFrameListScrollPos);
-            for (int index = 0; index < clipData.frameList.Length; index++) {
+            for (int index = 0; index < frameList.Length; index++) {
                 Space();
                 if (HorizontalLayoutUI(FrameDataTitleUI, index))
                     break;

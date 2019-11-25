@@ -88,7 +88,7 @@ namespace SkillEditor {
         private static void InitAnimClipData() {
             LuaReader.Read<AnimClipData>();
             LuaReader.Read<Lua.EffectConf.EffectData>();
-            LuaAnimClipModel.SetCurrentEditModelName(m_model.name);
+            LuaAnimClipModel.SetCurrentModelName(m_model.name);
             LuaEffectConfModel.Init();
         }
 
@@ -120,10 +120,10 @@ namespace SkillEditor {
 
         public static void SetAnimationClipData(int index) {
             AnimationModel.SetCurrentAnimationClip(index);
-            LuaAnimClipModel.SetCurrentEditClipName(AnimationModel.SelectAnimationClipName);
+            LuaAnimClipModel.SetCurrentClipName(AnimationModel.SelectAnimationClipName);
         }
 
-        public static void SetAnimationStateData(State state) => LuaAnimClipModel.ClipDataState = state;
+        public static void SetAnimationStateData(State state) => LuaAnimClipModel.SetCurrentStateData(state);
 
         public static void AddFrameData() => LuaAnimClipModel.AddFrameData();
         public static void DeleteFrameData(int index) => LuaAnimClipModel.DeleteFrameData(index);

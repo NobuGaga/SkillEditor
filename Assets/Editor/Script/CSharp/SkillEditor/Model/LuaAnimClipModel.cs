@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using System;
 using System.Reflection;
-using System.Collections;
 using System.Collections.Generic;
 using Lua;
 using Lua.AnimClipData;
@@ -10,26 +9,19 @@ namespace SkillEditor {
 
     internal static class LuaAnimClipModel {
 
+        private static int m_curModelIndex;
         private static List<AnimClipData> m_listAnimClip = new List<AnimClipData>(Config.ModelCount);
         public static List<AnimClipData> AnimClipList => m_listAnimClip;
-        private static int m_curModelIndex;
 
-        public static void SetCurrentEditModelName(string modelName) {
-            ModelName = modelName;
+        public static void SetCurrentModelName(string modelName) {
+            m_curModelIndex = Config.ErrorIndex;
+            for (int index = 0; index < m_listAnimClip.Count; index++)
+                if (m_listAnimClip[index].modelName == modelName) {
+                    m_curModelIndex = index;
+                    break;
+                }
             if (m_curModelIndex == Config.ErrorIndex)
                 AddNewAnimClipData(modelName);
-        }
-
-        public static string ModelName {
-            private set {
-                m_curModelIndex = Config.ErrorIndex;
-                for (int index = 0; index < m_listAnimClip.Count; index++)
-                    if (m_listAnimClip[index].modelName == value)
-                        m_curModelIndex = index;
-            }
-            get {
-                return GetAnimClipData().modelName;
-            }
         }
 
         private static void AddNewAnimClipData(string modelName) {
@@ -39,112 +31,191 @@ namespace SkillEditor {
             m_curModelIndex = m_listAnimClip.Count - 1;
         }
 
-        private static AnimClipData GetAnimClipData() {
-            if (m_curModelIndex == Config.ErrorIndex)
-                Debug.LogError("AnimClipModel current index is error index");
-            return m_listAnimClip[m_curModelIndex];
+        private static AnimClipData CurrentAnimClipData {
+            set => m_listAnimClip[m_curModelIndex] = value;
+            get {
+                if (m_curModelIndex == Config.ErrorIndex)
+                    Debug.LogError("AnimClipModel current index is error index");
+                return m_listAnimClip[m_curModelIndex];
+            }
+        }
+
+        private static void ResetModel() {
+            m_curModelIndex = Config.ErrorIndex;
+            m_listAnimClip.Clear();
+        }
+
+        private static List<StateData> m_listStateDataCache = new List<StateData>(2);
+        private static void RefreshClipGroupData(StateData[] array) {
+            m_listStateDataCache.Clear();
+            if (array == null || array.Length == 0)
+                return;
+            for (int index = 0; index < array.Length; index++)
+                m_listStateDataCache.Add(array[index]);
         }
 
         private static int m_curStateIndex;
-        private static StateData m_curStateData;
-        public static State ClipDataState {
+        private static StateData CurrentStateData {
             set {
-                m_curStateData.state = value;
+                AnimClipData animClipData = CurrentAnimClipData;
+                animClipData.stateList[m_curStateIndex] = value;
+                Array.Sort(animClipData.stateList, SortStateList);
+                CurrentAnimClipData = animClipData;
             }
-            get => m_curStateData.state;
-        }
-        private static List<StateData> m_listState = new List<StateData>(2);
-
-        private static int m_curClipIndex;
-        private static ClipData m_curClipData;
-        public static ClipData ClipData {
-            set {
-                m_curClipData = value;
-                SetFrameList<CubeData>(FrameType.Hit);
+            get {
+                StateData[] stateList = CurrentAnimClipData.stateList;
+                if (stateList == null || stateList.Length == 0 || m_curStateIndex == Config.ErrorIndex)
+                    return default;
+                return stateList[m_curStateIndex];
             }
-            get => m_curClipData;
         }
-        public static List<ClipData> m_listClip = new List<ClipData>(16);
 
-        public static void SetCurrentEditClipName(string clipName) {
-            if (clipName != m_curClipData.clipName)
-                SaveCurrentClipData();
-            ResetClip();
-            m_curClipData.clipName = clipName;
-            StateData[] stateList = GetAnimClipData().stateList;
-            if (stateList == null)
+        private static int SortStateList(StateData leftData, StateData rightData) =>
+            leftData.state.CompareTo(rightData.state);
+
+        public static State CurrentState {
+            get {
+                StateData[] stateList = CurrentAnimClipData.stateList;
+                if (stateList == null || stateList.Length == 0)
+                    return State.None;
+                return stateList[m_curStateIndex].state;
+            }
+        }
+
+        public static void SetCurrentStateData(State state) {
+            AnimClipData animClipData = CurrentAnimClipData;
+            StateData[] dataList = animClipData.stateList;
+            if (dataList == null || dataList. Length == 0) {
+                StateData newData = default;
+                newData.state = state;
+                dataList = new StateData[] { newData };
+                m_curStateIndex = 0;
+                animClipData.stateList = dataList;
+                CurrentAnimClipData = animClipData;
                 return;
-            for (int stateIndex = 0; stateIndex < stateList.Length; stateIndex++) {
-                StateData stateData = stateList[stateIndex];
-                m_listState.Add(stateData);
-                if (stateData.clipList == null && stateData.clipList.Length == 0)
+            }
+            State lastState = CurrentState;
+            if (state == lastState)
+                return;
+            StateData stateData = CurrentStateData;
+            if (stateData.clipList == null || stateData.clipList.Length == 0) {
+                stateData.state = state;
+                CurrentStateData = stateData;
+                return;    
+            }
+            RefreshClipGroupData(stateData.clipList);
+            m_listClipGroupCache.RemoveAt(m_curClipGroupIndex);
+            stateData.clipList = m_listClipGroupCache.ToArray();
+            CurrentStateData = stateData;
+            stateData.state = state;
+            m_curStateIndex = Config.ErrorIndex;
+            for (int index = 0; index < dataList.Length; index++) {
+                if (dataList[index].state == state) {
+                    m_curStateIndex = index;
+                    break;
+                }
+            }
+            if (m_curStateIndex == Config.ErrorIndex)
+            {}
+        }
+
+        private static List<ClipGroupData> m_listClipGroupCache = new List<ClipGroupData>(16);
+        private static void RefreshClipGroupData(ClipGroupData[] array) {
+            m_listClipGroupCache.Clear();
+            if (array == null || array.Length == 0)
+                return;
+            for (int index = 0; index < array.Length; index++)
+                m_listClipGroupCache.Add(array[index]);
+        }
+
+        private static int m_curClipGroupIndex;
+        private static ClipGroupData m_curClipGroupData;
+        
+        public static FrameData[] FrameList {
+            set => m_curClipGroupData.frameList.frameList = value;
+            get => m_curClipGroupData.frameList.frameList;
+        }
+
+        public static void SetCurrentClipName(string clipName) {
+            if (clipName == m_curClipGroupData.clipName)
+                return;
+            SaveCurrentClipData();
+            ResetClip();
+            StateData[] stateDataList = CurrentAnimClipData.stateList;
+            if (stateDataList == null || stateDataList.Length == 0)
+                return;
+            for (int stateIndex = 0; stateIndex < stateDataList.Length; stateIndex++) {
+                StateData stateData = stateDataList[stateIndex];
+                ClipGroupData[] clipList = stateData.clipList;
+                if (clipList == null || clipList.Length == 0)
                     continue;
-                for (int clipIndex = 0; clipIndex < stateData.clipList.Length; clipIndex++) {
-                    ClipData clipData = stateData.clipList[clipIndex];
-                    m_listClip.Add(clipData);
-                    if (clipData.clipName != clipName)
-                        continue;
-                    m_curStateIndex = stateIndex;
-                    m_curStateData = stateData;
-                    m_curClipIndex = clipIndex;
-                    m_curClipData = clipData;
-                    SetFrameList<CubeData>(FrameType.Hit);
+                for (int clipGroupIndex = 0; clipGroupIndex < clipList.Length; clipGroupIndex++) {
+                    ClipGroupData data = clipList[clipGroupIndex];
+                    if (data.clipName == clipName) {
+                        m_curStateIndex = stateIndex;
+                        m_curClipGroupIndex = clipGroupIndex;
+                        m_curClipGroupData = data;
+                        SetFrameList<CubeData>(FrameType.Hit);
+                    }
                 }
             }
         }
 
         private static void SaveCurrentClipData() {
-            if (m_curStateData.state == State.None || m_curClipData.IsNullTable())
-                return;
-            bool isNewData = m_curStateIndex == Config.ErrorIndex && m_curClipIndex == Config.ErrorIndex;
-            if (!isNewData) {
-                m_curStateData.clipList[m_curClipIndex] = m_curClipData;
-                m_listAnimClip[m_curModelIndex].stateList[m_curStateIndex] = m_curStateData;
-                return;
-            }
-            m_listClip.Add(m_curClipData);
-            m_curStateData.clipList = m_listClip.ToArray();
-            int stateIndex = Config.ErrorIndex;
-            for (int index = 0; index < m_listState.Count; index++) {
-                if (m_listState[index].state == m_curStateData.state){
-                    stateIndex = index;
-                    break;
-                }
-            }
-            if (stateIndex != Config.ErrorIndex) {
-                m_listAnimClip[m_curModelIndex].stateList[stateIndex] = m_curStateData;
-                return;
-            }
-            m_listState.Add(m_curStateData);
-            m_listState.Sort(SortStateList);
-            AnimClipData animClipData = GetAnimClipData();
-            animClipData.stateList = m_listState.ToArray();
-            m_listAnimClip[m_curModelIndex] = animClipData;
+            // if (CurrentState == State.None || m_curClipGroupData.IsNullTable())
+            //     return;
+            // bool isNewData = m_curStateIndex == Config.ErrorIndex && m_curClipIndex == Config.ErrorIndex;
+            // if (!isNewData) {
+            //     m_curStateData.clipList[m_curClipIndex] = m_curClipData;
+            //     m_listAnimClip[m_curModelIndex].stateList[m_curStateIndex] = m_curStateData;
+            //     return;
+            // }
+            // m_listClip.Add(m_curClipData);
+            // m_curStateData.clipList = m_listClip.ToArray();
+            // int stateIndex = Config.ErrorIndex;
+            // for (int index = 0; index < m_listState.Count; index++) {
+            //     if (m_listState[index].state == m_curStateData.state){
+            //         stateIndex = index;
+            //         break;
+            //     }
+            // }
+            // AnimClipData animClipData = CurrentAnimClipData;
+            // animClipData.stateList = m_listState.ToArray();
+            // m_listAnimClip[m_curModelIndex] = animClipData;
         }
 
-        private static int SortStateList(StateData leftData, StateData rightData) {
-            return leftData.state.CompareTo(rightData.state);
+        private static void ResetClip(){
+            m_curStateIndex = Config.ErrorIndex;
+            m_curClipGroupIndex = Config.ErrorIndex;
+            m_curClipGroupData.Clear();
+            m_listEffect.Clear();
+            m_listCollision.Clear();
+        }
+
+        public static void Reset() {
+            ResetModel();
+            ResetClip();
         }
 
         public static void AddFrameData() {
-            FrameData[] array = ClipData.frameList;
+            FrameData[] array = FrameList;
             FrameData data = new FrameData();
             if (array == null) {
                 data.index = 1;
                 array = new FrameData[] { data };
-                m_curClipData.frameList = array;
+                FrameList = array;
                 return;
             }
             data.index = (ushort)array.Length;
             List<FrameData> list = new List<FrameData>(array);
             list.Add(new FrameData());
-            m_curClipData.frameList = list.ToArray();
+            FrameList = list.ToArray();
         }
 
         public static void DeleteFrameData(int index) {
-            FrameData[] array = ClipData.frameList;
+            FrameData[] array = FrameList;
             if (array.Length <= 1)
-                m_curClipData.frameList = null;
+                FrameList = null;
             else {
                 List<FrameData> list = new List<FrameData>(array);
                 list.RemoveAt(index);
@@ -153,20 +224,20 @@ namespace SkillEditor {
                     data.index = (ushort)(index + 1);
                     list[index] = data;
                 }
-                m_curClipData.frameList = list.ToArray();
+                FrameList = list.ToArray();
             }
         }
 
         private static void SetFrameData(int index, FrameData data, bool isRefresHitFrame) {
-            FrameData[] array = ClipData.frameList;
+            FrameData[] array = FrameList;
             array[index] = data;
-            m_curClipData.frameList = array;
+            FrameList = array;
             if (isRefresHitFrame)
                 SetFrameList<CubeData>(FrameType.Hit);
         }
 
         public static FrameData GetFrameData(int index) {
-            FrameData[] list = ClipData.frameList;
+            FrameData[] list = FrameList;
             if (list == null && index >= 0 && index < list.Length)
                 return default;
             return list[index];
@@ -339,11 +410,10 @@ namespace SkillEditor {
             else
                 list = m_listCollision as List<KeyValuePair<float,T[]>>;
             list.Clear();
-            if (m_curClipData.frameList == null || m_curClipData.frameList.Length == 0)
+            if (FrameList == null || FrameList.Length == 0)
                 return;
-            FrameData[] frameList = m_curClipData.frameList;
-            for (int index = 0; index < frameList.Length; index++) {
-                FrameData frameData = frameList[index];
+            for (int index = 0; index < FrameList.Length; index++) {
+                FrameData frameData = FrameList[index];
                 T[] dataList;
                 if (isEffect)
                     dataList = frameData.effectFrameData.effectData.dataList as T[];
@@ -364,26 +434,6 @@ namespace SkillEditor {
         public static string GetWriteFileString() {
             SaveCurrentClipData();
             return LuaWriter.GetWriteFileString(m_listAnimClip);
-        }
-
-        public static void Reset() {
-            ResetModel();
-            ResetClip();
-        }
-
-        private static void ResetModel() {
-            m_curModelIndex = Config.ErrorIndex;
-            m_listAnimClip.Clear();
-        }
-
-        private static void ResetClip(){
-            m_curStateIndex = Config.ErrorIndex;
-            m_curStateData.Clear();
-            m_listState.Clear();
-            m_curClipIndex = Config.ErrorIndex;
-            m_curClipData.Clear();
-            m_listClip.Clear();
-            m_listCollision.Clear();
         }
     }
 }

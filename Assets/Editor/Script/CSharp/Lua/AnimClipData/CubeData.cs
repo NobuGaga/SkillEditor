@@ -48,7 +48,7 @@ namespace Lua.AnimClipData {
         #region ITable Function
 
         public string GetTableName() => "CubeData";
-        public ushort GetLayer() => 7;
+        public ushort GetLayer() => 8;
         public ReadType GetReadType() => ReadType.Fixed;
         public KeyType GetKeyType() => KeyType.Array;
         public void SetKey(object key) => index = (ushort)(int)key;

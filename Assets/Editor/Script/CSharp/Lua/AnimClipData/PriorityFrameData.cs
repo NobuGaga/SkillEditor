@@ -17,7 +17,7 @@ namespace Lua.AnimClipData {
         #region ITable Function
         
         public string GetTableName() => "PriorityFrameData";
-        public ushort GetLayer() => 5;
+        public ushort GetLayer() => 6;
         public ReadType GetReadType() => ReadType.Fixed;
         public KeyType GetKeyType() => KeyType.FixedField;
         public void SetKey(object key) => Enum.TryParse(key as string, false, out frameType);

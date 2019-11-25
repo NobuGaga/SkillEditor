@@ -46,13 +46,14 @@
   </PropertyGroup>
   <ItemGroup>     <Compile Include="Assets\Editor\Script\CSharp\Base\BaseEditorWindow.cs" />
      <Compile Include="Assets\Editor\Script\CSharp\Lua\AnimClipData\AnimClipData.cs" />
-     <Compile Include="Assets\Editor\Script\CSharp\Lua\AnimClipData\ClipData.cs" />
+     <Compile Include="Assets\Editor\Script\CSharp\Lua\AnimClipData\ClipGroupData.cs" />
      <Compile Include="Assets\Editor\Script\CSharp\Lua\AnimClipData\CubeData.cs" />
      <Compile Include="Assets\Editor\Script\CSharp\Lua\AnimClipData\CustomData.cs" />
      <Compile Include="Assets\Editor\Script\CSharp\Lua\AnimClipData\EffectData.cs" />
      <Compile Include="Assets\Editor\Script\CSharp\Lua\AnimClipData\EffectFrameData.cs" />
      <Compile Include="Assets\Editor\Script\CSharp\Lua\AnimClipData\EffectRotationData.cs" />
      <Compile Include="Assets\Editor\Script\CSharp\Lua\AnimClipData\FrameData.cs" />
+     <Compile Include="Assets\Editor\Script\CSharp\Lua\AnimClipData\FrameListData.cs" />
      <Compile Include="Assets\Editor\Script\CSharp\Lua\AnimClipData\HitFrameData.cs" />
      <Compile Include="Assets\Editor\Script\CSharp\Lua\AnimClipData\PriorityFrameData.cs" />
      <Compile Include="Assets\Editor\Script\CSharp\Lua\AnimClipData\StateData.cs" />
@@ -73,6 +74,7 @@
      <Compile Include="Assets\Editor\Script\CSharp\SkillEditor\Model\Config.cs" />
      <Compile Include="Assets\Editor\Script\CSharp\SkillEditor\Model\LuaAnimClipModel.cs" />
      <Compile Include="Assets\Editor\Script\CSharp\SkillEditor\Model\LuaEffectConfModel.cs" />
+     <Compile Include="Assets\Editor\Script\CSharp\SkillEditor\Model\ModelDataModel.cs" />
      <Compile Include="Assets\Editor\Script\CSharp\SkillEditor\Model\WeaponModel.cs" />
      <Compile Include="Assets\Editor\Script\CSharp\SkillEditor\Tool.cs" />
      <Compile Include="Assets\Editor\Script\CSharp\SkillEditor\View\EditorScene.cs" />

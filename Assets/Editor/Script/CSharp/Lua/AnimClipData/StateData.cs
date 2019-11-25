@@ -5,12 +5,12 @@ using SkillEditor;
 
 namespace Lua.AnimClipData {
 
-    public struct StateData : IRepeatKeyTable<ClipData> {
+    public struct StateData : IRepeatKeyTable<ClipGroupData> {
         
         public State state;
-        public ClipData[] clipList;
+        public ClipGroupData[] clipList;
 
-        public StateData(State state, ClipData[] clipList) {
+        public StateData(State state, ClipGroupData[] clipList) {
             this.state = state;
             this.clipList = clipList;
         }
@@ -54,15 +54,15 @@ namespace Lua.AnimClipData {
 
         #region IRepeatKeyTable Function
 
-        public Type GetTableListType() => typeof(ClipData);
-        private static List<ClipData> m_listCache = new List<ClipData>((ushort)Math.Pow(2, 4));
-        public List<ClipData> GetStaticCacheList() => m_listCache;
+        public Type GetTableListType() => typeof(ClipGroupData);
+        private static List<ClipGroupData> m_listCache = new List<ClipGroupData>((ushort)Math.Pow(2, 4));
+        public List<ClipGroupData> GetStaticCacheList() => m_listCache;
         public object SetTableList() {
             clipList = m_listCache.ToArray();
             return this;
         }
-        public void SetTableListData(ushort index, ClipData data) => clipList[index] = data;
-        public ClipData[] GetTableList() => clipList;
+        public void SetTableListData(ushort index, ClipGroupData data) => clipList[index] = data;
+        public ClipGroupData[] GetTableList() => clipList;
         #endregion
     }
 
