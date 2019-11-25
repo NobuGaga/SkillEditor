@@ -185,7 +185,9 @@ namespace SkillEditor {
 
         private bool FrameDataTitleUI(int index) {
             FrameData data = GetFrameData(index);
+            SetTextColor(Color.yellow);
             SpaceWithLabel(LabelFrameData + (index + 1));
+            SetTextColor(Color.white);
             if (SpaceWithButton(BtnAddEffect))
                 Controller.AddNewCustomData(index, FrameType.PlayEffect);
             if (SpaceWithButton(BtnAddCube))

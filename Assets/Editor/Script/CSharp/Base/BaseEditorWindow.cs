@@ -20,6 +20,8 @@ public class BaseEditorWindow : EditorWindow {
         return guiStyle;
     }
 
+    protected void SetTextColor(Color color) => GUI.contentColor = color;
+
     protected void Label(string text) => GUILayout.Label(text);
 
     protected void SpaceWithLabel(string text, float space = DefaultSpace) {
