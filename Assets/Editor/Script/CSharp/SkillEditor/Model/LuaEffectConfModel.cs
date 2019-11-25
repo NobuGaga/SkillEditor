@@ -36,6 +36,9 @@ namespace SkillEditor {
 
         public static string GetWriteFileString() => LuaWriter.GetWriteFileString(m_listEffect);
 
-        public static void Reset() => m_listEffect.Clear();
+        public static void Reset() {
+            m_listEffect.Clear();
+            m_dicIDEffectData.Clear();
+        }
     }
 }
