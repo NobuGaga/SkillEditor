@@ -349,6 +349,8 @@ namespace SkillEditor {
                     dataList = frameData.effectFrameData.effectData.dataList as T[];
                 else
                     dataList = frameData.hitFrameData.cubeData.dataList as T[];
+                if (dataList == null)
+                    continue;
                 KeyValuePair<float, T[]> timeCubeData = new KeyValuePair<float, T[]>(frameData.time, dataList);
                 list.Add(timeCubeData);
             }
