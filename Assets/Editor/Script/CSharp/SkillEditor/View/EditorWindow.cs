@@ -17,6 +17,8 @@ namespace SkillEditor {
         private const string LabelWeapon = "武器 ";
         private const string LabelModelClipTips = "动画 ";
         private const string LabelModelClipStateTips = "状态组 ";
+        private const string BtnAddClipGroupData = "增加动画数据";
+        private const string BtnDeleteClipGroupData = "删除动画数据";
 
         private const string LabelFrameData = "帧数据 ";
         private const string BtnAddFrame = "增加帧数据";
@@ -114,7 +116,8 @@ namespace SkillEditor {
             string modelName = Config.TempModelName;
             SpaceWithLabel(Tool.GetCacheString(LabelModelName + modelName));
             WeaponUI(modelName);
-            StateAndIDUI();
+            bool isNoneState = StateAndIDUI();
+            bool isZerorID = ClipIDUI();
             SpaceWithLabel(LabelModelClipTips);
             int selectIndex = m_lastClipIndex;
             if (m_animationClipNames != null && m_animationClipIndexs != null)
@@ -123,7 +126,7 @@ namespace SkillEditor {
                 m_lastClipIndex = selectIndex;
                 Controller.SetAnimationClipData(m_lastClipIndex);
             }
-            if (IsNoSelectClip)
+            if (IsNoSelectClip || isNoneState || isZerorID)
                 return;
             if (SpaceWithButton(BtnAddFrame))
                 Controller.AddFrameData();
@@ -145,19 +148,29 @@ namespace SkillEditor {
             }
         }
 
-        private void StateAndIDUI() {
+        private bool StateAndIDUI() {
             if (IsNoSelectClip)
-                return;
+                return true;
             SpaceWithLabel(LabelModelClipStateTips);
             State lastState = LuaAnimClipModel.CurrentState;
             State selectState = (State)EnumPopup(lastState);
-            if (selectState != lastState)
+            if (selectState != lastState && selectState != State.None)
                 Controller.SetAnimationStateData(selectState);
-            if (selectState == State.None)
-                return;
-            uint id = TextField(LuaAnimClipModel.CurrentClipID);
-            if (id != LuaAnimClipModel.CurrentClipID)
+            return selectState == State.None;
+        }
+
+        private bool ClipIDUI() {
+            uint lastID = LuaAnimClipModel.CurrentClipID;
+            uint id = TextField(lastID);
+            if (SpaceWithButton(BtnAddClipGroupData))
+                Controller.AddNewClipGroupData();
+            if (id == 0)
+                return true;
+            if (id != lastID)
                 Controller.SetAnimationClipID(id);
+            if (SpaceWithButton(BtnDeleteClipGroupData))
+                Controller.DeleteClipGroupData();
+            return false;
         }
 
         private FrameData GetFrameData(int index) => LuaAnimClipModel.GetFrameData(index);
