@@ -149,6 +149,8 @@ namespace SkillEditor {
                 m_listClipGroupDataCache.Add(array[index]);
         }
 
+        private static Dictionary<uint, ClipGroupData> m_dicIDClipGroupData = new Dictionary<uint, ClipGroupData>();
+
         private static int m_curClipGroupDataIndex;
         private static ClipGroupData CurrentClipGroupData {
             set {
@@ -162,7 +164,18 @@ namespace SkillEditor {
                 return CurrentStateData.clipList[m_curClipGroupDataIndex];
             }
         }
+        public static uint CurrentClipID {
+            get => CurrentClipGroupData.id;
+        }
         private static string CurrentClipName => CurrentClipGroupData.clipName;
+
+        public static void SetCurrentClipID(uint id) {
+                
+        }
+
+        private static void AddNewClipGroupData(uint id) {
+            
+        }
 
         public static FrameData[] FrameList {
             set {
@@ -191,7 +204,10 @@ namespace SkillEditor {
                     m_curStateDataIndex = stateIndex;
                     m_curClipGroupDataIndex = clipGroupIndex;
                     SetFrameList<CubeData>(FrameType.Hit);
-                    return;
+                    if (m_dicIDClipGroupData.ContainsKey(data.id))
+                        Debug.LogError("关键帧表 clip name " + data.clipName + " 配置相同 ID " + data.id);
+                    else
+                        m_dicIDClipGroupData.Add(data.id, data);
                 }
             }
         }
@@ -201,6 +217,7 @@ namespace SkillEditor {
             m_curClipGroupDataIndex = Config.ErrorIndex;
             m_listStateDataCache.Clear();
             m_listClipGroupDataCache.Clear();
+            m_dicIDClipGroupData.Clear();
             m_listFrameDataCache.Clear();
             m_listEffect.Clear();
             m_listCollision.Clear();

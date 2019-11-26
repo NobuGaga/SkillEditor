@@ -43,6 +43,13 @@ public class BaseEditorWindow : EditorWindow {
         return interge;
     }
 
+    protected uint TextField(uint interge) {
+        string intString = TextField(interge.ToString());
+        if (uint.TryParse(intString, out uint result))
+            return result;
+        return interge;
+    }
+
     protected float TextField(float number) {
         string floatString = TextField(number.ToString());
         if (float.TryParse(floatString, out float result))

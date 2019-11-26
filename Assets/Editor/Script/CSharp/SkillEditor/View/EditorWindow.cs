@@ -114,7 +114,7 @@ namespace SkillEditor {
             string modelName = Config.TempModelName;
             SpaceWithLabel(Tool.GetCacheString(LabelModelName + modelName));
             WeaponUI(modelName);
-            StateGroupUI();
+            StateAndIDUI();
             SpaceWithLabel(LabelModelClipTips);
             int selectIndex = m_lastClipIndex;
             if (m_animationClipNames != null && m_animationClipIndexs != null)
@@ -145,7 +145,7 @@ namespace SkillEditor {
             }
         }
 
-        private void StateGroupUI() {
+        private void StateAndIDUI() {
             if (IsNoSelectClip)
                 return;
             SpaceWithLabel(LabelModelClipStateTips);
@@ -153,6 +153,11 @@ namespace SkillEditor {
             State selectState = (State)EnumPopup(lastState);
             if (selectState != lastState)
                 Controller.SetAnimationStateData(selectState);
+            if (selectState == State.None)
+                return;
+            uint id = TextField(LuaAnimClipModel.CurrentClipID);
+            if (id != LuaAnimClipModel.CurrentClipID)
+                Controller.SetAnimationClipID(id);
         }
 
         private FrameData GetFrameData(int index) => LuaAnimClipModel.GetFrameData(index);
