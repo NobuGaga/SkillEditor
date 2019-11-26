@@ -107,6 +107,7 @@ namespace SkillEditor {
             FrameListUI();
             Space();
             HorizontalLayoutUI(AnimationUI);
+            Space();
         }
 
         private void TitleUI() {
@@ -169,11 +170,11 @@ namespace SkillEditor {
                 FrameData data = GetFrameData(index);
                 if (!data.effectFrameData.IsNullTable()) {
                     HorizontalLayoutUI(EffectFrameDataTitleUI, index);
-                    VerticalLayoutUI(EffectFrameDataUI, index);
+                    EffectFrameDataUI(index);
                 }
                 if (!data.hitFrameData.IsNullTable()) {
                     HorizontalLayoutUI(HitFrameDataTitleUI, index);
-                    VerticalLayoutUI(HitFrameDataUI, index);
+                    HitFrameDataUI(index);
                 }
                 if (!data.cacheFrameData.IsNullTable())
                     HorizontalLayoutUI(CacheFrameDataTitleUI, index);

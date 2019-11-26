@@ -89,29 +89,33 @@ namespace SkillEditor {
             }
             if (state == CurrentState)
                 return;
+            StateData lastStateData = CurrentStateData;
+            ClipGroupData clipGroupData = CurrentClipGroupData;
+            if (!lastStateData.IsNullTable()) {
+                SetClipGroupDataListCache(lastStateData.clipList);
+                m_listClipGroupDataCache.RemoveAt(m_curClipGroupDataIndex);
+                lastStateData.clipList = m_listClipGroupDataCache.ToArray();
+                CurrentStateData = lastStateData;
+            }
             int stateDataIndex = FindStateDataIndex(state);
             if (stateDataIndex == Config.ErrorIndex) {
-                AddNewStateData(state);
+                StateData newStateData = default;
+                newStateData.state = state;
+                newStateData.clipList = new ClipGroupData[] { clipGroupData };
+                AddNewStateData(state, newStateData);
                 return;
             }
-            StateData stateData = CurrentStateData;
-            SetClipGroupDataListCache(stateData.clipList);
-            ClipGroupData clipData = m_listClipGroupDataCache[m_curClipGroupDataIndex];
-            m_listClipGroupDataCache.RemoveAt(m_curClipGroupDataIndex);
-            stateData.clipList = m_listClipGroupDataCache.ToArray();
-            CurrentStateData = stateData;
-
             m_curStateDataIndex = stateDataIndex;
-            stateData = CurrentStateData;
-            stateData.state = state;
-            stateData.clipList = new ClipGroupData[] { clipData };
-            CurrentStateData = stateData;
+            StateData curStateData = CurrentStateData;
+            SetClipGroupDataListCache(curStateData.clipList);
+            m_listClipGroupDataCache.Add(clipGroupData);
+            curStateData.clipList = m_listClipGroupDataCache.ToArray();
+            CurrentStateData = curStateData;
         }
 
-        private static void AddNewStateData(State state) {
+        private static void AddNewStateData(State state, StateData data = default) {
             AnimClipData animClipData = CurrentAnimClipData;
             StateData[] dataList = animClipData.stateList;
-            StateData data = default;
             data.state = state;
             if (dataList == null || dataList. Length == 0) {
                 dataList = new StateData[] { data };
