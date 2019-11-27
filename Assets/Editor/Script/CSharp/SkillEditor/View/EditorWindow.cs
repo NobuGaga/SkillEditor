@@ -105,11 +105,12 @@ namespace SkillEditor {
         private void EditorWindowUI() {
             Space();
             HorizontalLayoutUI(TitleUI);
-            if (IsNoSelectClip || LuaAnimClipModel.CurrentState == State.None)
-                return;
-            FrameListUI();
-            Space();
-            HorizontalLayoutUI(AnimationUI);
+            if (!IsNoSelectClip && LuaAnimClipModel.CurrentState != State.None)
+                FrameListUI();
+            if (!IsNoSelectClip) {
+                Space();
+                HorizontalLayoutUI(AnimationUI);
+            }
             Space();
         }
 
@@ -129,9 +130,8 @@ namespace SkillEditor {
                 m_lastClipIndex = selectIndex;
                 Controller.SetAnimationClipData(m_lastClipIndex);
             }
-            if (IsNoSelectClip || isNoneState || isZeroID)
-                return;
-            if (SpaceWithButton(BtnAddFrame))
+            bool isReturn = IsNoSelectClip || isNoneState || isZeroID;
+            if (!isReturn && SpaceWithButton(BtnAddFrame))
                 Controller.AddFrameData();
             if (SpaceWithButton(BtnSave))
                 Controller.WriteAnimClipData();

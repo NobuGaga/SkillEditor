@@ -174,17 +174,24 @@ namespace SkillEditor {
             CurrentStateData = stateData;
         }
 
+        private const uint DefaultClipID = 1;
         public static void AddNewClipGroupData() {
             StateData stateData = CurrentStateData;
             SetClipGroupDataListCache(stateData.clipList);
+            for (ushort index = 0; index < m_listClipGroupDataCache.Count; index++)
+                if (m_listClipGroupDataCache[index].id == DefaultClipID)
+                    return;
             ClipGroupData clipGroupData = default;
-            clipGroupData.id = 1;
+            clipGroupData.id = DefaultClipID;
             clipGroupData.clipName = m_lastClipName;
             m_listClipGroupDataCache.Add(clipGroupData);
             SortClipGroupDataListCache();
-            m_curClipGroupDataIndex = m_listClipGroupDataCache.IndexOf(clipGroupData);
             stateData.clipList = m_listClipGroupDataCache.ToArray();
             CurrentStateData = stateData;
+            m_curClipGroupDataIndex = m_listClipGroupDataCache.IndexOf(clipGroupData);
+            m_stateClipGroupIndexCache.stateIndex = (ushort)m_curStateDataIndex;
+            m_stateClipGroupIndexCache.clipGroupIndex = (ushort)m_curClipGroupDataIndex;
+            m_listStateClipIndexPair.Add(m_stateClipGroupIndexCache);
         }
 
         public static void DeleteClipGroupData() {
