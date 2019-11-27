@@ -423,7 +423,7 @@ namespace SkillEditor {
             object staticList = GetCustomDataStaticList();
             object dataList = GetCustomDataList();
             ITable data = (ITable)Activator.CreateInstance(ListType);
-            if (table.IsNullTable()) {
+            if (dataList == null || (dataList as Array).Length == 0) {
                 data.SetKey(1);
                 SetFramePriorityData(index, frameType, 1);
             }
@@ -433,7 +433,7 @@ namespace SkillEditor {
                     SetStaticCacheListAddArg(array.GetValue(arrayIndex));
                     CustomDataStaticCacheListAddMethod.Invoke(staticList, GetStaticCacheListAddArg());
                 }
-                data.SetKey(array.Length);
+                data.SetKey(array.Length + 1);
             }
             SetStaticCacheListAddArg(data);
             CustomDataStaticCacheListAddMethod.Invoke(staticList, GetStaticCacheListAddArg());
