@@ -297,9 +297,9 @@ namespace SkillEditor {
                 FrameList = array;
                 return;
             }
-            data.index = (ushort)array.Length;
+            data.index = (ushort)(array.Length + 1);
             SetFrameDataListCache(array);
-            m_listFrameDataCache.Add(new FrameData());
+            m_listFrameDataCache.Add(data);
             FrameList = m_listFrameDataCache.ToArray();
         }
 
