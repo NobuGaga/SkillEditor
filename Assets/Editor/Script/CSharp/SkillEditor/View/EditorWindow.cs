@@ -17,6 +17,7 @@ namespace SkillEditor {
         private const string LabelWeapon = "武器 ";
         private const string LabelModelClipTips = "动画 ";
         private const string LabelModelClipStateTips = "状态组 ";
+        private const string LabelModelClipIDTips = "动画 ID";
         private const string BtnAddClipGroupData = "增加动画数据";
         private const string BtnDeleteClipGroupData = "删除动画数据";
 
@@ -117,7 +118,9 @@ namespace SkillEditor {
             SpaceWithLabel(Tool.GetCacheString(LabelModelName + modelName));
             WeaponUI(modelName);
             bool isNoneState = StateAndIDUI();
-            bool isZerorID = ClipIDUI();
+            bool isZerorID = true;
+            if (!isNoneState)
+                isZerorID = ClipIDUI();
             SpaceWithLabel(LabelModelClipTips);
             int selectIndex = m_lastClipIndex;
             if (m_animationClipNames != null && m_animationClipIndexs != null)
@@ -160,6 +163,7 @@ namespace SkillEditor {
         }
 
         private bool ClipIDUI() {
+            SpaceWithLabel(LabelModelClipIDTips);
             uint lastID = LuaAnimClipModel.CurrentClipID;
             uint id = TextField(lastID);
             if (SpaceWithButton(BtnAddClipGroupData))
