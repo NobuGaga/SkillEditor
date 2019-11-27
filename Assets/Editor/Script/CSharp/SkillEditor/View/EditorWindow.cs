@@ -118,9 +118,9 @@ namespace SkillEditor {
             SpaceWithLabel(Tool.GetCacheString(LabelModelName + modelName));
             WeaponUI(modelName);
             bool isNoneState = StateAndIDUI();
-            bool isZerorID = true;
+            bool isZeroID = true;
             if (!isNoneState)
-                isZerorID = ClipIDUI();
+                isZeroID = ClipIDUI();
             SpaceWithLabel(LabelModelClipTips);
             int selectIndex = m_lastClipIndex;
             if (m_animationClipNames != null && m_animationClipIndexs != null)
@@ -129,7 +129,7 @@ namespace SkillEditor {
                 m_lastClipIndex = selectIndex;
                 Controller.SetAnimationClipData(m_lastClipIndex);
             }
-            if (IsNoSelectClip || isNoneState || isZerorID)
+            if (IsNoSelectClip || isNoneState || isZeroID)
                 return;
             if (SpaceWithButton(BtnAddFrame))
                 Controller.AddFrameData();
@@ -163,9 +163,12 @@ namespace SkillEditor {
         }
 
         private bool ClipIDUI() {
-            SpaceWithLabel(LabelModelClipIDTips);
             uint lastID = LuaAnimClipModel.CurrentClipID;
-            uint id = TextField(lastID);
+            uint id = 0;
+            if (lastID != 0) {
+                SpaceWithLabel(LabelModelClipIDTips);
+                id = TextField(lastID);
+            }
             if (SpaceWithButton(BtnAddClipGroupData))
                 Controller.AddNewClipGroupData();
             if (id == 0)
