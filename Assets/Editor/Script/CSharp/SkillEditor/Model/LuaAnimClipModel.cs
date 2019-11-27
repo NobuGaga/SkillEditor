@@ -423,7 +423,7 @@ namespace SkillEditor {
             object staticList = GetCustomDataStaticList();
             object dataList = GetCustomDataList();
             ITable data = (ITable)Activator.CreateInstance(ListType);
-            if (dataList == null) {
+            if (table.IsNullTable()) {
                 data.SetKey(1);
                 SetFramePriorityData(index, frameType, 1);
             }
