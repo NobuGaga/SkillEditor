@@ -351,7 +351,7 @@ namespace SkillEditor {
         public static void SetFramePriorityData(int index, FrameType frameType, ushort priority) {
             FrameData frameData = GetFrameData(index);
             IFieldValueTable table = (IFieldValueTable)frameData.GetFieldValueTableValue(frameType.ToString());
-            table.SetFieldValueTableValue(PriorityFrameData.Key_Priority, priority);
+            table.SetFieldValueTableValue(PriorityFrameData.Key_Priority, (int)priority);
             frameData.SetFieldValueTableValue(frameType.ToString(), table);
             SetFrameData(index, frameData, false);
         }
