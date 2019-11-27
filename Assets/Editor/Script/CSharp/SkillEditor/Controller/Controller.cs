@@ -234,6 +234,8 @@ namespace SkillEditor {
                 Object.DestroyImmediate(m_weapon);
                 m_weapon = null;
             }
+            m_modelAnimation = null;
+            m_weaponAnimation = null;
         }
 
         public static void Exit() {
