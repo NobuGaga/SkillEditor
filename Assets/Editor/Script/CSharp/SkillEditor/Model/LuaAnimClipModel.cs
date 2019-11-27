@@ -348,6 +348,14 @@ namespace SkillEditor {
             SetFrameData(index, frameData, false);
         }
 
+        public static void DeletePriorityFrameData(int index, FrameType frameType) {
+            FrameData frameData = GetFrameData(index);
+            ITable table = (ITable)frameData.GetFieldValueTableValue(frameType.ToString());
+            table.Clear();
+            frameData.SetFieldValueTableValue(frameType.ToString(), table);
+            SetFrameData(index, frameData, false);
+        }
+
         public static void SetFramePriorityData(int index, FrameType frameType, ushort priority) {
             FrameData frameData = GetFrameData(index);
             IFieldValueTable table = (IFieldValueTable)frameData.GetFieldValueTableValue(frameType.ToString());
@@ -497,9 +505,9 @@ namespace SkillEditor {
             }
             List<KeyValuePair<float,T[]>> list;
             if (isEffect)
-                list = m_listEffect as List<KeyValuePair<float,T[]>>;
+                list = m_listEffect as List<KeyValuePair<float, T[]>>;
             else
-                list = m_listCollision as List<KeyValuePair<float,T[]>>;
+                list = m_listCollision as List<KeyValuePair<float, T[]>>;
             list.Clear();
             if (FrameList == null || FrameList.Length == 0)
                 return;

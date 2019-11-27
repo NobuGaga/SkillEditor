@@ -130,8 +130,9 @@ namespace SkillEditor {
                 m_lastClipIndex = selectIndex;
                 Controller.SetAnimationClipData(m_lastClipIndex);
             }
-            bool isReturn = IsNoSelectClip || isNoneState || isZeroID;
-            if (!isReturn && SpaceWithButton(BtnAddFrame))
+            if (IsNoSelectClip || isNoneState || isZeroID)
+                return;
+            if (SpaceWithButton(BtnAddFrame))
                 Controller.AddFrameData();
             if (SpaceWithButton(BtnSave))
                 Controller.WriteAnimClipData();
@@ -306,6 +307,8 @@ namespace SkillEditor {
             ushort newPriority = (ushort)TextField(originPriority);
             if (newPriority != originPriority)
                 Controller.SetFramePriorityData(index, frameType, newPriority);
+            if (SpaceWithButton(BtnDelete))
+                Controller.DeletePriorityFrameData(index, frameType);
         }
 
         private void FrameDataListUI(int frameIndex, FrameType frameType) {
@@ -324,6 +327,8 @@ namespace SkillEditor {
                     uiFunction = CubeDataUI;
                     break;
             }
+            if (dataList == null)
+                return;
             for (int index = 0; index < dataList.Length; index++)
                 if (HorizontalLayoutUI(uiFunction, frameData.index - 1, dataList.GetValue(index)))
                     break;
