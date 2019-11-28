@@ -33,7 +33,7 @@ namespace SkillEditor {
                 return;
             }
             subIndex += Config.ModelPrefabPrefix.Length;
-            int endIndex = prefabFullPath.IndexOf('\\', subIndex);
+            int endIndex = prefabFullPath.IndexOf('/', subIndex);
             if (endIndex == Config.ErrorIndex) {
                 Debug.LogError("选择模型预设路径错误");
                 return;
