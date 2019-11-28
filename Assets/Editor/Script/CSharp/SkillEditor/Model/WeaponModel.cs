@@ -82,15 +82,15 @@ namespace SkillEditor {
         }
 
         private static void InitModelWeaponClip(string modelName, string folderFullPath) {
+            if (m_dicModelClip.ContainsKey(modelName))
+                return;
             string clipPath = Tool.CombinePath(folderFullPath, Config.AnimationClipFolder);
             if (!Directory.Exists(clipPath))
                 return;
             string[] arrayFullPath = Directory.GetFiles(clipPath);
             if (arrayFullPath == null || arrayFullPath.Length == 0)
                 return;
-            if (!m_dicModelClip.ContainsKey(modelName))
-                m_dicModelClip.Add(modelName, new Dictionary<string, AnimationClip>());
-            Dictionary<string, AnimationClip> dicClip = m_dicModelClip[modelName];
+            Dictionary<string, AnimationClip> dicClip = null;
             for (int index = 0; index < arrayFullPath.Length; index++) {
                 string fileFullPath = arrayFullPath[index];
                 if (fileFullPath.EndsWith(Config.MetaExtension) || !fileFullPath.Contains(Config.AnimationClipSymbol) ||
@@ -100,12 +100,15 @@ namespace SkillEditor {
                 AnimationClip clip = AssetDatabase.LoadAssetAtPath<AnimationClip>(path);
                 if (clip == null)
                     continue;
-                string clipName = clip.name;
-                if (dicClip.ContainsKey(clipName))
-                    dicClip[clipName] = clip;
+                if (dicClip == null)
+                    dicClip = new Dictionary<string, AnimationClip>();
+                if (dicClip.ContainsKey(clip.name))
+                    dicClip[clip.name] = clip;
                 else
-                    dicClip.Add(clipName, clip);
+                    dicClip.Add(clip.name, clip);
             }
+            if (dicClip != null && dicClip.Count != 0)
+                m_dicModelClip.Add(modelName, dicClip);
         }
 
         public static string[] GetAllWeaponName(string modelName) {

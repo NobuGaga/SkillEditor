@@ -23,7 +23,8 @@ namespace SkillEditor {
                         m_listAnimationClipIndexs.Add(i);
                 }
                 else if (m_aniamtionClips.Length < m_listAnimationClipIndexs.Count)
-                    m_listAnimationClipIndexs.RemoveRange(m_aAnimationClipNames.Length, m_listAnimationClipIndexs.Count - 1);
+                    m_listAnimationClipIndexs.RemoveRange(m_aAnimationClipNames.Length, 
+                                                            m_listAnimationClipIndexs.Count - m_aniamtionClips.Length);
                 m_aAnimationClipIndexs = m_listAnimationClipIndexs.ToArray();
             } 
             get { return m_aniamtionClips; }
