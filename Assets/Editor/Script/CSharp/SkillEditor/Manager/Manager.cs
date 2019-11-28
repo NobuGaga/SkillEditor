@@ -9,7 +9,7 @@ namespace SkillEditor {
     internal static class Manager {
 
         private static bool isEditorMode {
-            get { return string.IsNullOrEmpty(ModelDataModel.CurrentPrefabPath); }
+            get { return !string.IsNullOrEmpty(ModelDataModel.CurrentPrefabPath); }
         }
 
         public static void SelectPrefab() {
@@ -17,6 +17,7 @@ namespace SkillEditor {
                                                             Config.ModelPrefabPath, Config.ModelPrefabExtension);
 		    if (string.IsNullOrEmpty(prefabPath) || prefabPath == ModelDataModel.CurrentPrefabPath)
 			    return;
+            ModelDataModel.SetPrefabFullPath(prefabPath);
             if (!isEditorMode && !EditorApplication.ExecuteMenuItem(Config.MenuPath)) {
                 Tool.ClearConsole();
                 File.Copy(Config.LocalEditorLayoutFilePath, Config.EditorLayoutFilePath);
