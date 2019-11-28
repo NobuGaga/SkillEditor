@@ -17,7 +17,6 @@ namespace SkillEditor {
                                                             Config.ModelPrefabPath, Config.ModelPrefabExtension);
 		    if (string.IsNullOrEmpty(prefabPath) || prefabPath == ModelDataModel.CurrentPrefabPath)
 			    return;
-            ModelDataModel.SetPrefabFullPath(prefabPath);
             if (!isEditorMode && !EditorApplication.ExecuteMenuItem(Config.MenuPath)) {
                 Tool.ClearConsole();
                 File.Copy(Config.LocalEditorLayoutFilePath, Config.EditorLayoutFilePath);
@@ -26,6 +25,7 @@ namespace SkillEditor {
             }
             EditorSceneManager.OpenScene(Config.EditScenePath);
             EditorApplication.wantsToQuit += Exit;
+            ModelDataModel.SetPrefabFullPath(prefabPath);
             Controller.Start(prefabPath);
         }
 
