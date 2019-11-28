@@ -115,7 +115,7 @@ namespace SkillEditor {
         }
 
         private void TitleUI() {
-            string modelName = Config.TempModelName;
+            string modelName = ModelDataModel.ModelName;
             SpaceWithLabel(Tool.GetCacheString(LabelModelName + modelName));
             WeaponUI(modelName);
             bool isNoneState = StateAndIDUI();

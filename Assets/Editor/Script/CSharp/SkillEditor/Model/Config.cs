@@ -21,25 +21,7 @@ namespace SkillEditor {
         public const string ModelPrefabPath = "Assets/Editor/Asset/prefabs";
         public const string ModelPrefabExtension = "prefab";
         public const string FilePanelTitle = "模型预设路径";
-        private static string m_prefabFullPath = string.Empty;
-        private static string m_clipFullPath = string.Empty;
-        private static string m_controllerPath = string.Empty;
-        public static string ControllerPath => m_controllerPath;
-        public static string PrefabPath {
-            set {
-                m_prefabFullPath = value;
-                if (m_prefabFullPath == string.Empty)
-                    return;
-                int subIndex = m_prefabFullPath.IndexOf("prefabs/");
-                string modelFileGroupFullPath = m_prefabFullPath.Substring(0, subIndex);
-                m_clipFullPath = Tool.CombinePath(modelFileGroupFullPath, "models");
-                m_controllerPath = Tool.CombinePath(modelFileGroupFullPath, AnimatorControllerFolder);
-                m_controllerPath = Tool.FullPathToProjectPath(m_controllerPath);
-            }
-            get { return m_prefabFullPath; }
-        }
-        public static string ClipGroupFullPath => m_clipFullPath;
-        public const string TempModelName = "nvwang";
+        public const string ModelPrefabPrefix = "hero_";
 
         // Weapon
         public static readonly string WeaponPath = Tool.CombinePath(Application.dataPath, "character/weapon");
@@ -96,11 +78,5 @@ namespace SkillEditor {
         public const ushort FrameListStringLength = 2048;
         public const ushort CustomDataListStringLength = 512;
         public const ushort RectDataListStringLength = 512;
-
-        public static void Reset() {
-            m_prefabFullPath = string.Empty;
-            m_clipFullPath = string.Empty;
-            m_controllerPath = string.Empty;
-        }
     }
 }

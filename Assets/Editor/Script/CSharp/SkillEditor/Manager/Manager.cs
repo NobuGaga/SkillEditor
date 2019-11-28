@@ -9,13 +9,13 @@ namespace SkillEditor {
     internal static class Manager {
 
         private static bool isEditorMode {
-            get { return Config.PrefabPath != string.Empty; }
+            get { return string.IsNullOrEmpty(ModelDataModel.CurrentPrefabPath); }
         }
 
         public static void SelectPrefab() {
 		    string prefabPath = EditorUtility.OpenFilePanel(Config.FilePanelTitle,
                                                             Config.ModelPrefabPath, Config.ModelPrefabExtension);
-		    if (prefabPath == null || prefabPath == string.Empty || prefabPath == Config.PrefabPath)
+		    if (string.IsNullOrEmpty(prefabPath) || prefabPath == ModelDataModel.CurrentPrefabPath)
 			    return;
             if (!isEditorMode && !EditorApplication.ExecuteMenuItem(Config.MenuPath)) {
                 Tool.ClearConsole();
@@ -25,7 +25,6 @@ namespace SkillEditor {
             }
             EditorSceneManager.OpenScene(Config.EditScenePath);
             EditorApplication.wantsToQuit += Exit;
-            Config.PrefabPath = prefabPath;
             Controller.Start(prefabPath);
         }
 
@@ -61,7 +60,7 @@ namespace SkillEditor {
                 Controller.WriteAnimClipData();
             AnimatorControllerManager.RevertAnimatorControllerFile();
             Controller.Exit();
-            Config.Reset();
+            ModelManager.Refresh();
             EditorApplication.wantsToQuit -= Exit;
             EditorSceneManager.OpenScene(Config.ExitScenePath);
             EditorApplication.ExecuteMenuItem(Config.ExitLayoutMenuPath);

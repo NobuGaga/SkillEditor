@@ -4,6 +4,7 @@
 
         public static void Refresh() {
             WeaponModel.Refresh();
+            ModelDataModel.Refresh();
         }
     }
 }

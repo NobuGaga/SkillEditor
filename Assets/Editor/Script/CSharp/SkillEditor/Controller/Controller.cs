@@ -46,7 +46,7 @@ namespace SkillEditor {
             SetAnimation(ref m_modelAnimation, isGeneric, m_model);
             if (!isGeneric)
                 return;
-            string sourcePath = Tool.FullPathToProjectPath(Config.ControllerPath);
+            string sourcePath = Tool.FullPathToProjectPath(ModelDataModel.ControllerPath);
             AnimatorControllerManager.RemoveAllAnimatorTransition(m_model.name, sourcePath);
         }
 
@@ -70,7 +70,7 @@ namespace SkillEditor {
 
         private static List<AnimationClip> m_listAnimationClip = new List<AnimationClip>(16);
         private static AnimationClip[] GetAllAnimationClip() {
-            string[] fileNames = Directory.GetFiles(Config.ClipGroupFullPath);
+            string[] fileNames = Directory.GetFiles(ModelDataModel.ClipFullPath);
             m_listAnimationClip.Clear();
             for (int index = 0; index < fileNames.Length; index++) {
                 if (fileNames[index].Contains(".meta") || !fileNames[index].Contains("@") ||
@@ -93,7 +93,7 @@ namespace SkillEditor {
         }
 
         public static void SetWeapon(int index) {
-            string path = WeaponModel.GetWeaponPrefabPath(Config.TempModelName, index);
+            string path = WeaponModel.GetWeaponPrefabPath(ModelDataModel.ModelName, index);
             if (!File.Exists(Tool.ProjectPathToFullPath(path)))
                 return;
             Transform[] nodes = m_model.transform.GetComponentsInChildren<Transform>();
@@ -112,8 +112,8 @@ namespace SkillEditor {
             m_weapon = LoadPrefab(path);
             m_weapon.transform.SetParent(rightHand);
             m_weapon.transform.localPosition = Vector3.zero;
-            if (WeaponModel.CheckModelHasWeaponClip(Config.TempModelName))
-                SetAnimation(ref m_weaponAnimation, WeaponModel.GetGenericState(Config.TempModelName), m_weapon);
+            if (WeaponModel.CheckModelHasWeaponClip(ModelDataModel.ModelName))
+                SetAnimation(ref m_weaponAnimation, WeaponModel.GetGenericState(ModelDataModel.ModelName), m_weapon);
             else
                 m_weaponAnimation = null;
         }
@@ -152,7 +152,7 @@ namespace SkillEditor {
             m_modelAnimation.Play(selectAnimationClip);
             if (m_weaponAnimation == null)
                 return;
-            AnimationClip clip = WeaponModel.GetAnimationClip(Config.TempModelName, selectAnimationClip.name);
+            AnimationClip clip = WeaponModel.GetAnimationClip(ModelDataModel.ModelName, selectAnimationClip.name);
             m_isNoWeaponClip = clip == null;
             if (m_isNoWeaponClip)
                 return;
