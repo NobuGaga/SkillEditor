@@ -47,7 +47,10 @@ namespace SkillEditor {
             m_dicModelPathData.Add(CurrentPrefabPath, data);
         }
 
-        public static void Clear() => CurrentPrefabPath = null;
+        public static void Clear() {
+            m_dicModelPathData.Clear();
+            CurrentPrefabPath = null;
+        }
 
         public static void Refresh() => Clear();
 
