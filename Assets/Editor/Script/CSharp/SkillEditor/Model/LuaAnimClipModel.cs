@@ -443,7 +443,7 @@ namespace SkillEditor {
             customData = CustomDataSetTableListMethod.Invoke(customData, null);
             table.SetFieldValueTableValue(Key_Data, customData);
             frameData.SetFieldValueTableValue(frameType.ToString(), table);
-            SetFrameData(index, frameData, false);
+            SetFrameData(index, frameData, frameType == FrameType.Hit);
         }
 
         public static void DeleteCustomSubData(int frameIndex, int deleteIndex, FrameType frameType) {
@@ -491,7 +491,7 @@ namespace SkillEditor {
             CustomDataSetTableListDataMethod.Invoke(customData, GetSetTableListDataArg());
             table.SetFieldValueTableValue(Key_Data, customData);
             frameData.SetFieldValueTableValue(frameType.ToString(), table);
-            SetFrameData(frameIndex, frameData, false);
+            SetFrameData(frameIndex, frameData, frameType == FrameType.Hit);
         }
 
         private static List<KeyValuePair<float, EffectData[]>> m_listEffect = new List<KeyValuePair<float, EffectData[]>>();
