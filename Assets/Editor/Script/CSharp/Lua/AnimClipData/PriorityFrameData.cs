@@ -21,7 +21,7 @@ namespace Lua.AnimClipData {
         public ReadType GetReadType() => ReadType.Fixed;
         public KeyType GetKeyType() => KeyType.FixedField;
         public void SetKey(object key) => Enum.TryParse(key as string, false, out frameType);
-        public string GetKey() => frameType.ToString();
+        public string GetKey() => LuaTable.GetArrayKeyString(frameType);
         public bool IsNullTable() => priority <= 0;
         public void Clear() => priority = 0;
 

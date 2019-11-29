@@ -286,7 +286,7 @@ namespace Lua {
             FilterNotesLine(luaText, ref index);
             LuaFormat.PairStringChar symbol = LuaFormat.SquareBracketPair;
             index = luaText.IndexOf(symbol.start, index);
-            if (index >= endIndex || index == Config.ErrorIndex) {
+            if (index >= endIndex || index == Config.ErrorIndex || !IsRangeInSameLayer(luaText, copyIndex, index)) {
                 index = copyIndex;
                 return Config.ErrorIndex;
             }
@@ -318,7 +318,7 @@ namespace Lua {
             FieldValueTableInfo[] array = table.GetFieldValueTableInfo();
             foreach (FieldValueTableInfo keyValue in array) {
                 int valueIndex = luaText.IndexOf(keyValue.key, index);
-                if (valueIndex == Config.ErrorIndex || valueIndex >= endIndex)
+                if (valueIndex == Config.ErrorIndex || valueIndex >= endIndex || !IsRangeInSameLayer(luaText, index, valueIndex))
                     continue;
                 valueIndex += keyValue.KeyLength;
                 FilterSpaceSymbol(luaText, ref valueIndex);
@@ -486,6 +486,17 @@ namespace Lua {
             for (; index < luaText.Length; index++)
                 if (luaText[index] != LuaFormat.SpaceSymbol)
                     break;
+        }
+
+        private static bool IsRangeInSameLayer(string luaText, int startIndex, int endIndex) {
+            ushort count = 0;
+            for (int index = startIndex; index < endIndex; index++) {
+                if (luaText[index] == LuaFormat.CurlyBracesPair.start)
+                    count++;
+                else if (luaText[index] == LuaFormat.CurlyBracesPair.end)
+                    count--;
+            }
+            return count == 0;
         }
 
         private static void PrintErrorWhithLayer(string text, int index) {

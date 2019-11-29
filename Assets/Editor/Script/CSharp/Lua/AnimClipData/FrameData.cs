@@ -1,5 +1,6 @@
 using System;
 using System.Text;
+using System.Collections.Generic;
 
 namespace Lua.AnimClipData {
 
@@ -56,16 +57,14 @@ namespace Lua.AnimClipData {
         #region IFieldKeyTable Function
 
         private const string Key_Time = "time";
+        private static Dictionary<string, FrameType> m_dicKeyToFrameType;
         
         public void SetFieldValueTableValue(string key, object value) {
             if (key == Key_Time) {
                 time = (float)value;
                 return;
             }
-            if (!Enum.TryParse(key, false, out FrameType frameType)) {
-                UnityEngine.Debug.LogError("FrameData::SetFieldValueTableValue not exit key : " + key);
-                return;
-            }
+            FrameType frameType = GetFrameTypeFromKey(key);
             switch (frameType) {
                 case FrameType.Hit:
                     hitFrameData = (HitFrameData)value;
@@ -87,10 +86,7 @@ namespace Lua.AnimClipData {
         public object GetFieldValueTableValue(string key) {
             if (key == Key_Time)
                 return time;
-            if (!Enum.TryParse(key, false, out FrameType frameType)) {
-                UnityEngine.Debug.LogError("FrameData::GetFieldValueTableValue not exit key : " + key);
-                return null;
-            }
+            FrameType frameType = GetFrameTypeFromKey(key);
             switch (frameType) {
                 case FrameType.Hit:
                     return hitFrameData;
@@ -110,21 +106,34 @@ namespace Lua.AnimClipData {
             if (m_arraykeyValue != null)
                 return m_arraykeyValue;
             Array arrayframeType = Enum.GetValues(typeof(FrameType));
+            m_dicKeyToFrameType = new Dictionary<string, FrameType>(arrayframeType.Length);
             m_arraykeyValue = new FieldValueTableInfo[arrayframeType.Length + 1];
             m_arraykeyValue[0] = new FieldValueTableInfo(Key_Time, ValueType.Number);
             for (short index = 0; index < arrayframeType.Length; index++) {
                 FrameType frameType = (FrameType)arrayframeType.GetValue(index);
-                m_arraykeyValue[index + 1] = new FieldValueTableInfo(frameType.ToString(), ValueType.Table);    
+                string key = LuaTable.GetArrayKeyString(frameType);
+                m_arraykeyValue[index + 1] = new FieldValueTableInfo(key, ValueType.Table);    
+                m_dicKeyToFrameType.Add(key, frameType);
             }
             return m_arraykeyValue;
         }
         #endregion
+
+        private FrameType GetFrameTypeFromKey(string key) {
+            if (!Enum.TryParse(key, false, out FrameType frameType) && !m_dicKeyToFrameType.ContainsKey(key)) {
+                UnityEngine.Debug.LogError("FrameData::GetFieldValueTableValue not exit key : " + key);
+                return default;
+            }
+            if (m_dicKeyToFrameType.ContainsKey(key))
+                frameType = m_dicKeyToFrameType[key];
+            return frameType;
+        }       
     }
 
     public enum FrameType {
-        Hit,
-        PlayEffect,
-        CacheBegin,
-        SectionOver,
+        Hit = 4,
+        PlayEffect = 6,
+        CacheBegin = 8,
+        SectionOver = 9,
     }
 }

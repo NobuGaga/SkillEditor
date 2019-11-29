@@ -23,7 +23,7 @@ namespace Lua.AnimClipData {
         public ReadType GetReadType() => ReadType.Fixed;
         public KeyType GetKeyType() => KeyType.FixedField;
         public void SetKey(object key) { }
-        public string GetKey() => FrameType.Hit.ToString();
+        public string GetKey() => LuaTable.GetArrayKeyString(FrameType.Hit);
         public bool IsNullTable() => priority <= 0 || cubeData.IsNullTable();
         public void Clear() {
             priority = 0;

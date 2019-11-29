@@ -100,6 +100,12 @@ namespace Lua {
                 return null;
             return value.GetType();
         }
+
+        public static string GetArrayKeyString(Lua.AnimClipData.FrameType frameType) =>
+            GetArrayKeyString((ushort)frameType);
+
+        public static string GetArrayKeyString(ushort number) =>
+            Tool.GetCacheString(string.Format("[{0}]", number));
     }
 
     public interface ITable {
