@@ -421,8 +421,6 @@ namespace SkillEditor {
             IFieldValueTable table = (IFieldValueTable)frameData.GetFieldValueTableValue(frameType.ToString());
             if (table.IsNullTable())
                 table.SetFieldValueTableValue(PriorityFrameData.Key_Priority,  DefaultPriority);
-            if (frameType == FrameType.Hit)
-                table.SetFieldValueTableValue(HitFrameData.Key_Type, DefaultPriority);
             SetCustomDataMethodAndData(table);
             object customData = GetCustomData();
             object staticList = GetCustomDataStaticList();
