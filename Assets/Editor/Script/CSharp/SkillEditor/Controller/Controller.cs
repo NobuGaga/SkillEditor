@@ -111,7 +111,7 @@ namespace SkillEditor {
                 Object.DestroyImmediate(m_weapon);
             m_weapon = LoadPrefab(path);
             m_weapon.transform.SetParent(rightHand);
-            m_weapon.transform.localPosition = Vector3.zero;
+            Tool.NormalizeTransform(m_weapon);
             if (WeaponModel.CheckModelHasWeaponClip(ModelDataModel.ModelName))
                 SetAnimation(ref m_weaponAnimation, WeaponModel.GetGenericState(ModelDataModel.ModelName), m_weapon);
             else

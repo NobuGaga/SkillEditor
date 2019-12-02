@@ -100,5 +100,14 @@ namespace SkillEditor {
 
         public static bool IsImplementInterface(Type type, Type @interface) =>
             GetGenericityInterface(type, @interface) != null;
+
+        public static void NormalizeTransform(GameObject gameObject) =>
+            NormalizeTransform(gameObject.transform);
+
+        public static void NormalizeTransform(Transform transform) {
+            transform.localPosition = Vector3.zero;
+            transform.localRotation = Quaternion.AngleAxis(0, Vector3.zero);
+            transform.localScale = Vector3.one;
+        }
     }
 }
