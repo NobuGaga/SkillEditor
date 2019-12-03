@@ -133,12 +133,12 @@ namespace SkillEditor {
                     bool isHasAnimator = m_dicIDEffectAnimation.ContainsKey(effectData.id);
                     if (isHasParticle || isHasAnimator)
                         continue;
-                    CreateEffect(effectData.id, effectData.rotation.Rotation);
+                    CreateEffect(effectData);
                 }
         }
 
-        private static void CreateEffect(int id, Vector3 rotation) {
-            EffectConf.EffectData data = LuaEffectConfModel.GetEffectData((uint)id);
+        private static void CreateEffect(AnimClipData.EffectData animClipEffect) {
+            EffectConf.EffectData data = LuaEffectConfModel.GetEffectData((uint)animClipEffect.id);
             Transform parent = null;
             switch (data.parentPivotType) {
                 case EffectConf.ParentPivotType.Body:
@@ -156,18 +156,27 @@ namespace SkillEditor {
             if (guids == null || guids.Length == 0)
                 return;
             string path = AssetDatabase.GUIDToAssetPath(guids[0]);
-            GameObject effect = LoadPrefab(Tool.ProjectPathToFullPath(path));
-            effect.transform.SetParent(parent);
-            Tool.NormalizeTransform(effect);
+            GameObject effectNode = LoadPrefab(Tool.ProjectPathToFullPath(path));
+            effectNode.transform.SetParent(parent);
+            Tool.NormalizeTransform(effectNode);
+            Vector3 rotation = animClipEffect.rotation.Rotation;
             if (rotation != Vector3.zero)
-                effect.transform.localRotation = Quaternion.Euler(rotation);
-            ParticleSystem[] particles = effect.GetComponentsInChildren<ParticleSystem>(true);
+                effectNode.transform.localRotation = Quaternion.Euler(rotation);
+            SetEffectParticle(animClipEffect.id, effectNode);
+        }
+
+        private static void SetEffectParticle(int id, GameObject effectNode) {
+            ParticleSystem[] particles = effectNode.GetComponentsInChildren<ParticleSystem>(true);
+            if (particles == null || particles.Length == 0)
+                return;
+            for (ushort index = 0; index < particles.Length; index++)
+                particles[index].gameObject.SetActive(false);
             m_dicIDEffects.Add(id, particles);
-            Animator animator = effect.GetComponent<Animator>();
+            Animator animator = effectNode.GetComponent<Animator>();
             if (animator == null)
                 return;
             BaseAnimation animation = null;
-            SetAnimation(ref animation, true, effect);
+            SetAnimation(ref animation, true, effectNode);
             m_dicIDEffectAnimation.Add(id, animation);
         }
 
