@@ -16,6 +16,22 @@ namespace Lua.AnimClipData {
             this.z = z;
         }
 
+        private static Vector3 m_rotation;
+
+        public Vector3 Rotation {
+            set {
+                x = (short)value.x;
+                y = (short)value.y;
+                z = (short)value.z;
+            }
+            get {
+                m_rotation.x = x;
+                m_rotation.y = y;
+                m_rotation.z = z;
+                return m_rotation;
+            }
+        }
+
         #region ITable Function
 
         public string GetTableName() => "EffectRotationData";
@@ -24,8 +40,8 @@ namespace Lua.AnimClipData {
         public KeyType GetKeyType() => KeyType.FixedField;
         public void SetKey(object key) { }
         public string GetKey() => "rotation";
-        public bool IsNullTable() => x == 0 && y == 0 && z == 0;
-        public void Clear() => x = y = z = 0;
+        public bool IsNullTable() => Rotation == Vector3.zero;
+        public void Clear() => Rotation = Vector3.zero;
 
         private static readonly StringBuilder m_staticBuilder = new StringBuilder((ushort)Math.Pow(2, 8));
         public override string ToString() => LuaTable.GetFieldKeyTableText(m_staticBuilder, this);

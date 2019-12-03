@@ -106,8 +106,18 @@ namespace SkillEditor {
 
         public static void NormalizeTransform(Transform transform) {
             transform.localPosition = Vector3.zero;
-            transform.localRotation = Quaternion.AngleAxis(0, Vector3.zero);
+            transform.localRotation = Quaternion.Euler(Vector3.zero);
             transform.localScale = Vector3.one;
+        }
+
+        public static Transform GetTransformByName(GameObject node, string name) {
+            Transform[] nodes = node.GetComponentsInChildren<Transform>();
+            if (nodes == null)
+                return null;
+            for (int i = 0; i < nodes.Length; i++)
+                if (nodes[i].name == name)
+                    return nodes[i];
+            return null;
         }
     }
 }

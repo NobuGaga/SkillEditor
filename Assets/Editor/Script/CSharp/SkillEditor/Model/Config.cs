@@ -28,9 +28,10 @@ namespace SkillEditor {
         public const string WeaponFilePrefix = "wp_";
         public static readonly string WeaponAnimatorControllerPath = Tool.CombinePath(WeaponPath, AnimatorControllerFolder);
         public const short ModelWeaponCount = 2;
+        public const string WeaponParentNode = "R_Weapon_Point";
 
         // Effect
-        public const string ModelSkillEffectPath = "Assets/fx/skill";
+        public static string[] ModelSkillEffectPath = new string[] { "Assets/fx/skill" };
 
         // Scene
         private const string ScenePath = "Assets/Editor/Scene";

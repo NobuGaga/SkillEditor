@@ -255,6 +255,7 @@ namespace SkillEditor {
             m_stateClipGroupIndexCache = m_listStateClipIndexPair[0];
             m_curStateDataIndex = m_stateClipGroupIndexCache.stateIndex;
             m_curClipGroupDataIndex = m_stateClipGroupIndexCache.clipGroupIndex;
+            SetFrameList<EffectData>(FrameType.PlayEffect);
             SetFrameList<CubeData>(FrameType.Hit);
         }
 
@@ -319,10 +320,16 @@ namespace SkillEditor {
             }
         }
 
-        private static void SetFrameData(int index, FrameData data, bool isRefresHitFrame) {
+        private static Action m_effectChangeCall;
+        public static void SetEffectChangeCallback(Action call) => m_effectChangeCall = call;
+        private static void SetFrameData(int index, FrameData data, bool isRefreshEffectFrame, bool isRefresHitFrame) {
             FrameData[] array = FrameList;
             array[index] = data;
             FrameList = array;
+            if (isRefreshEffectFrame) {
+                SetFrameList<EffectData>(FrameType.PlayEffect);
+                m_effectChangeCall?.Invoke();
+            }
             if (isRefresHitFrame)
                 SetFrameList<CubeData>(FrameType.Hit);
         }
@@ -337,7 +344,7 @@ namespace SkillEditor {
         public static void SetFrameDataTime(int index, float time) {
             FrameData data = GetFrameData(index);
             data.time = time;
-            SetFrameData(index, data, false);
+            SetFrameData(index, data, false, false);
         }
 
         private const int DefaultPriority = 1;
@@ -346,7 +353,7 @@ namespace SkillEditor {
             PriorityFrameData priorityFrameData = (PriorityFrameData)frameData.GetFieldValueTableValue(frameType.ToString());
             priorityFrameData.priority = DefaultPriority;
             frameData.SetFieldValueTableValue(frameType.ToString(), priorityFrameData);
-            SetFrameData(index, frameData, false);
+            SetFrameData(index, frameData, false, false);
         }
 
         public static void DeletePriorityFrameData(int index, FrameType frameType) {
@@ -354,7 +361,7 @@ namespace SkillEditor {
             ITable table = (ITable)frameData.GetFieldValueTableValue(frameType.ToString());
             table.Clear();
             frameData.SetFieldValueTableValue(frameType.ToString(), table);
-            SetFrameData(index, frameData, false);
+            SetFrameData(index, frameData, false, false);
         }
 
         public static void SetFramePriorityData(int index, FrameType frameType, ushort priority) {
@@ -362,7 +369,7 @@ namespace SkillEditor {
             IFieldValueTable table = (IFieldValueTable)frameData.GetFieldValueTableValue(frameType.ToString());
             table.SetFieldValueTableValue(PriorityFrameData.Key_Priority, (int)priority);
             frameData.SetFieldValueTableValue(frameType.ToString(), table);
-            SetFrameData(index, frameData, false);
+            SetFrameData(index, frameData, false, false);
         }
 
         #region Reflection Method And Data
@@ -443,7 +450,7 @@ namespace SkillEditor {
             customData = CustomDataSetTableListMethod.Invoke(customData, null);
             table.SetFieldValueTableValue(Key_Data, customData);
             frameData.SetFieldValueTableValue(frameType.ToString(), table);
-            SetFrameData(index, frameData, frameType == FrameType.Hit);
+            SetFrameData(index, frameData, frameType == FrameType.PlayEffect, frameType == FrameType.Hit);
         }
 
         public static void DeleteCustomSubData(int frameIndex, int deleteIndex, FrameType frameType) {
@@ -473,7 +480,7 @@ namespace SkillEditor {
             }
             table.SetFieldValueTableValue(Key_Data, customData);
             frameData.SetFieldValueTableValue(frameType.ToString(), table);
-            SetFrameData(frameIndex, frameData, frameType == FrameType.Hit);
+            SetFrameData(frameIndex, frameData, frameType == FrameType.PlayEffect, frameType == FrameType.Hit);
         }
 
         public static void SetCustomeSubData(int frameIndex, ITable data, FrameType frameType) {
@@ -491,7 +498,7 @@ namespace SkillEditor {
             CustomDataSetTableListDataMethod.Invoke(customData, GetSetTableListDataArg());
             table.SetFieldValueTableValue(Key_Data, customData);
             frameData.SetFieldValueTableValue(frameType.ToString(), table);
-            SetFrameData(frameIndex, frameData, frameType == FrameType.Hit);
+            SetFrameData(frameIndex, frameData, frameType == FrameType.PlayEffect, frameType == FrameType.Hit);
         }
 
         private static List<KeyValuePair<float, EffectData[]>> m_listEffect = new List<KeyValuePair<float, EffectData[]>>();

@@ -1,3 +1,4 @@
+using UnityEngine;
 using System;
 using System.Text;
 using System.Collections.Generic;
@@ -11,7 +12,7 @@ namespace Lua.EffectConf {
         public string name;
         public ushort pivotType;
         public string pivotNodeName;
-        public ushort parentPivotType;
+        public ParentPivotType parentPivotType;
         public string resourceName;
         public bool isLoop;
         public bool isBreak;
@@ -28,7 +29,7 @@ namespace Lua.EffectConf {
             id == 0 || string.IsNullOrEmpty(name) || pivotType == 0 || string.IsNullOrEmpty(pivotNodeName) ||
             string.IsNullOrEmpty(resourceName);
         public void Clear() {
-            id = pivotType = parentPivotType = 0;
+            id = pivotType = 0;
             name = pivotNodeName = resourceName = null;
             isLoop = isBreak = false;
         }
@@ -63,7 +64,9 @@ namespace Lua.EffectConf {
                     pivotNodeName = value as string;
                     return;
                 case Key_ParentPivotType:
-                    parentPivotType = (ushort)(int)value;
+                    if (!Enum.TryParse(value.ToString(), false, out ParentPivotType type))
+                        Debug.LogError("EffectConf::SetFieldValueTableValue value type is not a ParentPivotType");
+                    parentPivotType = type;
                     return;
                 case Key_ResourceName:
                     resourceName = value as string;
@@ -88,7 +91,7 @@ namespace Lua.EffectConf {
                 case Key_PivotNodeName:
                     return pivotNodeName;
                 case Key_ParentPivotType:
-                    return parentPivotType;
+                    return (short)parentPivotType;
                 case Key_ResourceName:
                     return resourceName;
                 case Key_Loop:
@@ -124,5 +127,10 @@ namespace Lua.EffectConf {
         public List<EffectData> GetModel() => LuaEffectConfModel.EffectList;
         public string GetWriteFileString() => LuaEffectConfModel.GetWriteFileString();
         #endregion
+    }
+
+    public enum ParentPivotType {
+        Body = 0,
+        Weapon = 1,
     }
 }

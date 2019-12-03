@@ -3,7 +3,8 @@ using UnityEngine;
 using System.IO;
 using System.Collections.Generic;
 using Lua;
-using Lua.AnimClipData;
+using AnimClipData = Lua.AnimClipData;
+using EffectConf = Lua.EffectConf;
 
 namespace SkillEditor {
 
@@ -12,20 +13,25 @@ namespace SkillEditor {
         private static GameObject m_model;
         private static BaseAnimation m_modelAnimation;
         public static float PlayTime => m_modelAnimation != null ? m_modelAnimation.PlayTime : 0;
+
         private static GameObject m_weapon;
         private static BaseAnimation m_weaponAnimation;
         private static bool m_isNoWeaponClip = false;
 
+        private static Dictionary<int, ParticleSystem[]> m_dicIDEffects = new Dictionary<int, ParticleSystem[]>();
+        private static Dictionary<int, BaseAnimation> m_dicIDEffectAnimation = new Dictionary<int, BaseAnimation>();
+
+        private static double m_playStartTime;
         private static double m_lastTime;
 
-        private static List<CubeData> m_listDrawCubeData = new List<CubeData>();
+        private static List<AnimClipData.CubeData> m_listDrawCubeData = new List<AnimClipData.CubeData>();
 
         public static void Start(string prefabPath) {
             Reset();
             m_model = LoadPrefab(prefabPath);
             Selection.activeGameObject = null;
             InitModelAnimation();
-            InitAnimClipData();
+            InitLuaConfigData();
             EditorScene.SetDrawCubeData(m_listDrawCubeData);
             EditorScene.RegisterSceneGUI();
             EditorWindow.InitData(AnimationModel.AnimationClipNames, AnimationModel.AnimationClipIndexs);
@@ -85,26 +91,19 @@ namespace SkillEditor {
             return m_listAnimationClip.ToArray();
         }
 
-        private static void InitAnimClipData() {
-            LuaReader.Read<AnimClipData>();
-            LuaReader.Read<Lua.EffectConf.EffectData>();
+        private static void InitLuaConfigData() {
+            LuaReader.Read<AnimClipData.AnimClipData>();
+            LuaReader.Read<EffectConf.EffectData>();
             LuaAnimClipModel.SetCurrentModelName(m_model.name);
             LuaEffectConfModel.Init();
+            LuaAnimClipModel.SetEffectChangeCallback(SetEffectData);
         }
 
         public static void SetWeapon(int index) {
             string path = WeaponModel.GetWeaponPrefabPath(ModelDataModel.ModelName, index);
             if (!File.Exists(Tool.ProjectPathToFullPath(path)))
                 return;
-            Transform[] nodes = m_model.transform.GetComponentsInChildren<Transform>();
-            if (nodes == null)
-                return;
-            Transform rightHand = null;
-            for (int i = 0; i < nodes.Length; i++)
-                if (nodes[i].name == "R_Weapon_Point") {
-                    rightHand = nodes[i];
-                    break;
-                }
+            Transform rightHand = Tool.GetTransformByName(m_model, Config.WeaponParentNode);
             if (rightHand == null)
                 return;
             if (m_weapon != null)
@@ -118,12 +117,68 @@ namespace SkillEditor {
                 m_weaponAnimation = null;
         }
 
+        private static void SetEffectData() {
+            foreach (var idEffectsPair in m_dicIDEffects)
+                for (ushort index = 0; index < idEffectsPair.Value.Length; index++) {
+                    ParticleSystem particle = idEffectsPair.Value[index];
+                    particle.Stop();
+                }
+            foreach (var idEffectAnimation in m_dicIDEffectAnimation) {
+                BaseAnimation animation = idEffectAnimation.Value;
+                animation.Stop();
+            }
+            foreach (var timeEffectsPair in LuaAnimClipModel.ListEffect)
+                foreach (var effectData in timeEffectsPair.Value) {
+                    bool isHasParticle = m_dicIDEffects.ContainsKey(effectData.id);
+                    bool isHasAnimator = m_dicIDEffectAnimation.ContainsKey(effectData.id);
+                    if (isHasParticle || isHasAnimator)
+                        continue;
+                    CreateEffect(effectData.id, effectData.rotation.Rotation);
+                }
+        }
+
+        private static void CreateEffect(int id, Vector3 rotation) {
+            EffectConf.EffectData data = LuaEffectConfModel.GetEffectData((uint)id);
+            Transform parent = null;
+            switch (data.parentPivotType) {
+                case EffectConf.ParentPivotType.Body:
+                    parent = Tool.GetTransformByName(m_model, data.pivotNodeName);
+                    break;
+                case EffectConf.ParentPivotType.Weapon:
+                    if (m_weapon == null)
+                        return;
+                    parent = Tool.GetTransformByName(m_weapon, data.pivotNodeName);
+                    break;
+            }
+            if (parent == null)
+                return;
+            string[] guids = AssetDatabase.FindAssets(data.resourceName, Config.ModelSkillEffectPath);
+            if (guids == null || guids.Length == 0)
+                return;
+            string path = AssetDatabase.GUIDToAssetPath(guids[0]);
+            GameObject effect = LoadPrefab(Tool.ProjectPathToFullPath(path));
+            effect.transform.SetParent(parent);
+            Tool.NormalizeTransform(effect);
+            if (rotation != Vector3.zero)
+                effect.transform.localRotation = Quaternion.Euler(rotation);
+            ParticleSystem[] particles = effect.GetComponentsInChildren<ParticleSystem>(true);
+            m_dicIDEffects.Add(id, particles);
+            Animator animator = effect.GetComponent<Animator>();
+            if (animator == null)
+                return;
+            BaseAnimation animation = null;
+            SetAnimation(ref animation, true, effect);
+            m_dicIDEffectAnimation.Add(id, animation);
+        }
+
+        #region Set Lua AnimClipData Config Data
         public static void SetAnimationClipData(int index) {
             AnimationModel.SetCurrentAnimationClip(index);
             LuaAnimClipModel.SetCurrentClipName(AnimationModel.SelectAnimationClipName);
+            SetEffectData();
         }
 
-        public static void SetAnimationStateData(State state) => LuaAnimClipModel.SetCurrentState(state);
+        public static void SetAnimationStateData(AnimClipData.State state) => LuaAnimClipModel.SetCurrentState(state);
 
         public static void SetAnimationClipID(uint id) => LuaAnimClipModel.SetCurrentClipID(id);
         public static void AddNewClipGroupData() => LuaAnimClipModel.AddNewClipGroupData();
@@ -133,13 +188,14 @@ namespace SkillEditor {
         public static void DeleteFrameData(int index) => LuaAnimClipModel.DeleteFrameData(index);
         public static void SetFrameDataTime(int index, float time) => LuaAnimClipModel.SetFrameDataTime(index, time);
 
-        public static void AddPriorityFrameData(int index, FrameType frameType) => LuaAnimClipModel.AddPriorityFrameData(index, frameType);
-        public static void DeletePriorityFrameData(int index, FrameType frameType) => LuaAnimClipModel.DeletePriorityFrameData(index, frameType);
-        public static void SetFramePriorityData(int index, FrameType frameType, ushort priority) => LuaAnimClipModel.SetFramePriorityData(index, frameType, priority);
+        public static void AddPriorityFrameData(int index, AnimClipData.FrameType frameType) => LuaAnimClipModel.AddPriorityFrameData(index, frameType);
+        public static void DeletePriorityFrameData(int index, AnimClipData.FrameType frameType) => LuaAnimClipModel.DeletePriorityFrameData(index, frameType);
+        public static void SetFramePriorityData(int index, AnimClipData.FrameType frameType, ushort priority) => LuaAnimClipModel.SetFramePriorityData(index, frameType, priority);
 
-        public static void AddNewCustomData(int index, FrameType frameType) => LuaAnimClipModel.AddNewCustomSubData(index, frameType);
-        public static void DeleteCustomData(int frameIndex, int deleteIndex, FrameType frameType) => LuaAnimClipModel.DeleteCustomSubData(frameIndex, deleteIndex, frameType);
-        public static void SetCustomeSubData(int frameIndex, ITable data, FrameType frameType) => LuaAnimClipModel.SetCustomeSubData(frameIndex, data, frameType);
+        public static void AddNewCustomData(int index, AnimClipData.FrameType frameType) => LuaAnimClipModel.AddNewCustomSubData(index, frameType);
+        public static void DeleteCustomData(int frameIndex, int deleteIndex, AnimClipData.FrameType frameType) => LuaAnimClipModel.DeleteCustomSubData(frameIndex, deleteIndex, frameType);
+        public static void SetCustomeSubData(int frameIndex, ITable data, AnimClipData.FrameType frameType) => LuaAnimClipModel.SetCustomeSubData(frameIndex, data, frameType);
+        #endregion
 
         public static void Play() {
             if (m_modelAnimation.IsPlaying)
@@ -148,6 +204,7 @@ namespace SkillEditor {
             if (selectAnimationClip == null)
                 return;
             m_lastTime = EditorApplication.timeSinceStartup;
+            m_playStartTime = m_lastTime;
             EditorApplication.update += Update;
             m_modelAnimation.Play(selectAnimationClip);
             if (m_weaponAnimation == null)
@@ -221,7 +278,7 @@ namespace SkillEditor {
             return curTime >= minTime && curTime <= maxTime;
         }
 
-        public static void WriteAnimClipData() => LuaWriter.Write<AnimClipData>();
+        public static void WriteAnimClipData() => LuaWriter.Write<AnimClipData.AnimClipData>();
 
         public static void Reset() {
             LuaAnimClipModel.Reset();
@@ -237,6 +294,8 @@ namespace SkillEditor {
             }
             m_modelAnimation = null;
             m_weaponAnimation = null;
+            m_dicIDEffects.Clear();
+            m_dicIDEffectAnimation.Clear();
         }
 
         public static void Exit() {
