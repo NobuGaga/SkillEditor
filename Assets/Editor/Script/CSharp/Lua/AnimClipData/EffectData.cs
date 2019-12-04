@@ -7,11 +7,11 @@ namespace Lua.AnimClipData {
     public struct EffectData : IFieldValueTable {
 
         public ushort index;
-        public short type;
+        public EffectType type;
         public int id;
         public EffectRotationData rotation;
 
-        public EffectData(short type, int id, EffectRotationData rotation) {
+        public EffectData(EffectType type, int id, EffectRotationData rotation) {
             index = 0;
             this.type = type;
             this.id = id;
@@ -26,9 +26,9 @@ namespace Lua.AnimClipData {
         public KeyType GetKeyType() => KeyType.Array;
         public void SetKey(object key) => index = (ushort)(int)key;
         public string GetKey() => index.ToString();
-        public bool IsNullTable() => type == 0 || id == 0;
+        public bool IsNullTable() => id == 0;
         public void Clear() {
-            id = type = 0;
+            id = 0;
             rotation.Clear();
         }
 
@@ -45,7 +45,9 @@ namespace Lua.AnimClipData {
         public void SetFieldValueTableValue(string key, object value) {
             switch (key) {
                 case Key_Type:
-                    type = (short)(int)value;
+                    if (!Enum.TryParse(value.ToString(), false, out EffectType effectType))
+                        Debug.LogError("EffectData::SetFieldValueTableValue value type is not a EffectType");
+                    type = effectType;
                     return;
                 case Key_Id:
                     id = (int)value;
@@ -59,7 +61,7 @@ namespace Lua.AnimClipData {
         public object GetFieldValueTableValue(string key) {
             switch (key) {
                 case Key_Type:
-                    return type;
+                    return (ushort)type;
                 case Key_Id:
                     return id;
                 case Key_Rotation:
@@ -81,5 +83,11 @@ namespace Lua.AnimClipData {
             return m_arraykeyValue;
         }
         #endregion
+    }
+
+    public enum EffectType {
+        Body = 1,
+        Weapon = 2,
+        Hit = 3,
     }
 }

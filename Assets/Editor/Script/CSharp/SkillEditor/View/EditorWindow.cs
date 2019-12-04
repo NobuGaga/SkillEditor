@@ -243,7 +243,7 @@ namespace SkillEditor {
         private bool EffectDataUI(int frameIndex, object @object) {
             EffectData data = (EffectData)@object;
             SpaceWithLabel(LabelEffectType);
-            data.type = TextField(data.type);
+            data.type = (EffectType)EnumPopup(data.type);
             SpaceWithLabel(LabelEffectID);
             data.id = TextField(data.id);
             EffectRotationData rotationData = data.rotation;

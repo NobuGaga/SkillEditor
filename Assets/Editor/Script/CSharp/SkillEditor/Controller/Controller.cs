@@ -123,12 +123,15 @@ namespace SkillEditor {
                     ParticleSystem particle = idEffectsPair.Value[index];
                     particle.Stop();
                 }
-            foreach (var idEffectAnimation in m_dicIDEffectAnimation) {
-                BaseAnimation animation = idEffectAnimation.Value;
-                animation.Stop();
-            }
+            // TODO Stop Animation
+            // foreach (var idEffectAnimation in m_dicIDEffectAnimation) {
+            //     BaseAnimation animation = idEffectAnimation.Value;
+            //     animation.Stop();
+            // }
             foreach (var timeEffectsPair in LuaAnimClipModel.ListEffect)
                 foreach (var effectData in timeEffectsPair.Value) {
+                    if (effectData.type == AnimClipData.EffectType.Hit)
+                        continue;
                     bool isHasParticle = m_dicIDEffects.ContainsKey(effectData.id);
                     bool isHasAnimator = m_dicIDEffectAnimation.ContainsKey(effectData.id);
                     if (isHasParticle || isHasAnimator)
@@ -169,8 +172,6 @@ namespace SkillEditor {
             ParticleSystem[] particles = effectNode.GetComponentsInChildren<ParticleSystem>(true);
             if (particles == null || particles.Length == 0)
                 return;
-            for (ushort index = 0; index < particles.Length; index++)
-                particles[index].gameObject.SetActive(false);
             m_dicIDEffects.Add(id, particles);
             Animator animator = effectNode.GetComponent<Animator>();
             if (animator == null)
@@ -245,6 +246,7 @@ namespace SkillEditor {
             m_modelAnimation.SetAnimationPlayTime(selectAnimationClip, time);
             if (m_weaponAnimation != null && !m_isNoWeaponClip)
                 m_weaponAnimation.SetAnimationPlayTime(selectAnimationClip, time);
+            SetPlayEffectData(time);            
             SetDrawCubeData();
         }
 
@@ -256,9 +258,36 @@ namespace SkillEditor {
             if (m_weaponAnimation != null && !m_isNoWeaponClip)
                 m_weaponAnimation.Update(deltaTime);
             EditorWindow.RefreshRepaint();
+            SetPlayEffectData((float)(currentTime - m_playStartTime));
             SetDrawCubeData();
             if (m_modelAnimation.IsPlayOver)
                 EditorApplication.update = null;
+        }
+
+        private static void SetPlayEffectData(float sampleTime) {
+            var listEffect = LuaAnimClipModel.ListEffect;
+            for (ushort pairIndex = 0; pairIndex < listEffect.Count; pairIndex++) {
+                float time = listEffect[pairIndex].Key;
+                if (sampleTime < time)
+                    break;
+                AnimClipData.EffectData[] datas = listEffect[pairIndex].Value;
+                for (ushort dataIndex = 0; dataIndex < datas.Length; dataIndex++) {
+                    AnimClipData.EffectData data = datas[dataIndex];
+                    if (data.type == AnimClipData.EffectType.Hit)
+                        continue;
+                    if (m_dicIDEffectAnimation.ContainsKey(data.id)) {
+                        // TODO
+                    } else {
+                        ParticleSystem[] particles = m_dicIDEffects[data.id];
+                        for (ushort particleIndex = 0; particleIndex < particles.Length; particleIndex++) {
+                            ParticleSystem particle = particles[particleIndex];
+                            particle.Simulate(sampleTime - time);
+                            particle.Play();
+                            particle.Pause();
+                        }
+                    }
+                }
+            }
         }
 
         private static void SetDrawCubeData() {
