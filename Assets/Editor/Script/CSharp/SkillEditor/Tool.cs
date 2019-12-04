@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using UnityEditor;
+using UnityEngine;
 using System;
 using System.Reflection;
 
@@ -118,6 +119,13 @@ namespace SkillEditor {
                 if (nodes[i].name == name)
                     return nodes[i];
             return null;
+        }
+
+        public static string GetAssetProjectPath(string name, string[] folders) {
+            string[] guids = AssetDatabase.FindAssets(name, folders);
+            if (guids == null || guids.Length == 0)
+                return null;
+            return AssetDatabase.GUIDToAssetPath(guids[0]);
         }
     }
 }

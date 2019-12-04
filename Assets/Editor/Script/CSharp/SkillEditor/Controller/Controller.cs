@@ -155,10 +155,7 @@ namespace SkillEditor {
             }
             if (parent == null)
                 return;
-            string[] guids = AssetDatabase.FindAssets(data.resourceName, Config.ModelSkillEffectPath);
-            if (guids == null || guids.Length == 0)
-                return;
-            string path = AssetDatabase.GUIDToAssetPath(guids[0]);
+            string path = Tool.GetAssetProjectPath(data.resourceName, Config.ModelSkillEffectPath);
             GameObject effectNode = LoadPrefab(Tool.ProjectPathToFullPath(path));
             effectNode.transform.SetParent(parent);
             Tool.NormalizeTransform(effectNode);

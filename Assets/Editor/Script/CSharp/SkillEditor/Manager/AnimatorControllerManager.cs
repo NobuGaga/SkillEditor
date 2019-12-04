@@ -1,5 +1,6 @@
 ﻿using UnityEditor;
 using UnityEditor.Animations;
+using UnityEngine;
 using System.IO;
 using System.Collections.Generic;
 
@@ -69,6 +70,28 @@ namespace SkillEditor {
             }
             m_dicFile.Clear();
             AssetDatabase.SaveAssets();
+        }
+
+        public static string GetAnimatorControllerFirstState(Animator animator, string[] folders = null) {
+            if (animator.runtimeAnimatorController == null) {
+                Debug.LogError("AnimatorControllerManager::GetFirstState animator has no controller file");
+                return null;
+            }
+            string controllerName = animator.runtimeAnimatorController.name;
+            string path = Tool.GetAssetProjectPath(controllerName, folders);
+            AnimatorController animatorController = AssetDatabase.LoadAssetAtPath<AnimatorController>(path);
+            AnimatorControllerLayer[] layers = animatorController.layers;
+            for (int layerIndex = 0; layerIndex < layers.Length; layerIndex++) {
+                AnimatorStateMachine mainMachine = layers[layerIndex].stateMachine;
+                if (mainMachine == null || mainMachine.states == null)
+                    continue;
+                for (int stateIndex = 0; stateIndex < mainMachine.states.Length; stateIndex++) {
+                    AnimatorState state = mainMachine.states[stateIndex].state;
+                    if (state != null)
+                        return state.name;
+                }
+            }
+            return null;
         }
     }
 }
