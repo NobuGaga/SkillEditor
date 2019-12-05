@@ -9,6 +9,7 @@ namespace Lua.AnimClipData {
         public ushort index;
         public float time;
         public HitFrameData hitFrameData;
+        public PriorityFrameData trackFrameData;
         public EffectFrameData effectFrameData;
         public PriorityFrameData cacheFrameData;
         public PriorityFrameData sectionFrameData;
@@ -16,6 +17,7 @@ namespace Lua.AnimClipData {
             index = 0;
             this.time = time;
             hitFrameData = default;
+            trackFrameData = default;
             effectFrameData = default;
             cacheFrameData = default;
             sectionFrameData = default;
@@ -45,6 +47,7 @@ namespace Lua.AnimClipData {
         public void Clear() {
             time = 0;
             hitFrameData.Clear();
+            trackFrameData.Clear();
             effectFrameData.Clear();
             cacheFrameData.Clear();
             sectionFrameData.Clear();
@@ -69,6 +72,10 @@ namespace Lua.AnimClipData {
                 case FrameType.Hit:
                     hitFrameData = (HitFrameData)value;
                     return;
+                case FrameType.Track:
+                    trackFrameData = (PriorityFrameData)value;
+                    trackFrameData.frameType = FrameType.Track;
+                    return;
                 case FrameType.PlayEffect:
                     effectFrameData = (EffectFrameData)value;
                     return;
@@ -90,6 +97,8 @@ namespace Lua.AnimClipData {
             switch (frameType) {
                 case FrameType.Hit:
                     return hitFrameData;
+                case FrameType.Track:
+                    return trackFrameData;
                 case FrameType.PlayEffect:
                     return effectFrameData;
                 case FrameType.CacheBegin:
@@ -132,6 +141,7 @@ namespace Lua.AnimClipData {
 
     public enum FrameType {
         Hit = 4,
+        Track = 5,
         PlayEffect = 6,
         CacheBegin = 8,
         SectionOver = 9,

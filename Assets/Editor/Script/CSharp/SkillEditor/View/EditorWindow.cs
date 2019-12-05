@@ -27,8 +27,7 @@ namespace SkillEditor {
         private const string BtnDelete = "删除";
         private const string BtnAddEffect = "增加特效";
         private const string BtnAddCube = "增加碰撞框";
-        private const string BtnAddCache = "增加 Cache Begin";
-        private const string BtnAddSection = "增加 Section Over";
+        private const string BtnAdd = "增加 ";
         private const string LabelTime = "触发时间点 ";
         private const string LabelPriority = "优先级 ";
         private const string LabelEffect = "特效";
@@ -194,13 +193,15 @@ namespace SkillEditor {
                     break;
                 HorizontalLayoutUI(FrameDataUI, index);
                 FrameData data = GetFrameData(index);
-                if (!data.effectFrameData.IsNullTable()) {
-                    HorizontalLayoutUI(EffectFrameDataTitleUI, index);
-                    EffectFrameDataUI(index);
-                }
                 if (!data.hitFrameData.IsNullTable()) {
                     HorizontalLayoutUI(HitFrameDataTitleUI, index);
                     HitFrameDataUI(index);
+                }
+                if (!data.trackFrameData.IsNullTable())
+                    HorizontalLayoutUI(TrackFrameDataTitleUI, index);
+                if (!data.effectFrameData.IsNullTable()) {
+                    HorizontalLayoutUI(EffectFrameDataTitleUI, index);
+                    EffectFrameDataUI(index);
                 }
                 if (!data.cacheFrameData.IsNullTable())
                     HorizontalLayoutUI(CacheFrameDataTitleUI, index);
@@ -219,9 +220,11 @@ namespace SkillEditor {
                 Controller.AddNewCustomData(index, FrameType.PlayEffect);
             if (SpaceWithButton(BtnAddCube))
                 Controller.AddNewCustomData(index, FrameType.Hit);
-            if (data.cacheFrameData.IsNullTable() && SpaceWithButton(BtnAddCache))
+            if (data.trackFrameData.IsNullTable() && SpaceWithButton(BtnAdd + FrameType.Track))
+                Controller.AddPriorityFrameData(index, FrameType.Track);
+            if (data.cacheFrameData.IsNullTable() && SpaceWithButton(BtnAdd + FrameType.CacheBegin))
                 Controller.AddPriorityFrameData(index, FrameType.CacheBegin);
-            if (data.sectionFrameData.IsNullTable() && SpaceWithButton(BtnAddSection))
+            if (data.sectionFrameData.IsNullTable() && SpaceWithButton(BtnAdd + FrameType.SectionOver))
                 Controller.AddPriorityFrameData(index, FrameType.SectionOver);
             if (SpaceWithButton(BtnDelete)) {
                 Controller.DeleteFrameData(index);
@@ -286,6 +289,7 @@ namespace SkillEditor {
             return isDelete;
         }
 
+        private void TrackFrameDataTitleUI(int index) => PriorityFrameDataTitleUI(index, FrameType.Track);
         private void CacheFrameDataTitleUI(int index) => PriorityFrameDataTitleUI(index, FrameType.CacheBegin);
         private void SectionFrameDataTitleUI(int index) => PriorityFrameDataTitleUI(index, FrameType.SectionOver);
         private void PriorityFrameDataTitleUI(int index, FrameType frameType) {
@@ -300,7 +304,7 @@ namespace SkillEditor {
                     SpaceWithLabel(LabelCollision);
                     break;
                 default:
-                    SpaceWithLabel(table.GetKey());
+                    SpaceWithLabel(frameType.ToString());
                     break;
             }
             SpaceWithLabel(LabelPriority);
