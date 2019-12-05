@@ -119,15 +119,7 @@ namespace SkillEditor {
         }
 
         private static void SetEffectData() {
-            foreach (var idEffectsPair in m_dicIDEffects)
-                for (ushort index = 0; index < idEffectsPair.Value.Length; index++) {
-                    ParticleSystem particle = idEffectsPair.Value[index];
-                    particle.Stop();
-                }
-            foreach (var idEffectAnimation in m_dicIDEffectAnimation) {
-                SkillAnimator animation = idEffectAnimation.Value;
-                animation.Stop();
-            }
+            StopEffect();
             foreach (var timeEffectsPair in LuaAnimClipModel.ListEffect)
                 foreach (var effectData in timeEffectsPair.Value) {
                     if (effectData.type == AnimClipData.EffectType.Hit)
@@ -237,6 +229,19 @@ namespace SkillEditor {
             m_modelAnimation.Stop();
             if (m_weaponAnimation != null && !m_isNoWeaponClip)
                 m_weaponAnimation.Stop();
+            StopEffect();
+        }
+
+        private static void StopEffect() {
+            foreach (var idEffectsPair in m_dicIDEffects)
+                for (ushort index = 0; index < idEffectsPair.Value.Length; index++) {
+                    ParticleSystem particle = idEffectsPair.Value[index];
+                    particle.Stop();
+                }
+            foreach (var idEffectAnimation in m_dicIDEffectAnimation) {
+                SkillAnimator animation = idEffectAnimation.Value;
+                animation.Stop();
+            }
         }
 
         public static void SetAnimationPlayTime(float time) {
