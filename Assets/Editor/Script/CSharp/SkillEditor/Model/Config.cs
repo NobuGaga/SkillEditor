@@ -15,7 +15,8 @@ namespace SkillEditor {
         public const string PrefabExtension = "prefab";
         public const string AnimationClipExtension = "FBX";
         public const string AnimationClipSymbol = "@";
-        public const float FramesPerSecond = 1f / 30;
+        public const ushort FrameCount = 30;
+        public const float FramesPerSecond = 1f / FrameCount;
 
         // Prefab Group Structure
         public const string ModelPrefabPath = "Assets/Editor/Asset/prefabs";

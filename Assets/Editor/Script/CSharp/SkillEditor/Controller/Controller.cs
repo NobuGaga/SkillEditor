@@ -1,4 +1,5 @@
 ﻿using UnityEditor;
+using UnityEditor.Animations;
 using UnityEngine;
 using System.IO;
 using System.Collections.Generic;
@@ -19,7 +20,7 @@ namespace SkillEditor {
         private static bool m_isNoWeaponClip = false;
 
         private static Dictionary<int, ParticleSystem[]> m_dicIDEffects = new Dictionary<int, ParticleSystem[]>();
-        private static Dictionary<int, BaseAnimation> m_dicIDEffectAnimation = new Dictionary<int, BaseAnimation>();
+        private static Dictionary<int, SkillAnimator> m_dicIDEffectAnimation = new Dictionary<int, SkillAnimator>();
 
         private static double m_playStartTime;
         private static double m_lastTime;
@@ -123,11 +124,10 @@ namespace SkillEditor {
                     ParticleSystem particle = idEffectsPair.Value[index];
                     particle.Stop();
                 }
-            // TODO Stop Animation
-            // foreach (var idEffectAnimation in m_dicIDEffectAnimation) {
-            //     BaseAnimation animation = idEffectAnimation.Value;
-            //     animation.Stop();
-            // }
+            foreach (var idEffectAnimation in m_dicIDEffectAnimation) {
+                SkillAnimator animation = idEffectAnimation.Value;
+                animation.Stop();
+            }
             foreach (var timeEffectsPair in LuaAnimClipModel.ListEffect)
                 foreach (var effectData in timeEffectsPair.Value) {
                     if (effectData.type == AnimClipData.EffectType.Hit)
@@ -173,8 +173,11 @@ namespace SkillEditor {
             Animator animator = effectNode.GetComponent<Animator>();
             if (animator == null)
                 return;
-            BaseAnimation animation = null;
-            SetAnimation(ref animation, true, effectNode);
+            AnimatorState state = AnimatorControllerManager.GetAnimatorControllerFirstStateName(animator, Config.ModelSkillEffectPath);
+            if (state == null || state.motion == null)
+                return;
+            SkillAnimator animation = new SkillAnimator(animator);
+            animation.Record(state);
             m_dicIDEffectAnimation.Add(id, animation);
         }
 
@@ -272,16 +275,16 @@ namespace SkillEditor {
                     AnimClipData.EffectData data = datas[dataIndex];
                     if (data.type == AnimClipData.EffectType.Hit)
                         continue;
+                    ParticleSystem[] particles = m_dicIDEffects[data.id];
+                    for (ushort particleIndex = 0; particleIndex < particles.Length; particleIndex++) {
+                        ParticleSystem particle = particles[particleIndex];
+                        particle.Simulate(sampleTime - time + Config.FramesPerSecond);
+                        particle.Play();
+                        particle.Pause();
+                    }
                     if (m_dicIDEffectAnimation.ContainsKey(data.id)) {
-                        // TODO
-                    } else {
-                        ParticleSystem[] particles = m_dicIDEffects[data.id];
-                        for (ushort particleIndex = 0; particleIndex < particles.Length; particleIndex++) {
-                            ParticleSystem particle = particles[particleIndex];
-                            particle.Simulate(sampleTime - time + Config.FramesPerSecond);
-                            particle.Play();
-                            particle.Pause();
-                        }
+                        SkillAnimator animation = m_dicIDEffectAnimation[data.id];
+                        animation.SetAnimationPlayTime(sampleTime - time);
                     }
                 }
             }

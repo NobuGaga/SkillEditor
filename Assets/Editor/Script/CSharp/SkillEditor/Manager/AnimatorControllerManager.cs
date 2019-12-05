@@ -72,7 +72,7 @@ namespace SkillEditor {
             AssetDatabase.SaveAssets();
         }
 
-        public static string GetAnimatorControllerFirstState(Animator animator, string[] folders = null) {
+        public static AnimatorState GetAnimatorControllerFirstStateName(Animator animator, string[] folders = null) {
             if (animator.runtimeAnimatorController == null) {
                 Debug.LogError("AnimatorControllerManager::GetFirstState animator has no controller file");
                 return null;
@@ -88,7 +88,7 @@ namespace SkillEditor {
                 for (int stateIndex = 0; stateIndex < mainMachine.states.Length; stateIndex++) {
                     AnimatorState state = mainMachine.states[stateIndex].state;
                     if (state != null)
-                        return state.name;
+                        return state;
                 }
             }
             return null;
