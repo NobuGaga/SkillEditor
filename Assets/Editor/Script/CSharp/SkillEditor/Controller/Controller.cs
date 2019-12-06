@@ -147,7 +147,7 @@ namespace SkillEditor {
             }
             if (parent == null)
                 return;
-            string path = Tool.GetAssetProjectPath(data.resourceName, Config.ModelSkillEffectPath);
+            string path = Tool.GetAssetProjectPath(data.resourceName, Config.PrefabExtension, Config.ModelSkillEffectPath);
             GameObject effectNode = LoadPrefab(Tool.ProjectPathToFullPath(path));
             effectNode.transform.SetParent(parent);
             Tool.NormalizeTransform(effectNode);

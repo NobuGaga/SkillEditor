@@ -127,5 +127,17 @@ namespace SkillEditor {
                 return null;
             return AssetDatabase.GUIDToAssetPath(guids[0]);
         }
+
+        public static string GetAssetProjectPath(string name, string extension, string[] folders) {
+            string[] guids = AssetDatabase.FindAssets(name, folders);
+            if (guids == null || guids.Length == 0)
+                return null;
+            for (ushort index = 0; index < guids.Length; index++) {
+                string path = AssetDatabase.GUIDToAssetPath(guids[index]);
+                if (path.EndsWith(extension))
+                    return path;
+            }
+            return null;
+        }
     }
 }
