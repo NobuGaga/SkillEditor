@@ -240,6 +240,7 @@ namespace SkillEditor {
                 SkillAnimator animation = idEffectAnimation.Value;
                 animation.Stop();
             }
+            EditorScene.RegisterSceneGUI();
         }
 
         public static void SetAnimationPlayTime(float time) {
