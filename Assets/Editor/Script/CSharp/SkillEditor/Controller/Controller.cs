@@ -19,6 +19,7 @@ namespace SkillEditor {
         private static BaseAnimation m_weaponAnimation;
         private static bool m_isNoWeaponClip = false;
 
+        private static Dictionary<int, GameObject> m_dicIDEffectObject = new Dictionary<int, GameObject>();
         private static Dictionary<int, ParticleSystem[]> m_dicIDEffects = new Dictionary<int, ParticleSystem[]>();
         private static Dictionary<int, SkillAnimator> m_dicIDEffectAnimation = new Dictionary<int, SkillAnimator>();
 
@@ -121,15 +122,9 @@ namespace SkillEditor {
         private static void SetEffectData() {
             StopEffect();
             foreach (var timeEffectsPair in LuaAnimClipModel.ListEffect)
-                foreach (var effectData in timeEffectsPair.Value) {
-                    if (effectData.type == AnimClipData.EffectType.Hit)
-                        continue;
-                    bool isHasParticle = m_dicIDEffects.ContainsKey(effectData.id);
-                    bool isHasAnimator = m_dicIDEffectAnimation.ContainsKey(effectData.id);
-                    if (isHasParticle || isHasAnimator)
-                        continue;
-                    CreateEffect(effectData);
-                }
+                foreach (var effectData in timeEffectsPair.Value)
+                    if (effectData.type != AnimClipData.EffectType.Hit && !m_dicIDEffectObject.ContainsKey(effectData.id))
+                        CreateEffect(effectData); 
         }
 
         private static void CreateEffect(AnimClipData.EffectData animClipEffect) {
@@ -151,6 +146,7 @@ namespace SkillEditor {
             GameObject effectNode = LoadPrefab(Tool.ProjectPathToFullPath(path));
             effectNode.transform.SetParent(parent);
             Tool.NormalizeTransform(effectNode);
+            m_dicIDEffectObject.Add(animClipEffect.id, effectNode);
             Vector3 rotation = animClipEffect.rotation.Rotation;
             if (rotation != Vector3.zero)
                 effectNode.transform.localRotation = Quaternion.Euler(rotation);
@@ -280,12 +276,14 @@ namespace SkillEditor {
                     AnimClipData.EffectData data = datas[dataIndex];
                     if (data.type == AnimClipData.EffectType.Hit)
                         continue;
-                    ParticleSystem[] particles = m_dicIDEffects[data.id];
-                    for (ushort particleIndex = 0; particleIndex < particles.Length; particleIndex++) {
-                        ParticleSystem particle = particles[particleIndex];
-                        particle.Simulate(sampleTime - time + particle.main.startDelayMultiplier + Config.FramesPerSecond);
-                        particle.Play();
-                        particle.Pause();
+                    if (m_dicIDEffects.ContainsKey(data.id)) {
+                        ParticleSystem[] particles = m_dicIDEffects[data.id];
+                        for (ushort particleIndex = 0; particleIndex < particles.Length; particleIndex++) {
+                            ParticleSystem particle = particles[particleIndex];
+                            particle.Simulate(sampleTime - time + particle.main.startDelayMultiplier + Config.FramesPerSecond);
+                            particle.Play();
+                            particle.Pause();
+                        }
                     }
                     if (m_dicIDEffectAnimation.ContainsKey(data.id)) {
                         SkillAnimator animation = m_dicIDEffectAnimation[data.id];
@@ -337,6 +335,7 @@ namespace SkillEditor {
             }
             m_modelAnimation = null;
             m_weaponAnimation = null;
+            m_dicIDEffectObject.Clear();
             m_dicIDEffects.Clear();
             m_dicIDEffectAnimation.Clear();
         }
