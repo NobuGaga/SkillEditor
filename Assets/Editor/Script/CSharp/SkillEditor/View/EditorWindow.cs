@@ -352,7 +352,6 @@ namespace SkillEditor {
                 playTime = clipTime;
             float time = Slider(playTime, clipTime);
             ushort frameCount = (ushort)(time / Config.FramesPerSecond);
-            time = frameCount * Config.FramesPerSecond;
             SpaceWithLabel(string.Format(LabelFrameFormat, frameCount));
             Controller.SetAnimationPlayTime(time);
         }
