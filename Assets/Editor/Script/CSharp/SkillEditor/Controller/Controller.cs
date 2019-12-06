@@ -232,7 +232,7 @@ namespace SkillEditor {
             foreach (var idEffectsPair in m_dicIDEffects)
                 for (ushort index = 0; index < idEffectsPair.Value.Length; index++) {
                     ParticleSystem particle = idEffectsPair.Value[index];
-                    particle.Stop();
+                    particle.Simulate(0);
                 }
             foreach (var idEffectAnimation in m_dicIDEffectAnimation) {
                 SkillAnimator animation = idEffectAnimation.Value;
