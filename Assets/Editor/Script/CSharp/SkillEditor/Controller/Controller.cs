@@ -120,7 +120,6 @@ namespace SkillEditor {
         }
 
         private static void SetEffectData() {
-            StopEffect();
             foreach (var timeEffectsPair in LuaAnimClipModel.ListEffect)
                 foreach (var effectData in timeEffectsPair.Value)
                     if (effectData.type != AnimClipData.EffectType.Hit && !m_dicIDEffectObject.ContainsKey(effectData.id))
@@ -171,9 +170,9 @@ namespace SkillEditor {
 
         #region Set Lua AnimClipData Config Data
         public static void SetAnimationClipData(int index) {
+            Stop();
             AnimationModel.SetCurrentAnimationClip(index);
             LuaAnimClipModel.SetCurrentClipName(AnimationModel.SelectAnimationClipName);
-            SetEffectData();
         }
 
         public static void SetAnimationStateData(AnimClipData.State state) => LuaAnimClipModel.SetCurrentState(state);
@@ -221,14 +220,6 @@ namespace SkillEditor {
         }
 
         public static void Stop() {
-            EditorApplication.update = null;
-            m_modelAnimation.Stop();
-            if (m_weaponAnimation != null && !m_isNoWeaponClip)
-                m_weaponAnimation.Stop();
-            StopEffect();
-        }
-
-        private static void StopEffect() {
             foreach (var idEffectsPair in m_dicIDEffects)
                 for (ushort index = 0; index < idEffectsPair.Value.Length; index++) {
                     ParticleSystem particle = idEffectsPair.Value[index];
@@ -236,10 +227,19 @@ namespace SkillEditor {
                     particle.Play();
                     particle.Pause();
                 }
+            if (!m_modelAnimation.IsPlaying) {
+                SceneView.RepaintAll();
+                return;
+            }
+            EditorApplication.update = null;
+            m_modelAnimation.Stop();
+            if (m_weaponAnimation != null && !m_isNoWeaponClip)
+                m_weaponAnimation.Stop();
             foreach (var idEffectAnimation in m_dicIDEffectAnimation) {
                 SkillAnimator animation = idEffectAnimation.Value;
                 animation.Stop();
             }
+            SceneView.RepaintAll();
         }
 
         public static void SetAnimationPlayTime(float time) {
