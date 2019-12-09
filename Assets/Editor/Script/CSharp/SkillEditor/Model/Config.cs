@@ -19,7 +19,7 @@ namespace SkillEditor {
         public const float FramesPerSecond = 1f / FrameCount;
 
         // Prefab Group Structure
-        public const string ModelPrefabPath = "Assets/Editor/Asset/prefabs";
+        public const string ModelPrefabPath = "Assets/character/hero";
         public const string ModelPrefabExtension = "prefab";
         public const string FilePanelTitle = "模型预设路径";
         public const string ModelPrefabPrefix = "hero_";
@@ -67,8 +67,8 @@ namespace SkillEditor {
         public const string AnimatorControllerExtension = "controller";
 
         // Structure
-        public static readonly string AnimDataFilePath = Tool.CombinePath(ProjectPath, "Assets/Editor/Script/Lua/AnimClipData.lua");
-        public static readonly string EffectConfFilePath = Tool.CombinePath(ProjectPath, "Assets/Editor/Script/Lua/EffectConf.lua");
+        public static readonly string AnimDataFilePath = Tool.CombinePath(ProjectPath, "../Resources/lua/data/config/AnimClipData.lua");
+        public static readonly string EffectConfFilePath = Tool.CombinePath(ProjectPath, "../Resources/lua/data/config/EffectConf.lua");
         public const short ErrorIndex = -1;
         public const short LuaFileHeadLength = 64;
         public const string AnimClipDataFileHeadStart = "AnimClipData = AnimClipData or {}";
