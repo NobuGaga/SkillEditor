@@ -16,6 +16,9 @@ namespace Lua.EffectConf {
         public string resourceName;
         public bool isLoop;
         public bool isBreak;
+        public EffectConfTransform offset;
+        public EffectConfTransform scale;
+        public EffectConfTransform rotation;
 
         #region ITable Function
 
@@ -32,6 +35,9 @@ namespace Lua.EffectConf {
             id = pivotType = 0;
             name = pivotNodeName = resourceName = null;
             isLoop = isBreak = false;
+            offset.Clear();
+            scale.Clear();
+            rotation.Clear();
         }
 
         private static StringBuilder m_staticBuilder = new StringBuilder((ushort)Math.Pow(2, 8));
@@ -78,6 +84,19 @@ namespace Lua.EffectConf {
                     isBreak = (int)value > 0;
                     return;
             }
+            if (!Enum.TryParse(key.Substring(1), false, out TransformType transformType))
+                return;
+            switch (transformType) {
+                case TransformType.Offset:
+                    offset = (EffectConfTransform)value;
+                    return;
+                case TransformType.Scale:
+                    scale = (EffectConfTransform)value;
+                    return;
+                case TransformType.Rotation:
+                    rotation = (EffectConfTransform)value;
+                    return;
+            }
         }
 
         public object GetFieldValueTableValue(string key) {
@@ -98,24 +117,37 @@ namespace Lua.EffectConf {
                     return isLoop ? 1 : 0;
                 case Key_Break:
                     return isBreak ? 1 : 0;
-                default:
-                    return null;
             }
+            if (key == offset.GetKey())
+                return offset;
+            else if (key == scale.GetKey())
+                return scale;
+            else if (key == rotation.GetKey())
+                return rotation;
+            return null;
         }
 
         private static FieldValueTableInfo[] m_arraykeyValue;
         public FieldValueTableInfo[] GetFieldValueTableInfo() {
             if (m_arraykeyValue != null)
                 return m_arraykeyValue;
-            m_arraykeyValue = new FieldValueTableInfo[8];
-            m_arraykeyValue[0] = new FieldValueTableInfo(Key_ID, ValueType.Int);
-            m_arraykeyValue[1] = new FieldValueTableInfo(Key_Name, ValueType.String);
-            m_arraykeyValue[2] = new FieldValueTableInfo(Key_PivotType, ValueType.Int);
-            m_arraykeyValue[3] = new FieldValueTableInfo(Key_ResourceName, ValueType.String);
-            m_arraykeyValue[4] = new FieldValueTableInfo(Key_PivotNodeName, ValueType.String);
-            m_arraykeyValue[5] = new FieldValueTableInfo(Key_Loop, ValueType.Int);
-            m_arraykeyValue[6] = new FieldValueTableInfo(Key_Break, ValueType.Int);
-            m_arraykeyValue[7] = new FieldValueTableInfo(Key_ParentPivotType, ValueType.Int);
+            Array arrayType = Enum.GetValues(typeof(TransformType));
+            ushort length = (ushort)(8 + arrayType.Length);
+            ushort count = 0;
+            m_arraykeyValue = new FieldValueTableInfo[length];
+            m_arraykeyValue[count++] = new FieldValueTableInfo(Key_ID, ValueType.Int);
+            m_arraykeyValue[count++] = new FieldValueTableInfo(Key_Name, ValueType.String);
+            m_arraykeyValue[count++] = new FieldValueTableInfo(Key_PivotType, ValueType.Int);
+            m_arraykeyValue[count++] = new FieldValueTableInfo(Key_ResourceName, ValueType.String);
+            m_arraykeyValue[count++] = new FieldValueTableInfo(Key_PivotNodeName, ValueType.String);
+            m_arraykeyValue[count++] = new FieldValueTableInfo(Key_Loop, ValueType.Int);
+            m_arraykeyValue[count++] = new FieldValueTableInfo(Key_Break, ValueType.Int);
+            EffectConfTransform temp = default;
+            for (ushort index = 0; index < arrayType.Length; index++) {
+                temp.type = (TransformType)arrayType.GetValue(index);
+                m_arraykeyValue[count++] = new FieldValueTableInfo(temp.GetKey(), ValueType.Table);
+            }
+            m_arraykeyValue[count++] = new FieldValueTableInfo(Key_ParentPivotType, ValueType.Int);
             return m_arraykeyValue;
         }
         #endregion

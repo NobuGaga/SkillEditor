@@ -2,56 +2,58 @@ using UnityEngine;
 using System;
 using System.Text;
 
-namespace Lua.AnimClipData {
+namespace Lua.EffectConf {
 
-    public struct EffectRotationData : IFieldValueTable {
+    public struct EffectConfTransform : IFieldValueTable {
 
+        public TransformType type;
         public short x;
         public short y;
         public short z;
 
-        public EffectRotationData(short x, short y, short z) {
+        public EffectConfTransform(TransformType type, short x, short y, short z) {
+            this.type = type;
             this.x = x;
             this.y = y;
             this.z = z;
         }
 
-        private static Vector3 m_rotation;
+        private static Vector3 m_vector3;
 
-        public Vector3 Rotation {
+        public Vector3 Vector {
             set {
                 x = (short)value.x;
                 y = (short)value.y;
                 z = (short)value.z;
             }
             get {
-                m_rotation.x = x;
-                m_rotation.y = y;
-                m_rotation.z = z;
-                return m_rotation;
+                m_vector3.x = x;
+                m_vector3.y = y;
+                m_vector3.z = z;
+                return m_vector3;
             }
         }
 
         #region ITable Function
 
-        public string GetTableName() => "EffectRotationData";
-        public ushort GetLayer() => 9;
+        public string GetTableName() => "EffectConfTransform";
+        public ushort GetLayer() => 2;
         public ReadType GetReadType() => ReadType.Fixed;
         public KeyType GetKeyType() => KeyType.FixedField;
         public void SetKey(object key) { }
-        public string GetKey() => "rotation";
-        public bool IsNullTable() => Rotation == Vector3.zero;
-        public void Clear() => Rotation = Vector3.zero;
+        public string GetKey() => 't' + type.ToString();
+        public bool IsNullTable() => Vector == Vector3.zero;
+        public void Clear() => Vector = Vector3.zero;
 
-        private static readonly StringBuilder m_staticBuilder = new StringBuilder((ushort)Math.Pow(2, 8));
+        private static readonly StringBuilder m_staticBuilder = new StringBuilder((ushort)Math.Pow(2, 5));
         public override string ToString() => LuaTable.GetFieldKeyTableText(m_staticBuilder, this);
         #endregion
 
         #region IFieldKeyTable Function
         
-        private const string Key_X = "x";
-        private const string Key_Y = "y";
-        private const string Key_Z = "z";
+        private const string Key_X = "[1]";
+        private const string Key_Y = "[2]";
+        private const string Key_Z = "[3]";
 
         public void SetFieldValueTableValue(string key, object value) {
             switch (key) {
@@ -94,5 +96,12 @@ namespace Lua.AnimClipData {
             return m_arraykeyValue;
         }
         #endregion
+    }
+
+    public enum TransformType {
+
+        Offset,
+        Scale,
+        Rotation,
     }
 }

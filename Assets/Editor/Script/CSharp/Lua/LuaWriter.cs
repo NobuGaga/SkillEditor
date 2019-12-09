@@ -19,6 +19,7 @@ namespace Lua {
         }
 
         private static StringBuilder m_stringBuilder = new StringBuilder((UInt16)Math.Pow(2, 16));
+        public static StringBuilder BuilderCache => m_stringBuilder;
 
         public static void Write<T>() where T : ITable, ILuaFile<T> {
             T luaFile = default;

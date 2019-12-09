@@ -10,7 +10,7 @@ namespace Lua {
 
     public static class LuaReader {
 
-        public static void Read<T>() where T : ITable, ILuaFile<T> {
+        public static void Read<T>(bool isHasNoKeyTable = false) where T : ITable, ILuaFile<T> {
             T luaFile = default;
             string luaFilePath = luaFile.GetLuaFilePath();
             string luaFileHeadStart = luaFile.GetLuaFileHeadStart();
@@ -20,9 +20,19 @@ namespace Lua {
                 return;
             }
             string luaText = File.ReadAllText(luaFilePath);
+            WriteArrayToFileString(ref luaText);
             int index = 0;
             ReadLuaFileHeadText(luaText, luaFilePath, luaFileHeadStart, ref index);
             ReadLuaFileTable(luaText, ref index, list);
+        }
+
+        private static void WriteArrayToFileString(ref string luaText) {
+            StringBuilder builder = LuaWriter.BuilderCache;
+            builder.Clear();
+            builder.Append(luaText);
+            ushort index = 1;
+            string format = "[{0}]";
+            
         }
 
         private static StringBuilder m_luaTextHeadStringBuilder = new StringBuilder(Config.LuaFileHeadLength);

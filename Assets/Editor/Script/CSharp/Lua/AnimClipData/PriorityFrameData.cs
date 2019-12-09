@@ -55,8 +55,10 @@ namespace Lua.AnimClipData {
         public FieldValueTableInfo[] GetFieldValueTableInfo() {
             if (m_arraykeyValue != null)
                 return m_arraykeyValue;
-            m_arraykeyValue = new FieldValueTableInfo[1];
-            m_arraykeyValue[0] = new FieldValueTableInfo(Key_Priority, ValueType.Int);
+            const ushort length = 1;
+            ushort count = 0;
+            m_arraykeyValue = new FieldValueTableInfo[length];
+            m_arraykeyValue[count++] = new FieldValueTableInfo(Key_Priority, ValueType.Int);
             return m_arraykeyValue;
         }
         #endregion
