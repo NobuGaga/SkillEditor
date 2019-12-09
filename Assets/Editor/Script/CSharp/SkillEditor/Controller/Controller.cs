@@ -171,6 +171,7 @@ namespace SkillEditor {
         #region Set Lua AnimClipData Config Data
         public static void SetAnimationClipData(int index) {
             Stop();
+            Tool.NormalizeTransform(m_model);
             AnimationModel.SetCurrentAnimationClip(index);
             LuaAnimClipModel.SetCurrentClipName(AnimationModel.SelectAnimationClipName);
         }
