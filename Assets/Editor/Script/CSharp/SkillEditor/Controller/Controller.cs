@@ -277,9 +277,8 @@ namespace SkillEditor {
                         ParticleSystem[] particles = m_dicIDEffects[data.id];
                         for (ushort particleIndex = 0; particleIndex < particles.Length; particleIndex++) {
                             ParticleSystem particle = particles[particleIndex];
-                            particle.Simulate(sampleTime - time + particle.main.startDelayMultiplier + Config.FramesPerSecond);
-                            particle.Play();
-                            particle.Pause();
+                            float timeOffset = Mathf.Min(particle.main.startDelayMultiplier, particle.main.startLifetimeMultiplier);
+                            particle.Simulate(sampleTime - time + timeOffset);
                         }
                     }
                     // if (m_dicIDEffectAnimation.ContainsKey(data.id)) {
