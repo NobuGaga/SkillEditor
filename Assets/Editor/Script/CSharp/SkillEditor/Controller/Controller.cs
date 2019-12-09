@@ -220,25 +220,17 @@ namespace SkillEditor {
         }
 
         public static void Stop() {
-            foreach (var idEffectsPair in m_dicIDEffects)
-                for (ushort index = 0; index < idEffectsPair.Value.Length; index++) {
-                    ParticleSystem particle = idEffectsPair.Value[index];
-                    particle.Simulate(0);
-                    particle.Play();
-                    particle.Pause();
-                }
-            if (!m_modelAnimation.IsPlaying) {
-                SceneView.RepaintAll();
-                return;
-            }
+            foreach (var idObjectPair in m_dicIDEffectObject)
+                if (idObjectPair.Value.activeSelf)
+                    idObjectPair.Value.SetActive(false);
             EditorApplication.update = null;
             m_modelAnimation.Stop();
             if (m_weaponAnimation != null && !m_isNoWeaponClip)
                 m_weaponAnimation.Stop();
-            foreach (var idEffectAnimation in m_dicIDEffectAnimation) {
-                SkillAnimator animation = idEffectAnimation.Value;
-                animation.Stop();
-            }
+            // foreach (var idEffectAnimation in m_dicIDEffectAnimation) {
+            //     SkillAnimator animation = idEffectAnimation.Value;
+            //     animation.Stop();
+            // }
             SceneView.RepaintAll();
         }
 
@@ -278,6 +270,8 @@ namespace SkillEditor {
                     AnimClipData.EffectData data = datas[dataIndex];
                     if (data.type == AnimClipData.EffectType.Hit)
                         continue;
+                    if (m_dicIDEffectObject.ContainsKey(data.id) && !m_dicIDEffectObject[data.id].activeSelf)
+                        m_dicIDEffectObject[data.id].SetActive(true);
                     if (m_dicIDEffects.ContainsKey(data.id)) {
                         ParticleSystem[] particles = m_dicIDEffects[data.id];
                         for (ushort particleIndex = 0; particleIndex < particles.Length; particleIndex++) {
@@ -287,10 +281,10 @@ namespace SkillEditor {
                             particle.Pause();
                         }
                     }
-                    if (m_dicIDEffectAnimation.ContainsKey(data.id)) {
-                        SkillAnimator animation = m_dicIDEffectAnimation[data.id];
-                        animation.SetAnimationPlayTime(sampleTime - time);
-                    }
+                    // if (m_dicIDEffectAnimation.ContainsKey(data.id)) {
+                    //     SkillAnimator animation = m_dicIDEffectAnimation[data.id];
+                    //     animation.SetAnimationPlayTime(sampleTime - time);
+                    // }
                 }
             }
         }
