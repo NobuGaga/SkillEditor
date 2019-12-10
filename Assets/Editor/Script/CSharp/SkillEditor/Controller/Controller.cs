@@ -244,18 +244,30 @@ namespace SkillEditor {
         }
 
         public static void Stop() {
-            foreach (var idObjectPair in m_dicIDEffectObject)
-                if (idObjectPair.Value.activeSelf)
-                    idObjectPair.Value.SetActive(false);
             EditorApplication.update = null;
             m_modelAnimation.Stop();
             if (m_weaponAnimation != null && !m_isNoWeaponClip)
                 m_weaponAnimation.Stop();
+            StopEffect();
+            SceneView.RepaintAll();
+        }
+
+        private static void StopEffect() {
+            foreach (var idParticlesPair in m_dicIDEffects) {
+                uint id = idParticlesPair.Key;
+                if (!m_dicIDEffectObject[id].activeSelf)
+                    continue;
+                ParticleSystem[] particles = idParticlesPair.Value;
+                for (ushort index = 0; index < particles.Length; index++)
+                    particles[index].Simulate(0);
+            }
             // foreach (var idEffectAnimation in m_dicIDEffectAnimation) {
             //     SkillAnimator animation = idEffectAnimation.Value;
             //     animation.Stop();
             // }
-            SceneView.RepaintAll();
+            foreach (var idObjectPair in m_dicIDEffectObject)
+                if (idObjectPair.Value.activeSelf)
+                    idObjectPair.Value.SetActive(false);
         }
 
         public static void SetAnimationPlayTime(float time) {
@@ -265,7 +277,7 @@ namespace SkillEditor {
             m_modelAnimation.SetAnimationPlayTime(selectAnimationClip, time);
             if (m_weaponAnimation != null && !m_isNoWeaponClip)
                 m_weaponAnimation.SetAnimationPlayTime(selectAnimationClip, time);
-            SetPlayEffectData(time);            
+            SetPlayEffectTime(time);            
             SetDrawCubeData();
         }
 
@@ -277,13 +289,15 @@ namespace SkillEditor {
             if (m_weaponAnimation != null && !m_isNoWeaponClip)
                 m_weaponAnimation.Update(deltaTime);
             EditorWindow.RefreshRepaint();
-            SetPlayEffectData((float)(currentTime - m_playStartTime));
+            SetPlayEffectTime((float)(currentTime - m_playStartTime));
             SetDrawCubeData();
-            if (m_modelAnimation.IsPlayOver)
+            if (m_modelAnimation.IsPlayOver) {
+                StopEffect();
                 EditorApplication.update = null;
+            }
         }
 
-        private static void SetPlayEffectData(float sampleTime) {
+        private static void SetPlayEffectTime(float sampleTime) {
             var listEffect = LuaAnimClipModel.ListEffect;
             for (ushort pairIndex = 0; pairIndex < listEffect.Count; pairIndex++) {
                 float time = listEffect[pairIndex].Key;
