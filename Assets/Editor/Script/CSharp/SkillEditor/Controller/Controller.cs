@@ -21,6 +21,7 @@ namespace SkillEditor {
 
         private static Dictionary<uint, GameObject> m_dicIDEffectObject = new Dictionary<uint, GameObject>();
         private static Dictionary<uint, ParticleSystem[]> m_dicIDEffects = new Dictionary<uint, ParticleSystem[]>();
+        private static Dictionary<uint, Dictionary<string, float>> m_dicIDObjectNameDelay = new Dictionary<uint, Dictionary<string, float>>();
         private static Dictionary<uint, SkillAnimator> m_dicIDEffectAnimation = new Dictionary<uint, SkillAnimator>();
 
         private static double m_playStartTime;
@@ -165,6 +166,18 @@ namespace SkillEditor {
             if (particles == null || particles.Length == 0)
                 return;
             m_dicIDEffects.Add(id, particles);
+            for (ushort index = 0; index < particles.Length; index++) {
+                ParticleSystem particle = particles[index];
+                string name = particle.name;
+                float startDelay = particle.main.startDelayMultiplier;
+                if (!m_dicIDObjectNameDelay.ContainsKey(id))
+                    m_dicIDObjectNameDelay.Add(id, new Dictionary<string, float>());
+                if (m_dicIDObjectNameDelay[id].ContainsKey(name))
+                    m_dicIDObjectNameDelay[id][name] = startDelay;
+                else
+                    m_dicIDObjectNameDelay[id].Add(name, startDelay);
+                particle.startDelay = 0;
+            }
             Animator animator = effectNode.GetComponent<Animator>();
             if (animator == null)
                 return;
@@ -310,11 +323,15 @@ namespace SkillEditor {
                         continue;
                     if (m_dicIDEffectObject.ContainsKey(data.id) && !m_dicIDEffectObject[data.id].activeSelf)
                         m_dicIDEffectObject[data.id].SetActive(true);
-                    if (m_dicIDEffects.ContainsKey(data.id)) {
+                    if (m_dicIDEffects.ContainsKey(data.id) && m_dicIDObjectNameDelay.ContainsKey(data.id)) {
+                        Dictionary<string, float> dicParticleNameTime = m_dicIDObjectNameDelay[data.id];
                         ParticleSystem[] particles = m_dicIDEffects[data.id];
                         for (ushort particleIndex = 0; particleIndex < particles.Length; particleIndex++) {
                             ParticleSystem particle = particles[particleIndex];
-                            float timeOffset = particle.main.startDelayMultiplier + Config.FramesPerSecond;
+                            if (!dicParticleNameTime.ContainsKey(particle.name))
+                                continue;
+                            float startDelay = dicParticleNameTime[particle.name];
+                            float timeOffset = startDelay + Config.FramesPerSecond;
                             particle.Simulate(sampleTime - time + timeOffset);
                         }
                     }
@@ -382,6 +399,7 @@ namespace SkillEditor {
             m_weaponAnimation = null;
             m_dicIDEffectObject.Clear();
             m_dicIDEffects.Clear();
+            m_dicIDObjectNameDelay.Clear();
             m_dicIDEffectAnimation.Clear();
         }
 
