@@ -27,10 +27,8 @@ namespace SkillEditor {
         }
 
         public static EffectData GetEffectData(uint id) {
-            if (!m_dicIDEffectData.ContainsKey(id)) {
-                Debug.LogError("LuaEffectConfModel::GetEffectData get id is not exist. id " + id);
+            if (!m_dicIDEffectData.ContainsKey(id))
                 return default;
-            }
             return m_dicIDEffectData[id];
         }
 
