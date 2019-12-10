@@ -19,9 +19,9 @@ namespace SkillEditor {
         private static BaseAnimation m_weaponAnimation;
         private static bool m_isNoWeaponClip = false;
 
-        private static Dictionary<int, GameObject> m_dicIDEffectObject = new Dictionary<int, GameObject>();
-        private static Dictionary<int, ParticleSystem[]> m_dicIDEffects = new Dictionary<int, ParticleSystem[]>();
-        private static Dictionary<int, SkillAnimator> m_dicIDEffectAnimation = new Dictionary<int, SkillAnimator>();
+        private static Dictionary<uint, GameObject> m_dicIDEffectObject = new Dictionary<uint, GameObject>();
+        private static Dictionary<uint, ParticleSystem[]> m_dicIDEffects = new Dictionary<uint, ParticleSystem[]>();
+        private static Dictionary<uint, SkillAnimator> m_dicIDEffectAnimation = new Dictionary<uint, SkillAnimator>();
 
         private static double m_playStartTime;
         private static double m_lastTime;
@@ -96,7 +96,7 @@ namespace SkillEditor {
 
         private static void InitLuaConfigData() {
             LuaReader.Read<AnimClipData.AnimClipData>();
-            LuaReader.Read<EffectConf.EffectData>();
+            LuaReader.Read<EffectConf.EffectData>(true);
             LuaAnimClipModel.SetCurrentModelName(m_model.name);
             LuaEffectConfModel.Init();
             LuaAnimClipModel.SetEffectChangeCallback(SetEffectData);
@@ -128,7 +128,7 @@ namespace SkillEditor {
         }
 
         private static void CreateEffect(AnimClipData.EffectData animClipEffect) {
-            EffectConf.EffectData data = LuaEffectConfModel.GetEffectData((uint)animClipEffect.id);
+            EffectConf.EffectData data = LuaEffectConfModel.GetEffectData(animClipEffect.id);
             Transform parent = null;
             switch (data.parentPivotType) {
                 case EffectConf.ParentPivotType.Body:
@@ -147,13 +147,20 @@ namespace SkillEditor {
             effectNode.transform.SetParent(parent);
             Tool.NormalizeTransform(effectNode);
             m_dicIDEffectObject.Add(animClipEffect.id, effectNode);
-            Vector3 rotation = animClipEffect.rotation.Rotation;
-            if (rotation != Vector3.zero)
-                effectNode.transform.localRotation = Quaternion.Euler(rotation);
+            SetEffectTransform(data, effectNode);
             SetEffectParticle(animClipEffect.id, effectNode);
         }
 
-        private static void SetEffectParticle(int id, GameObject effectNode) {
+        private static void SetEffectTransform(EffectConf.EffectData data, GameObject effectNode) {
+            if (!data.offset.IsNullTable())
+                effectNode.transform.localPosition = data.offset.Vector;
+            if (!data.scale.IsNullTable())
+                effectNode.transform.localScale = data.scale.Vector;
+            if (!data.rotation.IsNullTable())
+                effectNode.transform.localRotation = Quaternion.Euler(data.rotation.Vector);
+        }
+
+        private static void SetEffectParticle(uint id, GameObject effectNode) {
             ParticleSystem[] particles = effectNode.GetComponentsInChildren<ParticleSystem>(true);
             if (particles == null || particles.Length == 0)
                 return;
@@ -167,6 +174,20 @@ namespace SkillEditor {
             SkillAnimator animation = new SkillAnimator(animator);
             animation.Record(state);
             m_dicIDEffectAnimation.Add(id, animation);
+        }
+
+        public static void ReloadEffectConf() {
+            LuaEffectConfModel.Reset();
+            LuaReader.Read<EffectConf.EffectData>(true);
+            LuaEffectConfModel.Init();
+            foreach (var idObjectPair in m_dicIDEffectObject) {
+                uint id = idObjectPair.Key;
+                GameObject effectNode = idObjectPair.Value;
+                EffectConf.EffectData data = LuaEffectConfModel.GetEffectData(id);
+                if (data.IsNullTable())
+                    continue;
+                SetEffectTransform(data, effectNode);
+            }
         }
 
         #region Set Lua AnimClipData Config Data

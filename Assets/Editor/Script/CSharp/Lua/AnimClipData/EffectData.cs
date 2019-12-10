@@ -8,10 +8,10 @@ namespace Lua.AnimClipData {
 
         public ushort index;
         public EffectType type;
-        public int id;
+        public uint id;
         public EffectRotationData rotation;
 
-        public EffectData(EffectType type, int id, EffectRotationData rotation) {
+        public EffectData(EffectType type, uint id, EffectRotationData rotation) {
             index = 0;
             this.type = type;
             this.id = id;
@@ -50,7 +50,7 @@ namespace Lua.AnimClipData {
                     type = effectType;
                     return;
                 case Key_Id:
-                    id = (int)value;
+                    id = (uint)(int)value;
                     return;
                 case Key_Rotation:
                     rotation = (EffectRotationData)value;

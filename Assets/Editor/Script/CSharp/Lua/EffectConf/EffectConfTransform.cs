@@ -1,6 +1,7 @@
 using UnityEngine;
 using System;
 using System.Text;
+using SkillEditor;
 
 namespace Lua.EffectConf {
 
@@ -33,6 +34,8 @@ namespace Lua.EffectConf {
                 return m_vector3;
             }
         }
+
+        public string VectorString => Tool.GetCacheString(string.Format("{0} x:{1} y:{2} z:{3}", type, x, y, z));
 
         #region ITable Function
 

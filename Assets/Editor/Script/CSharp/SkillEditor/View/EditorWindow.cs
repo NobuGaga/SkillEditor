@@ -25,6 +25,7 @@ namespace SkillEditor {
         private const string BtnAddFrame = "增加帧数据";
         private const string BtnSave = "保存";
         private const string BtnDelete = "删除";
+        private const string BtnReloadEffect = "重载特效表";
         private const string BtnAddEffect = "增加特效";
         private const string BtnAddCube = "增加碰撞框";
         private const string BtnAdd = "增加 ";
@@ -135,6 +136,8 @@ namespace SkillEditor {
                 Controller.AddFrameData();
             if (SpaceWithButton(BtnSave))
                 Controller.WriteAnimClipData();
+            if (SpaceWithButton(BtnReloadEffect))
+                Controller.ReloadEffectConf();
             Space();
         }
 
@@ -249,14 +252,15 @@ namespace SkillEditor {
             data.type = (EffectType)EnumPopup(data.type);
             SpaceWithLabel(LabelEffectID);
             data.id = TextField(data.id);
-            EffectRotationData rotationData = data.rotation;
-            SpaceWithLabel(LabelX);
-            rotationData.x = TextField(rotationData.x);
-            SpaceWithLabel(LabelY);
-            rotationData.y = TextField(rotationData.y);
-            SpaceWithLabel(LabelZ);
-            rotationData.z = TextField(rotationData.z);
-            data.rotation = rotationData;
+            Lua.EffectConf.EffectData transformData = LuaEffectConfModel.GetEffectData(data.id);
+            if (!transformData.IsNullTable()) {
+                if (!transformData.offset.IsNullTable())
+                    EffectTransformDataUI(transformData.offset);
+                if (!transformData.scale.IsNullTable())
+                    EffectTransformDataUI(transformData.scale);
+                if (!transformData.rotation.IsNullTable())
+                    EffectTransformDataUI(transformData.rotation);
+            }
             Controller.SetCustomeSubData(frameIndex, data, FrameType.PlayEffect);
             bool isDelete = SpaceWithButton(BtnDelete);
             if (isDelete)
@@ -264,6 +268,8 @@ namespace SkillEditor {
             Space();
             return isDelete;
         }
+
+        private void EffectTransformDataUI(Lua.EffectConf.EffectConfTransform data) => SpaceWithLabel(data.VectorString);
 
         private void HitFrameDataTitleUI(int index) => PriorityFrameDataTitleUI(index, FrameType.Hit);
         private void HitFrameDataUI(int frameIndex) => FrameDataListUI(frameIndex, FrameType.Hit);
