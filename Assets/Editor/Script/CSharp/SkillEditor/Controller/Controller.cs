@@ -309,7 +309,7 @@ namespace SkillEditor {
                     Transform footTrans = m_model.transform.Find(Config.DrawCubeNodeName);
                     if (footTrans == null)
                         continue;
-                    m_dicTimePosition.Add(triggerTime, footTrans.localPosition);
+                    m_dicTimePosition.Add(triggerTime, footTrans.position);
                 }
                 Vector3 position = m_dicTimePosition[triggerTime];
                 foreach (AnimClipData.CubeData data in list[index].Value)
