@@ -46,7 +46,7 @@
   </PropertyGroup>
   <ItemGroup>
      <Compile Include="Assets\Editor\Script\CSharp\Base\BaseEditorWindow.cs" />
-     <Compile Include="Assets\Editor\Script\CSharp\Inspector\ParticleDelay.cs" />
+     <Compile Include="Assets\Editor\Script\CSharp\Inspector\ParticleDelayInspector.cs" />
      <Compile Include="Assets\Editor\Script\CSharp\Lua\AnimClipData\AnimClipData.cs" />
      <Compile Include="Assets\Editor\Script\CSharp\Lua\AnimClipData\ClipGroupData.cs" />
      <Compile Include="Assets\Editor\Script\CSharp\Lua\AnimClipData\CubeData.cs" />
