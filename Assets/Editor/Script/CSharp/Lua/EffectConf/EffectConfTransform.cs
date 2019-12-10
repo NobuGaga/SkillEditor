@@ -7,11 +7,11 @@ namespace Lua.EffectConf {
     public struct EffectConfTransform : IFieldValueTable {
 
         public TransformType type;
-        public short x;
-        public short y;
-        public short z;
+        public float x;
+        public float y;
+        public float z;
 
-        public EffectConfTransform(TransformType type, short x, short y, short z) {
+        public EffectConfTransform(TransformType type, float x, float y, float z) {
             this.type = type;
             this.x = x;
             this.y = y;
@@ -22,9 +22,9 @@ namespace Lua.EffectConf {
 
         public Vector3 Vector {
             set {
-                x = (short)value.x;
-                y = (short)value.y;
-                z = (short)value.z;
+                x = (float)value.x;
+                y = (float)value.y;
+                z = (float)value.z;
             }
             get {
                 m_vector3.x = x;
@@ -58,13 +58,13 @@ namespace Lua.EffectConf {
         public void SetFieldValueTableValue(string key, object value) {
             switch (key) {
                 case Key_X:
-                    x = (short)(int)value;
+                    x = (float)value;
                     return;
                 case Key_Y:
-                    y = (short)(int)value;
+                    y = (float)value;
                     return;
                 case Key_Z:
-                    z = (short)(int)value;
+                    z = (float)value;
                     return;
             }
         }
@@ -90,9 +90,9 @@ namespace Lua.EffectConf {
             const ushort length = 3;
             ushort count = 0;
             m_arraykeyValue = new FieldValueTableInfo[length];
-            m_arraykeyValue[count++] = new FieldValueTableInfo(Key_X, ValueType.Int);
-            m_arraykeyValue[count++] = new FieldValueTableInfo(Key_Y, ValueType.Int);
-            m_arraykeyValue[count++] = new FieldValueTableInfo(Key_Z, ValueType.Int);
+            m_arraykeyValue[count++] = new FieldValueTableInfo(Key_X, ValueType.Number);
+            m_arraykeyValue[count++] = new FieldValueTableInfo(Key_Y, ValueType.Number);
+            m_arraykeyValue[count++] = new FieldValueTableInfo(Key_Z, ValueType.Number);
             return m_arraykeyValue;
         }
         #endregion

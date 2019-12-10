@@ -89,12 +89,15 @@ namespace Lua.EffectConf {
             switch (transformType) {
                 case TransformType.Offset:
                     offset = (EffectConfTransform)value;
+                    offset.type = TransformType.Offset;
                     return;
                 case TransformType.Scale:
                     scale = (EffectConfTransform)value;
+                    scale.type = TransformType.Scale;
                     return;
                 case TransformType.Rotation:
                     rotation = (EffectConfTransform)value;
+                    rotation.type = TransformType.Rotation;
                     return;
             }
         }
@@ -118,13 +121,21 @@ namespace Lua.EffectConf {
                 case Key_Break:
                     return isBreak ? 1 : 0;
             }
-            if (key == offset.GetKey())
-                return offset;
-            else if (key == scale.GetKey())
-                return scale;
-            else if (key == rotation.GetKey())
-                return rotation;
-            return null;
+            string typeString = key.Substring(1);
+            if (!Enum.TryParse(typeString, false, out TransformType type)) {
+                Debug.LogError("EffectData::GetFieldValueTableValue error. key " + key);
+                return null;
+            }
+            switch (type) {
+                case TransformType.Offset:
+                    return offset;
+                case TransformType.Scale:
+                    return scale;
+                case TransformType.Rotation:
+                    return rotation;
+                default:
+                    return null;
+            }
         }
 
         private static FieldValueTableInfo[] m_arraykeyValue;
@@ -142,11 +153,12 @@ namespace Lua.EffectConf {
             m_arraykeyValue[count++] = new FieldValueTableInfo(Key_PivotNodeName, ValueType.String);
             m_arraykeyValue[count++] = new FieldValueTableInfo(Key_Loop, ValueType.Int);
             m_arraykeyValue[count++] = new FieldValueTableInfo(Key_Break, ValueType.Int);
-            EffectConfTransform temp = default;
-            for (ushort index = 0; index < arrayType.Length; index++) {
-                temp.type = (TransformType)arrayType.GetValue(index);
-                m_arraykeyValue[count++] = new FieldValueTableInfo(temp.GetKey(), ValueType.Table);
-            }
+            offset.type = TransformType.Offset;
+            m_arraykeyValue[count++] = new FieldValueTableInfo(offset.GetKey(), ValueType.Table);
+            scale.type = TransformType.Scale;
+            m_arraykeyValue[count++] = new FieldValueTableInfo(scale.GetKey(), ValueType.Table);
+            rotation.type = TransformType.Rotation;
+            m_arraykeyValue[count++] = new FieldValueTableInfo(rotation.GetKey(), ValueType.Table);
             m_arraykeyValue[count++] = new FieldValueTableInfo(Key_ParentPivotType, ValueType.Int);
             return m_arraykeyValue;
         }

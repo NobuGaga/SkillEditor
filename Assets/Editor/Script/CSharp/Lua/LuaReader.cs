@@ -10,7 +10,7 @@ namespace Lua {
 
     public static class LuaReader {
 
-        public static void Read<T>(bool isHasNoKeyTable = false) where T : ITable, ILuaFile<T> {
+        public static void Read<T>(bool hasNoKeyTable = false) where T : ITable, ILuaFile<T> {
             T luaFile = default;
             string luaFilePath = luaFile.GetLuaFilePath();
             string luaFileHeadStart = luaFile.GetLuaFileHeadStart();
@@ -20,20 +20,72 @@ namespace Lua {
                 return;
             }
             string luaText = File.ReadAllText(luaFilePath);
-            WriteArrayToFileString(ref luaText);
+            if (hasNoKeyTable)
+                WriteArrayKeyToFileString(ref luaText);
             int index = 0;
             ReadLuaFileHeadText(luaText, luaFilePath, luaFileHeadStart, ref index);
             ReadLuaFileTable(luaText, ref index, list);
         }
 
-        private static void WriteArrayToFileString(ref string luaText) {
+        private static void WriteArrayKeyToFileString(ref string luaText) {
             StringBuilder builder = LuaWriter.BuilderCache;
             builder.Clear();
             builder.Append(luaText);
-            ushort index = 1;
-            string format = "[{0}]";
-            
+            ushort index = 0;
+            CheckNoKeyTable(builder, ref index);
+            luaText = builder.ToString();
         }
+
+        private static void CheckNoKeyTable(StringBuilder builder, ref ushort index) {
+            while (builder[index++] != LuaFormat.CurlyBracesPair.start) { }
+            ushort key = 1;
+            for (; index < builder.Length; index++) {
+                char @char = builder[index];
+                if (@char == LuaFormat.CurlyBracesPair.start)
+                    CheckNoKeyTable(builder, ref index);
+                else if (@char == LuaFormat.CurlyBracesPair.end) {
+                    CheckNoKeyValue(builder, ref index, ref key);
+                    index++;
+                    break;
+                }
+                else if (@char == LuaFormat.CommaSymbol)
+                    CheckNoKeyValue(builder, ref index, ref key);
+            }
+        }
+
+        private static void CheckNoKeyValue(StringBuilder builder, ref ushort index, ref ushort key) {
+            bool hasEqualSymbol = false;
+            bool hasValue = false;
+            for (ushort valueIndex = (ushort)(index - 1); valueIndex >= 0; valueIndex--) {
+                char valueChar = builder[valueIndex];
+                if (valueChar == LuaFormat.EqualSymbol) {
+                    hasEqualSymbol = true;
+                    break;
+                } 
+                else if (valueChar == LuaFormat.CurlyBracesPair.start || valueChar == LuaFormat.CommaSymbol)
+                    break;
+                else if (IsLuaBaseValue(valueChar))
+                    hasValue = true;
+            }
+            if (hasEqualSymbol || !hasValue)
+                return;
+            ushort length = WriteArrayKeyToFileString(builder, (ushort)(index - 1), key++);
+            index += length;
+        }
+
+        private static ushort WriteArrayKeyToFileString(StringBuilder builder, ushort index, ushort key) {
+            string format = "[{0}]=";
+            string keyString = Tool.GetCacheString(string.Format(format, key));
+            char @char = builder[index];
+            while (IsLuaBaseValue(@char))
+                @char = builder[--index];
+            builder.Insert(index + 1, keyString);
+            return (ushort)keyString.Length;
+        }
+
+        private static bool IsLuaBaseValue(char @char) =>
+            (@char >= '0' && @char <= '9') || @char == LuaFormat.NumberPoint || @char == LuaFormat.QuotationPair.start ||
+                    @char == LuaFormat.NotesSymbolStart;
 
         private static StringBuilder m_luaTextHeadStringBuilder = new StringBuilder(Config.LuaFileHeadLength);
         private static void ReadLuaFileHeadText(string luaText, string luaFilePath, string luaFileHeadStart, ref int index) {
@@ -467,6 +519,23 @@ namespace Lua {
             int curlyBracesCount = 0;
             for (; index < luaText.Length; index++) {
                 char curChar = luaText[index];
+                if (curChar == LuaFormat.CurlyBracesPair.start)
+                    curlyBracesCount++;
+                else if (curChar == LuaFormat.CurlyBracesPair.end) {
+                    curlyBracesCount--;
+                    if (curlyBracesCount < 0) {
+                        index++;
+                        break;
+                    }
+                }
+            }
+            return index;
+        }
+
+        private static ushort FindLuaTableEndIndex(StringBuilder builder, ushort index) {
+            int curlyBracesCount = 0;
+            for (; index < builder.Length; index++) {
+                char curChar = builder[index];
                 if (curChar == LuaFormat.CurlyBracesPair.start)
                     curlyBracesCount++;
                 else if (curChar == LuaFormat.CurlyBracesPair.end) {
