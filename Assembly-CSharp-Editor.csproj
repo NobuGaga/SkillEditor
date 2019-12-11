@@ -46,7 +46,6 @@
   </PropertyGroup>
   <ItemGroup>
      <Compile Include="Assets\Editor\Script\CSharp\Base\BaseEditorWindow.cs" />
-     <Compile Include="Assets\Editor\Script\CSharp\Inspector\ParticleDelayInspector.cs" />
      <Compile Include="Assets\Editor\Script\CSharp\Lua\AnimClipData\AnimClipData.cs" />
      <Compile Include="Assets\Editor\Script\CSharp\Lua\AnimClipData\ClipGroupData.cs" />
      <Compile Include="Assets\Editor\Script\CSharp\Lua\AnimClipData\CubeData.cs" />
@@ -664,12 +663,6 @@
  <Reference Include="Boo.Lang">
  <HintPath>/Applications/Unity/Hub/Editor/2019.3.0f1/Unity.app/Contents/MonoBleedingEdge/lib/mono/unityscript/Boo.Lang.dll</HintPath>
  </Reference>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="Assembly-CSharp.csproj">
-      <Project>{F85DE251-F09A-3656-0971-A0A9862D8632}</Project>
-      <Name>Assembly-CSharp</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
