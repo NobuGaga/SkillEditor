@@ -234,6 +234,7 @@ namespace SkillEditor {
         public static void Play() {
             if (m_modelAnimation.IsPlaying)
                 return;
+            StopEffect();
             AnimationClip selectAnimationClip = AnimationModel.SelectAnimationClip;
             if (selectAnimationClip == null)
                 return;
@@ -290,7 +291,10 @@ namespace SkillEditor {
             m_modelAnimation.SetAnimationPlayTime(selectAnimationClip, time);
             if (m_weaponAnimation != null && !m_isNoWeaponClip)
                 m_weaponAnimation.SetAnimationPlayTime(selectAnimationClip, time);
-            SetPlayEffectTime(time);            
+            if (time <= 0)
+                StopEffect();
+            else
+                SetPlayEffectTime(time);            
             SetDrawCubeData();
         }
 
@@ -330,9 +334,10 @@ namespace SkillEditor {
                             ParticleSystem particle = particles[particleIndex];
                             if (!dicParticleNameTime.ContainsKey(particle.name))
                                 continue;
-                            float startDelay = dicParticleNameTime[particle.name];
-                            float timeOffset = startDelay + Config.FramesPerSecond;
-                            particle.Simulate(sampleTime - time + timeOffset);
+                            float simulateTime = time + dicParticleNameTime[particle.name] - Config.FramesPerSecond;
+                            if (sampleTime < simulateTime)
+                                continue;
+                            particle.Simulate(sampleTime - simulateTime);
                         }
                     }
                     // if (m_dicIDEffectAnimation.ContainsKey(data.id)) {
