@@ -80,5 +80,9 @@ namespace SkillEditor {
         public const ushort FrameListStringLength = 2048;
         public const ushort CustomDataListStringLength = 512;
         public const ushort RectDataListStringLength = 512;
+
+        public enum EffectFilter {
+            GrabObj,
+        }
     }
 }

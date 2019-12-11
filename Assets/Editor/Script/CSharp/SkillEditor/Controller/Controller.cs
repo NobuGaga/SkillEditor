@@ -168,6 +168,8 @@ namespace SkillEditor {
             m_dicIDEffects.Add(id, particles);
             for (ushort index = 0; index < particles.Length; index++) {
                 ParticleSystem particle = particles[index];
+                if (!FilterParticleObject(particle))
+                    continue;
                 string name = particle.name;
                 float startDelay = particle.main.startDelayMultiplier;
                 if (!m_dicIDObjectNameDelay.ContainsKey(id))
@@ -187,6 +189,19 @@ namespace SkillEditor {
             SkillAnimator animation = new SkillAnimator(animator);
             animation.Record(state);
             m_dicIDEffectAnimation.Add(id, animation);
+        }
+
+        private static bool FilterParticleObject(ParticleSystem particle) {
+            var array = System.Enum.GetValues(typeof(Config.EffectFilter));
+            for (ushort index = 0; index < array.Length; index++) {
+                string componentName = array.GetValue(index).ToString();
+                Component component = particle.GetComponent(componentName);
+                if (component != null)
+                    particle.gameObject.SetActive(false);
+                if (!particle.gameObject.activeSelf)
+                    break;
+            }
+            return particle.gameObject.activeSelf;
         }
 
         public static void ReloadEffectConf() {
