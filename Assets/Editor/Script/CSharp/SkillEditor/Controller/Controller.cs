@@ -406,7 +406,7 @@ namespace SkillEditor {
 
         private static bool IsInCollisionTime(float curTime, float collisionTime) {
             float minTime = collisionTime;
-            float maxTime = collisionTime + Config.FramesPerSecond;
+            float maxTime = collisionTime + Config.DrawCubeLastTime;
             return curTime >= minTime && curTime <= maxTime;
         }
 
