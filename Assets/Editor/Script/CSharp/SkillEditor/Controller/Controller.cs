@@ -350,9 +350,10 @@ namespace SkillEditor {
                             if (!dicParticleNameTime.ContainsKey(particle.name))
                                 continue;
                             float simulateTime = time + dicParticleNameTime[particle.name] - Config.FramesPerSecond;
-                            if (sampleTime < simulateTime)
-                                continue;
-                            particle.Simulate(sampleTime - simulateTime);
+                            if (sampleTime >= simulateTime)
+                                particle.Simulate(sampleTime - simulateTime);
+                            else
+                                particle.Simulate(0);
                         }
                     }
                     // if (m_dicIDEffectAnimation.ContainsKey(data.id)) {
