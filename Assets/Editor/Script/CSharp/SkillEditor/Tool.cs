@@ -2,6 +2,7 @@
 using UnityEngine;
 using System;
 using System.Reflection;
+using System.Collections.Generic;
 
 namespace SkillEditor {
 
@@ -138,6 +139,34 @@ namespace SkillEditor {
                     return path;
             }
             return null;
+        }
+
+        public static void RenameSameNameObject() {
+            var objects = Selection.objects;
+            if (objects == null)
+                return;
+            Dictionary<string, bool> dicNameObject = new Dictionary<string, bool>();
+            bool isNeedSaveAssets = false;
+            foreach (var obj in objects) {
+                Transform[] transforms = (obj as GameObject).GetComponentsInChildren<Transform>(true);
+                if (transforms == null || transforms.Length == 0)
+                    continue;
+                dicNameObject.Clear();
+                bool hasSameName = false;
+                foreach (var transform in transforms) {
+                    while (dicNameObject.ContainsKey(transform.name)) {
+                        transform.name += "Copy";
+                        hasSameName = true;
+                    }
+                    dicNameObject.Add(transform.name, true);
+                }
+                if (hasSameName) {
+                    EditorUtility.SetDirty(obj);
+                    isNeedSaveAssets = true;
+                }
+            }
+            if (isNeedSaveAssets)
+                AssetDatabase.SaveAssets();
         }
     }
 }
