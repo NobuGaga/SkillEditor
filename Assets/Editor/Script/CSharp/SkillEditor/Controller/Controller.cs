@@ -383,12 +383,12 @@ namespace SkillEditor {
                 return;
             float time = m_modelAnimation.PlayTime;
             List<KeyValuePair<float, AnimClipData.CubeData[]>> list = LuaAnimClipModel.ListCollision;
-            float minTime = list[0].Key;
-            float maxTime = list[list.Count - 1].Key + Config.FramesPerSecond;
+            float minTime = list[0].Key + Config.RuntimeCubeDelay;
+            float maxTime = list[list.Count - 1].Key + Config.RuntimeCubeDelay + Config.FramesPerSecond;
             if (time < minTime || time > maxTime)
                 return;
             for (int index = 0; index < list.Count; index++) {
-                float triggerTime = list[index].Key;
+                float triggerTime = list[index].Key + Config.RuntimeCubeDelay;
                 if (!IsInCollisionTime(time, triggerTime))
                     continue;
                 if (!m_dicTimePosition.ContainsKey(triggerTime)) {

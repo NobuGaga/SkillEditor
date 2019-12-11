@@ -34,7 +34,6 @@ namespace SkillEditor {
 
         // Effect
         public static string[] ModelSkillEffectPath = new string[] { "Assets/fx/skill" };
-        public const float RuntimeEffectDelay = FramesPerSecond * 2;
 
         // Scene
         private const string ScenePath = "Assets/Editor/Scene";
@@ -90,5 +89,10 @@ namespace SkillEditor {
         public static KeyValuePair<string, string>[] UseAutoSeedEffectList = new KeyValuePair<string, string>[] {
             new KeyValuePair<string, string>("p_nw_skill03a", "array"),
         };
+
+        // Runtime
+        public const float RuntimeEffectDelay = FramesPerSecond;
+        public const float RuntimeCubeDelay = FramesPerSecond / 10;
+        public const float DrawCubeLastTime = FramesPerSecond * 3;
     }
 }
