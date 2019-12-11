@@ -362,7 +362,7 @@ namespace SkillEditor {
                             ParticleSystem particle = particles[particleIndex];
                             if (!dicParticleNameTime.ContainsKey(particle.name))
                                 continue;
-                            float simulateTime = time + dicParticleNameTime[particle.name] - Config.FramesPerSecond;
+                            float simulateTime = time + dicParticleNameTime[particle.name] - Config.RuntimeEffectDelay;
                             if (sampleTime >= simulateTime)
                                 particle.Simulate(sampleTime - simulateTime);
                             else

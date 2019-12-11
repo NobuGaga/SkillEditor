@@ -34,6 +34,7 @@ namespace SkillEditor {
 
         // Effect
         public static string[] ModelSkillEffectPath = new string[] { "Assets/fx/skill" };
+        public const float RuntimeEffectDelay = FramesPerSecond * 2;
 
         // Scene
         private const string ScenePath = "Assets/Editor/Scene";
