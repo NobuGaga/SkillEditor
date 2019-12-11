@@ -170,6 +170,7 @@ namespace SkillEditor {
                 ParticleSystem particle = particles[index];
                 if (!FilterParticleObject(particle))
                     continue;
+                SetUseAutoSeedEffect(effectNode, particle);
                 string name = particle.name;
                 float startDelay = particle.main.startDelayMultiplier;
                 if (!m_dicIDObjectNameDelay.ContainsKey(id))
@@ -202,6 +203,18 @@ namespace SkillEditor {
                     break;
             }
             return particle.gameObject.activeSelf;
+        }
+
+        private static void SetUseAutoSeedEffect(GameObject rootNode, ParticleSystem particle) {
+            var list = Config.UseAutoSeedEffectList;
+            foreach (var pair in list) {
+                string rootNodeName = pair.Key;
+                string particleName = pair.Value;
+                if (rootNodeName == rootNode.name && particleName == particle.name) {
+                    particle.useAutoRandomSeed = true;
+                    break;
+                }
+            }
         }
 
         public static void ReloadEffectConf() {

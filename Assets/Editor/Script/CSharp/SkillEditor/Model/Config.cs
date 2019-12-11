@@ -1,5 +1,6 @@
 ﻿using UnityEditorInternal;
 using UnityEngine;
+using System.Collections.Generic;
 
 namespace SkillEditor {
 
@@ -84,5 +85,9 @@ namespace SkillEditor {
         public enum EffectFilter {
             GrabObj,
         }
+
+        public static KeyValuePair<string, string>[] UseAutoSeedEffectList = new KeyValuePair<string, string>[] {
+            new KeyValuePair<string, string>("p_nw_skill03a", "array"),
+        };
     }
 }
