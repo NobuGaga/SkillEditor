@@ -253,7 +253,17 @@ namespace SkillEditor {
             SpaceWithLabel(LabelEffectID);
             data.id = TextField(data.id);
             Lua.EffectConf.EffectData transformData = LuaEffectConfModel.GetEffectData(data.id);
-            if (!transformData.IsNullTable()) {
+            if (data.type == EffectType.Hit) {
+                EffectRotationData rotationData = data.rotation;
+                SpaceWithLabel(LabelX);
+                rotationData.x = TextField(rotationData.x);
+                SpaceWithLabel(LabelY);
+                rotationData.y = TextField(rotationData.y);
+                SpaceWithLabel(LabelZ);
+                rotationData.z = TextField(rotationData.z);
+                data.rotation = rotationData;
+            }
+            else if (!transformData.IsNullTable()) {
                 if (!transformData.offset.IsNullTable())
                     EffectTransformDataUI(transformData.offset);
                 if (!transformData.scale.IsNullTable())
