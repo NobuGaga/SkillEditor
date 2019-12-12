@@ -92,7 +92,7 @@ namespace SkillEditor {
 
         // Runtime
         public const float RuntimeEffectDelay = FramesPerSecond;
-        public const float RuntimeCubeDelay = FramesPerSecond;
+        public const float RuntimeCubeDelay = - FramesPerSecond;
         public const float DrawCubeLastTime = FramesPerSecond;
     }
 }
