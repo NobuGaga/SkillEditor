@@ -12,7 +12,7 @@ namespace Lua.EffectConf {
         public string name;
         public ushort pivotType;
         public string pivotNodeName;
-        public ParentPivotType parentPivotType;
+        public ushort parentPivotType;
         public string resourceName;
         public bool isLoop;
         public bool isBreak;
@@ -70,9 +70,7 @@ namespace Lua.EffectConf {
                     pivotNodeName = value as string;
                     return;
                 case Key_ParentPivotType:
-                    if (!Enum.TryParse(value.ToString(), false, out ParentPivotType type))
-                        Debug.LogError("EffectConf::SetFieldValueTableValue value type is not a ParentPivotType");
-                    parentPivotType = type;
+                    parentPivotType = (ushort)(int)value;
                     return;
                 case Key_ResourceName:
                     resourceName = value as string;
@@ -171,10 +169,5 @@ namespace Lua.EffectConf {
         public List<EffectData> GetModel() => LuaEffectConfModel.EffectList;
         public string GetWriteFileString() => LuaEffectConfModel.GetWriteFileString();
         #endregion
-    }
-
-    public enum ParentPivotType {
-        Body = 0,
-        Weapon = 1,
     }
 }

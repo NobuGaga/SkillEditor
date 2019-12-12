@@ -130,22 +130,8 @@ namespace SkillEditor {
 
         private static void CreateEffect(AnimClipData.EffectData animClipEffect) {
             EffectConf.EffectData data = LuaEffectConfModel.GetEffectData(animClipEffect.id);
-            Transform parent = null;
-            switch (data.parentPivotType) {
-                case EffectConf.ParentPivotType.Body:
-                    parent = Tool.GetTransformByName(m_model, data.pivotNodeName);
-                    break;
-                case EffectConf.ParentPivotType.Weapon:
-                    if (m_weapon == null)
-                        return;
-                    parent = Tool.GetTransformByName(m_weapon, data.pivotNodeName);
-                    break;
-            }
-            if (parent == null)
-                return;
             string path = Tool.GetAssetProjectPath(data.resourceName, Config.PrefabExtension, Config.ModelSkillEffectPath);
             GameObject effectNode = LoadPrefab(Tool.ProjectPathToFullPath(path));
-            effectNode.transform.SetParent(parent);
             Tool.NormalizeTransform(effectNode);
             m_dicIDEffectObject.Add(animClipEffect.id, effectNode);
             SetEffectTransform(data, effectNode);
