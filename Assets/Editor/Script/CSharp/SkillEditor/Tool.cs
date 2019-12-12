@@ -155,7 +155,7 @@ namespace SkillEditor {
                 bool hasSameName = false;
                 foreach (var transform in transforms) {
                     while (dicNameObject.ContainsKey(transform.name)) {
-                        transform.name += "Copy";
+                        transform.name += "0";
                         hasSameName = true;
                     }
                     dicNameObject.Add(transform.name, true);
