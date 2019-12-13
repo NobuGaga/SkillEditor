@@ -10,11 +10,24 @@ namespace SkillEditor {
         static Config() => ReloadConfigJson();
         public static void ReloadConfigJson() {
             m_configJson = JsonUtility.FromJson<ConfigJson>(File.ReadAllText(ConfigJsonPath));
-            ListUseAutoSeedEffect.Clear();
-            if (m_configJson.use_autoseed_effect == null || m_configJson.use_autoseed_effect.Length == 0)
-                return;
-            foreach (string jsonString in m_configJson.use_autoseed_effect)
-                ListUseAutoSeedEffect.Add(JsonUtility.FromJson<PrefabChildName>(jsonString));
+            UseAutoSeedEffect.Clear();
+            if (m_configJson.use_autoseed_effect != null && m_configJson.use_autoseed_effect.Length != 0)
+                foreach (string jsonString in m_configJson.use_autoseed_effect) {
+                    PrefabChildName data = JsonUtility.FromJson<PrefabChildName>(jsonString);
+                    if (!UseAutoSeedEffect.ContainsKey(data.prefabName))
+                        UseAutoSeedEffect.Add(data.prefabName, new Dictionary<string, bool>());
+                    foreach (string objName in data.childName)
+                        UseAutoSeedEffect[data.prefabName].Add(objName, true);
+                }
+            ModelClipDrawCubeOffset.Clear();
+            if (m_configJson.clip_cube_offset != null && m_configJson.clip_cube_offset.Length != 0)
+                foreach (string jsonString in m_configJson.clip_cube_offset) {
+                    ClipDrawCubeOffset data = JsonUtility.FromJson<ClipDrawCubeOffset>(jsonString);
+                    if (ModelClipDrawCubeOffset.ContainsKey(data.clipName))
+                        ModelClipDrawCubeOffset[data.clipName] = data;
+                    else
+                        ModelClipDrawCubeOffset.Add(data.clipName, data);
+                }
         }
 
         #region Config
@@ -93,7 +106,8 @@ namespace SkillEditor {
         // Effect
         public static string[] SkillEffectPath => m_configJson.skill_effect_path;
         public static string[] EffectExcluteComponents => m_configJson.effect_exclute_component;
-        public static List<PrefabChildName> ListUseAutoSeedEffect = new List<PrefabChildName>();
+        public static Dictionary<string, Dictionary<string, bool>> UseAutoSeedEffect = new Dictionary<string, Dictionary<string, bool>>();
+        public static Dictionary<string, ClipDrawCubeOffset> ModelClipDrawCubeOffset = new Dictionary<string, ClipDrawCubeOffset>();
 
         private static ConfigJson m_configJson;
 
@@ -113,13 +127,14 @@ namespace SkillEditor {
             public string[] skill_effect_path;
             public string[] effect_exclute_component;
             public string[] use_autoseed_effect;
+            public string[] clip_cube_offset;
 
             public ConfigJson(ushort arg) {
                 // unity warnning
                 frame_rate = draw_cube_last_time = 0;
                 runtime_effect_delay = runtime_draw_cube_delay = 0;
                 model_path = weapon_path = clip_folder = prefab_folder = hero_prefix = weapon_prefix = animator_controller_folder = null;
-                skill_effect_path = effect_exclute_component = use_autoseed_effect = null;
+                skill_effect_path = effect_exclute_component = use_autoseed_effect = clip_cube_offset = null;
             }
         }
 
@@ -127,6 +142,15 @@ namespace SkillEditor {
 
             public string prefabName;
             public string[] childName;
+        }
+
+        public struct ClipDrawCubeOffset {
+
+            public string clipName;
+            public float time;
+            public float x;
+            public float y;
+            public float z;
         }
         #endregion
     }

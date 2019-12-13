@@ -18,5 +18,8 @@
 	],
 	"use_autoseed_effect" : [
 		"{ \"prefabName\": \"p_nw_skill03a\", \"childName\": [ \"array\" ] }"
+	],
+	"clip_cube_offset" : [
+		"{ \"clipName\": \"skill_04_3\", \"time\": 0.3, \"x\": -3.15, \"y\": 0, \"z\": 0 }"
 	]
 }

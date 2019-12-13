@@ -194,17 +194,10 @@ namespace SkillEditor {
         }
 
         private static void SetUseAutoSeedEffect(GameObject rootNode, ParticleSystem particle) {
-            foreach (var pair in Config.ListUseAutoSeedEffect) {
-                if (string.IsNullOrEmpty(pair.prefabName) || pair.prefabName != rootNode.name || 
-                    pair.childName == null || pair.childName.Length == 0)
-                    continue;
-                foreach (string particleName in pair.childName) {
-                    if (particleName == particle.name) {
-                        particle.useAutoRandomSeed = true;
-                        return;
-                    }
-                }
-            }
+            var dic = Config.UseAutoSeedEffect;
+            string rootNodeName = rootNode.name;
+            if (dic.ContainsKey(rootNodeName) && dic[rootNodeName].ContainsKey(particle.name))
+                particle.useAutoRandomSeed = true;
         }
 
         public static void ReloadEffectConf() {
@@ -385,11 +378,19 @@ namespace SkillEditor {
                     Transform footTrans = m_model.transform.Find(Config.DrawCubeNodeName);
                     if (footTrans == null)
                         continue;
-                    m_dicTimePosition.Add(triggerTime, footTrans.position);
+                    Vector3 position = footTrans.position;
+                    var dic = Config.ModelClipDrawCubeOffset;
+                    string clipName = AnimationModel.SelectAnimationClipName;
+                    if (dic.ContainsKey(clipName) && time < dic[clipName].time) {
+                        var data = dic[clipName];
+                        position.x += data.x;
+                        position.y += data.y;
+                        position.z += data.z;
+                    }
+                    m_dicTimePosition.Add(triggerTime, position);
                 }
-                Vector3 position = m_dicTimePosition[triggerTime];
                 foreach (AnimClipData.CubeData data in list[index].Value)
-                    m_listPointCubeData.Add(new KeyValuePair<Vector3, AnimClipData.CubeData>(position, data));
+                    m_listPointCubeData.Add(new KeyValuePair<Vector3, AnimClipData.CubeData>(m_dicTimePosition[triggerTime], data));
             }
             EditorScene.SetDrawCubeData(m_listPointCubeData);
         }
