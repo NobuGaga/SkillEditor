@@ -77,7 +77,7 @@ namespace SkillEditor {
         public static float FramesPerSecond => 1f / FrameCount;
         public static float RuntimeEffectDelay => m_configJson.runtime_effect_delay * FramesPerSecond;
         public static float RuntimeCubeDelay => m_configJson.runtime_draw_cube_delay * FramesPerSecond;
-        public static float DrawCubeLastTime => m_configJson.runtime_draw_cube_delay * FramesPerSecond;
+        public static float DrawCubeLastTime => m_configJson.draw_cube_last_time * FramesPerSecond;
 
         // Path
         public static string AnimatorControllerFolder => m_configJson.animator_controller_folder;
