@@ -10,7 +10,7 @@ namespace SkillEditor {
     internal static class LuaAnimClipModel {
 
         private static int m_curModelIndex;
-        private static List<AnimClipData> m_listAnimClip = new List<AnimClipData>(Config.ModelCount);
+        private static List<AnimClipData> m_listAnimClip = new List<AnimClipData>();
         public static List<AnimClipData> AnimClipList => m_listAnimClip;
 
         public static void SetCurrentModelName(string modelName) {

@@ -70,12 +70,12 @@ namespace Lua {
         private static string GetTableFormat(ITable table) {
             switch (table.GetKeyType()) {
                 case KeyType.Array:
-                    return "{0}[{1}] = {2}\n{3}{0}{4},\n";
+                    return LuaFormat.ArrayKeyValueFormat;
                 case KeyType.String:
-                    return "{0}[\"{1}\"] = {2}\n{3}{0}{4},\n";
+                    return LuaFormat.StringKeyValueFormat;
                 case KeyType.Reference:
                 case KeyType.FixedField:
-                    return "{0}{1} = {2}\n{3}{0}{4},\n";
+                    return LuaFormat.FixedKeyValueFormat;
                 default:
                     Debug.LogError("table key type error. table name " + table.GetTableName());
                     return null;

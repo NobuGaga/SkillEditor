@@ -13,8 +13,7 @@ namespace SkillEditor {
         }
 
         public static void SelectPrefab() {
-		    string prefabPath = EditorUtility.OpenFilePanel(Config.FilePanelTitle,
-                                                            Config.ModelPrefabPath, Config.ModelPrefabExtension);
+		    string prefabPath = EditorUtility.OpenFilePanel("模型预设路径", Config.ModelPrefabPath, Config.PrefabExtension);
 		    if (string.IsNullOrEmpty(prefabPath) || prefabPath == ModelDataModel.CurrentPrefabPath)
 			    return;
             if (!isEditorMode && !EditorApplication.ExecuteMenuItem(Config.MenuPath)) {

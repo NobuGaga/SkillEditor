@@ -54,8 +54,8 @@ namespace Lua.AnimClipData {
         #endregion
     
         #region ILuaFile Function
-        public string GetLuaFilePath() => Config.AnimDataFilePath;
-        public string GetLuaFileHeadStart() => Config.AnimClipDataFileHeadStart;
+        public string GetLuaFilePath() => Tool.CombinePath(Config.ProjectPath, "../Resources/lua/data/config/AnimClipData.lua");
+        public string GetLuaFileHeadStart() => "AnimClipData = AnimClipData or {}";
         public List<AnimClipData> GetModel() => LuaAnimClipModel.AnimClipList;
         public string GetWriteFileString() => LuaAnimClipModel.GetWriteFileString();
         #endregion

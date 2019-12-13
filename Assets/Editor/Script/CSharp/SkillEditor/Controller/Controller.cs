@@ -83,8 +83,8 @@ namespace SkillEditor {
             string[] fileNames = Directory.GetFiles(ModelDataModel.ClipFullPath);
             m_listAnimationClip.Clear();
             for (int index = 0; index < fileNames.Length; index++) {
-                if (fileNames[index].Contains(".meta") || !fileNames[index].Contains("@") ||
-                    !(fileNames[index].Contains(".fbx") || fileNames[index].Contains(".FBX")))
+                if (fileNames[index].Contains(Config.MetaExtension) || !fileNames[index].Contains(Config.AnimationClipSymbol) ||
+                    !(fileNames[index].Contains(Config.ClipLowerExtension) || fileNames[index].Contains(Config.ClipUpperExtension)))
                     continue;
                 string path = Tool.FullPathToProjectPath(fileNames[index]);
                 AnimationClip clip = AssetDatabase.LoadAssetAtPath<AnimationClip>(path);
@@ -130,7 +130,7 @@ namespace SkillEditor {
 
         private static void CreateEffect(AnimClipData.EffectData animClipEffect) {
             EffectConf.EffectData data = LuaEffectConfModel.GetEffectData(animClipEffect.id);
-            string path = Tool.GetAssetProjectPath(data.resourceName, Config.PrefabExtension, Config.ModelSkillEffectPath);
+            string path = Tool.GetAssetProjectPath(data.resourceName, Config.PrefabExtension, Config.SkillEffectPath);
             GameObject effectNode = LoadPrefab(Tool.ProjectPathToFullPath(path));
             Tool.NormalizeTransform(effectNode);
             m_dicIDEffectObject.Add(animClipEffect.id, effectNode);
@@ -170,7 +170,7 @@ namespace SkillEditor {
             Animator animator = effectNode.GetComponent<Animator>();
             if (animator == null)
                 return;
-            AnimatorState state = AnimatorControllerManager.GetAnimatorControllerFirstStateName(animator, Config.ModelSkillEffectPath);
+            AnimatorState state = AnimatorControllerManager.GetAnimatorControllerFirstStateName(animator, Config.SkillEffectPath);
             if (state == null || state.motion == null)
                 return;
             SkillAnimator animation = new SkillAnimator(animator);
@@ -179,9 +179,11 @@ namespace SkillEditor {
         }
 
         private static bool FilterParticleObject(ParticleSystem particle) {
-            var array = System.Enum.GetValues(typeof(Config.EffectFilter));
-            for (ushort index = 0; index < array.Length; index++) {
-                string componentName = array.GetValue(index).ToString();
+            string[] excluteComponents = Config.EffectExcluteComponents;
+            if (excluteComponents == null || excluteComponents.Length == 0)
+                return true;
+            for (ushort index = 0; index < excluteComponents.Length; index++) {
+                string componentName = excluteComponents[index];
                 Component component = particle.GetComponent(componentName);
                 if (component != null)
                     particle.gameObject.SetActive(false);
@@ -192,13 +194,15 @@ namespace SkillEditor {
         }
 
         private static void SetUseAutoSeedEffect(GameObject rootNode, ParticleSystem particle) {
-            var list = Config.UseAutoSeedEffectList;
-            foreach (var pair in list) {
-                string rootNodeName = pair.Key;
-                string particleName = pair.Value;
-                if (rootNodeName == rootNode.name && particleName == particle.name) {
-                    particle.useAutoRandomSeed = true;
-                    break;
+            foreach (var pair in Config.ListUseAutoSeedEffect) {
+                if (string.IsNullOrEmpty(pair.prefabName) || pair.prefabName != rootNode.name || 
+                    pair.childName == null || pair.childName.Length == 0)
+                    continue;
+                foreach (string particleName in pair.childName) {
+                    if (particleName == particle.name) {
+                        particle.useAutoRandomSeed = true;
+                        return;
+                    }
                 }
             }
         }
@@ -370,7 +374,7 @@ namespace SkillEditor {
             float time = m_modelAnimation.PlayTime;
             List<KeyValuePair<float, AnimClipData.CubeData[]>> list = LuaAnimClipModel.ListCollision;
             float minTime = list[0].Key + Config.RuntimeCubeDelay;
-            float maxTime = list[list.Count - 1].Key + Config.RuntimeCubeDelay + Config.FramesPerSecond;
+            float maxTime = list[list.Count - 1].Key + Config.RuntimeCubeDelay;
             if (time < minTime || time > maxTime)
                 return;
             for (int index = 0; index < list.Count; index++) {

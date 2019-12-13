@@ -1,0 +1,22 @@
+﻿{
+	"frame_rate" : 30,
+	"runtime_effect_delay" : 1,
+	"runtime_draw_cube_delay" : -1,
+	"draw_cube_last_time" : 1,
+	"model_path" : "Assets/character/hero",
+	"weapon_path" : "Assets/character/weapon",
+	"clip_folder" : "models",
+	"prefab_folder" : "prefabs",
+	"hero_prefix" : "hero_",
+	"weapon_prefix" : "wp_",
+	"animator_controller_folder" : "animatorcontroller",
+	"skill_effect_path" : [
+		"Assets/fx/skill"
+	],
+	"effect_exclute_component" : [
+		"GrabObj"
+	],
+	"use_autoseed_effect" : [
+		"{ \"prefabName\": \"p_nw_skill03a\", \"childName\": [ \"array\" ] }"
+	]
+}

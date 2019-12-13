@@ -74,8 +74,7 @@ namespace Lua {
         }
 
         private static ushort WriteArrayKeyToFileString(StringBuilder builder, ushort index, ushort key) {
-            string format = "[{0}]=";
-            string keyString = Tool.GetCacheString(string.Format(format, key));
+            string keyString = Tool.GetCacheString(string.Format(LuaFormat.ArrayKeyFormat, key));
             char @char = builder[index];
             while (IsLuaBaseValue(@char))
                 @char = builder[--index];
@@ -87,7 +86,7 @@ namespace Lua {
             (@char >= '0' && @char <= '9') || @char == LuaFormat.NumberPoint || @char == LuaFormat.QuotationPair.start ||
                     @char == LuaFormat.NotesSymbolStart;
 
-        private static StringBuilder m_luaTextHeadStringBuilder = new StringBuilder(Config.LuaFileHeadLength);
+        private static StringBuilder m_luaTextHeadStringBuilder = new StringBuilder();
         private static void ReadLuaFileHeadText(string luaText, string luaFilePath, string luaFileHeadStart, ref int index) {
             FilterNotesLine(luaText, ref index);
             index = luaText.IndexOf(luaFileHeadStart);

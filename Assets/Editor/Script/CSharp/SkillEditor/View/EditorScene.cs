@@ -15,8 +15,7 @@ namespace SkillEditor {
 
         [DrawGizmo(GizmoType.NonSelected | GizmoType.NotInSelectionHierarchy)]
         public static void OnDrawCube(GameObject gameObject, GizmoType type) {
-            if (gameObject.name != Config.DrawCubeNodeName || m_listPointCubeData == null || 
-                m_listPointCubeData.Count == 0)
+            if (m_listPointCubeData == null || m_listPointCubeData.Count == 0)
                 return;
             Gizmos.color = CubeColor;
             for (int index = 0; index < m_listPointCubeData.Count; index++) {

@@ -9,7 +9,7 @@ namespace Lua {
 
     public static class LuaWriter {
 
-        private static Dictionary<string, string> m_dicPathFileHead = new Dictionary<string, string>(Config.ReadFileCount);
+        private static Dictionary<string, string> m_dicPathFileHead = new Dictionary<string, string>();
 
         public static void AddHeadText(string path, string headText) {
             if (!m_dicPathFileHead.ContainsKey(path))

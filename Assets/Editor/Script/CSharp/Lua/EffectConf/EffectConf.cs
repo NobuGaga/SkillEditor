@@ -164,8 +164,8 @@ namespace Lua.EffectConf {
 
         #region ILuaFile Function
 
-        public string GetLuaFilePath() => Config.EffectConfFilePath;
-        public string GetLuaFileHeadStart() => Config.EffectConfFileHeadStart;
+        public string GetLuaFilePath() => Tool.CombinePath(Config.ProjectPath, "../Resources/lua/data/config/EffectConf.lua");
+        public string GetLuaFileHeadStart() => "EffectConf = Class(\"EffectConf\", ConfigBase)";
         public List<EffectData> GetModel() => LuaEffectConfModel.EffectList;
         public string GetWriteFileString() => LuaEffectConfModel.GetWriteFileString();
         #endregion

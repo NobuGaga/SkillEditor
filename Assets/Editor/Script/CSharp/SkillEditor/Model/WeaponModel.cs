@@ -7,8 +7,8 @@ namespace SkillEditor {
 
     internal class WeaponModel {
 
-        private static Dictionary<string, List<WeaponData>> m_dicModelWeapon = new Dictionary<string, List<WeaponData>>(Config.ModelCount);
-        private static Dictionary<string, Dictionary<string, AnimationClip>> m_dicModelClip = new Dictionary<string, Dictionary<string, AnimationClip>>(Config.ModelCount);
+        private static Dictionary<string, List<WeaponData>> m_dicModelWeapon = new Dictionary<string, List<WeaponData>>();
+        private static Dictionary<string, Dictionary<string, AnimationClip>> m_dicModelClip = new Dictionary<string, Dictionary<string, AnimationClip>>();
 
         private static string m_lastModelName;
         private static string[] m_arrayWeapon;
@@ -94,7 +94,7 @@ namespace SkillEditor {
             for (int index = 0; index < arrayFullPath.Length; index++) {
                 string fileFullPath = arrayFullPath[index];
                 if (fileFullPath.EndsWith(Config.MetaExtension) || !fileFullPath.Contains(Config.AnimationClipSymbol) ||
-                    !fileFullPath.Contains(Config.AnimationClipExtension))
+                    !fileFullPath.Contains(Config.ClipUpperExtension))
                     continue;
                 string path = Tool.FullPathToProjectPath(fileFullPath);
                 AnimationClip clip = AssetDatabase.LoadAssetAtPath<AnimationClip>(path);
