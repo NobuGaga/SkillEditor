@@ -1,10 +1,11 @@
+using UnityEngine;
 using System;
 using System.Text;
 using System.Collections.Generic;
 
 namespace Lua.AnimClipData {
 
-    public struct FrameData : IFieldValueTable {
+    public struct FrameData : IFieldValueTable, ILuaMultipleFileStructure {
 
         public ushort index;
         public float time;
@@ -110,6 +111,16 @@ namespace Lua.AnimClipData {
             }
         }
 
+        private FrameType GetFrameTypeFromKey(string key) {
+            if (!Enum.TryParse(key, false, out FrameType frameType) && !m_dicKeyToFrameType.ContainsKey(key)) {
+                UnityEngine.Debug.LogError("FrameData::GetFieldValueTableValue not exit key : " + key);
+                return default;
+            }
+            if (m_dicKeyToFrameType.ContainsKey(key))
+                frameType = m_dicKeyToFrameType[key];
+            return frameType;
+        }
+
         private static FieldValueTableInfo[] m_arraykeyValue;
         public FieldValueTableInfo[] GetFieldValueTableInfo() {
             if (m_arraykeyValue != null)
@@ -128,15 +139,24 @@ namespace Lua.AnimClipData {
         }
         #endregion
 
-        private FrameType GetFrameTypeFromKey(string key) {
-            if (!Enum.TryParse(key, false, out FrameType frameType) && !m_dicKeyToFrameType.ContainsKey(key)) {
-                UnityEngine.Debug.LogError("FrameData::GetFieldValueTableValue not exit key : " + key);
-                return default;
+        #region ILuaMultipleFileStructure
+
+        public string ToString(ushort index) {
+            if (!Enum.IsDefined(typeof(FileType), index)) {
+                Debug.LogError("FrameData::ToString is not define FileType " + index);
+                return string.Empty;
             }
-            if (m_dicKeyToFrameType.ContainsKey(key))
-                frameType = m_dicKeyToFrameType[key];
-            return frameType;
-        }       
+            FileType type = (FileType)index;
+            if (type != FileType.Server)
+                return ToString();
+            var dataCopy = this;
+            dataCopy.trackFrameData = default;
+            dataCopy.effectFrameData = default;
+            dataCopy.cacheFrameData = default;
+            dataCopy.sectionFrameData = default;
+            return dataCopy.ToString();
+        }
+        #endregion
     }
 
     public enum FrameType {

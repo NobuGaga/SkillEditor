@@ -28,10 +28,29 @@ namespace Lua {
                 Debug.LogError("LuaWriter::Write lua file head text path is not exit. lua file path " + luaFilePath);
                 return;
             }
+            Write(luaFilePath, luaFile.GetWriteFileString());
+            if (!Tool.IsImplementInterface(typeof(T), typeof(ILuaMultipleFile<>)))
+                return;
+            var luaMultipleFile = (ILuaMultipleFile<T>)luaFile;
+            string[] luaFilePaths = luaMultipleFile.GetMultipleLuaFilePath();
+            string[] luaFileHeadStarts = luaMultipleFile.GetMultipleLuaFileHeadStart();
+            string[] luaMultipleFileStrings = luaMultipleFile.GetWriteMultipleFileString();
+            if (luaFilePaths == null || luaFilePaths.Length == 0 || luaFileHeadStarts == null ||
+                luaFileHeadStarts.Length == 0 || luaMultipleFileStrings == null || luaMultipleFileStrings.Length == 0 ||
+                luaFilePaths.Length != luaFileHeadStarts.Length || luaFilePaths.Length != luaMultipleFileStrings.Length) {
+                Debug.Log("Multiple Lua File Configure Error. Type " + typeof(T).Name);
+                return;
+            }
+            for (ushort index = 0; index < luaFilePaths.Length; index++)
+                Write(luaFilePaths[index], luaFileHeadStarts[index], luaMultipleFileStrings[index]);
+        }
+
+        private static void Write(string luaFilePath, string fileString) => 
+            Write(luaFilePath, m_dicPathFileHead[luaFilePath], fileString);
+
+        private static void Write(string luaFilePath, string headText, string fileString) {
             m_stringBuilder.Clear();
-            string headText = m_dicPathFileHead[luaFilePath];
             m_stringBuilder.Append(headText);
-            string fileString = luaFile.GetWriteFileString();
             FileStream file = new FileStream(luaFilePath, FileMode.Create);
             StreamWriter fileWriter = new StreamWriter(file);
             fileWriter.Write(fileString);

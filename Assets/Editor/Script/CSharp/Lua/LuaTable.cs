@@ -129,6 +129,18 @@ namespace Lua {
         string GetWriteFileString();
     }
 
+    public interface ILuaMultipleFile<T> where T : ITable {
+
+        string[] GetMultipleLuaFilePath();
+        string[] GetMultipleLuaFileHeadStart();
+        string[] GetWriteMultipleFileString();
+    }
+
+    public interface ILuaMultipleFileStructure {
+
+        string ToString(ushort index);
+    }
+
     public interface IRepeatKeyTable<T> : ITable where T : ITable {
         
         Type GetTableListType();

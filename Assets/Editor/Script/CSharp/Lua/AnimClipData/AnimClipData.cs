@@ -5,7 +5,7 @@ using SkillEditor;
 
 namespace Lua.AnimClipData {
 
-    public struct AnimClipData : IRepeatKeyTable<StateData>, ILuaFile<AnimClipData> {
+    public struct AnimClipData : IRepeatKeyTable<StateData>, ILuaFile<AnimClipData>, ILuaMultipleFile<AnimClipData> {
         
         public string modelName;
         public StateData[] stateList;
@@ -54,10 +54,30 @@ namespace Lua.AnimClipData {
         #endregion
     
         #region ILuaFile Function
+
         public string GetLuaFilePath() => Tool.CombinePath(Config.ProjectPath, "../Resources/lua/data/config/AnimClipData.lua");
         public string GetLuaFileHeadStart() => "AnimClipData = AnimClipData or {}";
         public List<AnimClipData> GetModel() => LuaAnimClipModel.AnimClipList;
         public string GetWriteFileString() => LuaAnimClipModel.GetWriteFileString();
         #endregion
+
+        #region ILuaMultipleFile Function
+
+        private static string[] m_multipleFilePath = new string[] { 
+            Tool.CombinePath(Config.ProjectPath, "../Resources/lua/data/config/AnimClipServerData.lua") 
+        };
+        public string[] GetMultipleLuaFilePath() => m_multipleFilePath;
+
+        private static string[] m_multipleFileHeadStart = new string[] { "AnimClipServerData = AnimClipServerData or {}" };
+        public string[] GetMultipleLuaFileHeadStart() => m_multipleFileHeadStart;
+
+        public string[] GetWriteMultipleFileString() => LuaAnimClipModel.GetWriteMultipleFileString();
+        #endregion
+    }
+
+    public enum FileType {
+
+        Client = -1,
+        Server = 0,
     }
 }
