@@ -30,22 +30,27 @@ namespace Lua {
                 return;
             }
             Write(luaFilePath, luaFile.GetWriteFileString());
-            if (!Tool.IsImplementInterface(typeof(T), typeof(ILuaMultipleFile<>)))
+            if (!Tool.IsImplementInterface(typeof(T), typeof(ILuaMultipleFile<,>)))
                 return;
-            MethodInfo getMultipleLuaFilePath = luaFile.GetType().GetMethod("GetMultipleLuaFilePath");
-            MethodInfo getTableListTypeMethod = luaFile.GetType().GetMethod("GetMultipleLuaFileHeadStart");
-            MethodInfo getWriteMultipleFileString = luaFile.GetType().GetMethod("GetWriteMultipleFileString");
-            string[] luaFilePaths = getMultipleLuaFilePath.Invoke(luaFile, null) as string[];
-            string[] luaFileHeadStarts = getTableListTypeMethod.Invoke(luaFile, null) as string[];
-            string[] luaMultipleFileStrings = getWriteMultipleFileString.Invoke(luaFile, null) as string[];
+            MethodInfo getMultipleLuaFilePathMethod = luaFile.GetType().GetMethod("GetMultipleLuaFilePath");
+            MethodInfo getTableListTypeMethodMethod = luaFile.GetType().GetMethod("GetMultipleLuaFileHeadStart");
+            MethodInfo getWriteMultipleFileStringMethod = luaFile.GetType().GetMethod("GetWriteMultipleFileString");
+            string[] luaFilePaths = getMultipleLuaFilePathMethod.Invoke(luaFile, null) as string[];
+            string[] luaFileHeadStarts = getTableListTypeMethodMethod.Invoke(luaFile, null) as string[];
+            string[] luaMultipleFileStrings = getWriteMultipleFileStringMethod.Invoke(luaFile, null) as string[];
             if (luaFilePaths == null || luaFilePaths.Length == 0 || luaFileHeadStarts == null ||
                 luaFileHeadStarts.Length == 0 || luaMultipleFileStrings == null || luaMultipleFileStrings.Length == 0 ||
                 luaFilePaths.Length != luaFileHeadStarts.Length || luaFilePaths.Length != luaMultipleFileStrings.Length) {
                 Debug.Log("Multiple Lua File Configure Error. Type " + typeof(T).Name);
                 return;
             }
-            for (ushort index = 0; index < luaFilePaths.Length; index++)
+            MethodInfo setFileTypeMethod = luaFile.GetType().GetMethod("SetFileType");
+            object[] args = new object[1];
+            for (ushort index = 0; index < luaFilePaths.Length; index++) {
+                args[0] = index;
+                setFileTypeMethod.Invoke(luaFile, args);
                 Write(luaFilePaths[index], luaFileHeadStarts[index], luaMultipleFileStrings[index]);
+            }
         }
 
         private static void Write(string luaFilePath, string fileString) => 

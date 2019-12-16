@@ -131,7 +131,7 @@ namespace Lua {
         string GetWriteFileString();
     }
 
-    public interface ILuaMultipleFile<F> where F : Enum {
+    public interface ILuaMultipleFile<T, F> : ILuaFile<T> where T : ITable where F : Enum {
 
         void SetFileType(short type);
         F GetFileType();
@@ -140,7 +140,7 @@ namespace Lua {
         string[] GetWriteMultipleFileString();
     }
 
-    public interface ILuaMultipleFileStructure<T, F> where T : ILuaMultipleFile<F> where F : Enum {
+    public interface ILuaMultipleFileStructure<T, F> where T : ITable, ILuaMultipleFile<T, F> where F : Enum {
 
         string GetDataString();
     }

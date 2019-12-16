@@ -5,7 +5,7 @@ using SkillEditor;
 
 namespace Lua.AnimClipData {
 
-    public struct AnimClipData : IRepeatKeyTable<StateData>, ILuaFile<AnimClipData>, ILuaMultipleFile<FileType> {
+    public struct AnimClipData : IRepeatKeyTable<StateData>, ILuaMultipleFile<AnimClipData, FileType> {
         
         public string modelName;
         public StateData[] stateList;
