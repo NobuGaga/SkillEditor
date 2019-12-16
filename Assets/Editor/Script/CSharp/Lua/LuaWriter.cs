@@ -48,6 +48,8 @@ namespace Lua {
                 setFileTypeMethod.Invoke(luaFile, args);
                 Write(luaFilePaths[index], luaFileHeadStarts[index], luaFile.GetWriteFileString());
             }
+            args[0] = LuaTable.DefaultFileType;
+            setFileTypeMethod.Invoke(luaFile, args);
         }
 
         private static void Write(string luaFilePath, string fileString) => 
