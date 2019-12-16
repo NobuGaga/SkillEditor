@@ -2,6 +2,7 @@
 using System;
 using System.IO;
 using System.Text;
+using System.Reflection;
 using System.Collections.Generic;
 using SkillEditor;
 
@@ -31,10 +32,12 @@ namespace Lua {
             Write(luaFilePath, luaFile.GetWriteFileString());
             if (!Tool.IsImplementInterface(typeof(T), typeof(ILuaMultipleFile<>)))
                 return;
-            var luaMultipleFile = (ILuaMultipleFile<T>)luaFile;
-            string[] luaFilePaths = luaMultipleFile.GetMultipleLuaFilePath();
-            string[] luaFileHeadStarts = luaMultipleFile.GetMultipleLuaFileHeadStart();
-            string[] luaMultipleFileStrings = luaMultipleFile.GetWriteMultipleFileString();
+            MethodInfo getMultipleLuaFilePath = luaFile.GetType().GetMethod("GetMultipleLuaFilePath");
+            MethodInfo getTableListTypeMethod = luaFile.GetType().GetMethod("GetMultipleLuaFileHeadStart");
+            MethodInfo getWriteMultipleFileString = luaFile.GetType().GetMethod("GetWriteMultipleFileString");
+            string[] luaFilePaths = getMultipleLuaFilePath.Invoke(luaFile, null) as string[];
+            string[] luaFileHeadStarts = getTableListTypeMethod.Invoke(luaFile, null) as string[];
+            string[] luaMultipleFileStrings = getWriteMultipleFileString.Invoke(luaFile, null) as string[];
             if (luaFilePaths == null || luaFilePaths.Length == 0 || luaFileHeadStarts == null ||
                 luaFileHeadStarts.Length == 0 || luaMultipleFileStrings == null || luaMultipleFileStrings.Length == 0 ||
                 luaFilePaths.Length != luaFileHeadStarts.Length || luaFilePaths.Length != luaMultipleFileStrings.Length) {

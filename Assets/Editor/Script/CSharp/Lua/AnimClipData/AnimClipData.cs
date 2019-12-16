@@ -5,7 +5,7 @@ using SkillEditor;
 
 namespace Lua.AnimClipData {
 
-    public struct AnimClipData : IRepeatKeyTable<StateData>, ILuaFile<AnimClipData>, ILuaMultipleFile<AnimClipData> {
+    public struct AnimClipData : IRepeatKeyTable<StateData>, ILuaFile<AnimClipData>, ILuaMultipleFile<FileType> {
         
         public string modelName;
         public StateData[] stateList;
@@ -63,6 +63,15 @@ namespace Lua.AnimClipData {
 
         #region ILuaMultipleFile Function
 
+        private static FileType m_fileType = (FileType)LuaTable.DefaultFileType;
+        public void SetFileType(short type) {
+            if (Enum.IsDefined(typeof(FileType), type))
+                m_fileType = (FileType)type;
+            else
+                m_fileType = (FileType)LuaTable.DefaultFileType;
+        }
+        public FileType GetFileType() => m_fileType;
+
         private static string[] m_multipleFilePath = new string[] { 
             Tool.CombinePath(Config.ProjectPath, "../Resources/lua/data/config/AnimClipServerData.lua") 
         };
@@ -74,10 +83,8 @@ namespace Lua.AnimClipData {
         public string[] GetWriteMultipleFileString() => LuaAnimClipModel.GetWriteMultipleFileString();
         #endregion
     }
-
     public enum FileType {
-
-        Client = -1,
-        Server = 0,
+        Client = LuaTable.DefaultFileType,
+        Server = Client + 1,
     }
 }

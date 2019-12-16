@@ -1,11 +1,10 @@
-using UnityEngine;
 using System;
 using System.Text;
 using System.Collections.Generic;
 
 namespace Lua.AnimClipData {
 
-    public struct FrameData : IFieldValueTable, ILuaMultipleFileStructure {
+    public struct FrameData : IFieldValueTable, ILuaMultipleFileStructure<AnimClipData, FileType> {
 
         public ushort index;
         public float time;
@@ -55,7 +54,7 @@ namespace Lua.AnimClipData {
         }
 
         private static readonly StringBuilder m_staticBuilder = new StringBuilder((ushort)Math.Pow(2, 11));
-        public override string ToString() => LuaTable.GetFieldKeyTableText(m_staticBuilder, this);
+        public override string ToString() => GetDataString();
         #endregion
 
         #region IFieldKeyTable Function
@@ -138,23 +137,23 @@ namespace Lua.AnimClipData {
             return m_arraykeyValue;
         }
         #endregion
+    
+        #region ILuaMultipleFileStructure Function
 
-        #region ILuaMultipleFileStructure
-
-        public string ToString(ushort index) {
-            if (!Enum.IsDefined(typeof(FileType), index)) {
-                Debug.LogError("FrameData::ToString is not define FileType " + index);
-                return string.Empty;
+        public string GetDataString() {
+            AnimClipData data = default;
+            switch (data.GetFileType()) {
+                case FileType.Client:
+                    return LuaTable.GetFieldKeyTableText(m_staticBuilder, this);
+                case FileType.Server:
+                    var dataCopy = this;
+                    dataCopy.effectFrameData = default;
+                    dataCopy.cacheFrameData = default;
+                    dataCopy.sectionFrameData = default;
+                    return LuaTable.GetFieldKeyTableText(m_staticBuilder, dataCopy);
+                default:
+                    return string.Empty;
             }
-            FileType type = (FileType)index;
-            if (type != FileType.Server)
-                return ToString();
-            var dataCopy = this;
-            dataCopy.trackFrameData = default;
-            dataCopy.effectFrameData = default;
-            dataCopy.cacheFrameData = default;
-            dataCopy.sectionFrameData = default;
-            return dataCopy.ToString();
         }
         #endregion
     }

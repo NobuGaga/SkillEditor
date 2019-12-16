@@ -106,6 +106,8 @@ namespace Lua {
 
         public static string GetArrayKeyString(ushort number) =>
             Tool.GetCacheString(string.Format("[{0}]", number));
+
+        public const short DefaultFileType = -1;
     }
 
     public interface ITable {
@@ -129,16 +131,18 @@ namespace Lua {
         string GetWriteFileString();
     }
 
-    public interface ILuaMultipleFile<T> where T : ITable {
+    public interface ILuaMultipleFile<F> where F : Enum {
 
+        void SetFileType(short type);
+        F GetFileType();
         string[] GetMultipleLuaFilePath();
         string[] GetMultipleLuaFileHeadStart();
         string[] GetWriteMultipleFileString();
     }
 
-    public interface ILuaMultipleFileStructure {
+    public interface ILuaMultipleFileStructure<T, F> where T : ILuaMultipleFile<F> where F : Enum {
 
-        string ToString(ushort index);
+        string GetDataString();
     }
 
     public interface IRepeatKeyTable<T> : ITable where T : ITable {
