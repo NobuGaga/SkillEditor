@@ -34,13 +34,10 @@ namespace Lua {
                 return;
             MethodInfo getMultipleLuaFilePathMethod = luaFile.GetType().GetMethod("GetMultipleLuaFilePath");
             MethodInfo getTableListTypeMethodMethod = luaFile.GetType().GetMethod("GetMultipleLuaFileHeadStart");
-            MethodInfo getWriteMultipleFileStringMethod = luaFile.GetType().GetMethod("GetWriteMultipleFileString");
             string[] luaFilePaths = getMultipleLuaFilePathMethod.Invoke(luaFile, null) as string[];
             string[] luaFileHeadStarts = getTableListTypeMethodMethod.Invoke(luaFile, null) as string[];
-            string[] luaMultipleFileStrings = getWriteMultipleFileStringMethod.Invoke(luaFile, null) as string[];
             if (luaFilePaths == null || luaFilePaths.Length == 0 || luaFileHeadStarts == null ||
-                luaFileHeadStarts.Length == 0 || luaMultipleFileStrings == null || luaMultipleFileStrings.Length == 0 ||
-                luaFilePaths.Length != luaFileHeadStarts.Length || luaFilePaths.Length != luaMultipleFileStrings.Length) {
+                luaFileHeadStarts.Length == 0 || luaFilePaths.Length != luaFileHeadStarts.Length) {
                 Debug.Log("Multiple Lua File Configure Error. Type " + typeof(T).Name);
                 return;
             }
@@ -49,7 +46,7 @@ namespace Lua {
             for (ushort index = 0; index < luaFilePaths.Length; index++) {
                 args[0] = index;
                 setFileTypeMethod.Invoke(luaFile, args);
-                Write(luaFilePaths[index], luaFileHeadStarts[index], luaMultipleFileStrings[index]);
+                Write(luaFilePaths[index], luaFileHeadStarts[index], luaFile.GetWriteFileString());
             }
         }
 
@@ -59,14 +56,16 @@ namespace Lua {
         private static void Write(string luaFilePath, string headText, string fileString) {
             m_stringBuilder.Clear();
             m_stringBuilder.Append(headText);
+            m_stringBuilder.Append(fileString);
             FileStream file = new FileStream(luaFilePath, FileMode.Create);
             StreamWriter fileWriter = new StreamWriter(file);
-            fileWriter.Write(fileString);
+            fileWriter.Write(m_stringBuilder.ToString());
             fileWriter.Close();
             fileWriter.Dispose();
         }
 
         public static string GetWriteFileString<T>(List<T> list) {
+            m_stringBuilder.Clear();
             m_stringBuilder.Append(LuaFormat.CurlyBracesPair.start);
             if (list != null && list.Count != 0) {
                 m_stringBuilder.Append(LuaFormat.LineSymbol);

@@ -541,8 +541,6 @@ namespace SkillEditor {
 
         public static string GetWriteFileString() => LuaWriter.GetWriteFileString(m_listAnimClip);
 
-        public static string[] GetWriteMultipleFileString() => null;
-
         private struct StateClipGroupIndex {
 
             public ushort stateIndex;

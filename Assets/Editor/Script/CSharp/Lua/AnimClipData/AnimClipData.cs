@@ -64,7 +64,7 @@ namespace Lua.AnimClipData {
         #region ILuaMultipleFile Function
 
         private static FileType m_fileType = (FileType)LuaTable.DefaultFileType;
-        public void SetFileType(short type) {
+        public void SetFileType(int type) {
             if (Enum.IsDefined(typeof(FileType), type))
                 m_fileType = (FileType)type;
             else
@@ -77,10 +77,8 @@ namespace Lua.AnimClipData {
         };
         public string[] GetMultipleLuaFilePath() => m_multipleFilePath;
 
-        private static string[] m_multipleFileHeadStart = new string[] { "AnimClipServerData = AnimClipServerData or {}" };
+        private static string[] m_multipleFileHeadStart = new string[] { "AnimClipServerData = AnimClipServerData or {}\nAnimClipServerData.data = " };
         public string[] GetMultipleLuaFileHeadStart() => m_multipleFileHeadStart;
-
-        public string[] GetWriteMultipleFileString() => LuaAnimClipModel.GetWriteMultipleFileString();
         #endregion
     }
     public enum FileType {

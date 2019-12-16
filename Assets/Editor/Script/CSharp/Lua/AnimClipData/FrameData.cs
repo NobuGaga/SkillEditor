@@ -54,7 +54,6 @@ namespace Lua.AnimClipData {
         }
 
         private static readonly StringBuilder m_staticBuilder = new StringBuilder((ushort)Math.Pow(2, 11));
-        public override string ToString() => GetDataString();
         #endregion
 
         #region IFieldKeyTable Function
@@ -140,7 +139,7 @@ namespace Lua.AnimClipData {
     
         #region ILuaMultipleFileStructure Function
 
-        public string GetDataString() {
+        public override string ToString() {
             AnimClipData data = default;
             switch (data.GetFileType()) {
                 case FileType.Client:

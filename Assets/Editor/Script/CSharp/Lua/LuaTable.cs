@@ -133,16 +133,15 @@ namespace Lua {
 
     public interface ILuaMultipleFile<T, F> : ILuaFile<T> where T : ITable where F : Enum {
 
-        void SetFileType(short type);
+        void SetFileType(int type);
         F GetFileType();
         string[] GetMultipleLuaFilePath();
         string[] GetMultipleLuaFileHeadStart();
-        string[] GetWriteMultipleFileString();
     }
 
     public interface ILuaMultipleFileStructure<T, F> where T : ITable, ILuaMultipleFile<T, F> where F : Enum {
 
-        string GetDataString();
+        string ToString();
     }
 
     public interface IRepeatKeyTable<T> : ITable where T : ITable {
