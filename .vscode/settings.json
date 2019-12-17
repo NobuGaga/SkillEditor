@@ -57,7 +57,6 @@
         "**/*.wlt" : true,
         ".vs/" : true,
         "Logs/" : true,
-        "Packages/" : true,
         "Assets/Editor/.Layout/" : true,
         "Assets/Editor/Asset/" : true,
         "Assets/Editor/Scene/" : true
