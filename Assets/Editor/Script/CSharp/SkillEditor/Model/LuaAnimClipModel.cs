@@ -372,6 +372,32 @@ namespace SkillEditor {
             SetFrameData(index, frameData, false, false);
         }
 
+        private const int DefaultCameraID = 1;
+        public static void AddCameraFrameData(int index) {
+            FrameData frameData = GetFrameData(index);
+            CameraFrameData cameraFrameData = default;
+            cameraFrameData.priority = DefaultPriority;
+            CameraData cameraData = default;
+            cameraData.id = DefaultCameraID;
+            cameraData.triggerType = CameraTriggerType.Time;
+            cameraData.focusType = CameraFocusType.Attacker;
+            cameraFrameData.cameraData = cameraData;
+            frameData.cameraFrameData = cameraFrameData;
+            SetFrameData(index, frameData, false, false);
+        }
+
+        public static void DeleteCameraFrameData(int index) {
+            FrameData frameData = GetFrameData(index);
+            frameData.cameraFrameData.Clear();
+            SetFrameData(index, frameData, false, false);
+        }
+
+        public static void SetCameraFrameData(int index, CameraFrameData data) {
+            FrameData frameData = GetFrameData(index);
+            frameData.cameraFrameData = data;
+            SetFrameData(index, frameData, false, false);
+        }
+
         #region Reflection Method And Data
 
         private static MethodInfo CustomDataSetTableListMethod;

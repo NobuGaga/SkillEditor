@@ -41,6 +41,8 @@ namespace SkillEditor {
         private const string LabelWidth = "width";
         private const string LabelHeight = "height";
         private const string LabelDepth = "depth";
+        private const string LabelCameraTriggerType = "镜头触发类型";
+        private const string LabelCameraFocusType = "镜头聚焦类型";
         private const string BtnPlay = "Play";
         private const string BtnPause = "Pause";
         private const string BtnStop = "Stop";
@@ -210,6 +212,10 @@ namespace SkillEditor {
                     HorizontalLayoutUI(CacheFrameDataTitleUI, index);
                 if (!data.sectionFrameData.IsNullTable())
                     HorizontalLayoutUI(SectionFrameDataTitleUI, index);
+                if (!data.cameraFrameData.IsNullTable()) {
+                    HorizontalLayoutUI(CameraFrameDataTitleUI, index);
+                    HorizontalLayoutUI(CameraFrameDataUI, index);
+                }
             }
             EndVerticalScrollView();
         }
@@ -229,6 +235,8 @@ namespace SkillEditor {
                 Controller.AddPriorityFrameData(index, FrameType.CacheBegin);
             if (data.sectionFrameData.IsNullTable() && SpaceWithButton(BtnAdd + FrameType.SectionOver))
                 Controller.AddPriorityFrameData(index, FrameType.SectionOver);
+            if (data.cameraFrameData.IsNullTable() && SpaceWithButton(BtnAdd + FrameType.Camera))
+                Controller.AddCameraFrameData(index);
             if (SpaceWithButton(BtnDelete)) {
                 Controller.DeleteFrameData(index);
                 return true;
@@ -352,6 +360,24 @@ namespace SkillEditor {
             for (int index = 0; index < dataList.Length; index++)
                 if (HorizontalLayoutUI(uiFunction, frameData.index - 1, dataList.GetValue(index)))
                     break;
+        }
+
+        private void CameraFrameDataTitleUI(int index) => PriorityFrameDataTitleUI(index, FrameType.Camera);
+        private void CameraFrameDataUI(int frameIndex) {
+            FrameData frameData = GetFrameData(frameIndex);
+            CameraFrameData cameraFrameData = frameData.cameraFrameData;
+            CameraData cameraData = cameraFrameData.cameraData;
+            SpaceWithLabel(LabelEffectID);
+            cameraData.id = TextField(cameraData.id);
+            SpaceWithLabel(LabelCameraTriggerType);
+            cameraData.triggerType = (CameraTriggerType)EnumPopup(cameraData.triggerType);
+            SpaceWithLabel(LabelCameraFocusType);
+            cameraData.focusType = (CameraFocusType)EnumPopup(cameraData.focusType);
+            cameraFrameData.cameraData = cameraData;
+            Controller.SetCameraFrameData(frameIndex, cameraFrameData);
+            bool isDelete = SpaceWithButton(BtnDelete);
+            if (isDelete)
+                Controller.DeleteCameraFrameData(frameIndex);
         }
 
         private void AnimationUI() {

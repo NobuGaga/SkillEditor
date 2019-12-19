@@ -13,14 +13,17 @@ namespace Lua.AnimClipData {
         public EffectFrameData effectFrameData;
         public PriorityFrameData cacheFrameData;
         public PriorityFrameData sectionFrameData;
-        public FrameData(float time) {
+        public CameraFrameData cameraFrameData;
+        public FrameData(float time, HitFrameData hitFrameData, PriorityFrameData trackFrameData, EffectFrameData effectFrameData,
+                        PriorityFrameData cacheFrameData, PriorityFrameData sectionFrameData, CameraFrameData cameraFrameData) {
             index = 0;
             this.time = time;
-            hitFrameData = default;
-            trackFrameData = default;
-            effectFrameData = default;
-            cacheFrameData = default;
-            sectionFrameData = default;
+            this.hitFrameData = hitFrameData;
+            this.trackFrameData = trackFrameData;
+            this.effectFrameData = effectFrameData;
+            this.cacheFrameData = cacheFrameData;
+            this.sectionFrameData = sectionFrameData;
+            this.cameraFrameData = cameraFrameData;
         }
 
         #region ITable Function
@@ -86,6 +89,9 @@ namespace Lua.AnimClipData {
                     sectionFrameData = (PriorityFrameData)value;
                     sectionFrameData.frameType = FrameType.SectionOver;
                     return;
+                case FrameType.Camera:
+                    cameraFrameData = (CameraFrameData)value;
+                    return;
             }
         }
 
@@ -104,6 +110,8 @@ namespace Lua.AnimClipData {
                     return cacheFrameData;
                 case FrameType.SectionOver:
                     return sectionFrameData;
+                case FrameType.Camera:
+                    return cameraFrameData;
                 default:
                     return null;
             }
@@ -146,9 +154,10 @@ namespace Lua.AnimClipData {
                     return LuaTable.GetFieldKeyTableText(m_staticBuilder, this);
                 case FileType.Server:
                     var dataCopy = this;
-                    dataCopy.effectFrameData = default;
-                    dataCopy.cacheFrameData = default;
-                    dataCopy.sectionFrameData = default;
+                    dataCopy.effectFrameData.Clear();
+                    dataCopy.cacheFrameData.Clear();
+                    dataCopy.sectionFrameData.Clear();
+                    dataCopy.cameraFrameData.Clear();
                     return LuaTable.GetFieldKeyTableText(m_staticBuilder, dataCopy);
                 default:
                     return string.Empty;
@@ -163,5 +172,6 @@ namespace Lua.AnimClipData {
         PlayEffect = 6,
         CacheBegin = 8,
         SectionOver = 9,
+        Camera = 12,
     }
 }
