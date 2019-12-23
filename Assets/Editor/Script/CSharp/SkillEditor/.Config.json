@@ -21,6 +21,6 @@
 	],
 	"clip_cube_offset" : [
 		"{ \"model_name\": \"nvwang\", \"clip_name\": \"skill_04_3\", \"time\": [ 0.2 ], \"x\": [ -3.15 ] }",
-		"{ \"model_name\": \"zhanhun\", \"clip_name\": \"skill_04_2\", \"time\": [ 0.76, 2.09 ], \"x\": [ 2.4, -3.5 ] }"
+		"{ \"model_name\": \"zhanhun\", \"clip_name\": \"skill_04_2\", \"time\": [ 0.76, 2.09 ], \"x\": [ 2.9, -5 ] }"
 	]
 }
