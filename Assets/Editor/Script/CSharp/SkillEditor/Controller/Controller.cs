@@ -384,12 +384,16 @@ namespace SkillEditor {
                         continue;
                     Vector3 position = footTrans.position;
                     var dic = Config.ModelClipDrawCubeOffset;
+                    string modelName = ModelDataModel.ModelName;
                     string clipName = AnimationModel.SelectAnimationClipName;
-                    if (dic.ContainsKey(clipName) && time < dic[clipName].time) {
-                        var data = dic[clipName];
-                        position.x += data.x;
-                        position.y += data.y;
-                        position.z += data.z;
+                    if (dic.ContainsKey(modelName) && dic[modelName].ContainsKey(clipName)) {
+                        foreach (var offsetData in dic[modelName][clipName])
+                            for (ushort offsetIndex = 0; offsetIndex < offsetData.time.Length; offsetIndex++) {
+                                float offsetTime = offsetData.time[offsetIndex];
+                                float offsetX = offsetData.x[offsetIndex];
+                                if (IsInCollisionOffsetTime(time, offsetTime))
+                                    position.x += offsetX;
+                            }
                     }
                     m_dicTimePosition.Add(triggerTime, position);
                 }
@@ -402,6 +406,17 @@ namespace SkillEditor {
         private static bool IsInCollisionTime(float curTime, float collisionTime) {
             float minTime = collisionTime;
             float maxTime = collisionTime + Config.DrawCubeLastTime;
+            return curTime >= minTime && curTime <= maxTime;
+        }
+
+        private static bool IsInCollisionOffsetTime(float curTime, float offsetTime) {
+            float minTime = offsetTime - Config.DrawCubeLastTime;
+            float maxTime = offsetTime + Config.DrawCubeLastTime;
+            if (minTime > maxTime) {
+                float temp = minTime;
+                minTime = maxTime;
+                maxTime = temp;
+            }
             return curTime >= minTime && curTime <= maxTime;
         }
 

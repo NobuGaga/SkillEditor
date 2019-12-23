@@ -14,19 +14,27 @@ namespace SkillEditor {
             if (m_configJson.use_autoseed_effect != null && m_configJson.use_autoseed_effect.Length != 0)
                 foreach (string jsonString in m_configJson.use_autoseed_effect) {
                     PrefabChildName data = JsonUtility.FromJson<PrefabChildName>(jsonString);
-                    if (!UseAutoSeedEffect.ContainsKey(data.prefabName))
-                        UseAutoSeedEffect.Add(data.prefabName, new Dictionary<string, bool>());
-                    foreach (string objName in data.childName)
-                        UseAutoSeedEffect[data.prefabName].Add(objName, true);
+                    if (!UseAutoSeedEffect.ContainsKey(data.prefab_name))
+                        UseAutoSeedEffect.Add(data.prefab_name, new Dictionary<string, bool>());
+                    foreach (string objName in data.child_names)
+                        UseAutoSeedEffect[data.prefab_name].Add(objName, true);
                 }
-            ModelClipDrawCubeOffset.Clear();
+            foreach (var modelPair in ModelClipDrawCubeOffset)
+                foreach (var clipPair in modelPair.Value)
+                    clipPair.Value.Clear();
             if (m_configJson.clip_cube_offset != null && m_configJson.clip_cube_offset.Length != 0)
                 foreach (string jsonString in m_configJson.clip_cube_offset) {
                     ClipDrawCubeOffset data = JsonUtility.FromJson<ClipDrawCubeOffset>(jsonString);
-                    if (ModelClipDrawCubeOffset.ContainsKey(data.clipName))
-                        ModelClipDrawCubeOffset[data.clipName] = data;
-                    else
-                        ModelClipDrawCubeOffset.Add(data.clipName, data);
+                    if (data.time != null && data.x != null && data.time.Length != data.x.Length) {
+                        Debug.LogError(".ConfigJson clip_cube_offset field configure time or x error");
+                        continue;
+                    }
+                    if (!ModelClipDrawCubeOffset.ContainsKey(data.model_name))
+                        ModelClipDrawCubeOffset.Add(data.model_name, new Dictionary<string, List<ClipDrawCubeOffset>>());
+                    if (!ModelClipDrawCubeOffset[data.model_name].ContainsKey(data.clip_name))
+                        ModelClipDrawCubeOffset[data.model_name].Add(data.clip_name, new List<ClipDrawCubeOffset>());
+                    var list = ModelClipDrawCubeOffset[data.model_name][data.clip_name];
+                    list.Add(data);
                 }
         }
 
@@ -107,7 +115,7 @@ namespace SkillEditor {
         public static string[] SkillEffectPath => m_configJson.skill_effect_path;
         public static string[] EffectExcluteComponents => m_configJson.effect_exclute_component;
         public static Dictionary<string, Dictionary<string, bool>> UseAutoSeedEffect = new Dictionary<string, Dictionary<string, bool>>();
-        public static Dictionary<string, ClipDrawCubeOffset> ModelClipDrawCubeOffset = new Dictionary<string, ClipDrawCubeOffset>();
+        public static Dictionary<string, Dictionary<string, List<ClipDrawCubeOffset>>> ModelClipDrawCubeOffset = new Dictionary<string, Dictionary<string, List<ClipDrawCubeOffset>>>();
 
         private static ConfigJson m_configJson;
 
@@ -140,17 +148,16 @@ namespace SkillEditor {
 
         public struct PrefabChildName {
 
-            public string prefabName;
-            public string[] childName;
+            public string prefab_name;
+            public string[] child_names;
         }
 
         public struct ClipDrawCubeOffset {
 
-            public string clipName;
-            public float time;
-            public float x;
-            public float y;
-            public float z;
+            public string model_name;
+            public string clip_name;
+            public float[] time;
+            public float[] x;
         }
         #endregion
     }
