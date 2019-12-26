@@ -19,9 +19,7 @@ namespace SkillEditor {
                     foreach (string objName in data.child_names)
                         UseAutoSeedEffect[data.prefab_name].Add(objName, true);
                 }
-            foreach (var modelPair in ModelClipDrawCubeOffset)
-                foreach (var clipPair in modelPair.Value)
-                    clipPair.Value.Clear();
+            ModelClipDrawCubeOffset.Clear();
             if (m_configJson.clip_cube_offset != null && m_configJson.clip_cube_offset.Length != 0)
                 foreach (string jsonString in m_configJson.clip_cube_offset) {
                     ClipDrawCubeOffset data = JsonUtility.FromJson<ClipDrawCubeOffset>(jsonString);
@@ -30,11 +28,11 @@ namespace SkillEditor {
                         continue;
                     }
                     if (!ModelClipDrawCubeOffset.ContainsKey(data.model_name))
-                        ModelClipDrawCubeOffset.Add(data.model_name, new Dictionary<string, List<ClipDrawCubeOffset>>());
-                    if (!ModelClipDrawCubeOffset[data.model_name].ContainsKey(data.clip_name))
-                        ModelClipDrawCubeOffset[data.model_name].Add(data.clip_name, new List<ClipDrawCubeOffset>());
-                    var list = ModelClipDrawCubeOffset[data.model_name][data.clip_name];
-                    list.Add(data);
+                        ModelClipDrawCubeOffset.Add(data.model_name, new Dictionary<string, ClipDrawCubeOffset>());
+                    if (ModelClipDrawCubeOffset[data.model_name].ContainsKey(data.clip_name))
+                        ModelClipDrawCubeOffset[data.model_name][data.clip_name] = data;
+                    else
+                        ModelClipDrawCubeOffset[data.model_name].Add(data.clip_name, data);
                 }
         }
 
@@ -115,7 +113,7 @@ namespace SkillEditor {
         public static string[] SkillEffectPath => m_configJson.skill_effect_path;
         public static string[] EffectExcluteComponents => m_configJson.effect_exclute_component;
         public static Dictionary<string, Dictionary<string, bool>> UseAutoSeedEffect = new Dictionary<string, Dictionary<string, bool>>();
-        public static Dictionary<string, Dictionary<string, List<ClipDrawCubeOffset>>> ModelClipDrawCubeOffset = new Dictionary<string, Dictionary<string, List<ClipDrawCubeOffset>>>();
+        public static Dictionary<string, Dictionary<string, ClipDrawCubeOffset>> ModelClipDrawCubeOffset = new Dictionary<string, Dictionary<string, ClipDrawCubeOffset>>();
 
         private static ConfigJson m_configJson;
 
