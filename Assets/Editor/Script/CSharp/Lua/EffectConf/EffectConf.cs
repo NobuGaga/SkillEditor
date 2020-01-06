@@ -10,9 +10,9 @@ namespace Lua.EffectConf {
         
         public uint id;
         public string name;
-        public ushort pivotType;
+        public PivotType pivotType;
         public string pivotNodeName;
-        public ushort parentPivotType;
+        public ParentPivotType parentPivotType;
         public string resourceName;
         public bool isLoop;
         public bool isBreak;
@@ -29,10 +29,10 @@ namespace Lua.EffectConf {
         public void SetKey(object key) => id = (uint)(int)key;
         public string GetKey() => id.ToString();
         public bool IsNullTable() =>
-            id == 0 || string.IsNullOrEmpty(name) || pivotType == 0 || string.IsNullOrEmpty(pivotNodeName) ||
+            id == 0 || string.IsNullOrEmpty(name) || string.IsNullOrEmpty(pivotNodeName) ||
             string.IsNullOrEmpty(resourceName);
         public void Clear() {
-            id = pivotType = 0;
+            id = 0;
             name = pivotNodeName = resourceName = null;
             isLoop = isBreak = false;
             offset.Clear();
@@ -64,13 +64,17 @@ namespace Lua.EffectConf {
                     name = value as string;
                     return;
                 case Key_PivotType:
-                    pivotType = (ushort)(int)value;
+                    int intTemp = (int)value;
+                    if (Enum.IsDefined(typeof(PivotType), intTemp))
+                        pivotType = (PivotType)intTemp;
                     return;
                 case Key_PivotNodeName:
                     pivotNodeName = value as string;
                     return;
                 case Key_ParentPivotType:
-                    parentPivotType = (ushort)(int)value;
+                    intTemp = (int)value;
+                    if (Enum.IsDefined(typeof(ParentPivotType), intTemp))
+                    parentPivotType = (ParentPivotType)intTemp;
                     return;
                 case Key_ResourceName:
                     resourceName = value as string;
@@ -169,5 +173,17 @@ namespace Lua.EffectConf {
         public List<EffectData> GetModel() => LuaEffectConfModel.EffectList;
         public string GetWriteFileString() => LuaEffectConfModel.GetWriteFileString();
         #endregion
+    }
+
+    public enum PivotType {
+
+        Follow = 2,
+        World = 3,
+    }
+
+    public enum ParentPivotType {
+
+        Body = 0,
+        Weapon = 1,
     }
 }
