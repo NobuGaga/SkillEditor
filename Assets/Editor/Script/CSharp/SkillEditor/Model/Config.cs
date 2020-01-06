@@ -19,21 +19,6 @@ namespace SkillEditor {
                     foreach (string objName in data.child_names)
                         UseAutoSeedEffect[data.prefab_name].Add(objName, true);
                 }
-            ModelClipDrawCubeOffset.Clear();
-            if (m_configJson.clip_cube_offset != null && m_configJson.clip_cube_offset.Length != 0)
-                foreach (string jsonString in m_configJson.clip_cube_offset) {
-                    ClipDrawCubeOffset data = JsonUtility.FromJson<ClipDrawCubeOffset>(jsonString);
-                    if (data.time != null && data.x != null && data.time.Length != data.x.Length) {
-                        Debug.LogError(".ConfigJson clip_cube_offset field configure time or x error");
-                        continue;
-                    }
-                    if (!ModelClipDrawCubeOffset.ContainsKey(data.model_name))
-                        ModelClipDrawCubeOffset.Add(data.model_name, new Dictionary<string, ClipDrawCubeOffset>());
-                    if (ModelClipDrawCubeOffset[data.model_name].ContainsKey(data.clip_name))
-                        ModelClipDrawCubeOffset[data.model_name][data.clip_name] = data;
-                    else
-                        ModelClipDrawCubeOffset[data.model_name].Add(data.clip_name, data);
-                }
         }
 
         #region Config
@@ -113,7 +98,6 @@ namespace SkillEditor {
         public static string[] SkillEffectPath => m_configJson.skill_effect_path;
         public static string[] EffectExcluteComponents => m_configJson.effect_exclute_component;
         public static Dictionary<string, Dictionary<string, bool>> UseAutoSeedEffect = new Dictionary<string, Dictionary<string, bool>>();
-        public static Dictionary<string, Dictionary<string, ClipDrawCubeOffset>> ModelClipDrawCubeOffset = new Dictionary<string, Dictionary<string, ClipDrawCubeOffset>>();
 
         private static ConfigJson m_configJson;
 
@@ -133,14 +117,13 @@ namespace SkillEditor {
             public string[] skill_effect_path;
             public string[] effect_exclute_component;
             public string[] use_autoseed_effect;
-            public string[] clip_cube_offset;
 
             public ConfigJson(ushort arg) {
                 // unity warnning
                 frame_rate = draw_cube_last_time = 0;
                 runtime_effect_delay = runtime_draw_cube_delay = 0;
                 model_path = weapon_path = clip_folder = prefab_folder = hero_prefix = weapon_prefix = animator_controller_folder = null;
-                skill_effect_path = effect_exclute_component = use_autoseed_effect = clip_cube_offset = null;
+                skill_effect_path = effect_exclute_component = use_autoseed_effect = null;
             }
         }
 

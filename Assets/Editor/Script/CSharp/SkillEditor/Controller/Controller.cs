@@ -165,7 +165,9 @@ namespace SkillEditor {
                     m_dicIDObjectNameDelay[id][name] = startDelay;
                 else
                     m_dicIDObjectNameDelay[id].Add(name, startDelay);
+#pragma warning disable 0618
                 particle.startDelay = 0;
+#pragma warning restore 0618
             }
             Animator animator = effectNode.GetComponent<Animator>();
             if (animator == null)
@@ -310,7 +312,7 @@ namespace SkillEditor {
                 StopEffect();
             else
                 SetPlayEffectTime(time);            
-            SetDrawCubeData();
+            SetDrawCubeData(time);
         }
 
         private static void Update() {
@@ -322,7 +324,7 @@ namespace SkillEditor {
                 m_weaponAnimation.Update(deltaTime);
             EditorWindow.RefreshRepaint();
             SetPlayEffectTime((float)(currentTime - m_playStartTime));
-            SetDrawCubeData();
+            SetDrawCubeData(deltaTime);
             if (m_modelAnimation.IsPlayOver) {
                 StopEffect();
                 EditorApplication.update = null;
@@ -364,7 +366,7 @@ namespace SkillEditor {
             }
         }
 
-        private static void SetDrawCubeData() {
+        private static void SetDrawCubeData(float animationTime) {
             m_listPointCubeData.Clear();
             if (LuaAnimClipModel.ListCollision.Count == 0)
                 return;
@@ -382,21 +384,9 @@ namespace SkillEditor {
                     Transform footTrans = m_model.transform.Find(Config.DrawCubeNodeName);
                     if (footTrans == null)
                         continue;
+                    m_modelAnimation.SetAnimationPlayTime(AnimationModel.SelectAnimationClip, triggerTime);
                     Vector3 position = footTrans.position;
-                    var dic = Config.ModelClipDrawCubeOffset;
-                    string modelName = ModelDataModel.ModelName;
-                    string clipName = AnimationModel.SelectAnimationClipName;
-                    if (dic.ContainsKey(modelName) && dic[modelName].ContainsKey(clipName)) {
-                        var offsetData = dic[modelName][clipName];
-                        for (ushort offsetIndex = 0; offsetIndex < offsetData.time.Length; offsetIndex++) {
-                            float offsetTime = offsetData.time[offsetIndex];
-                            float offsetX = offsetData.x[offsetIndex];
-                            if (IsInCollisionOffsetTime(time, offsetTime)) {
-                                position.x += offsetX;
-                                break;
-                            }
-                        }
-                    }
+                    m_modelAnimation.SetAnimationPlayTime(AnimationModel.SelectAnimationClip, animationTime);
                     m_dicTimePosition.Add(triggerTime, position);
                 }
                 foreach (AnimClipData.CubeData data in list[index].Value)

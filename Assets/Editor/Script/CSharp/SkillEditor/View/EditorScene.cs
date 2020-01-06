@@ -7,7 +7,7 @@ namespace SkillEditor {
 
     internal static class EditorScene {
 
-        private static readonly Color CubeColor = new Color(0, 0.7f, 0.7f, 1);
+        private static readonly Color CubeColor = Color.green;
 
         private static List<KeyValuePair<Vector3, CubeData>> m_listPointCubeData;
 
