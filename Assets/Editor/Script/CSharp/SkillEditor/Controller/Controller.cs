@@ -232,6 +232,13 @@ namespace SkillEditor {
             Tool.NormalizeTransform(m_model);
             AnimationModel.SetCurrentAnimationClip(index);
             LuaAnimClipModel.SetCurrentClipName(AnimationModel.SelectAnimationClipName);
+            AnimationClip selectAnimationClip = AnimationModel.SelectAnimationClip;
+            if (selectAnimationClip == null) {
+                m_isNoWeaponClip = true;
+                return;
+            }
+            AnimationClip clip = WeaponModel.GetAnimationClip(ModelDataModel.ModelName, selectAnimationClip.name);
+            m_isNoWeaponClip = clip == null;
         }
 
         public static void SetAnimationStateData(AnimClipData.State state) => LuaAnimClipModel.SetCurrentState(state);
@@ -270,10 +277,9 @@ namespace SkillEditor {
             m_modelAnimation.Play(selectAnimationClip);
             if (m_weaponAnimation == null)
                 return;
-            AnimationClip clip = WeaponModel.GetAnimationClip(ModelDataModel.ModelName, selectAnimationClip.name);
-            m_isNoWeaponClip = clip == null;
             if (m_isNoWeaponClip)
                 return;
+            AnimationClip clip = WeaponModel.GetAnimationClip(ModelDataModel.ModelName, selectAnimationClip.name);
             m_weaponAnimation.Play(clip);
         }
 

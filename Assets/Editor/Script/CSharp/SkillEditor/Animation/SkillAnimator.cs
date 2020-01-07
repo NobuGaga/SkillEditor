@@ -69,6 +69,10 @@ namespace SkillEditor {
         }
 
         protected override void SampleAnimation() {
+            if (m_animator.recorderMode != AnimatorRecorderMode.Playback)
+                return;
+            if (m_curPlayTime > m_animator.recorderStopTime)
+                m_curPlayTime = m_animator.recorderStopTime;
             m_animator.playbackTime = m_curPlayTime;
             m_animator.Update(1 / m_frameRate);
         }

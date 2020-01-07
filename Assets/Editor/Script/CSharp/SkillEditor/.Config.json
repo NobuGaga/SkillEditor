@@ -2,7 +2,7 @@
 	"frame_rate" : 30,
 	"runtime_effect_delay" : 1,
 	"runtime_draw_cube_delay" : -3,
-	"draw_cube_last_time" : 1,
+	"draw_cube_last_time" : 4,
 	"model_path" : "Assets/character/hero",
 	"weapon_path" : "Assets/character/weapon",
 	"clip_folder" : "models",
