@@ -389,7 +389,7 @@ namespace SkillEditor {
             float time = m_modelAnimation.PlayTime;
             List<KeyValuePair<float, AnimClipData.CubeData[]>> list = LuaAnimClipModel.ListCollision;
             float minTime = list[0].Key;
-            float maxTime = list[list.Count - 1].Key;
+            float maxTime = list[list.Count - 1].Key + Config.DrawCubeLastTime;
             if (time < minTime || time > maxTime)
                 return;
             for (int index = 0; index < list.Count; index++) {
