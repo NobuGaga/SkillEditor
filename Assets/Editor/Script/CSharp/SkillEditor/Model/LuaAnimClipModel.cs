@@ -255,8 +255,8 @@ namespace SkillEditor {
             m_stateClipGroupIndexCache = m_listStateClipIndexPair[0];
             m_curStateDataIndex = m_stateClipGroupIndexCache.stateIndex;
             m_curClipGroupDataIndex = m_stateClipGroupIndexCache.clipGroupIndex;
-            SetFrameList<EffectData>(FrameType.PlayEffect);
-            SetFrameList<CubeData>(FrameType.Hit);
+            SetFrameList<EffectData>();
+            SetFrameList<CubeData>();
         }
 
         private static void ResetClip(){
@@ -327,11 +327,11 @@ namespace SkillEditor {
             array[index] = data;
             FrameList = array;
             if (isRefreshEffectFrame) {
-                SetFrameList<EffectData>(FrameType.PlayEffect);
+                SetFrameList<EffectData>();
                 m_effectChangeCall?.Invoke();
             }
             if (isRefresHitFrame)
-                SetFrameList<CubeData>(FrameType.Hit);
+                SetFrameList<CubeData>();
         }
 
         public static FrameData GetFrameData(int index) {
@@ -533,14 +533,10 @@ namespace SkillEditor {
         private static List<KeyValuePair<float, CubeData[]>> m_listCollision = new List<KeyValuePair<float, CubeData[]>>();
         public static List<KeyValuePair<float, CubeData[]>> ListCollision => m_listCollision;
 
-        private static void SetFrameList<T>(FrameType frameType) {
-            bool isEffect = frameType == FrameType.PlayEffect;
-            if (frameType != FrameType.Hit && !isEffect) {
-                Debug.LogError("LuaAnimClipModel::SetFrameList frame type error. type" + frameType);
-                return;
-            }
-            List<KeyValuePair<float,T[]>> list;
-            if (isEffect)
+        private static void SetFrameList<T>() where T : IFieldValueTable {
+            T temp = default;
+            List<KeyValuePair<float, T[]>> list;
+            if (temp is EffectData)
                 list = m_listEffect as List<KeyValuePair<float, T[]>>;
             else
                 list = m_listCollision as List<KeyValuePair<float, T[]>>;
@@ -550,7 +546,7 @@ namespace SkillEditor {
             for (int index = 0; index < FrameList.Length; index++) {
                 FrameData frameData = FrameList[index];
                 T[] dataList;
-                if (isEffect)
+                if (temp is EffectData)
                     dataList = frameData.effectFrameData.effectData.dataList as T[];
                 else
                     dataList = frameData.hitFrameData.cubeData.dataList as T[];

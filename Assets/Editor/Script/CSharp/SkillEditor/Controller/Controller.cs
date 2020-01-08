@@ -12,6 +12,7 @@ namespace SkillEditor {
     internal static class Controller {
 
         private static GameObject m_model;
+        private static Transform m_footTransform;
         private static BaseAnimation m_modelAnimation;
         public static float PlayTime => m_modelAnimation != null ? m_modelAnimation.PlayTime : 0;
 
@@ -33,10 +34,10 @@ namespace SkillEditor {
         public static void Start(string prefabPath) {
             Reset();
             m_model = LoadPrefab(prefabPath);
+            m_footTransform = m_model.transform.Find(Config.DrawCubeNodeName);
             Selection.activeGameObject = null;
             InitModelAnimation();
             InitLuaConfigData();
-            EditorScene.SetDrawCubeData(m_listPointCubeData);
             EditorScene.RegisterSceneGUI();
             EditorWindow.InitData(AnimationModel.AnimationClipNames, AnimationModel.AnimationClipIndexs);
             EditorWindow.Open();
@@ -382,26 +383,26 @@ namespace SkillEditor {
         }
 
         private static void SetDrawCubeData(float animationTime) {
-            m_listPointCubeData.Clear();
             if (LuaAnimClipModel.ListCollision.Count == 0)
                 return;
+            m_listPointCubeData.Clear();
             float time = m_modelAnimation.PlayTime;
             List<KeyValuePair<float, AnimClipData.CubeData[]>> list = LuaAnimClipModel.ListCollision;
-            float minTime = list[0].Key + Config.RuntimeCubeDelay;
+            float minTime = list[0].Key;
             float maxTime = list[list.Count - 1].Key;
             if (time < minTime || time > maxTime)
                 return;
             for (int index = 0; index < list.Count; index++) {
-                float triggerTime = list[index].Key + Config.RuntimeCubeDelay;
+                float triggerTime = list[index].Key;
                 if (!IsInCollisionTime(time, triggerTime))
                     continue;
                 if (!m_dicTimePosition.ContainsKey(triggerTime)) {
-                    Transform footTrans = m_model.transform.Find(Config.DrawCubeNodeName);
-                    if (footTrans == null)
-                        continue;
-                    m_modelAnimation.SetAnimationPlayTime(AnimationModel.SelectAnimationClip, triggerTime);
-                    Vector3 position = footTrans.position;
-                    m_modelAnimation.SetAnimationPlayTime(AnimationModel.SelectAnimationClip, animationTime);
+                    Vector3 position = m_footTransform.position;
+                    if (!Config.IsNoRuntimeCubeDelay) {
+                        m_modelAnimation.SetAnimationPlayTime(AnimationModel.SelectAnimationClip, triggerTime + Config.RuntimeCubeDelay);
+                        position = m_footTransform.position;
+                        m_modelAnimation.SetAnimationPlayTime(AnimationModel.SelectAnimationClip, animationTime);
+                    }
                     m_dicTimePosition.Add(triggerTime, position);
                 }
                 foreach (AnimClipData.CubeData data in list[index].Value)
@@ -413,17 +414,6 @@ namespace SkillEditor {
         private static bool IsInCollisionTime(float curTime, float collisionTime) {
             float minTime = collisionTime;
             float maxTime = collisionTime + Config.DrawCubeLastTime;
-            return curTime >= minTime && curTime <= maxTime;
-        }
-
-        private static bool IsInCollisionOffsetTime(float curTime, float offsetTime) {
-            float minTime = offsetTime - Config.RuntimeCubeDelay;
-            float maxTime = offsetTime + Config.RuntimeCubeDelay;
-            if (minTime > maxTime) {
-                float temp = minTime;
-                minTime = maxTime;
-                maxTime = temp;
-            }
             return curTime >= minTime && curTime <= maxTime;
         }
 
