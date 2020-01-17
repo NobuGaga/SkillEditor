@@ -12,9 +12,9 @@ namespace Lua.AnimClipData {
         public float z;
         public float width;
         public float height;
-        public int depth;
+        public float depth;
 
-        public CubeData(float x, float y, float z, float width, float height, int depth) {
+        public CubeData(float x, float y, float z, float width, float height, float depth) {
             index = 0;
             this.x = x;
             this.y = y;
@@ -87,7 +87,7 @@ namespace Lua.AnimClipData {
                     height = (float)value;
                     return;
                 case Key_Depth:
-                    depth = (int)value;
+                    depth = (float)value;
                     return;
             }
         }
@@ -124,7 +124,7 @@ namespace Lua.AnimClipData {
             m_arraykeyValue[count++] = new FieldValueTableInfo(Key_Z, ValueType.Number);
             m_arraykeyValue[count++] = new FieldValueTableInfo(Key_Width, ValueType.Number);
             m_arraykeyValue[count++] = new FieldValueTableInfo(Key_Height, ValueType.Number);
-            m_arraykeyValue[count++] = new FieldValueTableInfo(Key_Depth, ValueType.Int);
+            m_arraykeyValue[count++] = new FieldValueTableInfo(Key_Depth, ValueType.Number);
             return m_arraykeyValue;
         }
         #endregion
