@@ -102,6 +102,7 @@ namespace SkillEditor {
 
         private static ConfigJson m_configJson;
 
+        #pragma warning disable 0649
         private struct ConfigJson {
  
             public ushort frame_rate;
@@ -118,15 +119,8 @@ namespace SkillEditor {
             public string[] skill_effect_path;
             public string[] effect_exclute_component;
             public string[] use_autoseed_effect;
-
-            public ConfigJson(ushort arg) {
-                // unity warnning
-                frame_rate = draw_cube_last_time = 0;
-                runtime_effect_delay = runtime_draw_cube_delay = 0;
-                model_path = weapon_path = clip_folder = prefab_folder = hero_prefix = weapon_prefix = animator_controller_folder = null;
-                skill_effect_path = effect_exclute_component = use_autoseed_effect = null;
-            }
         }
+        #pragma warning restore 0649
 
         public struct PrefabChildName {
 

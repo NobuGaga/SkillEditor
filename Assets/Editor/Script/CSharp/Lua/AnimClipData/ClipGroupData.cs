@@ -8,11 +8,6 @@ namespace Lua.AnimClipData {
         public uint id;
         public string clipName;
         public FrameListData frameList;
-        public ClipGroupData(uint id, string clipName, FrameListData frameList) {
-            this.id = id;
-            this.clipName = clipName;
-            this.frameList = frameList;
-        }
 
         #region ITable Function
         

@@ -144,6 +144,13 @@ namespace Lua {
         string ToString();
     }
 
+    public interface ILuaSplitFile<T> : ILuaFile<T> where T : ITable {
+
+        string GetMainFileName();
+        string GetReadFolderPath();
+        string GetWriteFolderPath();
+    }
+
     public interface IRepeatKeyTable<T> : ITable where T : ITable {
         
         Type GetTableListType();
@@ -161,6 +168,7 @@ namespace Lua {
     }
 
     public enum ReadType {
+
         /// <summary>
         /// Only read array or hash data
         /// </summary>
@@ -180,6 +188,7 @@ namespace Lua {
     }
 
     public enum KeyType {
+
         Array,
         String,
         Reference,
@@ -187,6 +196,7 @@ namespace Lua {
     }
 
     public enum ValueType {
+
         Int,
         Number,
         String,

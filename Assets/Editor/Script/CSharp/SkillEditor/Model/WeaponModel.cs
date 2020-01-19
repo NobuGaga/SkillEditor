@@ -185,6 +185,7 @@ namespace SkillEditor {
         }
 
         private struct WeaponData {
+            
             public string weaponName;
             public string weaponPath;
         }

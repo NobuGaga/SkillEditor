@@ -8,10 +8,6 @@ namespace Lua.AnimClipData {
 
         public FrameData[] frameList;
 
-        public FrameListData(FrameData[] frameList) {
-            this.frameList = frameList;
-        }
-
         #region ITable Function
 
         public string GetTableName() => "FrameListData";

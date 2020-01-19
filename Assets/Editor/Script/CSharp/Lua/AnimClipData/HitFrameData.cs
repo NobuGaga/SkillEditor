@@ -9,11 +9,6 @@ namespace Lua.AnimClipData {
         public ushort priority;
         public CustomData<CubeData> cubeData;
 
-        public HitFrameData(ushort priority, CustomData<CubeData> cubeDatas) {
-            this.priority = priority;
-            this.cubeData = cubeDatas;
-        }
-
         #region ITable Function
         
         public string GetTableName() => "HitFrameData";

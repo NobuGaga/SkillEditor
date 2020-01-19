@@ -54,6 +54,7 @@ namespace SkillEditor {
 
         public static void Refresh() => Clear();
 
+        #pragma warning disable 0649
         private struct ModelData {
 
             public string modelName;
@@ -61,14 +62,7 @@ namespace SkillEditor {
             public string prefabFullPath;
             public string clipFullPath;
             public string controllerProjectPath;
-
-            public ModelData(string modelName, string prefabName, string prefabFullPath, string clipFullPath, string controllerProjectPath) {
-                this.modelName = modelName;
-                this.prefabName = prefabName;
-                this.prefabFullPath = prefabFullPath;
-                this.clipFullPath = clipFullPath;
-                this.controllerProjectPath = controllerProjectPath;
-            }
         }
+        #pragma warning restore 0649
     }
 }

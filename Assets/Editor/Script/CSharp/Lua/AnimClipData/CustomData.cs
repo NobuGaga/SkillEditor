@@ -8,10 +8,6 @@ namespace Lua.AnimClipData {
         
         public T[] dataList;
 
-        public CustomData(T[] dataList) {
-            this.dataList = dataList;
-        }
-
         #region ITable Function
         
         public string GetTableName() => "CustomData";

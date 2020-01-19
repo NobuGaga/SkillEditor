@@ -10,12 +10,6 @@ namespace Lua.AnimClipData {
         public short y;
         public short z;
 
-        public EffectRotationData(short x, short y, short z) {
-            this.x = x;
-            this.y = y;
-            this.z = z;
-        }
-
         private static Vector3 m_rotation;
 
         public Vector3 Rotation {

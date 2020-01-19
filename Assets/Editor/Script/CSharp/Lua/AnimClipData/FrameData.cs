@@ -14,17 +14,6 @@ namespace Lua.AnimClipData {
         public PriorityFrameData cacheFrameData;
         public PriorityFrameData sectionFrameData;
         public CameraFrameData cameraFrameData;
-        public FrameData(float time, HitFrameData hitFrameData, PriorityFrameData trackFrameData, EffectFrameData effectFrameData,
-                        PriorityFrameData cacheFrameData, PriorityFrameData sectionFrameData, CameraFrameData cameraFrameData) {
-            index = 0;
-            this.time = time;
-            this.hitFrameData = hitFrameData;
-            this.trackFrameData = trackFrameData;
-            this.effectFrameData = effectFrameData;
-            this.cacheFrameData = cacheFrameData;
-            this.sectionFrameData = sectionFrameData;
-            this.cameraFrameData = cameraFrameData;
-        }
 
         #region ITable Function
         

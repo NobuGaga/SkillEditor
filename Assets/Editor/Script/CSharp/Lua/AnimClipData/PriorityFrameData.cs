@@ -9,11 +9,6 @@ namespace Lua.AnimClipData {
         public FrameType frameType;
         public ushort priority;
 
-        public PriorityFrameData(FrameType frameType, ushort priority) {
-            this.frameType = frameType;
-            this.priority = priority;
-        }
-
         #region ITable Function
         
         public string GetTableName() => "PriorityFrameData";

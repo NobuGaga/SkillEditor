@@ -568,11 +568,6 @@ namespace SkillEditor {
             public ushort stateIndex;
             public ushort clipGroupIndex;
 
-            public StateClipGroupIndex(ushort stateIndex, ushort clipGroupIndex) {
-                this.stateIndex = stateIndex;
-                this.clipGroupIndex = clipGroupIndex;
-            }
-
             public static bool operator ==(StateClipGroupIndex left, StateClipGroupIndex right) =>
                 left.stateIndex == right.stateIndex && left.clipGroupIndex == right.clipGroupIndex;
 

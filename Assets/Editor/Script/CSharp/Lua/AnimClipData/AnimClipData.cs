@@ -5,15 +5,10 @@ using SkillEditor;
 
 namespace Lua.AnimClipData {
 
-    public struct AnimClipData : IRepeatKeyTable<StateData>, ILuaMultipleFile<AnimClipData, FileType> {
+    public struct AnimClipData : IRepeatKeyTable<StateData>, ILuaMultipleFile<AnimClipData, FileType>, ILuaSplitFile<AnimClipData> {
         
         public string modelName;
         public StateData[] stateList;
-
-        public AnimClipData(string modelName, StateData[] stateList) {
-            this.modelName = modelName;
-            this.stateList = stateList;
-        }
 
         #region ITable Function
 
@@ -79,6 +74,13 @@ namespace Lua.AnimClipData {
 
         private static string[] m_multipleFileHeadStart = new string[] { "AnimClipServerData = AnimClipServerData or {}\nAnimClipServerData.data = " };
         public string[] GetMultipleLuaFileHeadStart() => m_multipleFileHeadStart;
+        #endregion
+
+        #region ILuaSplitFile Function
+
+        public string GetMainFileName() => "AnimClipBase.lua";
+        public string GetReadFolderPath() => "../Resources/lua/data/config/animclipconfig";
+        public string GetWriteFolderPath() => "../Resources/lua/data/config/animclipconfig";
         #endregion
     }
     public enum FileType {

@@ -12,13 +12,6 @@ namespace Lua.EffectConf {
         public float y;
         public float z;
 
-        public EffectConfTransform(TransformType type, float x, float y, float z) {
-            this.type = type;
-            this.x = x;
-            this.y = y;
-            this.z = z;
-        }
-
         private static Vector3 m_vector3;
 
         public Vector3 Vector {

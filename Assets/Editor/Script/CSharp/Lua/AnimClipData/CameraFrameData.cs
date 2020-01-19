@@ -9,11 +9,6 @@ namespace Lua.AnimClipData {
         public ushort priority;
         public CameraData cameraData;
 
-        public CameraFrameData(ushort priority, CameraData cameraData) {
-            this.priority = priority;
-            this.cameraData = cameraData;
-        }
-
         #region ITable Function
         
         public string GetTableName() => "CameraFrameData";

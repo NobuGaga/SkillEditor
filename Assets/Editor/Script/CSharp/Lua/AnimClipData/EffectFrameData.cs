@@ -9,11 +9,6 @@ namespace Lua.AnimClipData {
         public ushort priority;
         public CustomData<EffectData> effectData;
 
-        public EffectFrameData(ushort type, ushort priority, CustomData<EffectData> effectDatas) {
-            this.priority = priority;
-            this.effectData = effectDatas;
-        }
-
         #region ITable Function
         
         public string GetTableName() => "EffectFrameData";

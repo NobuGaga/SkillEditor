@@ -11,13 +11,6 @@ namespace Lua.AnimClipData {
         public uint id;
         public EffectRotationData rotation;
 
-        public EffectData(EffectType type, uint id, EffectRotationData rotation) {
-            index = 0;
-            this.type = type;
-            this.id = id;
-            this.rotation = rotation;
-        }
-
         #region ITable Function
         
         public string GetTableName() => "EffectData";

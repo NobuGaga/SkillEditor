@@ -34,6 +34,7 @@
         public const string ArrayKeyValueFormat = "{0}[{1}] = {2}\n{3}{0}{4},\n";
         public const string StringKeyValueFormat = "{0}[\"{1}\"] = {2}\n{3}{0}{4},\n";
         public const string FixedKeyValueFormat = "{0}{1} = {2}\n{3}{0}{4},\n";
+        public const string RequireFunction = "require(\"{0}\")";
 
         public struct PairChar {
 
@@ -66,11 +67,6 @@
             
             public string start;
             public string end;
-
-            public PairString(string start, string end) {
-                this.start = start;
-                this.end = end;
-            }
 
             public PairString(char startChar1, char startChar2, char endChar1, char endChar2) {
                 start = new string(new char[] { startChar1, startChar2 });

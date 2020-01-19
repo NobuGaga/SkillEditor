@@ -14,16 +14,6 @@ namespace Lua.AnimClipData {
         public float height;
         public float depth;
 
-        public CubeData(float x, float y, float z, float width, float height, float depth) {
-            index = 0;
-            this.x = x;
-            this.y = y;
-            this.z = z;
-            this.width = width;
-            this.height = height;
-            this.depth = depth;
-        }
-
         private static Vector3 m_offsetCache;
         private static Vector3 m_sizeCache;
 

@@ -10,11 +10,6 @@ namespace Lua.AnimClipData {
         public State state;
         public ClipGroupData[] clipList;
 
-        public StateData(State state, ClipGroupData[] clipList) {
-            this.state = state;
-            this.clipList = clipList;
-        }
-
         private const string StateHeadString = "EntityStateDefine";
         public void SetState(string originKey) {
             if (!originKey.Contains(StateHeadString + LuaFormat.PointSymbol)) {

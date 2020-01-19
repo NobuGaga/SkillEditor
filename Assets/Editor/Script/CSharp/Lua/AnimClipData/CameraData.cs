@@ -10,12 +10,6 @@ namespace Lua.AnimClipData {
         public CameraTriggerType triggerType;
         public CameraFocusType focusType;
 
-        public CameraData(uint id, CameraTriggerType triggerType, CameraFocusType focusType) {
-            this.id = id;
-            this.triggerType = triggerType;
-            this.focusType = focusType;
-        }
-
         #region ITable Function
         
         public string GetTableName() => "CameraData";
