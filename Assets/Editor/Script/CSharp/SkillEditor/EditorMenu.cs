@@ -11,7 +11,10 @@ namespace SkillEditor {
         private static void OpenWindow() => EditorWindow.Open();
 
         [MenuItem("技能编辑器/保存编辑到 Lua 文件 #S")]
-        private static void WriteAnimClipData() => Manager.WriteAnimClipData();
+        private static void WriteAnimClipData() {
+            Lua.LuaReader.Read<Lua.AnimClipData.AnimClipData>();
+            // Manager.WriteAnimClipData();
+        }
 
         [MenuItem("技能编辑器/重新加载 Config Json 配置")]
         private static void ReloadConfigJson() => Config.ReloadConfigJson();

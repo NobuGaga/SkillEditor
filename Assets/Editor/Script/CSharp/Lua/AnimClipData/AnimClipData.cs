@@ -5,7 +5,7 @@ using SkillEditor;
 
 namespace Lua.AnimClipData {
 
-    public struct AnimClipData : IRepeatKeyTable<StateData>, ILuaMultipleFile<AnimClipData, FileType>, ILuaSplitFile<AnimClipData> {
+    public struct AnimClipData : IRepeatKeyTable<StateData>, ILuaFile<AnimClipData>, ILuaMultipleSplitFile<AnimClipData, FileType> {
         
         public string modelName;
         public StateData[] stateList;
@@ -50,13 +50,22 @@ namespace Lua.AnimClipData {
     
         #region ILuaFile Function
 
-        public string GetLuaFilePath() => Tool.CombinePath(Config.ProjectPath, "../Resources/lua/data/config/AnimClipData.lua");
-        public string GetLuaFileHeadStart() => "AnimClipData = AnimClipData or {}";
+        public string GetLuaFilePath() => string.Empty;
+        public string GetLuaFileHeadStart() => "AnimClipData = AnimClipData or {}\nAnimClipData.data = {}\n";
         public List<AnimClipData> GetModel() => LuaAnimClipModel.AnimClipList;
-        public string GetWriteFileString() => LuaAnimClipModel.GetWriteFileString();
+        public string GetWriteFileString() => string.Empty;
         #endregion
 
-        #region ILuaMultipleFile Function
+        #region ILuaSplitFile Function
+
+        public string GetFileExtension() => "lua";
+        public string GetFolderPath() => "../Resources/lua/data/config/animclipconfig/";
+        public string GetMainFileName() => "AnimClipBase";
+        public string GetChildFileNameFormat() => "{0}_clip";
+        public string GetChildFileHeadStart() => "AnimClipData.data";
+        #endregion
+
+        #region ILuaMultipleSplitFile Function
 
         private static FileType m_fileType = (FileType)LuaTable.DefaultFileType;
         public void SetFileType(int type) {
@@ -67,20 +76,13 @@ namespace Lua.AnimClipData {
         }
         public FileType GetFileType() => m_fileType;
 
-        private static string[] m_multipleFilePath = new string[] { 
-            Tool.CombinePath(Config.ProjectPath, "../Resources/lua/data/config/AnimClipServerData.lua") 
+        private static string[] m_multipleFolderPath = new string[] { 
+            "../Resources/lua/data/config/animclipserverconfig/"
         };
-        public string[] GetMultipleLuaFilePath() => m_multipleFilePath;
+        public string[] GetMultipleLuaFolderPath() => m_multipleFolderPath;
 
-        private static string[] m_multipleFileHeadStart = new string[] { "AnimClipServerData = AnimClipServerData or {}\nAnimClipServerData.data = " };
+        private static string[] m_multipleFileHeadStart = new string[] { "AnimClipServerData.data" };
         public string[] GetMultipleLuaFileHeadStart() => m_multipleFileHeadStart;
-        #endregion
-
-        #region ILuaSplitFile Function
-
-        public string GetMainFileName() => "AnimClipBase.lua";
-        public string GetReadFolderPath() => "../Resources/lua/data/config/animclipconfig";
-        public string GetWriteFolderPath() => "../Resources/lua/data/config/animclipconfig";
         #endregion
     }
     public enum FileType {

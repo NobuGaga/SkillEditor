@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Lua.AnimClipData {
 
-    public struct FrameData : IFieldValueTable, ILuaMultipleFileStructure<AnimClipData, FileType> {
+    public struct FrameData : IFieldValueTable {
 
         public ushort index;
         public float time;
@@ -46,6 +46,22 @@ namespace Lua.AnimClipData {
         }
 
         private static readonly StringBuilder m_staticBuilder = new StringBuilder((ushort)Math.Pow(2, 11));
+        public override string ToString() {
+            AnimClipData data = default;
+            switch (data.GetFileType()) {
+                case FileType.Client:
+                    return LuaTable.GetFieldKeyTableText(m_staticBuilder, this);
+                case FileType.Server:
+                    var dataCopy = this;
+                    dataCopy.effectFrameData.Clear();
+                    dataCopy.cacheFrameData.Clear();
+                    dataCopy.sectionFrameData.Clear();
+                    dataCopy.cameraFrameData.Clear();
+                    return LuaTable.GetFieldKeyTableText(m_staticBuilder, dataCopy);
+                default:
+                    return string.Empty;
+            }
+        }
         #endregion
 
         #region IFieldKeyTable Function
@@ -131,26 +147,6 @@ namespace Lua.AnimClipData {
                 m_dicKeyToFrameType.Add(key, frameType);
             }
             return m_arraykeyValue;
-        }
-        #endregion
-    
-        #region ILuaMultipleFileStructure Function
-
-        public override string ToString() {
-            AnimClipData data = default;
-            switch (data.GetFileType()) {
-                case FileType.Client:
-                    return LuaTable.GetFieldKeyTableText(m_staticBuilder, this);
-                case FileType.Server:
-                    var dataCopy = this;
-                    dataCopy.effectFrameData.Clear();
-                    dataCopy.cacheFrameData.Clear();
-                    dataCopy.sectionFrameData.Clear();
-                    dataCopy.cameraFrameData.Clear();
-                    return LuaTable.GetFieldKeyTableText(m_staticBuilder, dataCopy);
-                default:
-                    return string.Empty;
-            }
         }
         #endregion
     }

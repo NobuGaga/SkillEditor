@@ -11,6 +11,13 @@ namespace Lua {
     public static class LuaReader {
 
         public static void Read<T>(bool hasNoKeyTable = false) where T : ITable, ILuaFile<T> {
+            if (Tool.IsImplementInterface(typeof(T), typeof(ILuaSplitFile<>)))
+                ReadSplitFile<T>(hasNoKeyTable);
+            else
+                ReadSimpleFile<T>(hasNoKeyTable);
+        }
+
+        private static void ReadSimpleFile<T>(bool hasNoKeyTable) where T : ITable, ILuaFile<T> {
             T luaFile = default;
             string luaFilePath = luaFile.GetLuaFilePath();
             string luaFileHeadStart = luaFile.GetLuaFileHeadStart();
@@ -25,6 +32,10 @@ namespace Lua {
             int index = 0;
             ReadLuaFileHeadText(luaText, luaFilePath, luaFileHeadStart, ref index);
             ReadLuaFileTable(luaText, ref index, list);
+        }
+
+        private static void ReadSplitFile<T>(bool hasNoKeyTable) where T : ITable, ILuaFile<T> {
+
         }
 
         private static void WriteArrayKeyToFileString(ref string luaText) {

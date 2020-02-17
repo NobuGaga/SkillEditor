@@ -139,16 +139,21 @@ namespace Lua {
         string[] GetMultipleLuaFileHeadStart();
     }
 
-    public interface ILuaMultipleFileStructure<T, F> where T : ITable, ILuaMultipleFile<T, F> where F : Enum {
-
-        string ToString();
-    }
-
     public interface ILuaSplitFile<T> : ILuaFile<T> where T : ITable {
 
+        string GetFileExtension();
+        string GetFolderPath();
         string GetMainFileName();
-        string GetReadFolderPath();
-        string GetWriteFolderPath();
+        string GetChildFileNameFormat();
+        string GetChildFileHeadStart();
+    }
+
+    public interface ILuaMultipleSplitFile<T, F> : ILuaSplitFile<T> where T : ITable where F : Enum {
+
+        void SetFileType(int type);
+        F GetFileType();
+        string[] GetMultipleLuaFolderPath();
+        string[] GetMultipleLuaFileHeadStart();
     }
 
     public interface IRepeatKeyTable<T> : ITable where T : ITable {
