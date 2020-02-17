@@ -11,6 +11,7 @@ namespace SkillEditor {
         private const string BatchSubDelayTime = "批量减少 StartDelay";
 
         public override void OnInspectorGUI() {
+            base.OnInspectorGUI();
             EditorGUILayout.BeginHorizontal();
             if (GUILayout.Button(BatchAddDelayTime))
                 SetParticlesDelay(AddDelayTime);
@@ -23,7 +24,7 @@ namespace SkillEditor {
             ParticleDelay delayComponent = target as ParticleDelay;
             if (delayComponent == null)
                 return;
-            ParticleSystem[] particles = delayComponent.GetComponentsInChildren<ParticleSystem>();
+            ParticleSystem[] particles = delayComponent.GetComponentsInChildren<ParticleSystem>(true);
             if (particles == null || particles.Length == 0)
                 return;
             float delayOffset = delayComponent.DelayTimeOffset;
