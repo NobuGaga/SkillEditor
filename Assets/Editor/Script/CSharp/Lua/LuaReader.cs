@@ -17,6 +17,64 @@ namespace Lua {
                 ReadSimpleFile<T>(hasNoKeyTable);
         }
 
+        private static void ReadSplitFile<T>(bool hasNoKeyTable) where T : ITable {
+            T luaTable = default;
+            ILuaFile<T> luaFile = (ILuaFile<T>)luaTable;
+            ILuaSplitFile<T> luaSplitFile = (ILuaSplitFile<T>)luaTable;
+            string[] arrayFullPath = Directory.GetDirectories(luaSplitFile.GetFolderPath());
+            if (arrayFullPath == null || arrayFullPath.Length == 0)
+                return;
+            List<T> list = luaFile.GetModel();
+            string mainFileName = luaSplitFile.GetMainFileName();
+            string childFileHeadStart = luaSplitFile.GetChildFileHeadStart();
+            bool isCheckMainFile = false;
+            for (int fileIndex = 0; fileIndex < arrayFullPath.Length; fileIndex++) {
+                string fullPath = arrayFullPath[fileIndex];
+                if (!isCheckMainFile && fullPath.Contains(mainFileName)) {
+                    isCheckMainFile = true;
+                    continue;
+                }
+                string luaText = File.ReadAllText(fullPath);
+                if (hasNoKeyTable)
+                    WriteArrayKeyToFileString(ref luaText);
+                T table = ReadLuaSplitFileTable<T>(luaText, childFileHeadStart);
+                list.Add(table);
+            }
+        }
+
+        private static T ReadLuaSplitFileTable<T>(string luaText, string childFileHeadStart) where T : ITable {
+            T table = default;
+            int index = 0;
+            FilterNotesLine(luaText, ref index);
+            index = luaText.IndexOf(childFileHeadStart, index);
+            if (index == Config.ErrorIndex) {
+                Debug.LogError("LuaReader::ReadLuaSplitFileKey lua file start text is not found. text " + childFileHeadStart);
+                return table;
+            }
+            if (table.GetKeyType() != KeyType.FixedField) {
+                int endIndex = luaText.IndexOf(LuaFormat.CurlyBracesPair.start, index);
+                table = InitTableAndhKey<T>(luaText, ref index, endIndex, out bool isSuccess);
+                if (!isSuccess)
+                    return table;
+            }
+            if (IsImplementIRepeatKeyTable(typeof(T), table.GetTableName())) {
+                object staticList = GetStaticListAndSetRepeatTableMethod<T>();
+                ClearStaticListMethod.Invoke(staticList, null);
+                SetThreeArgMethodArg(luaText, index, staticList);
+                ReadLuaFileTableMethod.Invoke(null, GetThreeArgMethodArg());
+                table = (T)SetTableListMethod.Invoke(table, null);
+            }
+            else if (IsImplementIFieldValueTable(typeof(T), table.GetTableName())){
+                EnterLuaTable(luaText, ref index);
+                SetThreeArgMethodArg(luaText, index, table);
+                object[] args = GetThreeArgMethodArg();
+                table = (T)m_readFixedFieldTableValueMethod.Invoke(null, args);
+                index = (int)args[1];
+                ExitLuaTable(luaText, ref index);
+            }
+            return table;
+        }
+
         private static void ReadSimpleFile<T>(bool hasNoKeyTable) where T : ITable, ILuaFile<T> {
             T luaFile = default;
             string luaFilePath = luaFile.GetLuaFilePath();
@@ -32,10 +90,6 @@ namespace Lua {
             int index = 0;
             ReadLuaFileHeadText(luaText, luaFilePath, luaFileHeadStart, ref index);
             ReadLuaFileTable(luaText, ref index, list);
-        }
-
-        private static void ReadSplitFile<T>(bool hasNoKeyTable) where T : ITable, ILuaFile<T> {
-
         }
 
         private static void WriteArrayKeyToFileString(ref string luaText) {

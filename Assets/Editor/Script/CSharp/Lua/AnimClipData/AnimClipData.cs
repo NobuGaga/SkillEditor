@@ -59,7 +59,7 @@ namespace Lua.AnimClipData {
         #region ILuaSplitFile Function
 
         public string GetFileExtension() => "lua";
-        public string GetFolderPath() => "../Resources/lua/data/config/animclipconfig/";
+        public string GetFolderPath() => Tool.CombinePath(Config.ProjectPath, "../Resources/lua/data/config/animclipconfig/");
         public string GetMainFileName() => "AnimClipBase";
         public string GetChildFileNameFormat() => "{0}_clip";
         public string GetChildFileHeadStart() => "AnimClipData.data";
