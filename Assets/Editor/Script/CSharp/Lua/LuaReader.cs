@@ -21,7 +21,7 @@ namespace Lua {
             T luaTable = default;
             ILuaFile<T> luaFile = (ILuaFile<T>)luaTable;
             ILuaSplitFile<T> luaSplitFile = (ILuaSplitFile<T>)luaTable;
-            string[] arrayFullPath = Directory.GetDirectories(luaSplitFile.GetFolderPath());
+            string[] arrayFullPath = Directory.GetFiles(luaSplitFile.GetFolderPath());
             if (arrayFullPath == null || arrayFullPath.Length == 0)
                 return;
             List<T> list = luaFile.GetModel();
@@ -59,10 +59,14 @@ namespace Lua {
             }
             if (IsImplementIRepeatKeyTable(typeof(T), table.GetTableName())) {
                 object staticList = GetStaticListAndSetRepeatTableMethod<T>();
-                ClearStaticListMethod.Invoke(staticList, null);
+                // Get current method referentce prevent type has be modified
+                MethodInfo clearStaticListMethod = ClearStaticListMethod;
+                MethodInfo readLuaFileTableMethod = ReadLuaFileTableMethod;
+                MethodInfo setTableListMethod = SetTableListMethod;
+                clearStaticListMethod.Invoke(staticList, null);
                 SetThreeArgMethodArg(luaText, index, staticList);
-                ReadLuaFileTableMethod.Invoke(null, GetThreeArgMethodArg());
-                table = (T)SetTableListMethod.Invoke(table, null);
+                readLuaFileTableMethod.Invoke(null, GetThreeArgMethodArg());
+                table = (T)setTableListMethod.Invoke(table, null);
             }
             else if (IsImplementIFieldValueTable(typeof(T), table.GetTableName())){
                 EnterLuaTable(luaText, ref index);
