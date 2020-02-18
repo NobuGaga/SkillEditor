@@ -31,10 +31,11 @@
         public const ushort NumberPoint = '.';
         public const string TabString = "    ";
         public const string ArrayKeyFormat = "[{0}]=";
-        public const string ArrayKeyValueFormat = "{0}[{1}] = {2}\n{3}{0}{4},\n";
-        public const string StringKeyValueFormat = "{0}[\"{1}\"] = {2}\n{3}{0}{4},\n";
-        public const string FixedKeyValueFormat = "{0}{1} = {2}\n{3}{0}{4},\n";
-        public const string RequireFunction = "require(\"{0}\")";
+        public const string ArrayKeyValueFormat = "{0}[{1}] = {2}\n{3}{0}{4}" + TableEndString;
+        public const string StringKeyValueFormat = "{0}[\"{1}\"] = {2}\n{3}{0}{4}" + TableEndString;
+        public const string FixedKeyValueFormat = "{0}{1} = {2}\n{3}{0}{4}" + TableEndString;
+        public const string TableEndString = ",\n";
+        public const string RequireFunction = "require(\"{0}\")\n";
 
         public struct PairChar {
 

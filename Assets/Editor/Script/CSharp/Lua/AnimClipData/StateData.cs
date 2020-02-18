@@ -23,7 +23,7 @@ namespace Lua.AnimClipData {
         #region ITable Function
         
         public string GetTableName() => "StateData";
-        public ushort GetLayer() => 2;
+        public ushort GetLayer() => 1;
         public ReadType GetReadType() => ReadType.Repeat;
         public KeyType GetKeyType() => KeyType.String;
         public void SetKey(object key) => SetState(key as string);

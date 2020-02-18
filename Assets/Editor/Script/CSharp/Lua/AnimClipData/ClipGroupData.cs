@@ -12,7 +12,7 @@ namespace Lua.AnimClipData {
         #region ITable Function
         
         public string GetTableName() => "ClipGroupData";
-        public ushort GetLayer() => 3;
+        public ushort GetLayer() => 2;
         public ReadType GetReadType() => ReadType.RepeatToFixed;
         public KeyType GetKeyType() => KeyType.Array;
         public void SetKey(object key) => id = (uint)(int)key;

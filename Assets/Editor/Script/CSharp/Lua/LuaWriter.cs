@@ -33,8 +33,24 @@ namespace Lua {
             T luaFile = default;
             ILuaSplitFile<T> luaSplitFile = (ILuaSplitFile<T>)luaFile;
             List<T> list = luaFile.GetModel();
-            string luaFilePath = luaSplitFile.GetFolderPath();
-            // TODO
+            string folderPath = luaSplitFile.GetFolderPath();
+            string fileExtension = luaSplitFile.GetFileExtension();
+            string requirePath = luaSplitFile.GetChildFileRequirePath();
+            string fileNameFormat = luaSplitFile.GetChildFileNameFormat();
+            StringBuilder mainFileContent = new StringBuilder((UInt16)Math.Pow(2, 9));
+            for (ushort index = 0; index < list.Count; index++) {
+                T childFileData = list[index];
+                string fileName = string.Format(fileNameFormat, childFileData.GetKey());
+                string path = requirePath + fileName;
+                string requireText = string.Format(LuaFormat.RequireFunction, path);
+                mainFileContent.Append(requirePath + fileName);
+                string filePath = Tool.CombineFilePath(folderPath, fileName, fileExtension);
+                Write(filePath, childFileData.GetWriteFileString());
+            }
+            string mainFilePath = luaFile.GetLuaFilePath();
+            string mainFileHeadText = luaFile.GetLuaFileHeadStart();
+            string mainFileText = mainFileContent.ToString();
+            WriteWithHeadText(mainFilePath, mainFileHeadText, mainFileText);
         }
 
         private static void WriteSimpleFile<T>() where T : ITable, ILuaFile<T> {
@@ -44,7 +60,7 @@ namespace Lua {
                 Debug.LogError("LuaWriter::Write lua file head text path is not exit. lua file path " + luaFilePath);
                 return;
             }
-            Write(luaFilePath, luaFile.GetWriteFileString());
+            WriteWithHeadText(luaFilePath, luaFile.GetWriteFileString());
             if (!Tool.IsImplementInterface(typeof(T), typeof(ILuaMultipleFile<,>)))
                 return;
             MethodInfo getMultipleLuaFilePathMethod = luaFile.GetType().GetMethod("GetMultipleLuaFilePath");
@@ -61,22 +77,26 @@ namespace Lua {
             for (ushort index = 0; index < luaFilePaths.Length; index++) {
                 args[0] = index;
                 setFileTypeMethod.Invoke(luaFile, args);
-                Write(luaFilePaths[index], luaFileHeadStarts[index], luaFile.GetWriteFileString());
+                WriteWithHeadText(luaFilePaths[index], luaFileHeadStarts[index], luaFile.GetWriteFileString());
             }
             args[0] = LuaTable.DefaultFileType;
             setFileTypeMethod.Invoke(luaFile, args);
         }
 
-        private static void Write(string luaFilePath, string fileString) => 
-            Write(luaFilePath, m_dicPathFileHead[luaFilePath], fileString);
+        private static void WriteWithHeadText(string luaFilePath, string fileString) => 
+            WriteWithHeadText(luaFilePath, m_dicPathFileHead[luaFilePath], fileString);
 
-        private static void Write(string luaFilePath, string headText, string fileString) {
+        private static void WriteWithHeadText(string luaFilePath, string headText, string fileString) {
             m_stringBuilder.Clear();
             m_stringBuilder.Append(headText);
             m_stringBuilder.Append(fileString);
-            FileStream file = new FileStream(luaFilePath, FileMode.Create);
+            Write(luaFilePath, m_stringBuilder.ToString());
+        }
+
+        private static void Write(string filePath, string text) {
+            FileStream file = new FileStream(filePath, FileMode.Create);
             StreamWriter fileWriter = new StreamWriter(file);
-            fileWriter.Write(m_stringBuilder.ToString());
+            fileWriter.Write(text);
             fileWriter.Close();
             fileWriter.Dispose();
         }

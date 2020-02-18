@@ -144,6 +144,7 @@ namespace Lua {
         string GetFileExtension();
         string GetFolderPath();
         string GetMainFileName();
+        string GetChildFileRequirePath();
         string GetChildFileNameFormat();
         string GetChildFileHeadStart();
     }

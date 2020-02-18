@@ -13,7 +13,7 @@ namespace Lua.AnimClipData {
         #region ITable Function
 
         public string GetTableName() => "AnimClipData";
-        public ushort GetLayer() => 1;
+        public ushort GetLayer() => 0;
         public ReadType GetReadType() => ReadType.Repeat;
         public KeyType GetKeyType() => KeyType.String;
         public void SetKey(object key) => modelName = key as string;
@@ -50,10 +50,17 @@ namespace Lua.AnimClipData {
     
         #region ILuaFile Function
 
-        public string GetLuaFilePath() => string.Empty;
+        public string GetLuaFilePath() => Tool.CombineFilePath(GetFolderPath(), GetMainFileName(), GetFileExtension());
         public string GetLuaFileHeadStart() => "AnimClipData = AnimClipData or {}\nAnimClipData.data = {}\n";
         public List<AnimClipData> GetModel() => LuaAnimClipModel.AnimClipList;
-        public string GetWriteFileString() => string.Empty;
+        public string GetWriteFileString() {
+            m_staticBuilder.Clear();
+            m_staticBuilder.Append(GetChildFileHeadStart());
+            m_staticBuilder.Append(ToString());
+            int length = LuaFormat.TableEndString.Length;
+            m_staticBuilder.Remove(m_staticBuilder.Length - length, length);
+            return m_staticBuilder.ToString();
+        }
         #endregion
 
         #region ILuaSplitFile Function
@@ -61,6 +68,7 @@ namespace Lua.AnimClipData {
         public string GetFileExtension() => "lua";
         public string GetFolderPath() => Tool.CombinePath(Config.ProjectPath, "../Resources/lua/data/config/animclipconfig/");
         public string GetMainFileName() => "AnimClipBase";
+        public string GetChildFileRequirePath() => "data/config/animclipconfig/";
         public string GetChildFileNameFormat() => "{0}_clip";
         public string GetChildFileHeadStart() => "AnimClipData.data";
         #endregion

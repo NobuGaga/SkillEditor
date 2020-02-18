@@ -18,7 +18,7 @@ namespace Lua.AnimClipData {
         #region ITable Function
         
         public string GetTableName() => "FrameData";
-        public ushort GetLayer() => 5;
+        public ushort GetLayer() => 4;
         public ReadType GetReadType() => ReadType.RepeatToFixed;
         public KeyType GetKeyType() => KeyType.Array;
         public void SetKey(object key) => index = (ushort)(int)key;
