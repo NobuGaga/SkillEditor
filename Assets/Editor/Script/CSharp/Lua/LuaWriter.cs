@@ -23,6 +23,21 @@ namespace Lua {
         public static StringBuilder BuilderCache => m_stringBuilder;
 
         public static void Write<T>() where T : ITable, ILuaFile<T> {
+            if (Tool.IsImplementInterface(typeof(T), typeof(ILuaSplitFile<>)))
+                WriteSplitFile<T>();
+            else
+                WriteSimpleFile<T>();
+        }
+
+        private static void WriteSplitFile<T>() where T : ITable, ILuaFile<T> {
+            T luaFile = default;
+            ILuaSplitFile<T> luaSplitFile = (ILuaSplitFile<T>)luaFile;
+            List<T> list = luaFile.GetModel();
+            string luaFilePath = luaSplitFile.GetFolderPath();
+            // TODO
+        }
+
+        private static void WriteSimpleFile<T>() where T : ITable, ILuaFile<T> {
             T luaFile = default;
             string luaFilePath = luaFile.GetLuaFilePath();
             if (!m_dicPathFileHead.ContainsKey(luaFilePath)) {
