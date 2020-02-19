@@ -73,7 +73,7 @@ namespace Lua.AnimClipData {
         public string GetChildFileRequirePath() => "data/config/animclipconfig/client/";
         public string GetChildFileNameFormat() => "{0}_clip";
         public string GetChildFileHeadStart() {
-            if (m_fileType == (FileType)LuaTable.DefaultFileType)
+            if (m_fileType == FileType.Client)
                 return "AnimClipData.data";
             return m_multipleChildFileHeadStart[(ushort)m_fileType];
         }
@@ -81,12 +81,12 @@ namespace Lua.AnimClipData {
 
         #region ILuaMultipleSplitFile Function
 
-        private static FileType m_fileType = (FileType)LuaTable.DefaultFileType;
+        private static FileType m_fileType = FileType.Client;
         public void SetFileType(int type) {
             if (Enum.IsDefined(typeof(FileType), type))
                 m_fileType = (FileType)type;
             else
-                m_fileType = (FileType)LuaTable.DefaultFileType;
+                m_fileType = FileType.Client;
         }
         public FileType GetFileType() => m_fileType;
 
@@ -123,6 +123,7 @@ namespace Lua.AnimClipData {
     }
     
     public enum FileType {
+
         Client = LuaTable.DefaultFileType,
         Server = Client + 1,
     }

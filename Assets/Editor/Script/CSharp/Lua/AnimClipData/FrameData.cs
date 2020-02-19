@@ -88,20 +88,21 @@ namespace Lua.AnimClipData {
         public object GetFieldValueTableValue(string key) {
             if (key == Key_Time)
                 return time;
+            FrameData data = GetFileTypeTable();
             FrameType frameType = GetFrameTypeFromKey(key);
             switch (frameType) {
                 case FrameType.Hit:
-                    return hitFrameData;
+                    return data.hitFrameData;
                 case FrameType.Track:
-                    return trackFrameData;
+                    return data.trackFrameData;
                 case FrameType.PlayEffect:
-                    return effectFrameData;
+                    return data.effectFrameData;
                 case FrameType.CacheBegin:
-                    return cacheFrameData;
+                    return data.cacheFrameData;
                 case FrameType.SectionOver:
-                    return sectionFrameData;
+                    return data.sectionFrameData;
                 case FrameType.Camera:
-                    return cameraFrameData;
+                    return data.cameraFrameData;
                 default:
                     return null;
             }

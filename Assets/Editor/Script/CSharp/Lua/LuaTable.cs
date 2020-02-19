@@ -154,7 +154,9 @@ namespace Lua {
         void SetFileType(int type);
         F GetFileType();
         string[] GetMultipleLuaMainFileName();
+        string[] GetMultipleFolderPath();
         string[] GetMultipleLuaMainFileHeadStart();
+        string[] GetMultipleChildFileRequirePath();
         string[] GetMultipleLuaChildFileNameFormat();
         string[] GetMultipleLuaChildFileHeadStart();
     }

@@ -3,7 +3,7 @@ using System.Text;
 
 namespace Lua.AnimClipData {
 
-    public struct ClipGroupData : IFieldValueTable {
+    public struct ClipGroupData : IFieldValueTable, ILuaMultipleFileStructure<AnimClipData, FileType, ClipGroupData> {
 
         public uint id;
         public string clipName;
@@ -17,7 +17,13 @@ namespace Lua.AnimClipData {
         public KeyType GetKeyType() => KeyType.Array;
         public void SetKey(object key) => id = (uint)(int)key;
         public string GetKey() => id.ToString();
-        public bool IsNullTable() => id == 0 || string.IsNullOrEmpty(clipName);
+        public bool IsNullTable() {
+            if (GetFileType() == FileType.Client)
+                return id == 0 || string.IsNullOrEmpty(clipName);
+            else
+                return frameList.IsNullTable();
+        }
+
         public void Clear() {
             id = 0;
             clipName = null;
@@ -66,6 +72,13 @@ namespace Lua.AnimClipData {
             m_arraykeyValue[count++] = new FieldValueTableInfo(Key_FrameList, ValueType.Table);
             return m_arraykeyValue;
         }
+        #endregion
+            
+        #region ILuaMultipleFileStructure Function
+
+        public AnimClipData GetRootTableType() => default;
+        public FileType GetFileType() => GetRootTableType().GetFileType();
+        public ClipGroupData GetFileTypeTable() => this;
         #endregion
     }
 }
