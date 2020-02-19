@@ -153,8 +153,14 @@ namespace Lua {
 
         void SetFileType(int type);
         F GetFileType();
-        string[] GetMultipleLuaFolderPath();
-        string[] GetMultipleLuaFileHeadStart();
+        string[] GetMultipleLuaMainFileName();
+        string[] GetMultipleLuaMainFileHeadStart();
+        string[] GetMultipleLuaChildFileNameFormat();
+        string[] GetMultipleLuaChildFileHeadStart();
+    }
+
+    public interface ILuaMultipleFileStructure<T, F> where T : ITable, ILuaMultipleFile<T, F> where F : Enum {
+
     }
 
     public interface IRepeatKeyTable<T> : ITable where T : ITable {

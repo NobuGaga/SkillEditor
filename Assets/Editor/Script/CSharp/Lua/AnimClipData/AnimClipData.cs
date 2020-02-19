@@ -5,7 +5,7 @@ using SkillEditor;
 
 namespace Lua.AnimClipData {
 
-    public struct AnimClipData : IRepeatKeyTable<StateData>, ILuaFile<AnimClipData>, ILuaMultipleSplitFile<AnimClipData, FileType> {
+    public struct AnimClipData : IRepeatKeyTable<StateData>, ILuaMultipleSplitFile<AnimClipData, FileType> {
         
         public string modelName;
         public StateData[] stateList;
@@ -72,7 +72,11 @@ namespace Lua.AnimClipData {
         public string GetMainFileName() => "AnimClipBase";
         public string GetChildFileRequirePath() => "data/config/animclipconfig/";
         public string GetChildFileNameFormat() => "{0}_clip";
-        public string GetChildFileHeadStart() => "AnimClipData.data";
+        public string GetChildFileHeadStart() {
+            if (m_fileType == (FileType)LuaTable.DefaultFileType)
+                return "AnimClipData.data";
+            return m_multipleChildFileHeadStart[(ushort)m_fileType];
+        }
         #endregion
 
         #region ILuaMultipleSplitFile Function
@@ -86,13 +90,25 @@ namespace Lua.AnimClipData {
         }
         public FileType GetFileType() => m_fileType;
 
-        private static string[] m_multipleFolderPath = new string[] { 
-            "../Resources/lua/data/config/animclipserverconfig/"
+        private static string[] m_multipleMainFileName = new string[] {
+            "AnimClipBaseServer"
         };
-        public string[] GetMultipleLuaFolderPath() => m_multipleFolderPath;
+        public string[] GetMultipleLuaMainFileName() => m_multipleMainFileName;
 
-        private static string[] m_multipleFileHeadStart = new string[] { "AnimClipServerData.data" };
-        public string[] GetMultipleLuaFileHeadStart() => m_multipleFileHeadStart;
+        private static string[] m_multipleMainFileHeadStart = new string[] {
+            "AnimClipServerData = AnimClipServerData or {}\nAnimClipServerData.data = {}\n"
+        };
+        public string[] GetMultipleLuaMainFileHeadStart() => m_multipleMainFileHeadStart;
+
+        private static string[] m_multipleChildFileNameFormat = new string[] {
+            "{0}_clip_server"
+        };
+        public string[] GetMultipleLuaChildFileNameFormat() => m_multipleChildFileNameFormat;
+
+        private static string[] m_multipleChildFileHeadStart = new string[] {
+            "AnimClipServerData.data"
+        };
+        public string[] GetMultipleLuaChildFileHeadStart() => m_multipleChildFileHeadStart;
         #endregion
     }
     public enum FileType {
