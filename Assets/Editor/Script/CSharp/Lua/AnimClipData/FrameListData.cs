@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Lua.AnimClipData {
 
-    public struct FrameListData : IRepeatKeyTable<FrameData> {
+    public struct FrameListData : IRepeatKeyTable<FrameData>, ILuaMultipleFileStructure<AnimClipData, FileType, FrameListData> {
 
         public FrameData[] frameList;
 
@@ -28,7 +28,7 @@ namespace Lua.AnimClipData {
         public void Clear() => frameList = null;
 
         private static readonly StringBuilder m_staticBuilder = new StringBuilder((ushort)Math.Pow(2, 14));
-        public override string ToString() => LuaTable.GetRepeatKeyTableText(m_staticBuilder, this);
+        public override string ToString() => LuaTable.GetRepeatKeyTableText(m_staticBuilder, GetFileTypeTable());
         #endregion
 
         #region IRepeatKeyTable Function
@@ -42,6 +42,28 @@ namespace Lua.AnimClipData {
         }
         public void SetTableListData(ushort index, FrameData data) => frameList[index] = data;
         public FrameData[] GetTableList() => frameList;
+        #endregion
+
+        #region ILuaMultipleFileStructure Function
+
+        public AnimClipData GetRootTableType() => default;
+        public FileType GetFileType() => GetRootTableType().GetFileType();
+        private static List<FrameData> m_listFrameCache = new List<FrameData>();
+        public FrameListData GetFileTypeTable() {
+            if (IsNullTable() || GetFileType() == FileType.Client)
+                return this;
+            m_listFrameCache.Clear();
+            for (ushort index = 0; index < frameList.Length; index++) {
+                FrameData frameData = frameList[index];
+                if (frameData.IsNullTable())
+                    continue;
+                frameData.index = (ushort)(m_listFrameCache.Count + 1);
+                m_listFrameCache.Add(frameData);
+            }
+            FrameListData newData = default;
+            newData.frameList = m_listFrameCache.ToArray();
+            return newData;
+        }
         #endregion
     }
 }

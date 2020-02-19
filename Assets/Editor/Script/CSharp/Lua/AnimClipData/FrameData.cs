@@ -141,20 +141,15 @@ namespace Lua.AnimClipData {
         public AnimClipData GetRootTableType() => default;
         public FileType GetFileType() => GetRootTableType().GetFileType();
         public FrameData GetFileTypeTable() {
-            switch (GetFileType()) {
-                case FileType.Client:
-                    return this;
-                case FileType.Server:
-                    var dataCopy = this;
-                    dataCopy.trackFrameData.Clear();
-                    dataCopy.effectFrameData.Clear();
-                    dataCopy.cacheFrameData.Clear();
-                    dataCopy.sectionFrameData.Clear();
-                    dataCopy.cameraFrameData.Clear();
-                    return dataCopy;
-                default:
-                    return this;
-            }
+            if (GetFileType() == FileType.Client)
+                return this;
+            var dataCopy = this;
+            dataCopy.trackFrameData.Clear();
+            dataCopy.effectFrameData.Clear();
+            dataCopy.cacheFrameData.Clear();
+            dataCopy.sectionFrameData.Clear();
+            dataCopy.cameraFrameData.Clear();
+            return dataCopy;
         }
         #endregion
     }
