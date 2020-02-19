@@ -111,6 +111,7 @@ namespace Lua.AnimClipData {
         public string[] GetMultipleLuaChildFileHeadStart() => m_multipleChildFileHeadStart;
         #endregion
     }
+    
     public enum FileType {
         Client = LuaTable.DefaultFileType,
         Server = Client + 1,

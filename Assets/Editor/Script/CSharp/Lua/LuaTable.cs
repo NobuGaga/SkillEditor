@@ -159,8 +159,11 @@ namespace Lua {
         string[] GetMultipleLuaChildFileHeadStart();
     }
 
-    public interface ILuaMultipleFileStructure<T, F> where T : ITable, ILuaMultipleFile<T, F> where F : Enum {
+    public interface ILuaMultipleFileStructure<RootTable, FileType, TableType> where RootTable : ITable where FileType : Enum where TableType : ITable {
 
+        RootTable GetRootTableType();
+        FileType GetFileType();
+        TableType GetFileTypeTable();
     }
 
     public interface IRepeatKeyTable<T> : ITable where T : ITable {

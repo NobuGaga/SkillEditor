@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Lua.AnimClipData {
 
-    public struct FrameData : IFieldValueTable {
+    public struct FrameData : IFieldValueTable, ILuaMultipleFileStructure<AnimClipData, FileType, FrameData> {
 
         public ushort index;
         public float time;
@@ -46,22 +46,7 @@ namespace Lua.AnimClipData {
         }
 
         private static readonly StringBuilder m_staticBuilder = new StringBuilder((ushort)Math.Pow(2, 11));
-        public override string ToString() {
-            AnimClipData data = default;
-            switch (data.GetFileType()) {
-                case FileType.Client:
-                    return LuaTable.GetFieldKeyTableText(m_staticBuilder, this);
-                case FileType.Server:
-                    var dataCopy = this;
-                    dataCopy.effectFrameData.Clear();
-                    dataCopy.cacheFrameData.Clear();
-                    dataCopy.sectionFrameData.Clear();
-                    dataCopy.cameraFrameData.Clear();
-                    return LuaTable.GetFieldKeyTableText(m_staticBuilder, dataCopy);
-                default:
-                    return string.Empty;
-            }
-        }
+        public override string ToString() => LuaTable.GetFieldKeyTableText(m_staticBuilder, GetFileTypeTable());
         #endregion
 
         #region IFieldKeyTable Function
@@ -147,6 +132,28 @@ namespace Lua.AnimClipData {
                 m_dicKeyToFrameType.Add(key, frameType);
             }
             return m_arraykeyValue;
+        }
+        #endregion
+    
+        #region ILuaMultipleFileStructure Function
+
+        public AnimClipData GetRootTableType() => default;
+        public FileType GetFileType() => GetRootTableType().GetFileType();
+        public FrameData GetFileTypeTable() {
+            switch (GetFileType()) {
+                case FileType.Client:
+                    return this;
+                case FileType.Server:
+                    var dataCopy = this;
+                    dataCopy.trackFrameData.Clear();
+                    dataCopy.effectFrameData.Clear();
+                    dataCopy.cacheFrameData.Clear();
+                    dataCopy.sectionFrameData.Clear();
+                    dataCopy.cameraFrameData.Clear();
+                    return dataCopy;
+                default:
+                    return this;
+            }
         }
         #endregion
     }
