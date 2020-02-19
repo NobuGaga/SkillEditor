@@ -68,9 +68,9 @@ namespace Lua.AnimClipData {
         #region ILuaSplitFile Function
 
         public string GetFileExtension() => "lua";
-        public string GetFolderPath() => Tool.CombinePath(Config.ProjectPath, "../Resources/lua/data/config/animclipconfig/");
+        public string GetFolderPath() => Tool.CombinePath(Config.ProjectPath, "../Resources/lua/data/config/animclipconfig/client");
         public string GetMainFileName() => "AnimClipBase";
-        public string GetChildFileRequirePath() => "data/config/animclipconfig/";
+        public string GetChildFileRequirePath() => "data/config/animclipconfig/client/";
         public string GetChildFileNameFormat() => "{0}_clip";
         public string GetChildFileHeadStart() {
             if (m_fileType == (FileType)LuaTable.DefaultFileType)
@@ -94,11 +94,21 @@ namespace Lua.AnimClipData {
             "AnimClipBaseServer"
         };
         public string[] GetMultipleLuaMainFileName() => m_multipleMainFileName;
+        
+        private static string[] m_multipleFolderPath = new string[] {
+            Tool.CombinePath(Config.ProjectPath, "../Resources/lua/data/config/animclipconfig/server")
+        };
+        public string[] GetMultipleFolderPath() => m_multipleFolderPath;
 
         private static string[] m_multipleMainFileHeadStart = new string[] {
             "AnimClipServerData = AnimClipServerData or {}\nAnimClipServerData.data = {}\n"
         };
         public string[] GetMultipleLuaMainFileHeadStart() => m_multipleMainFileHeadStart;
+
+        private static string[] m_multipleChildFileRequirePath = new string[] {
+            "data/config/animclipconfig/server/"
+        };
+        public string[] GetMultipleChildFileRequirePath() => m_multipleChildFileRequirePath;
 
         private static string[] m_multipleChildFileNameFormat = new string[] {
             "{0}_clip_server"

@@ -33,9 +33,11 @@ namespace Lua {
             T luaFile = default;
             string mainFileHeadText = luaFile.GetLuaFileHeadStart();
             ILuaSplitFile<T> luaSplitFile = (ILuaSplitFile<T>)luaFile;
+            string folderPath = luaSplitFile.GetFolderPath();
             string mainFileName = luaSplitFile.GetMainFileName();
+            string requirePath = luaSplitFile.GetChildFileRequirePath();
             string fileNameFormat = luaSplitFile.GetChildFileNameFormat();
-            WriteSplitFile<T>(mainFileName, mainFileHeadText, fileNameFormat);
+            WriteSplitFile<T>(folderPath, mainFileName, mainFileHeadText, requirePath, fileNameFormat);
             if (Tool.IsImplementInterface(typeof(T), typeof(ILuaMultipleSplitFile<,>)))
                 WriteMultipleSplitFile<T>();
         }
@@ -43,14 +45,18 @@ namespace Lua {
         private static void WriteMultipleSplitFile<T>() where T : ITable, ILuaFile<T> {
             T luaFile = default;
             MethodInfo getMultipleLuaMainFileNameMethod = luaFile.GetType().GetMethod("GetMultipleLuaMainFileName");
+            MethodInfo getMultipleFolderPathMethod = luaFile.GetType().GetMethod("GetMultipleFolderPath");
             MethodInfo getMultipleLuaMainFileHeadStartMethod = luaFile.GetType().GetMethod("GetMultipleLuaMainFileHeadStart");
+            MethodInfo getMultipleChildFileRequirePathMethod = luaFile.GetType().GetMethod("GetMultipleChildFileRequirePath");
             MethodInfo getMultipleLuaChildFileNameFormatMethod = luaFile.GetType().GetMethod("GetMultipleLuaChildFileNameFormat");
             string[] mainFileNames = getMultipleLuaMainFileNameMethod.Invoke(luaFile, null) as string[];
+            string[] folderPaths = getMultipleFolderPathMethod.Invoke(luaFile, null) as string[];
             string[] mainFileHeadStarts = getMultipleLuaMainFileHeadStartMethod.Invoke(luaFile, null) as string[];
+            string[] childRequirePath = getMultipleChildFileRequirePathMethod.Invoke(luaFile, null) as string[];
             string[] childFileNameFormats = getMultipleLuaChildFileNameFormatMethod.Invoke(luaFile, null) as string[];
-            if (mainFileNames == null || mainFileNames.Length == 0 || mainFileHeadStarts == null ||
-                mainFileHeadStarts.Length == 0 || childFileNameFormats == null || childFileNameFormats.Length == 0 ||
-                !(mainFileNames.Length == mainFileHeadStarts.Length && mainFileHeadStarts.Length == childFileNameFormats.Length)) {
+            if (mainFileNames == null || mainFileNames.Length == 0 || folderPaths == null || folderPaths.Length == 0 ||
+                mainFileHeadStarts == null || mainFileHeadStarts.Length == 0 || childRequirePath == null ||
+                childRequirePath.Length == 0 || childFileNameFormats == null || childFileNameFormats.Length == 0) {
                 Debug.Log("Multiple Split Lua File Configure Error. Type " + typeof(T).Name);
                 return;
             }
@@ -59,18 +65,16 @@ namespace Lua {
             for (ushort index = 0; index < mainFileNames.Length; index++) {
                 args[0] = index;
                 setFileTypeMethod.Invoke(luaFile, args);
-                WriteSplitFile<T>(mainFileNames[index], mainFileHeadStarts[index], childFileNameFormats[index]);
+                WriteSplitFile<T>(folderPaths[index], mainFileNames[index], mainFileHeadStarts[index], childRequirePath[index], childFileNameFormats[index]);
             }
             args[0] = LuaTable.DefaultFileType;
             setFileTypeMethod.Invoke(luaFile, args);
         }
 
         private static StringBuilder m_mainFileTextBuilder = new StringBuilder((UInt16)Math.Pow(2, 9));
-        private static void WriteSplitFile<T>(string mainFileName, string mainFileHeadText, string fileNameFormat) where T : ITable, ILuaFile<T> {
+        private static void WriteSplitFile<T>(string folderPath, string mainFileName, string mainFileHeadText, string requirePath, string fileNameFormat) where T : ITable, ILuaFile<T> {
             T luaFile = default;
             ILuaSplitFile<T> luaSplitFile = (ILuaSplitFile<T>)luaFile;
-            string folderPath = luaSplitFile.GetFolderPath();
-            string requirePath = luaSplitFile.GetChildFileRequirePath();
             List<T> list = luaFile.GetModel();
             string fileExtension = luaSplitFile.GetFileExtension();
             m_mainFileTextBuilder.Clear();
