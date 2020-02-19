@@ -54,9 +54,11 @@ namespace Lua.AnimClipData {
         public string GetLuaFileHeadStart() => "AnimClipData = AnimClipData or {}\nAnimClipData.data = {}\n";
         public List<AnimClipData> GetModel() => LuaAnimClipModel.AnimClipList;
         public string GetWriteFileString() {
+            string headText = GetChildFileHeadStart();
+            string contentText = ToString();
             m_staticBuilder.Clear();
-            m_staticBuilder.Append(GetChildFileHeadStart());
-            m_staticBuilder.Append(ToString());
+            m_staticBuilder.Append(headText);
+            m_staticBuilder.Append(contentText);
             int length = LuaFormat.TableEndString.Length;
             m_staticBuilder.Remove(m_staticBuilder.Length - length, length);
             return m_staticBuilder.ToString();

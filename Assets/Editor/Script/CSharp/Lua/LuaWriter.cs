@@ -43,7 +43,7 @@ namespace Lua {
                 string fileName = string.Format(fileNameFormat, childFileData.GetKey());
                 string path = requirePath + fileName;
                 string requireText = string.Format(LuaFormat.RequireFunction, path);
-                mainFileContent.Append(requirePath + fileName);
+                mainFileContent.Append(requireText);
                 string filePath = Tool.CombineFilePath(folderPath, fileName, fileExtension);
                 Write(filePath, childFileData.GetWriteFileString());
             }

@@ -13,7 +13,7 @@ namespace Lua.AnimClipData {
         #region ITable Function
         
         public string GetTableName() => "CameraData";
-        public ushort GetLayer() => 7;
+        public ushort GetLayer() => 6;
         public ReadType GetReadType() => ReadType.Fixed;
         public KeyType GetKeyType() => KeyType.FixedField;
         public void SetKey(object key) { }
