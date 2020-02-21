@@ -34,6 +34,8 @@ namespace Lua {
                     isCheckMainFile = true;
                     continue;
                 }
+                if (fullPath.EndsWith(Config.MetaExtension))
+                    continue;
                 string luaText = File.ReadAllText(fullPath);
                 if (hasNoKeyTable)
                     WriteArrayKeyToFileString(ref luaText);

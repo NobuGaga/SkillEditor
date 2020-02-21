@@ -1,3 +1,4 @@
+using UnityEngine;
 using System;
 using System.Text;
 using System.Collections.Generic;
@@ -68,7 +69,7 @@ namespace Lua.AnimClipData {
         #region ILuaSplitFile Function
 
         public string GetFileExtension() => "lua";
-        public string GetFolderPath() => Tool.CombinePath(Config.ProjectPath, "../Resources/lua/data/config/animclipconfig/client");
+        public string GetFolderPath() => Tool.CombinePath(Application.dataPath, "Editor/luaconfig/animclipconfig/client");
         public string GetMainFileName() => "AnimClipBase";
         public string GetChildFileRequirePath() => "data/config/animclipconfig/client/";
         public string GetChildFileNameFormat() => "{0}_clip";
@@ -96,7 +97,7 @@ namespace Lua.AnimClipData {
         public string[] GetMultipleLuaMainFileName() => m_multipleMainFileName;
         
         private static string[] m_multipleFolderPath = new string[] {
-            Tool.CombinePath(Config.ProjectPath, "../Resources/lua/data/config/animclipconfig/server")
+            Tool.CombinePath(Application.dataPath, "Editor/luaconfig/animclipconfig/server")
         };
         public string[] GetMultipleFolderPath() => m_multipleFolderPath;
 
