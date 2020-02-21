@@ -14,7 +14,7 @@ namespace SkillEditor {
         private static void WriteAnimClipData() => Manager.WriteAnimClipData();
 
         [MenuItem("技能编辑器/提交 Lua 文件")]
-        private static void CommitAnimClipFile() => Shell.Run("CommitAnimClipConfig");
+        private static void CommitAnimClipFile() => Shell.Run("CommitAnimClipFile");
 
         [MenuItem("技能编辑器/重新加载 Config Json 配置")]
         private static void ReloadConfigJson() => Config.ReloadConfigJson();
