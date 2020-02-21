@@ -179,15 +179,15 @@ namespace SkillEditor {
                 particle.startDelay = 0;
 #pragma warning restore 0618
             }
-            Animator animator = effectNode.GetComponent<Animator>();
-            if (animator == null)
-                return;
-            AnimatorState state = AnimatorControllerManager.GetAnimatorControllerFirstStateName(animator, Config.SkillEffectPath);
-            if (state == null || state.motion == null)
-                return;
-            SkillAnimator animation = new SkillAnimator(animator);
-            animation.Record(state);
-            m_dicIDEffectAnimation.Add(id, animation);
+            // Animator animator = effectNode.GetComponent<Animator>();
+            // if (animator == null)
+            //     return;
+            // AnimatorState state = AnimatorControllerManager.GetAnimatorControllerFirstStateName(animator, Config.SkillEffectPath);
+            // if (state == null || state.motion == null)
+            //     return;
+            // SkillAnimator animation = new SkillAnimator(animator);
+            // animation.Record(state);
+            // m_dicIDEffectAnimation.Add(id, animation);
         }
 
         private static bool FilterParticleObject(ParticleSystem particle) {
