@@ -144,7 +144,6 @@ namespace Lua.AnimClipData {
             if (GetFileType() == FileType.Client)
                 return this;
             var dataCopy = this;
-            dataCopy.trackFrameData.Clear();
             dataCopy.effectFrameData.Clear();
             dataCopy.cacheFrameData.Clear();
             dataCopy.sectionFrameData.Clear();
