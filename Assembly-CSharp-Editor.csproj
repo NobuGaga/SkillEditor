@@ -67,6 +67,7 @@
      <Compile Include="Assets\Editor\Script\CSharp\Lua\LuaReader.cs" />
      <Compile Include="Assets\Editor\Script\CSharp\Lua\LuaTable.cs" />
      <Compile Include="Assets\Editor\Script\CSharp\Lua\LuaWriter.cs" />
+     <Compile Include="Assets\Editor\Script\CSharp\Shell\Shell.cs" />
      <Compile Include="Assets\Editor\Script\CSharp\SkillEditor\Animation\BaseAnimation.cs" />
      <Compile Include="Assets\Editor\Script\CSharp\SkillEditor\Animation\SkillAnimator.cs" />
      <Compile Include="Assets\Editor\Script\CSharp\SkillEditor\Animation\SkillClip.cs" />
