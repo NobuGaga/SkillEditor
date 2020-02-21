@@ -2,15 +2,15 @@ using UnityEngine;
 using System;
 using System.Text;
 using System.Diagnostics;
-using UGUIEditor;
+using SkillEditor;
 
 public static class Shell {
 
     private static string ShellPath = Tool.GetCacheString(Application.dataPath + 
 #if UNITY_EDITOR_WIN
-    "\\Editor\\Script\\.Bat\\"
+    "\\Editor\\.Bat\\"
 #elif UNITY_EDITOR_OSX
-   "/Editor/Script/.Shell/"
+   "/Editor/.Shell/"
 #else
     string.Empty
 #endif
