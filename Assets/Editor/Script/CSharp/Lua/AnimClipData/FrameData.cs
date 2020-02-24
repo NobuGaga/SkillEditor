@@ -145,8 +145,6 @@ namespace Lua.AnimClipData {
                 return this;
             var dataCopy = this;
             dataCopy.effectFrameData.Clear();
-            dataCopy.cacheFrameData.Clear();
-            dataCopy.sectionFrameData.Clear();
             dataCopy.cameraFrameData.Clear();
             return dataCopy;
         }
