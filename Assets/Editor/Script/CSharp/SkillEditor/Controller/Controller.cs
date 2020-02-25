@@ -16,8 +16,10 @@ namespace SkillEditor {
         private static BaseAnimation m_modelAnimation;
         public static float PlayTime => m_modelAnimation != null ? m_modelAnimation.PlayTime : 0;
 
-        private static GameObject m_weapon;
-        private static BaseAnimation m_weaponAnimation;
+        private static GameObject m_rightWeapon;
+        private static BaseAnimation m_rightWeaponAnimation;
+        private static GameObject m_leftWeapon;
+        private static BaseAnimation m_leftWeaponAnimation;
         private static bool m_isNoWeaponClip = false;
 
         private static Dictionary<uint, GameObject> m_dicIDEffectObject = new Dictionary<uint, GameObject>();
@@ -104,22 +106,24 @@ namespace SkillEditor {
             LuaAnimClipModel.SetEffectChangeCallback(SetEffectData);
         }
 
-        public static void SetWeapon(int index) {
+        public static void SetRightWeapon(int index) => SetWeapon(index, Config.RightWeaponNode, m_rightWeapon, ref m_rightWeaponAnimation);
+
+        private static void SetWeapon(int index, string parentNodeName, GameObject weapon, ref BaseAnimation animation) {
             string path = WeaponModel.GetWeaponPrefabPath(ModelDataModel.ModelName, index);
             if (!File.Exists(Tool.ProjectPathToFullPath(path)))
                 return;
-            Transform rightHand = Tool.GetTransformByName(m_model, Config.WeaponParentNode);
-            if (rightHand == null)
+            Transform handTransform = Tool.GetTransformByName(m_model, parentNodeName);
+            if (handTransform == null)
                 return;
-            if (m_weapon != null)
-                Object.DestroyImmediate(m_weapon);
-            m_weapon = LoadPrefab(path);
-            m_weapon.transform.SetParent(rightHand);
-            Tool.NormalizeTransform(m_weapon);
+            if (weapon != null)
+                Object.DestroyImmediate(weapon);
+            weapon = LoadPrefab(path);
+            weapon.transform.SetParent(handTransform);
+            Tool.NormalizeTransform(weapon);
             if (WeaponModel.CheckModelHasWeaponClip(ModelDataModel.ModelName))
-                SetAnimation(ref m_weaponAnimation, WeaponModel.GetGenericState(ModelDataModel.ModelName), m_weapon);
+                SetAnimation(ref animation, WeaponModel.GetGenericState(ModelDataModel.ModelName), weapon);
             else
-                m_weaponAnimation = null;
+                animation = null;
         }
 
         private static void SetEffectData() {
@@ -144,7 +148,7 @@ namespace SkillEditor {
                 if (data.parentPivotType == EffectConf.ParentPivotType.Body)
                     parent = m_model.transform.Find(data.pivotNodeName);
                 else
-                    parent = m_weapon.transform.Find(data.pivotNodeName);
+                    parent = m_rightWeapon.transform.Find(data.pivotNodeName);
                 if (parent)
                     effectNode.transform.SetParent(parent);    
             }
@@ -277,25 +281,29 @@ namespace SkillEditor {
             m_playStartTime = m_lastTime;
             EditorApplication.update += Update;
             m_modelAnimation.Play(selectAnimationClip);
-            if (m_weaponAnimation == null)
-                return;
             if (m_isNoWeaponClip)
                 return;
-            AnimationClip clip = WeaponModel.GetAnimationClip(ModelDataModel.ModelName, selectAnimationClip.name);
-            m_weaponAnimation.Play(clip);
+            if (m_rightWeaponAnimation != null) {
+                AnimationClip clip = WeaponModel.GetAnimationClip(ModelDataModel.ModelName, selectAnimationClip.name);
+                m_rightWeaponAnimation.Play(clip);
+            }
+            if (m_leftWeaponAnimation != null) {
+                AnimationClip clip = WeaponModel.GetAnimationClip(ModelDataModel.ModelName, selectAnimationClip.name);
+                m_leftWeaponAnimation.Play(clip);
+            }
         }
 
         public static void Pause() {
             m_modelAnimation.Pause();
-            if (m_weaponAnimation != null && !m_isNoWeaponClip)
-                m_weaponAnimation.Pause();
+            if (m_rightWeaponAnimation != null && !m_isNoWeaponClip)
+                m_rightWeaponAnimation.Pause();
         }
 
         public static void Stop() {
             EditorApplication.update = null;
             m_modelAnimation.Stop();
-            if (m_weaponAnimation != null && !m_isNoWeaponClip)
-                m_weaponAnimation.Stop();
+            if (m_rightWeaponAnimation != null && !m_isNoWeaponClip)
+                m_rightWeaponAnimation.Stop();
             StopEffect();
             SceneView.RepaintAll();
         }
@@ -323,8 +331,8 @@ namespace SkillEditor {
                 return;
             AnimationClip selectAnimationClip = AnimationModel.SelectAnimationClip;
             m_modelAnimation.SetAnimationPlayTime(selectAnimationClip, time);
-            if (m_weaponAnimation != null && !m_isNoWeaponClip)
-                m_weaponAnimation.SetAnimationPlayTime(selectAnimationClip, time);
+            if (m_rightWeaponAnimation != null && !m_isNoWeaponClip)
+                m_rightWeaponAnimation.SetAnimationPlayTime(selectAnimationClip, time);
             if (time <= 0)
                 StopEffect();
             else
@@ -337,8 +345,8 @@ namespace SkillEditor {
             float deltaTime = (float)(currentTime - m_lastTime);
             m_lastTime = currentTime;
             m_modelAnimation.Update(deltaTime);
-            if (m_weaponAnimation != null && !m_isNoWeaponClip)
-                m_weaponAnimation.Update(deltaTime);
+            if (m_rightWeaponAnimation != null && !m_isNoWeaponClip)
+                m_rightWeaponAnimation.Update(deltaTime);
             EditorWindow.RefreshRepaint();
             SetPlayEffectTime((float)(currentTime - m_playStartTime));
             SetDrawCubeData(deltaTime);
@@ -433,12 +441,16 @@ namespace SkillEditor {
                 Object.DestroyImmediate(m_model);
                 m_model = null;
             }
-            if (m_weapon != null) {
-                Object.DestroyImmediate(m_weapon);
-                m_weapon = null;
+            if (m_rightWeapon != null) {
+                Object.DestroyImmediate(m_rightWeapon);
+                m_rightWeapon = null;
+            }
+            if (m_leftWeapon != null) {
+                Object.DestroyImmediate(m_leftWeapon);
+                m_leftWeapon = null;
             }
             m_modelAnimation = null;
-            m_weaponAnimation = null;
+            m_rightWeaponAnimation = null;
             m_dicIDEffectObject.Clear();
             m_dicIDEffects.Clear();
             m_dicIDObjectNameDelay.Clear();

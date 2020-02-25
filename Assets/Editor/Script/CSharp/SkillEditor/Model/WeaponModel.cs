@@ -8,7 +8,7 @@ namespace SkillEditor {
     internal class WeaponModel {
 
         private static Dictionary<string, List<WeaponData>> m_dicModelWeapon = new Dictionary<string, List<WeaponData>>();
-        private static Dictionary<string, Dictionary<string, AnimationClip>> m_dicModelClip = new Dictionary<string, Dictionary<string, AnimationClip>>();
+        private static Dictionary<string, Dictionary<string, Dictionary<string, AnimationClip>>> m_dicModelClip = new Dictionary<string, Dictionary<string, Dictionary<string, AnimationClip>>>();
 
         private static string m_lastModelName;
         private static string[] m_arrayWeapon;
@@ -91,6 +91,7 @@ namespace SkillEditor {
             if (arrayFullPath == null || arrayFullPath.Length == 0)
                 return;
             Dictionary<string, AnimationClip> dicClip = null;
+            Dictionary<string, Dictionary<string, AnimationClip>> dicWeaponClip = null;
             for (int index = 0; index < arrayFullPath.Length; index++) {
                 string fileFullPath = arrayFullPath[index];
                 if (fileFullPath.EndsWith(Config.MetaExtension) || !fileFullPath.Contains(Config.AnimationClipSymbol) ||

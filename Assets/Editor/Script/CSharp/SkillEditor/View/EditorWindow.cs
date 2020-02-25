@@ -14,7 +14,7 @@ namespace SkillEditor {
         private const string LabelSelectTips = "Please select a model's prefab";
         private const string LabelNoClipTips = "Current prefab has no AnimationClip file";
         private const string LabelModelName = "模型 ";
-        private const string LabelWeapon = "武器 ";
+        private const string LabelWeapon = "右手武器 ";
         private const string LabelModelClipTips = "动画 ";
         private const string LabelModelClipStateTips = "状态组 ";
         private const string LabelModelClipIDTips = "动画 ID";
@@ -153,7 +153,7 @@ namespace SkillEditor {
             int tempIndex = IntPopup(m_lastWeaponIndex, arrayWeaponName, arrayIndex);
             if (tempIndex != m_lastWeaponIndex && tempIndex != Config.ErrorIndex) {
                 m_lastWeaponIndex = tempIndex;
-                Controller.SetWeapon(m_lastWeaponIndex);
+                Controller.SetRightWeapon(m_lastWeaponIndex);
             }
         }
 

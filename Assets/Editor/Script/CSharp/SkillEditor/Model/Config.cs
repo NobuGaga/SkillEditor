@@ -42,7 +42,7 @@ namespace SkillEditor {
         public const string AnimationClipSymbol = "@";  
 
         // Weapon
-        public const string WeaponParentNode = "R_Weapon_Point";
+        public const string RightWeaponNode = "R_Weapon_Point";
 
         // Draw Cube
         public const string DrawCubeNodeName = "FootCenter_Point00";
