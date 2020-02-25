@@ -30,6 +30,7 @@ namespace SkillEditor {
         private const string BtnAddCube = "增加碰撞框";
         private const string BtnAdd = "增加 ";
         private const string LabelTime = "触发时间点 ";
+        private const string LabelEndTime = "结束触发时间点 ";
         private const string LabelPriority = "优先级 ";
         private const string LabelEffect = "特效";
         private const string LabelEffectType = "类型 ";
@@ -250,6 +251,10 @@ namespace SkillEditor {
             float time = TextField(data.time);
             if (time != data.time)
                 Controller.SetFrameDataTime(index, time);
+            SpaceWithLabel(LabelEndTime); 
+            float endTime = TextField(data.endTime);
+            if (endTime != data.endTime)
+                Controller.SetFrameDataEndTime(index, endTime);
         }
 
         private void EffectFrameDataTitleUI(int index) => PriorityFrameDataTitleUI(index, FrameType.PlayEffect);

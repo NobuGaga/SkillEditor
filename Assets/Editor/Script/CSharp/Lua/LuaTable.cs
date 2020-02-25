@@ -18,13 +18,14 @@ namespace Lua {
             for (int index = 0; index < array.Length; index++) {
                 FieldValueTableInfo keyValue = array[index];
                 object value = table.GetFieldValueTableValue(keyValue.key);
-                if (keyValue.type == ValueType.Table) {
-                    ITable valueTable = value as ITable;
-                    if (!valueTable.IsNullTable())
-                        builder.Append(valueTable.ToString());
+                if (keyValue.type != ValueType.Table) {
+                    if (value != null)
+                        SetBaseValueTableString(builder, keyValue, tabString, value);
                     continue;
                 }
-                SetBaseValueTableString(builder, keyValue, tabString, value);
+                ITable valueTable = value as ITable;
+                if (!valueTable.IsNullTable())
+                    builder.Append(valueTable.ToString());
             }
             return GetTableText(table, builder.ToString());
         }

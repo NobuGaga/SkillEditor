@@ -1,3 +1,4 @@
+using UnityEngine;
 using System;
 using System.Text;
 using System.Collections.Generic;
@@ -8,6 +9,7 @@ namespace Lua.AnimClipData {
 
         public ushort index;
         public float time;
+        public float endTime;
         public HitFrameData hitFrameData;
         public PriorityFrameData trackFrameData;
         public EffectFrameData effectFrameData;
@@ -52,12 +54,16 @@ namespace Lua.AnimClipData {
         #region IFieldKeyTable Function
 
         private const string Key_Time = "time";
-        private static Dictionary<string, FrameType> m_dicKeyToFrameType;
+        private const string Key_EndTime = "endTime";
         
         public void SetFieldValueTableValue(string key, object value) {
-            if (key == Key_Time) {
-                time = (float)value;
-                return;
+            switch (key) {
+                case Key_Time:
+                    time = (float)value;
+                    return;
+                case Key_EndTime:
+                    endTime = (float)value;
+                    return;
             }
             FrameType frameType = GetFrameTypeFromKey(key);
             switch (frameType) {
@@ -86,8 +92,14 @@ namespace Lua.AnimClipData {
         }
 
         public object GetFieldValueTableValue(string key) {
-            if (key == Key_Time)
-                return time;
+            switch (key) {
+                case Key_Time:
+                    return time;
+                case Key_EndTime:
+                    if (endTime <= time)
+                        return null;
+                    return endTime;
+            }
             FrameData data = GetFileTypeTable();
             FrameType frameType = GetFrameTypeFromKey(key);
             switch (frameType) {
@@ -103,11 +115,12 @@ namespace Lua.AnimClipData {
                     return data.sectionFrameData;
                 case FrameType.Camera:
                     return data.cameraFrameData;
-                default:
-                    return null;
             }
+            Debug.LogError("FrameData::GetFieldValueTableValue key is not exit. key " + key);
+            return null;
         }
 
+        private static Dictionary<string, FrameType> m_dicKeyToFrameType;
         private FrameType GetFrameTypeFromKey(string key) {
             if (!Enum.TryParse(key, false, out FrameType frameType) && !m_dicKeyToFrameType.ContainsKey(key)) {
                 UnityEngine.Debug.LogError("FrameData::GetFieldValueTableValue not exit key : " + key);
@@ -124,12 +137,15 @@ namespace Lua.AnimClipData {
                 return m_arraykeyValue;
             Array arrayframeType = Enum.GetValues(typeof(FrameType));
             m_dicKeyToFrameType = new Dictionary<string, FrameType>(arrayframeType.Length);
-            m_arraykeyValue = new FieldValueTableInfo[arrayframeType.Length + 1];
-            m_arraykeyValue[0] = new FieldValueTableInfo(Key_Time, ValueType.Number);
+            const ushort customFieldCount = 2;
+            m_arraykeyValue = new FieldValueTableInfo[arrayframeType.Length + customFieldCount];
+            ushort count = 0;
+            m_arraykeyValue[count++] = new FieldValueTableInfo(Key_Time, ValueType.Number);
+            m_arraykeyValue[count++] = new FieldValueTableInfo(Key_EndTime, ValueType.Number);
             for (short index = 0; index < arrayframeType.Length; index++) {
                 FrameType frameType = (FrameType)arrayframeType.GetValue(index);
                 string key = LuaTable.GetArrayKeyString(frameType);
-                m_arraykeyValue[index + 1] = new FieldValueTableInfo(key, ValueType.Table);    
+                m_arraykeyValue[index + customFieldCount] = new FieldValueTableInfo(key, ValueType.Table);    
                 m_dicKeyToFrameType.Add(key, frameType);
             }
             return m_arraykeyValue;

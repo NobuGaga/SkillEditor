@@ -347,6 +347,12 @@ namespace SkillEditor {
             SetFrameData(index, data, false, false);
         }
 
+        public static void SetFrameDataEndTime(int index, float endTime) {
+            FrameData data = GetFrameData(index);
+            data.endTime = endTime;
+            SetFrameData(index, data, false, false);
+        }
+
         private const int DefaultPriority = 1;
         public static void AddPriorityFrameData(int index, FrameType frameType) {
             FrameData frameData = GetFrameData(index);
