@@ -161,7 +161,7 @@ namespace Lua.EffectConf {
             m_arraykeyValue[count++] = new FieldValueTableInfo(scale.GetKey(), ValueType.Table);
             rotation.type = TransformType.Rotation;
             m_arraykeyValue[count++] = new FieldValueTableInfo(rotation.GetKey(), ValueType.Table);
-            m_arraykeyValue[count++] = new FieldValueTableInfo(Key_ParentPivotType, ValueType.Int);
+            m_arraykeyValue[count] = new FieldValueTableInfo(Key_ParentPivotType, ValueType.Int);
             return m_arraykeyValue;
         }
         #endregion

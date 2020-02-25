@@ -114,7 +114,7 @@ namespace Lua.AnimClipData {
             m_arraykeyValue[count++] = new FieldValueTableInfo(Key_Z, ValueType.Number);
             m_arraykeyValue[count++] = new FieldValueTableInfo(Key_Width, ValueType.Number);
             m_arraykeyValue[count++] = new FieldValueTableInfo(Key_Height, ValueType.Number);
-            m_arraykeyValue[count++] = new FieldValueTableInfo(Key_Depth, ValueType.Number);
+            m_arraykeyValue[count] = new FieldValueTableInfo(Key_Depth, ValueType.Number);
             return m_arraykeyValue;
         }
         #endregion

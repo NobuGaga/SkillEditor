@@ -88,7 +88,7 @@ namespace Lua.EffectConf {
             m_arraykeyValue = new FieldValueTableInfo[length];
             m_arraykeyValue[count++] = new FieldValueTableInfo(Key_X, ValueType.Number);
             m_arraykeyValue[count++] = new FieldValueTableInfo(Key_Y, ValueType.Number);
-            m_arraykeyValue[count++] = new FieldValueTableInfo(Key_Z, ValueType.Number);
+            m_arraykeyValue[count] = new FieldValueTableInfo(Key_Z, ValueType.Number);
             return m_arraykeyValue;
         }
         #endregion

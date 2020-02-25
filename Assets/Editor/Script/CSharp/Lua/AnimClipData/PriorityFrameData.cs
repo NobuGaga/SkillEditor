@@ -53,7 +53,7 @@ namespace Lua.AnimClipData {
             const ushort length = 1;
             ushort count = 0;
             m_arraykeyValue = new FieldValueTableInfo[length];
-            m_arraykeyValue[count++] = new FieldValueTableInfo(Key_Priority, ValueType.Int);
+            m_arraykeyValue[count] = new FieldValueTableInfo(Key_Priority, ValueType.Int);
             return m_arraykeyValue;
         }
         #endregion

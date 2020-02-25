@@ -141,7 +141,7 @@ namespace Lua.AnimClipData {
             m_arraykeyValue = new FieldValueTableInfo[arrayframeType.Length + customFieldCount];
             ushort count = 0;
             m_arraykeyValue[count++] = new FieldValueTableInfo(Key_Time, ValueType.Number);
-            m_arraykeyValue[count++] = new FieldValueTableInfo(Key_EndTime, ValueType.Number);
+            m_arraykeyValue[count] = new FieldValueTableInfo(Key_EndTime, ValueType.Number);
             for (short index = 0; index < arrayframeType.Length; index++) {
                 FrameType frameType = (FrameType)arrayframeType.GetValue(index);
                 string key = LuaTable.GetArrayKeyString(frameType);
