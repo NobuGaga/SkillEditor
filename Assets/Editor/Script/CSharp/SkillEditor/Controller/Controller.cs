@@ -472,7 +472,10 @@ namespace SkillEditor {
             return curTime >= minTime && curTime <= maxTime;
         }
 
-        public static void WriteAnimClipData() => LuaWriter.Write<AnimClipData.AnimClipData>();
+        public static void WriteAnimClipData() {
+            LuaWriter.Write<AnimClipData.AnimClipData>();
+            Shell.Run("CopyAnimClipFile");
+        }
 
         private static void ResetDrawCubeData() {
             m_dicTimePosition.Clear();
