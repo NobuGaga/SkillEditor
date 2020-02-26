@@ -68,7 +68,7 @@ namespace SkillEditor {
             List<WeaponData> listWeapon = m_dicModelWeapon[modelName];
             listWeapon.Clear();
             for (int index = 0; index < arrayFullPath.Length; index++) {
-                string fileFullPath = arrayFullPath[index];
+                string fileFullPath = arrayFullPath[index].Replace('\\', '/');
                 if (fileFullPath.EndsWith(Config.MetaExtension) || !fileFullPath.EndsWith(Config.PrefabExtension))
                     continue;
                 string fileName = Tool.GetFileNameWithourExtensionFromPath(fileFullPath);

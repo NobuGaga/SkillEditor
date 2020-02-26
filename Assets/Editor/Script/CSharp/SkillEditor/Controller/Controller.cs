@@ -112,7 +112,6 @@ namespace SkillEditor {
         private static void SetWeapon(int index, bool isRight) {
             string parentNodeName = isRight ? Config.RightWeaponNode : Config.LeftWeaponNode;
             GameObject weapon = isRight ? m_rightWeapon : m_leftWeapon;
-            BaseAnimation animation = null;
             string path = WeaponModel.GetWeaponPrefabPath(ModelDataModel.ModelName, index);
             if (!File.Exists(Tool.ProjectPathToFullPath(path)))
                 return;
@@ -124,14 +123,27 @@ namespace SkillEditor {
             weapon = LoadPrefab(path);
             weapon.transform.SetParent(handTransform);
             Tool.NormalizeTransform(weapon);
-            if (WeaponModel.CheckModelHasWeaponClip(ModelDataModel.ModelName, weapon.name))
-                SetAnimation(ref animation, WeaponModel.GetGenericState(ModelDataModel.ModelName, weapon.name), weapon);
-            else
-                animation = null;
             if (isRight)
                 m_rightWeapon = weapon;
             else
                 m_leftWeapon = weapon;
+            SetWeaponAnimation(isRight);
+        }
+
+        private static void SetWeaponAnimation(bool isRight) {
+            GameObject weapon = isRight ? m_rightWeapon : m_leftWeapon;
+            if (weapon == null) {
+                if (isRight)
+                    m_rightWeaponAnimation = null;
+                else
+                    m_leftWeaponAnimation = null;
+                return;
+            }
+            BaseAnimation animation = null;
+            if (WeaponModel.CheckModelHasWeaponClip(ModelDataModel.ModelName, weapon.name))
+                SetAnimation(ref animation, WeaponModel.GetGenericState(ModelDataModel.ModelName, weapon.name), weapon);
+            else
+                animation = null;
             if (isRight)
                 m_rightWeaponAnimation = animation;
             else
@@ -255,9 +267,13 @@ namespace SkillEditor {
             AnimationClip selectAnimationClip = AnimationModel.SelectAnimationClip;
             if (selectAnimationClip == null) {
                 m_isNoWeaponClip = true;
+                m_rightWeaponAnimation = null;
+                m_leftWeaponAnimation = null;
                 return;
             }
             m_isNoWeaponClip = !WeaponModel.CheckModelHasClip(ModelDataModel.ModelName);
+            SetWeaponAnimation(true);
+            SetWeaponAnimation(false);
         }
 
         public static void SetAnimationStateData(AnimClipData.State state) => LuaAnimClipModel.SetCurrentState(state);
