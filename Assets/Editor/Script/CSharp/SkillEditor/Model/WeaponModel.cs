@@ -90,7 +90,6 @@ namespace SkillEditor {
             string[] arrayFullPath = Directory.GetFiles(clipPath);
             if (arrayFullPath == null || arrayFullPath.Length == 0)
                 return;
-            Dictionary<string, AnimationClip> dicClip = null;
             Dictionary<string, Dictionary<string, AnimationClip>> dicWeaponClip = null;
             for (int index = 0; index < arrayFullPath.Length; index++) {
                 string fileFullPath = arrayFullPath[index];
@@ -101,15 +100,26 @@ namespace SkillEditor {
                 AnimationClip clip = AssetDatabase.LoadAssetAtPath<AnimationClip>(path);
                 if (clip == null)
                     continue;
-                if (dicClip == null)
-                    dicClip = new Dictionary<string, AnimationClip>();
-                if (dicClip.ContainsKey(clip.name))
-                    dicClip[clip.name] = clip;
-                else
-                    dicClip.Add(clip.name, clip);
+                string weaponName = GetClipWeaponName(fileFullPath);
+                if (weaponName == null)
+                    continue;
+                if (dicWeaponClip == null)
+                    dicWeaponClip = new Dictionary<string, Dictionary<string, AnimationClip>>();
+                if (!dicWeaponClip.ContainsKey(weaponName))
+                    dicWeaponClip.Add(weaponName, new Dictionary<string, AnimationClip>());
+                if (!dicWeaponClip[weaponName].ContainsKey(clip.name))
+                    dicWeaponClip[weaponName].Add(clip.name, clip);
             }
-            if (dicClip != null && dicClip.Count != 0)
-                m_dicModelClip.Add(modelName, dicClip);
+            if (dicWeaponClip != null && dicWeaponClip.Count != 0)
+                m_dicModelClip.Add(modelName, dicWeaponClip);
+        }
+
+        private static string GetClipWeaponName(string path) {
+            string fileName = Path.GetFileName(path);
+            int index = fileName.IndexOf(Config.AnimationClipSymbol);
+            if (index == Config.ErrorIndex)
+                return null;
+            return fileName.Substring(0, index);
         }
 
         public static string[] GetAllWeaponName(string modelName) {
@@ -149,21 +159,24 @@ namespace SkillEditor {
             return list[index].weaponPath;
         }
 
-        public static bool CheckModelHasWeaponClip(string modelName) {
-            return m_dicModelClip.ContainsKey(modelName);
-        }
+        public static bool CheckModelHasClip(string modelName) => m_dicModelClip.ContainsKey(modelName);
 
-        public static AnimationClip GetAnimationClip(string modelName, string clipName) {
-            if (!CheckModelHasWeaponClip(modelName))
+        public static bool CheckModelHasWeaponClip(string modelName, string weaponName) =>
+            m_dicModelClip.ContainsKey(modelName) && m_dicModelClip[modelName].ContainsKey(weaponName);
+
+        public static AnimationClip GetAnimationClip(string modelName, string weaponName, string clipName) {
+            if (!CheckModelHasWeaponClip(modelName, weaponName))
                 return null;
-            Dictionary<string, AnimationClip> dicClip = m_dicModelClip[modelName];
+            if (!m_dicModelClip[modelName].ContainsKey(weaponName))
+                return null;
+            Dictionary<string, AnimationClip> dicClip = m_dicModelClip[modelName][weaponName];
             if (!dicClip.ContainsKey(clipName))
                 return null;
             return dicClip[clipName];
         }
  
-        public static bool GetGenericState(string modelName) {
-            Dictionary<string, AnimationClip> dicClip = m_dicModelClip[modelName];
+        public static bool GetGenericState(string modelName, string weaponName) {
+            Dictionary<string, AnimationClip> dicClip = m_dicModelClip[modelName][weaponName];
             AnimationClip sampleClip = null;
             foreach (var keyValue in dicClip) {
                 sampleClip = keyValue.Value;

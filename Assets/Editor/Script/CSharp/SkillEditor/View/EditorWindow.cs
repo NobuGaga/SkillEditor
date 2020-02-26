@@ -14,7 +14,8 @@ namespace SkillEditor {
         private const string LabelSelectTips = "Please select a model's prefab";
         private const string LabelNoClipTips = "Current prefab has no AnimationClip file";
         private const string LabelModelName = "模型 ";
-        private const string LabelWeapon = "右手武器 ";
+        private const string LabelRightWeapon = "右手武器 ";
+        private const string LabelLeftWeapon = "左手武器 ";
         private const string LabelModelClipTips = "动画 ";
         private const string LabelModelClipStateTips = "状态组 ";
         private const string LabelModelClipIDTips = "动画 ID";
@@ -52,7 +53,9 @@ namespace SkillEditor {
         private static bool m_isSelectPrefab;
         private static bool m_isNoAnimationClip;
 
-        private static int m_lastWeaponIndex;
+        private static int m_lastRightWeaponIndex;
+        private static int m_lastLeftWeaponIndex;
+        
         private static int m_lastClipIndex;
         private static bool IsNoSelectClip => m_lastClipIndex == Config.ErrorIndex;
         private static string[] m_animationClipNames;
@@ -71,7 +74,8 @@ namespace SkillEditor {
             m_isSelectPrefab = false;
             m_isNoAnimationClip = false;
 
-            m_lastWeaponIndex = Config.ErrorIndex;
+            m_lastRightWeaponIndex = Config.ErrorIndex;
+            m_lastLeftWeaponIndex = Config.ErrorIndex;
             m_lastClipIndex = Config.ErrorIndex;
             m_animationClipNames = null;
             m_animationClipIndexs = null;
@@ -148,12 +152,18 @@ namespace SkillEditor {
             string[] arrayWeaponName = WeaponModel.GetAllWeaponName(modelName);
             if (arrayWeaponName == null)
                 return;
-            SpaceWithLabel(LabelWeapon);
+            SpaceWithLabel(LabelRightWeapon);
             int[] arrayIndex = WeaponModel.GetAllWeaponNameIndex(modelName);
-            int tempIndex = IntPopup(m_lastWeaponIndex, arrayWeaponName, arrayIndex);
-            if (tempIndex != m_lastWeaponIndex && tempIndex != Config.ErrorIndex) {
-                m_lastWeaponIndex = tempIndex;
-                Controller.SetRightWeapon(m_lastWeaponIndex);
+            int tempIndex = IntPopup(m_lastRightWeaponIndex, arrayWeaponName, arrayIndex);
+            if (tempIndex != m_lastRightWeaponIndex && tempIndex != Config.ErrorIndex) {
+                m_lastRightWeaponIndex = tempIndex;
+                Controller.SetRightWeapon(m_lastRightWeaponIndex);
+            }
+            SpaceWithLabel(LabelLeftWeapon);
+            tempIndex = IntPopup(m_lastLeftWeaponIndex, arrayWeaponName, arrayIndex);
+            if (tempIndex != m_lastLeftWeaponIndex && tempIndex != Config.ErrorIndex) {
+                m_lastLeftWeaponIndex = tempIndex;
+                Controller.SetLeftWeapon(m_lastLeftWeaponIndex);
             }
         }
 

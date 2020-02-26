@@ -43,6 +43,7 @@ namespace SkillEditor {
 
         // Weapon
         public const string RightWeaponNode = "R_Weapon_Point";
+        public const string LeftWeaponNode = "L_Weapon_Point";
 
         // Draw Cube
         public const string DrawCubeNodeName = "FootCenter_Point00";
