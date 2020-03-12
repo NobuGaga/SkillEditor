@@ -27,20 +27,16 @@ namespace SkillEditor {
             ModelData data = new ModelData();
             data.prefabFullPath = prefabFullPath;
 
-            int subIndex = prefabFullPath.IndexOf(Config.ModelPrefabPrefix);
-            if (subIndex == Config.ErrorIndex) {
+            int endIndex = prefabFullPath.IndexOf("/prefabs/");
+            if (endIndex == Config.ErrorIndex)
                 Debug.LogError("选择模型预设路径错误");
-                return;
-            }
-            subIndex += Config.ModelPrefabPrefix.Length;
-            int endIndex = prefabFullPath.IndexOf('/', subIndex);
-            if (endIndex == Config.ErrorIndex) {
+            int startIndex = prefabFullPath.LastIndexOf('/', endIndex - 1);
+            if (startIndex == Config.ErrorIndex)
                 Debug.LogError("选择模型预设路径错误");
-                return;
-            }
-            data.modelName = prefabFullPath.Substring(subIndex, endIndex - subIndex);
-            subIndex = prefabFullPath.IndexOf("prefabs/");
-            string modelFileGroupFullPath = prefabFullPath.Substring(0, subIndex);
+            data.modelName = prefabFullPath.Substring(startIndex + 1, endIndex - startIndex - 1);
+            if (data.modelName.Contains(Config.ModelPrefabPrefix))
+                data.modelName = data.modelName.Substring(Config.ModelPrefabPrefix.Length);
+            string modelFileGroupFullPath = prefabFullPath.Substring(0, endIndex);
             data.clipFullPath = Tool.CombinePath(modelFileGroupFullPath, "models");
             string controllerPath = Tool.CombinePath(modelFileGroupFullPath, Config.AnimatorControllerFolder);
             data.controllerProjectPath = Tool.FullPathToProjectPath(controllerPath);
