@@ -1,3 +1,3 @@
 @Echo off
-TortoiseProc.exe /command:commit /path:"Assets/Editor/.luaconfig/animclipconfig" /closeonend:1
+TortoiseProc.exe /command:commit /path:"Assets/Editor/.luaconfig2" /closeonend:1
 @Echo on
