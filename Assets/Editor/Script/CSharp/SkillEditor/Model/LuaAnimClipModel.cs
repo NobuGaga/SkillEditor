@@ -304,6 +304,14 @@ namespace SkillEditor {
             FrameList = m_listFrameDataCache.ToArray();
         }
 
+        public static void AddCopyFrameData(FrameData data) {
+            FrameData[] array = FrameList;
+            data.index = (ushort)(array.Length + 1);
+            SetFrameDataListCache(array);
+            m_listFrameDataCache.Add(data);
+            FrameList = m_listFrameDataCache.ToArray();
+        }
+
         public static void DeleteFrameData(int index) {
             FrameData[] array = FrameList;
             if (array.Length <= 1)

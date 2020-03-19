@@ -30,6 +30,7 @@ namespace SkillEditor {
         private const string BtnAddEffect = "增加特效";
         private const string BtnAddCube = "增加碰撞框";
         private const string BtnAdd = "增加 ";
+        private const string BtnCopy = "复制帧数据";
         private const string LabelTime = "触发时间点 ";
         private const string LabelEndTime = "结束触发时间点 ";
         private const string LabelPriority = "优先级 ";
@@ -248,6 +249,8 @@ namespace SkillEditor {
                 Controller.AddPriorityFrameData(index, FrameType.SectionOver);
             if (data.cameraFrameData.IsNullTable() && SpaceWithButton(BtnAdd + FrameType.Camera))
                 Controller.AddCameraFrameData(index);
+            if (SpaceWithButton(BtnCopy))
+                Controller.AddCopyFrameData(GetFrameData(index));
             if (SpaceWithButton(BtnDelete)) {
                 Controller.DeleteFrameData(index);
                 return true;

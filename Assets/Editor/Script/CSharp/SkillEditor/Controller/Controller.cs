@@ -283,6 +283,7 @@ namespace SkillEditor {
         public static void DeleteClipGroupData() => LuaAnimClipModel.DeleteClipGroupData();
 
         public static void AddFrameData() => LuaAnimClipModel.AddFrameData();
+        public static void AddCopyFrameData(AnimClipData.FrameData data) => LuaAnimClipModel.AddCopyFrameData(data);
         public static void DeleteFrameData(int index) => LuaAnimClipModel.DeleteFrameData(index);
         public static void SetFrameDataTime(int index, float time) => LuaAnimClipModel.SetFrameDataTime(index, time);
         public static void SetFrameDataEndTime(int index, float endTime) => LuaAnimClipModel.SetFrameDataEndTime(index, endTime);
