@@ -29,6 +29,7 @@ namespace SkillEditor {
         private const string BtnReloadEffect = "重载特效表";
         private const string BtnAddEffect = "增加特效";
         private const string BtnAddCube = "增加碰撞框";
+        private const string BtnAddTrack = "增加轨迹段";
         private const string BtnAdd = "增加 ";
         private const string BtnCopy = "复制帧数据";
         private const string LabelTime = "触发时间点 ";
@@ -228,6 +229,10 @@ namespace SkillEditor {
                     HorizontalLayoutUI(CameraFrameDataTitleUI, index);
                     HorizontalLayoutUI(CameraFrameDataUI, index);
                 }
+                if (!data.buffFrameData.IsNullTable()) {
+                    HorizontalLayoutUI(BuffFrameDataTitleUI, index);
+                    BuffFrameDataUI(index);
+                }
             }
             EndVerticalScrollView();
         }
@@ -241,7 +246,7 @@ namespace SkillEditor {
                 Controller.AddNewCustomData(index, FrameType.PlayEffect);
             if (SpaceWithButton(BtnAddCube))
                 Controller.AddNewCustomData(index, FrameType.Hit);
-            if (data.trackFrameData.IsNullTable() && SpaceWithButton(BtnAdd + FrameType.Track))
+            if (data.trackFrameData.IsNullTable() && SpaceWithButton(BtnAddTrack))
                 Controller.AddPriorityFrameData(index, FrameType.Track);
             if (data.cacheFrameData.IsNullTable() && SpaceWithButton(BtnAdd + FrameType.CacheBegin))
                 Controller.AddPriorityFrameData(index, FrameType.CacheBegin);
@@ -249,6 +254,8 @@ namespace SkillEditor {
                 Controller.AddPriorityFrameData(index, FrameType.SectionOver);
             if (data.cameraFrameData.IsNullTable() && SpaceWithButton(BtnAdd + FrameType.Camera))
                 Controller.AddCameraFrameData(index);
+            if (SpaceWithButton(BtnAdd + FrameType.Buff))
+                Controller.AddNewCustomData(index, FrameType.Buff);
             if (SpaceWithButton(BtnCopy))
                 Controller.AddCopyFrameData(GetFrameData(index));
             if (SpaceWithButton(BtnDelete)) {
@@ -372,6 +379,9 @@ namespace SkillEditor {
                 case FrameType.Hit:
                     uiFunction = CubeDataUI;
                     break;
+                case FrameType.Buff:
+                    uiFunction = BuffDataUI;
+                    break;
             }
             if (dataList == null)
                 return;
@@ -396,6 +406,22 @@ namespace SkillEditor {
             bool isDelete = SpaceWithButton(BtnDelete);
             if (isDelete)
                 Controller.DeleteCameraFrameData(frameIndex);
+        }
+
+        private void BuffFrameDataTitleUI(int index) => PriorityFrameDataTitleUI(index, FrameType.Buff);
+        private void BuffFrameDataUI(int frameIndex) => FrameDataListUI(frameIndex, FrameType.Buff);
+        private bool BuffDataUI(int frameIndex, object @object) {
+            BuffData data = (BuffData)@object;
+            SpaceWithLabel(LabelEffectType);
+            data.type = (BuffType)EnumPopup(data.type);
+            SpaceWithLabel(LabelEffectID);
+            data.id = TextField(data.id);
+            Controller.SetCustomeSubData(frameIndex, data, FrameType.Buff);
+            bool isDelete = SpaceWithButton(BtnDelete);
+            if (isDelete)
+                Controller.DeleteCustomData(frameIndex, (int)data.index - 1, FrameType.Buff);
+            Space();
+            return isDelete;
         }
 
         private void AnimationUI() {

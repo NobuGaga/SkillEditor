@@ -16,6 +16,7 @@ namespace Lua.AnimClipData {
         public PriorityFrameData cacheFrameData;
         public PriorityFrameData sectionFrameData;
         public CameraFrameData cameraFrameData;
+        public BuffFrameData buffFrameData;
 
         #region ITable Function
         
@@ -45,6 +46,8 @@ namespace Lua.AnimClipData {
             effectFrameData.Clear();
             cacheFrameData.Clear();
             sectionFrameData.Clear();
+            cameraFrameData.Clear();
+            buffFrameData.Clear();
         }
 
         private static readonly StringBuilder m_staticBuilder = new StringBuilder((ushort)Math.Pow(2, 11));
@@ -88,6 +91,9 @@ namespace Lua.AnimClipData {
                 case FrameType.Camera:
                     cameraFrameData = (CameraFrameData)value;
                     return;
+                case FrameType.Buff:
+                    buffFrameData = (BuffFrameData)value;
+                    return;
             }
         }
 
@@ -115,6 +121,8 @@ namespace Lua.AnimClipData {
                     return data.sectionFrameData;
                 case FrameType.Camera:
                     return data.cameraFrameData;
+                case FrameType.Buff:
+                    return data.buffFrameData;
             }
             Debug.LogError("FrameData::GetFieldValueTableValue key is not exit. key " + key);
             return null;
@@ -174,5 +182,6 @@ namespace Lua.AnimClipData {
         CacheBegin = 8,
         SectionOver = 9,
         Camera = 12,
+        Buff = 13,
     }
 }
