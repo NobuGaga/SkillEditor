@@ -51,7 +51,7 @@ namespace SkillEditor {
                 string projectPath = Tool.FullPathToProjectPath(fullPath);
                 string fileName = Tool.GetFileNameWithourExtensionFromPath(projectPath);
                 projectPath = Tool.GetPathFromFilePath(projectPath, fileName);
-                AnimatorControllerManager.RemoveAllAnimatorTransition(fileName, projectPath);
+                // AnimatorControllerManager.RemoveAllAnimatorTransition(fileName, projectPath); // repeat create copy file bug
             }
         }
 
