@@ -45,6 +45,7 @@ namespace SkillEditor {
         private const string LabelWidth = "width";
         private const string LabelHeight = "height";
         private const string LabelDepth = "depth";
+        private const string LabelCrush = "碎尸";
         private const string LabelCameraTriggerType = "镜头触发类型";
         private const string LabelCameraFocusType = "镜头聚焦类型";
         private const string BtnPlay = "Play";
@@ -330,6 +331,8 @@ namespace SkillEditor {
             data.height = TextField(data.height);
             SpaceWithLabel(LabelDepth);
             data.depth = TextField(data.depth);
+            SpaceWithLabel(LabelCrush);
+            data.crush = Toggle(data.crush);
             Controller.SetCustomeSubData(frameIndex, data, FrameType.Hit);
             bool isDelete = SpaceWithButton(BtnDelete);
             if (isDelete)

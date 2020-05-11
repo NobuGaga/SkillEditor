@@ -13,6 +13,7 @@ namespace Lua.AnimClipData {
         public float width;
         public float height;
         public float depth;
+        public int crush;
 
         private static Vector3 m_offsetCache;
         private static Vector3 m_sizeCache;
@@ -58,7 +59,8 @@ namespace Lua.AnimClipData {
         private const string Key_Width = "width";
         private const string Key_Height = "height";
         private const string Key_Depth = "depth";
-        
+        private const string Key_Crush = "crush";
+
         public void SetFieldValueTableValue(string key, object value) {
             switch (key) {
                 case Key_X:
@@ -79,6 +81,9 @@ namespace Lua.AnimClipData {
                 case Key_Depth:
                     depth = (float)value;
                     return;
+                case Key_Crush:
+                    crush = (int)value;
+                    return;
             }
         }
 
@@ -96,6 +101,8 @@ namespace Lua.AnimClipData {
                     return height;
                 case Key_Depth:
                     return depth;
+                case Key_Crush:
+                    return crush;
                 default:
                     Debug.LogError("CubeData::GetFieldValueTableValue key is not exit. key " + key);
                     return null;
@@ -106,7 +113,7 @@ namespace Lua.AnimClipData {
         public FieldValueTableInfo[] GetFieldValueTableInfo() {
             if (m_arraykeyValue != null)
                 return m_arraykeyValue;
-            const ushort length = 6;
+            const ushort length = 7;
             ushort count = 0;
             m_arraykeyValue = new FieldValueTableInfo[length];
             m_arraykeyValue[count++] = new FieldValueTableInfo(Key_X, ValueType.Number);
@@ -114,7 +121,8 @@ namespace Lua.AnimClipData {
             m_arraykeyValue[count++] = new FieldValueTableInfo(Key_Z, ValueType.Number);
             m_arraykeyValue[count++] = new FieldValueTableInfo(Key_Width, ValueType.Number);
             m_arraykeyValue[count++] = new FieldValueTableInfo(Key_Height, ValueType.Number);
-            m_arraykeyValue[count] = new FieldValueTableInfo(Key_Depth, ValueType.Number);
+            m_arraykeyValue[count++] = new FieldValueTableInfo(Key_Depth, ValueType.Number);
+            m_arraykeyValue[count] = new FieldValueTableInfo(Key_Crush, ValueType.Int);
             return m_arraykeyValue;
         }
         #endregion
