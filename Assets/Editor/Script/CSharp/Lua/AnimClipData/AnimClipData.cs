@@ -107,7 +107,7 @@ namespace Lua.AnimClipData {
         public string[] GetMultipleLuaMainFileHeadStart() => m_multipleMainFileHeadStart;
 
         private static string[] m_multipleChildFileRequirePath = new string[] {
-            "data/config/animclipconfig/server/"
+            "data/fight/animclipconfig/server/"
         };
         public string[] GetMultipleChildFileRequirePath() => m_multipleChildFileRequirePath;
 
