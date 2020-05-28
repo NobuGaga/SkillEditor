@@ -61,6 +61,7 @@ namespace SkillEditor {
         
         private static int m_lastClipIndex;
         private static bool IsNoSelectClip => m_lastClipIndex == Config.ErrorIndex;
+        private static int m_lastIDIndex;
         private static string[] m_animationClipNames;
         private static int[] m_animationClipIndexs;
 
@@ -129,9 +130,9 @@ namespace SkillEditor {
             SpaceWithLabel(Tool.GetCacheString(LabelModelName + modelName));
             WeaponUI(modelName);
             bool isNoneState = StateAndIDUI();
-            bool isZeroID = true;
+            bool isNoClipGroupData = true;
             if (!isNoneState)
-                isZeroID = ClipIDUI();
+                isNoClipGroupData = ClipIDUI();
             SpaceWithLabel(LabelModelClipTips);
             int selectIndex = m_lastClipIndex;
             if (m_animationClipNames != null && m_animationClipIndexs != null)
@@ -140,7 +141,7 @@ namespace SkillEditor {
                 m_lastClipIndex = selectIndex;
                 Controller.SetAnimationClipData(m_lastClipIndex);
             }
-            if (IsNoSelectClip || isNoneState || isZeroID)
+            if (IsNoSelectClip || isNoneState || isNoClipGroupData)
                 return;
             if (SpaceWithButton(BtnAddFrame))
                 Controller.AddFrameData();
@@ -182,18 +183,24 @@ namespace SkillEditor {
         }
 
         private bool ClipIDUI() {
-            uint lastID = LuaAnimClipModel.CurrentClipID;
-            uint id = 0;
-            if (lastID != 0) {
+            int lastIndex = LuaAnimClipModel.CurrentClipGroupIDIndex;
+            uint id = LuaAnimClipModel.CurrentClipID;
+            if (id != 0) {
                 SpaceWithLabel(LabelModelClipIDTips);
-                id = TextField(lastID);
+                string[] idList = LuaAnimClipModel.GetClipGropuIDList(out int[] idIndexList);
+                int index = IntPopup(lastIndex, idList, idIndexList);
+                if (index != lastIndex) {
+                    LuaAnimClipModel.CurrentClipGroupIDIndex = index;
+                    RefreshRepaint();
+                    return true;
+                }
+                if (uint.TryParse(idList[m_lastIDIndex], out uint tempID))
+                    id = tempID;
             }
             if (SpaceWithButton(BtnAddClipGroupData))
-                Controller.AddNewClipGroupData();
+                InputTextWindow.Open();
             if (id == 0)
                 return true;
-            if (id != lastID)
-                Controller.SetAnimationClipID(id);
             if (SpaceWithButton(BtnDeleteClipGroupData))
                 Controller.DeleteClipGroupData();
             return false;

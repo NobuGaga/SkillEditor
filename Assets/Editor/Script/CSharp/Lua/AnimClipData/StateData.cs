@@ -20,6 +20,26 @@ namespace Lua.AnimClipData {
             state = (State)Enum.Parse(typeof(State), stateString);
         }
 
+        private static List<string> m_staticIDList = new List<string>((ushort)Math.Pow(2, 2));
+        private static List<int> m_staticIDIndexList = new List<int>((ushort)Math.Pow(2, 2));
+        public string[] GetClipGropuIDList(out int[] indexList, string clipName) {
+            if (clipList == null || clipList.Length == 0) {
+                indexList = null;
+                return null;
+            }
+            m_staticIDList.Clear();
+            m_staticIDIndexList.Clear();
+            for (ushort index = 0; index < clipList.Length; index++) {
+                ClipGroupData data = clipList[index];
+                if (data.clipName != clipName)
+                    continue;
+                m_staticIDList.Add(data.id.ToString());
+                m_staticIDIndexList.Add(m_staticIDIndexList.Count);
+            }
+            indexList = m_staticIDIndexList.ToArray();
+            return m_staticIDList.ToArray();
+        }
+
         #region ITable Function
         
         public string GetTableName() => "StateData";

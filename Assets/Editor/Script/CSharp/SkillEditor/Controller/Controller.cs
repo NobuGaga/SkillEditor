@@ -277,9 +277,8 @@ namespace SkillEditor {
         }
 
         public static void SetAnimationStateData(AnimClipData.State state) => LuaAnimClipModel.SetCurrentState(state);
-
-        public static void SetAnimationClipID(uint id) => LuaAnimClipModel.SetCurrentClipID(id);
-        public static void AddNewClipGroupData() => LuaAnimClipModel.AddNewClipGroupData();
+        
+        public static void AddNewClipGroupData(uint id) => LuaAnimClipModel.AddNewClipGroupData(id);
         public static void DeleteClipGroupData() => LuaAnimClipModel.DeleteClipGroupData();
 
         public static void AddFrameData() => LuaAnimClipModel.AddFrameData();

@@ -74,6 +74,7 @@ namespace SkillEditor {
             leftData.state.CompareTo(rightData.state);
 
         public static State CurrentState => CurrentStateData.state;
+        public static string[] GetClipGropuIDList(out int[] indexList) => CurrentStateData.GetClipGropuIDList(out indexList, m_lastClipName);
 
         public static void SetCurrentState(State state) {
             if (m_curStateDataIndex == Config.ErrorIndex) {
@@ -150,6 +151,10 @@ namespace SkillEditor {
             left.id.CompareTo(right.id);
 
         private static int m_curClipGroupDataIndex;
+        public static int CurrentClipGroupIDIndex {
+            set => m_curClipGroupDataIndex = value;
+            get => m_curClipGroupDataIndex;
+        }
         private static ClipGroupData CurrentClipGroupData {
             set {
                 StateData data = CurrentStateData;
@@ -165,24 +170,11 @@ namespace SkillEditor {
         public static uint CurrentClipID => CurrentClipGroupData.id;
         private static string m_lastClipName;
 
-        public static void SetCurrentClipID(uint id) {
-            ClipGroupData clipGroupData = CurrentClipGroupData;
-            clipGroupData.id = id;
-            CurrentClipGroupData = clipGroupData;
-            StateData stateData = CurrentStateData;
-            Array.Sort(stateData.clipList, SortClipGroupData);
-            CurrentStateData = stateData;
-        }
-
-        private const uint DefaultClipID = 1;
-        public static void AddNewClipGroupData() {
+        public static void AddNewClipGroupData(uint id) {
             StateData stateData = CurrentStateData;
             SetClipGroupDataListCache(stateData.clipList);
-            for (ushort index = 0; index < m_listClipGroupDataCache.Count; index++)
-                if (m_listClipGroupDataCache[index].id == DefaultClipID)
-                    return;
             ClipGroupData clipGroupData = default;
-            clipGroupData.id = DefaultClipID;
+            clipGroupData.id = id;
             clipGroupData.clipName = m_lastClipName;
             m_listClipGroupDataCache.Add(clipGroupData);
             SortClipGroupDataListCache();
