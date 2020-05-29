@@ -151,10 +151,6 @@ namespace SkillEditor {
             left.id.CompareTo(right.id);
 
         private static int m_curClipGroupDataIndex;
-        public static int CurrentClipGroupIDIndex {
-            set => m_curClipGroupDataIndex = value;
-            get => m_curClipGroupDataIndex;
-        }
         private static ClipGroupData CurrentClipGroupData {
             set {
                 StateData data = CurrentStateData;
@@ -184,6 +180,7 @@ namespace SkillEditor {
             m_stateClipGroupIndexCache.stateIndex = (ushort)m_curStateDataIndex;
             m_stateClipGroupIndexCache.clipGroupIndex = (ushort)m_curClipGroupDataIndex;
             m_listStateClipIndexPair.Add(m_stateClipGroupIndexCache);
+            ResetFrameCubeAndEffectData();
         }
 
         public static void DeleteClipGroupData() {
@@ -193,6 +190,7 @@ namespace SkillEditor {
                 CurrentStateData = stateData;
                 m_listStateClipIndexPair.Clear();
                 m_curClipGroupDataIndex = Config.ErrorIndex;
+                ResetFrameCubeAndEffectData();
                 return;
             }
             SetClipGroupDataListCache(stateData.clipList);
@@ -202,11 +200,25 @@ namespace SkillEditor {
             m_listStateClipIndexPair.Remove(m_stateClipGroupIndexCache);
             if (m_listStateClipIndexPair.Count == 0) {
                 m_curClipGroupDataIndex = Config.ErrorIndex;
+                ResetFrameCubeAndEffectData();
                 return;
             }
-            m_stateClipGroupIndexCache = m_listStateClipIndexPair[0];
-            m_curStateDataIndex = m_stateClipGroupIndexCache.stateIndex;
-            m_curClipGroupDataIndex = m_stateClipGroupIndexCache.clipGroupIndex;
+            SetCurrentClipName(m_lastClipName);
+        }
+
+        public static void SetClipGroupID(uint id) {
+            for (ushort index = 0; index < m_listStateClipIndexPair.Count; index++) {
+                int stateIndex = m_listStateClipIndexPair[index].stateIndex;
+                if (stateIndex != m_curStateDataIndex)
+                    continue;
+                int clipGroupIndex = m_listStateClipIndexPair[index].clipGroupIndex;
+                ClipGroupData data = CurrentStateData.clipList[clipGroupIndex];
+                if (data.clipName != m_lastClipName || data.id != id)
+                    continue;
+                m_curClipGroupDataIndex = clipGroupIndex;
+                ResetFrameCubeAndEffectData();
+                break;
+            }
         }
 
         public static FrameData[] FrameList {
@@ -247,8 +259,7 @@ namespace SkillEditor {
             m_stateClipGroupIndexCache = m_listStateClipIndexPair[0];
             m_curStateDataIndex = m_stateClipGroupIndexCache.stateIndex;
             m_curClipGroupDataIndex = m_stateClipGroupIndexCache.clipGroupIndex;
-            SetFrameList<EffectData>();
-            SetFrameList<CubeData>();
+            ResetFrameCubeAndEffectData();
         }
 
         private static void ResetClip(){
@@ -538,6 +549,11 @@ namespace SkillEditor {
 
         private static List<KeyValuePair<float, CubeData[]>> m_listCollision = new List<KeyValuePair<float, CubeData[]>>();
         public static List<KeyValuePair<float, CubeData[]>> ListCollision => m_listCollision;
+
+        private static void ResetFrameCubeAndEffectData() {
+            SetFrameList<EffectData>();
+            SetFrameList<CubeData>();
+        }
 
         private static void SetFrameList<T>() where T : IFieldValueTable {
             T temp = default;

@@ -183,19 +183,18 @@ namespace SkillEditor {
         }
 
         private bool ClipIDUI() {
-            int lastIndex = LuaAnimClipModel.CurrentClipGroupIDIndex;
             uint id = LuaAnimClipModel.CurrentClipID;
             if (id != 0) {
                 SpaceWithLabel(LabelModelClipIDTips);
                 string[] idList = LuaAnimClipModel.GetClipGropuIDList(out int[] idIndexList);
-                int index = IntPopup(lastIndex, idList, idIndexList);
-                if (index != lastIndex) {
-                    LuaAnimClipModel.CurrentClipGroupIDIndex = index;
+                int index = IntPopup(m_lastIDIndex, idList, idIndexList);
+                if (index != m_lastIDIndex && uint.TryParse(idList[index], out uint tempID)) {
+                    m_lastIDIndex = index;
+                    id = tempID;
+                    Controller.SetClipGroupID(id);
                     RefreshRepaint();
                     return true;
                 }
-                if (uint.TryParse(idList[m_lastIDIndex], out uint tempID))
-                    id = tempID;
             }
             if (SpaceWithButton(BtnAddClipGroupData))
                 InputTextWindow.Open();

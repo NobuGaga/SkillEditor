@@ -278,8 +278,18 @@ namespace SkillEditor {
 
         public static void SetAnimationStateData(AnimClipData.State state) => LuaAnimClipModel.SetCurrentState(state);
         
-        public static void AddNewClipGroupData(uint id) => LuaAnimClipModel.AddNewClipGroupData(id);
-        public static void DeleteClipGroupData() => LuaAnimClipModel.DeleteClipGroupData();
+        public static void AddNewClipGroupData(uint id) {
+            LuaAnimClipModel.AddNewClipGroupData(id);
+            RefreshScene();
+        }
+        public static void DeleteClipGroupData() {
+            LuaAnimClipModel.DeleteClipGroupData();
+            RefreshScene();
+        }
+        public static void SetClipGroupID(uint id) {
+            LuaAnimClipModel.SetClipGroupID(id);
+            RefreshScene();
+        }
 
         public static void AddFrameData() => LuaAnimClipModel.AddFrameData();
         public static void AddCopyFrameData(AnimClipData.FrameData data) => LuaAnimClipModel.AddCopyFrameData(data);
@@ -475,6 +485,11 @@ namespace SkillEditor {
         public static void WriteAnimClipData() {
             LuaWriter.Write<AnimClipData.AnimClipData>();
             Shell.Run("CopyAnimClipFile");
+        }
+
+        private static void RefreshScene() {
+            Stop();
+            ResetDrawCubeData();
         }
 
         private static void ResetDrawCubeData() {
