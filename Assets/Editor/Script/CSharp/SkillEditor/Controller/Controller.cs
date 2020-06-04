@@ -1,5 +1,5 @@
 ﻿using UnityEditor;
-// using UnityEditor.Animations;
+using UnityEditor.Animations;
 using UnityEngine;
 using System.IO;
 using System.Collections.Generic;
@@ -210,15 +210,15 @@ namespace SkillEditor {
                 particle.startDelay = 0;
 #pragma warning restore 0618
             }
-            // Animator animator = effectNode.GetComponent<Animator>();
-            // if (animator == null)
-            //     return;
-            // AnimatorState state = AnimatorControllerManager.GetAnimatorControllerFirstStateName(animator, Config.SkillEffectPath);
-            // if (state == null || state.motion == null)
-            //     return;
-            // SkillAnimator animation = new SkillAnimator(animator);
-            // animation.Record(state);
-            // m_dicIDEffectAnimation.Add(id, animation);
+            Animator animator = effectNode.GetComponent<Animator>();
+            if (animator == null)
+                return;
+            AnimatorState state = AnimatorControllerManager.GetAnimatorControllerFirstStateName(animator, Config.SkillEffectPath);
+            if (state == null || state.motion == null)
+                return;
+            SkillAnimator animation = new SkillAnimator(animator);
+            animation.Record(state);
+            m_dicIDEffectAnimation.Add(id, animation);
         }
 
         private static bool FilterParticleObject(ParticleSystem particle) {
@@ -365,10 +365,10 @@ namespace SkillEditor {
                 for (ushort index = 0; index < particles.Length; index++)
                     particles[index].Simulate(0);
             }
-            // foreach (var idEffectAnimation in m_dicIDEffectAnimation) {
-            //     SkillAnimator animation = idEffectAnimation.Value;
-            //     animation.Stop();
-            // }
+            foreach (var idEffectAnimation in m_dicIDEffectAnimation) {
+                SkillAnimator animation = idEffectAnimation.Value;
+                animation.Stop();
+            }
             foreach (var idObjectPair in m_dicIDEffectObject)
                 if (idObjectPair.Value.activeSelf)
                     idObjectPair.Value.SetActive(false);
@@ -439,10 +439,10 @@ namespace SkillEditor {
                                 particle.Simulate(0);
                         }
                     }
-                    // if (m_dicIDEffectAnimation.ContainsKey(data.id)) {
-                    //     SkillAnimator animation = m_dicIDEffectAnimation[data.id];
-                    //     animation.SetAnimationPlayTime(sampleTime - time);
-                    // }
+                    if (m_dicIDEffectAnimation.ContainsKey(data.id)) {
+                        SkillAnimator animation = m_dicIDEffectAnimation[data.id];
+                        animation.SetStateAnimationPlayTime(sampleTime - time);
+                    }
                 }
             }
         }

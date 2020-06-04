@@ -60,11 +60,13 @@ namespace SkillEditor {
             base.SetAnimationPlayTime(clip, time);
         }
 
-        public void SetAnimationPlayTime(float time) {
+        public void SetStateAnimationPlayTime(float time) {
             if (string.IsNullOrEmpty(m_playName)) {
                 Debug.LogError("SkillAnimator::Play animator hasn't record before calling play function");
                 return;
             }
+            if (m_animator.recorderMode != AnimatorRecorderMode.Playback)
+                m_animator.StartPlayback();
             base.SetAnimationPlayTime(null, time);
         }
 

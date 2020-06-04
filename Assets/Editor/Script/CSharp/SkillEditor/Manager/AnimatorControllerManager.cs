@@ -78,7 +78,7 @@ namespace SkillEditor {
                 return null;
             }
             string controllerName = animator.runtimeAnimatorController.name;
-            string path = Tool.GetAssetProjectPath(controllerName, folders);
+            string path = Tool.GetEffectAssetProjectPath(controllerName, folders);
             AnimatorController animatorController = AssetDatabase.LoadAssetAtPath<AnimatorController>(path);
             AnimatorControllerLayer[] layers = animatorController.layers;
             for (int layerIndex = 0; layerIndex < layers.Length; layerIndex++) {

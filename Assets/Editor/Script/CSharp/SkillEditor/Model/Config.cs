@@ -34,6 +34,7 @@ namespace SkillEditor {
         public const string ClipLowerExtension = "fbx";
         public static string ClipUpperExtension = ClipLowerExtension.ToUpper();
         public const string PrefabExtension = "prefab";
+        public const string ControllerExtension = "controller";
         public const string AnimatorControllerExtension = "controller";
         private const string LayoutExtension = "wlt";
         public const string SceneExtension = "unity";

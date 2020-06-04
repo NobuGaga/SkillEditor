@@ -11,7 +11,8 @@
 	"weapon_prefix" : "wp_",
 	"animator_controller_folder" : "animatorcontroller",
 	"skill_effect_path" : [
-		"Assets/fx/skill"
+		"Assets/fx/skill",
+		"Assets/fx/_animation"
 	],
 	"effect_exclute_component" : [
 		"GrabObj"
