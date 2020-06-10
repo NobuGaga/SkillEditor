@@ -232,6 +232,12 @@ namespace SkillEditor {
                     HorizontalLayoutUI(CacheFrameDataTitleUI, index);
                 if (!data.sectionFrameData.IsNullTable())
                     HorizontalLayoutUI(SectionFrameDataTitleUI, index);
+                if (!data.airBeginFrameData.IsNullTable())
+                    HorizontalLayoutUI(AirBeginFrameDataTitleUI, index);
+                if (!data.airEndFrameData.IsNullTable())
+                    HorizontalLayoutUI(AirEndFrameDataTitleUI, index);
+                if (!data.dodgeFrameData.IsNullTable())
+                    HorizontalLayoutUI(DodgeFrameDataTitleUI, index);
                 if (!data.cameraFrameData.IsNullTable()) {
                     HorizontalLayoutUI(CameraFrameDataTitleUI, index);
                     HorizontalLayoutUI(CameraFrameDataUI, index);
@@ -259,6 +265,12 @@ namespace SkillEditor {
                 Controller.AddPriorityFrameData(index, FrameType.CacheBegin);
             if (data.sectionFrameData.IsNullTable() && SpaceWithButton(BtnAdd + FrameType.SectionOver))
                 Controller.AddPriorityFrameData(index, FrameType.SectionOver);
+            if (data.airBeginFrameData.IsNullTable() && SpaceWithButton(BtnAdd + FrameType.OverheadStart))
+                Controller.AddPriorityFrameData(index, FrameType.OverheadStart);
+            if (data.airEndFrameData.IsNullTable() && SpaceWithButton(BtnAdd + FrameType.OverheadBreak))
+                Controller.AddPriorityFrameData(index, FrameType.OverheadBreak);
+            if (data.dodgeFrameData.IsNullTable() && SpaceWithButton(BtnAdd + FrameType.DodgeBreak))
+                Controller.AddPriorityFrameData(index, FrameType.DodgeBreak);
             if (data.cameraFrameData.IsNullTable() && SpaceWithButton(BtnAdd + FrameType.Camera))
                 Controller.AddCameraFrameData(index);
             if (SpaceWithButton(BtnAdd + FrameType.Buff))
@@ -350,6 +362,9 @@ namespace SkillEditor {
         private void TrackFrameDataTitleUI(int index) => PriorityFrameDataTitleUI(index, FrameType.Track);
         private void CacheFrameDataTitleUI(int index) => PriorityFrameDataTitleUI(index, FrameType.CacheBegin);
         private void SectionFrameDataTitleUI(int index) => PriorityFrameDataTitleUI(index, FrameType.SectionOver);
+        private void AirBeginFrameDataTitleUI(int index) => PriorityFrameDataTitleUI(index, FrameType.OverheadStart);
+        private void AirEndFrameDataTitleUI(int index) => PriorityFrameDataTitleUI(index, FrameType.OverheadBreak);
+        private void DodgeFrameDataTitleUI(int index) => PriorityFrameDataTitleUI(index, FrameType.DodgeBreak);
         private void PriorityFrameDataTitleUI(int index, FrameType frameType) {
             FrameData frameData = GetFrameData(index);
             IFieldValueTable table = (IFieldValueTable)frameData.GetFieldValueTableValue(frameType.ToString());
