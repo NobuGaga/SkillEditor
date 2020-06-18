@@ -60,7 +60,9 @@ namespace SkillEditor {
             if (!isGeneric)
                 return;
             string sourcePath = Tool.FullPathToProjectPath(ModelDataModel.ControllerPath);
-            AnimatorControllerManager.RemoveAllAnimatorTransition(m_model.name, sourcePath);
+            Animator animator = m_model.GetComponent<Animator>();
+            var controller = animator.runtimeAnimatorController;
+            AnimatorControllerManager.RemoveAllAnimatorTransition(controller.name, sourcePath);
         }
 
         private static void SetAnimation(ref BaseAnimation animation, bool isGeneric, GameObject gameObject) {
