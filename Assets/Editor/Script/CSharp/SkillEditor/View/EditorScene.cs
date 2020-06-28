@@ -20,10 +20,10 @@ namespace SkillEditor {
             Gizmos.color = CubeColor;
             for (int index = 0; index < m_listPointHitData.Count; index++) {
                 HitData data = m_listPointHitData[index].Value;
-                Vector3 footPoint = m_listPointHitData[index].Key + data.Offset;
-                footPoint.x += data.width / 2;
-                footPoint.y += data.height / 2;
-                Gizmos.DrawWireCube(footPoint, data.Size);
+                Vector3 footPoint = m_listPointHitData[index].Key + data.cubeData.Offset;
+                footPoint.x += data.cubeData.width / 2;
+                footPoint.y += data.cubeData.height / 2;
+                Gizmos.DrawWireCube(footPoint, data.cubeData.Size);
             }
         }
 

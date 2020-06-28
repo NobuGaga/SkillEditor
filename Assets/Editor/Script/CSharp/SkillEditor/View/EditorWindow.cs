@@ -337,18 +337,20 @@ namespace SkillEditor {
         private void HitFrameDataUI(int frameIndex) => FrameDataListUI(frameIndex, FrameType.Hit);
         private bool HitDataUI(int frameIndex, object  @object) {
             HitData data = (HitData)@object;
+            CubeData cubeData = data.cubeData;
             SpaceWithLabel(LabelX);
-            data.x = TextField(data.x);
+            cubeData.x = TextField(cubeData.x);
             SpaceWithLabel(LabelY);
-            data.y = TextField(data.y);
+            cubeData.y = TextField(cubeData.y);
             SpaceWithLabel(LabelZ);
-            data.z = TextField(data.z);
+            cubeData.z = TextField(cubeData.z);
             SpaceWithLabel(LabelWidth);
-            data.width = TextField(data.width);
+            cubeData.width = TextField(cubeData.width);
             SpaceWithLabel(LabelHeight);
-            data.height = TextField(data.height);
+            cubeData.height = TextField(cubeData.height);
             SpaceWithLabel(LabelDepth);
-            data.depth = TextField(data.depth);
+            cubeData.depth = TextField(cubeData.depth);
+            data.cubeData = cubeData;
             SpaceWithLabel(LabelCrush);
             data.crush = Toggle(data.crush);
             Controller.SetCustomeSubData(frameIndex, data, FrameType.Hit);

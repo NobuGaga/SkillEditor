@@ -7,45 +7,19 @@ namespace Lua.AnimClipData {
     public struct HitData : IFieldValueTable {
 
         public ushort index;
-        public float x;
-        public float y;
-        public float z;
-        public float width;
-        public float height;
-        public float depth;
+        public CubeData cubeData;
         public int crush;
-
-        private static Vector3 m_offsetCache;
-        private static Vector3 m_sizeCache;
-
-        public Vector3 Offset {
-            get {
-                m_offsetCache.x = x;
-                m_offsetCache.y = y;
-                m_offsetCache.z = z;
-                return m_offsetCache;
-            }
-        }
-
-        public Vector3 Size {
-            get {
-                m_sizeCache.x = width;
-                m_sizeCache.y = height;
-                m_sizeCache.z = depth;
-                return m_sizeCache;
-            }
-        }
 
         #region ITable Function
 
-        public string GetTableName() => "CubeData";
+        public string GetTableName() => "HitData";
         public ushort GetLayer() => 7;
         public ReadType GetReadType() => ReadType.Fixed;
         public KeyType GetKeyType() => KeyType.Array;
         public void SetKey(object key) => index = (ushort)(int)key;
         public string GetKey() => index.ToString();
-        public bool IsNullTable() => Size == Vector3.zero;
-        public void Clear() => x = y = z = width = height = depth = 0;
+        public bool IsNullTable() => cubeData.IsNull();
+        public void Clear() => cubeData.Clear();
 
         private static readonly StringBuilder m_staticBuilder = new StringBuilder((ushort)Math.Pow(2, 9));
         public override string ToString() => LuaTable.GetFieldKeyTableText(m_staticBuilder, this);
@@ -53,75 +27,35 @@ namespace Lua.AnimClipData {
 
         #region IFieldKeyTable Function
         
-        private const string Key_X = "x";
-        private const string Key_Y = "y";
-        private const string Key_Z = "z";
-        private const string Key_Width = "width";
-        private const string Key_Height = "height";
-        private const string Key_Depth = "depth";
         private const string Key_Crush = "crush";
 
         public void SetFieldValueTableValue(string key, object value) {
             switch (key) {
-                case Key_X:
-                    x = (float)value;
-                    return;
-                case Key_Y:
-                    y = (float)value;
-                    return;
-                case Key_Z:
-                    z = (float)value;
-                    return;
-                case Key_Width:
-                    width = (float)value;
-                    return;
-                case Key_Height:
-                    height = (float)value;
-                    return;
-                case Key_Depth:
-                    depth = (float)value;
-                    return;
                 case Key_Crush:
                     crush = (int)value;
                     return;
             }
+            cubeData.SetFieldValueTableValue(key, value);
         }
 
         public object GetFieldValueTableValue(string key) {
             switch (key) {
-                case Key_X:
-                    return x;
-                case Key_Y:
-                    return y;
-                case Key_Z:
-                    return z;
-                case Key_Width:
-                    return width;
-                case Key_Height:
-                    return height;
-                case Key_Depth:
-                    return depth;
                 case Key_Crush:
                     return crush;
-                default:
-                    Debug.LogError("CubeData::GetFieldValueTableValue key is not exit. key " + key);
-                    return null;
             }
+            return cubeData.GetFieldValueTableValue(key);
         }
 
         private static FieldValueTableInfo[] m_arraykeyValue;
         public FieldValueTableInfo[] GetFieldValueTableInfo() {
             if (m_arraykeyValue != null)
                 return m_arraykeyValue;
-            const ushort length = 7;
+            FieldValueTableInfo[] cubeValues = cubeData.GetFieldValueTableInfo();
+            ushort length = (ushort)(1 + cubeValues.Length);
             ushort count = 0;
             m_arraykeyValue = new FieldValueTableInfo[length];
-            m_arraykeyValue[count++] = new FieldValueTableInfo(Key_X, ValueType.Number);
-            m_arraykeyValue[count++] = new FieldValueTableInfo(Key_Y, ValueType.Number);
-            m_arraykeyValue[count++] = new FieldValueTableInfo(Key_Z, ValueType.Number);
-            m_arraykeyValue[count++] = new FieldValueTableInfo(Key_Width, ValueType.Number);
-            m_arraykeyValue[count++] = new FieldValueTableInfo(Key_Height, ValueType.Number);
-            m_arraykeyValue[count++] = new FieldValueTableInfo(Key_Depth, ValueType.Number);
+            for (ushort index = 0; index < cubeValues.Length; index++)
+                m_arraykeyValue[count++] = cubeValues[index];
             m_arraykeyValue[count] = new FieldValueTableInfo(Key_Crush, ValueType.Int);
             return m_arraykeyValue;
         }
