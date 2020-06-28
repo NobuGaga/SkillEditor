@@ -342,7 +342,7 @@ namespace SkillEditor {
                 m_effectChangeCall?.Invoke();
             }
             if (isRefresHitFrame)
-                SetFrameList<CubeData>();
+                SetFrameList<HitData>();
         }
 
         public static FrameData GetFrameData(int index) {
@@ -547,12 +547,12 @@ namespace SkillEditor {
         private static List<KeyValuePair<float, EffectData[]>> m_listEffect = new List<KeyValuePair<float, EffectData[]>>();
         public static List<KeyValuePair<float, EffectData[]>> ListEffect => m_listEffect;
 
-        private static List<KeyValuePair<float, CubeData[]>> m_listCollision = new List<KeyValuePair<float, CubeData[]>>();
-        public static List<KeyValuePair<float, CubeData[]>> ListCollision => m_listCollision;
+        private static List<KeyValuePair<float, HitData[]>> m_listCollision = new List<KeyValuePair<float, HitData[]>>();
+        public static List<KeyValuePair<float, HitData[]>> ListCollision => m_listCollision;
 
         private static void ResetFrameCubeAndEffectData() {
             SetFrameList<EffectData>();
-            SetFrameList<CubeData>();
+            SetFrameList<HitData>();
         }
 
         private static void SetFrameList<T>() where T : IFieldValueTable {
@@ -571,11 +571,11 @@ namespace SkillEditor {
                 if (temp is EffectData)
                     dataList = frameData.effectFrameData.effectData.dataList as T[];
                 else
-                    dataList = frameData.hitFrameData.cubeData.dataList as T[];
+                    dataList = frameData.hitFrameData.hitData.dataList as T[];
                 if (dataList == null)
                     continue;
-                KeyValuePair<float, T[]> timeCubeData = new KeyValuePair<float, T[]>(frameData.time, dataList);
-                list.Add(timeCubeData);
+                KeyValuePair<float, T[]> timeHitData = new KeyValuePair<float, T[]>(frameData.time, dataList);
+                list.Add(timeHitData);
             }
             list.Sort(SortFrameListByTime);
         }

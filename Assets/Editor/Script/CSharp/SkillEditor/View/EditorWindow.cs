@@ -335,8 +335,8 @@ namespace SkillEditor {
 
         private void HitFrameDataTitleUI(int index) => PriorityFrameDataTitleUI(index, FrameType.Hit);
         private void HitFrameDataUI(int frameIndex) => FrameDataListUI(frameIndex, FrameType.Hit);
-        private bool CubeDataUI(int frameIndex, object  @object) {
-            CubeData data = (CubeData)@object;
+        private bool HitDataUI(int frameIndex, object  @object) {
+            HitData data = (HitData)@object;
             SpaceWithLabel(LabelX);
             data.x = TextField(data.x);
             SpaceWithLabel(LabelY);
@@ -401,7 +401,7 @@ namespace SkillEditor {
                     uiFunction = EffectDataUI;
                     break;
                 case FrameType.Hit:
-                    uiFunction = CubeDataUI;
+                    uiFunction = HitDataUI;
                     break;
                 case FrameType.Buff:
                     uiFunction = BuffDataUI;

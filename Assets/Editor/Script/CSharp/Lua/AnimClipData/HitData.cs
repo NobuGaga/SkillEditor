@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Lua.AnimClipData {
 
-    public struct CubeData : IFieldValueTable {
+    public struct HitData : IFieldValueTable {
 
         public ushort index;
         public float x;

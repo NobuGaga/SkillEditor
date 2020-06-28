@@ -9,18 +9,18 @@ namespace SkillEditor {
 
         private static readonly Color CubeColor = Color.green;
 
-        private static List<KeyValuePair<Vector3, CubeData>> m_listPointCubeData;
+        private static List<KeyValuePair<Vector3, HitData>> m_listPointHitData;
 
-        public static void SetDrawCubeData(List<KeyValuePair<Vector3, CubeData>> list) => m_listPointCubeData = list;
+        public static void SetDrawHitData(List<KeyValuePair<Vector3, HitData>> list) => m_listPointHitData = list;
 
         [DrawGizmo(GizmoType.NonSelected | GizmoType.NotInSelectionHierarchy)]
         public static void OnDrawCube(GameObject gameObject, GizmoType type) {
-            if (m_listPointCubeData == null || m_listPointCubeData.Count == 0)
+            if (m_listPointHitData == null || m_listPointHitData.Count == 0)
                 return;
             Gizmos.color = CubeColor;
-            for (int index = 0; index < m_listPointCubeData.Count; index++) {
-                CubeData data = m_listPointCubeData[index].Value;
-                Vector3 footPoint = m_listPointCubeData[index].Key + data.Offset;
+            for (int index = 0; index < m_listPointHitData.Count; index++) {
+                HitData data = m_listPointHitData[index].Value;
+                Vector3 footPoint = m_listPointHitData[index].Key + data.Offset;
                 footPoint.x += data.width / 2;
                 footPoint.y += data.height / 2;
                 Gizmos.DrawWireCube(footPoint, data.Size);

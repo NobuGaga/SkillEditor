@@ -7,7 +7,7 @@ namespace Lua.AnimClipData {
     public struct HitFrameData : IFieldValueTable {
 
         public ushort priority;
-        public CustomData<CubeData> cubeData;
+        public CustomData<HitData> hitData;
 
         #region ITable Function
         
@@ -17,10 +17,10 @@ namespace Lua.AnimClipData {
         public KeyType GetKeyType() => KeyType.FixedField;
         public void SetKey(object key) { }
         public string GetKey() => LuaTable.GetArrayKeyString(FrameType.Hit);
-        public bool IsNullTable() => priority <= 0 || cubeData.IsNullTable();
+        public bool IsNullTable() => priority <= 0 || hitData.IsNullTable();
         public void Clear() {
             priority = 0;
-            cubeData.Clear();
+            hitData.Clear();
         }
 
         private static readonly StringBuilder m_staticBuilder = new StringBuilder((ushort)Math.Pow(2, 9));
@@ -30,15 +30,15 @@ namespace Lua.AnimClipData {
         #region IFieldKeyTable Function
 
         private const string Key_Priority = PriorityFrameData.Key_Priority;
-        private const string Key_CubeData = "data";
+        private const string Key_HitData = "data";
         
         public void SetFieldValueTableValue(string key, object value) {
             switch (key) {
                 case Key_Priority:
                     priority = (ushort)(int)value;
                     return;
-                case Key_CubeData:
-                    cubeData = (CustomData<CubeData>)value;
+                case Key_HitData:
+                    hitData = (CustomData<HitData>)value;
                     return;
             }
         }
@@ -47,8 +47,8 @@ namespace Lua.AnimClipData {
             switch (key) {
                 case Key_Priority:
                     return priority;
-                case Key_CubeData:
-                    return cubeData;
+                case Key_HitData:
+                    return hitData;
                 default:
                     Debug.LogError("HitFrameData::GetFieldValueTableValue key is not exit. key " + key);
                     return null;
@@ -63,7 +63,7 @@ namespace Lua.AnimClipData {
             ushort count = 0;
             m_arraykeyValue = new FieldValueTableInfo[length];
             m_arraykeyValue[count++] = new FieldValueTableInfo(Key_Priority, ValueType.Int);
-            m_arraykeyValue[count] = new FieldValueTableInfo(Key_CubeData, ValueType.Table);
+            m_arraykeyValue[count] = new FieldValueTableInfo(Key_HitData, ValueType.Table);
             return m_arraykeyValue;
         }
         #endregion
