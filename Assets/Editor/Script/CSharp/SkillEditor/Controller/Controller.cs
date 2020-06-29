@@ -31,7 +31,8 @@ namespace SkillEditor {
         private static double m_lastTime;
 
         private static Dictionary<float, Vector3> m_dicTimePosition = new Dictionary<float, Vector3>();
-        private static List<KeyValuePair<Vector3, AnimClipData.HitData>> m_listPointHitData = new List<KeyValuePair<Vector3, AnimClipData.HitData>>();
+        private static List<KeyValuePair<Vector3, AnimClipData.ICubeData>> m_listPointHitData = new List<KeyValuePair<Vector3, AnimClipData.ICubeData>>();
+        private static List<KeyValuePair<Vector3, AnimClipData.ICubeData>> m_listPointGrabData = new List<KeyValuePair<Vector3, AnimClipData.ICubeData>>();
 
         public static void Start(string prefabPath) {
             Reset();
@@ -397,7 +398,7 @@ namespace SkillEditor {
                 StopEffect();
             else
                 SetPlayEffectTime(time);            
-            SetDrawHitData(time);
+            SetDrawCubeData(time);
         }
 
         private static void Update() {
@@ -413,7 +414,7 @@ namespace SkillEditor {
             }
             EditorWindow.RefreshRepaint();
             SetPlayEffectTime((float)(currentTime - m_playStartTime));
-            SetDrawHitData(deltaTime);
+            SetDrawCubeData(deltaTime);
             if (m_modelAnimation.IsPlayOver) {
                 StopEffect();
                 EditorApplication.update = null;
@@ -455,33 +456,65 @@ namespace SkillEditor {
             }
         }
 
+        private static void SetDrawCubeData(float animationTime) {
+            SetDrawHitData(animationTime);
+            SetDrawGrabData(animationTime);
+        }
+
         private static void SetDrawHitData(float animationTime) {
             if (LuaAnimClipModel.ListCollision.Count == 0)
                 return;
             m_listPointHitData.Clear();
             float time = m_modelAnimation.PlayTime;
             List<KeyValuePair<float, AnimClipData.HitData[]>> list = LuaAnimClipModel.ListCollision;
-            float minTime = list[0].Key;
-            float maxTime = list[list.Count - 1].Key + Config.DrawCubeLastTime;
-            if (time < minTime || time > maxTime)
+            if (IsOutOfTimeArea(list))
                 return;
             for (int index = 0; index < list.Count; index++) {
                 float triggerTime = list[index].Key;
                 if (!IsInCollisionTime(time, triggerTime))
                     continue;
-                if (!m_dicTimePosition.ContainsKey(triggerTime)) {
-                    Vector3 position = m_footTransform.position;
-                    if (!Config.IsNoRuntimeCubeDelay) {
-                        m_modelAnimation.SetAnimationPlayTime(AnimationModel.SelectAnimationClip, triggerTime + Config.RuntimeCubeDelay);
-                        position = m_footTransform.position;
-                        m_modelAnimation.SetAnimationPlayTime(AnimationModel.SelectAnimationClip, animationTime);
-                    }
-                    m_dicTimePosition.Add(triggerTime, position);
-                }
+                AddTriggerTimePosition(triggerTime, animationTime);
                 foreach (AnimClipData.HitData data in list[index].Value)
-                    m_listPointHitData.Add(new KeyValuePair<Vector3, AnimClipData.HitData>(m_dicTimePosition[triggerTime], data));
+                    m_listPointHitData.Add(new KeyValuePair<Vector3, AnimClipData.ICubeData>(m_dicTimePosition[triggerTime], data));
             }
             EditorScene.SetDrawHitData(m_listPointHitData);
+        }
+
+        private static void SetDrawGrabData(float animationTime) {
+            if (LuaAnimClipModel.ListGrabCollision.Count == 0)
+                return;
+            m_listPointGrabData.Clear();
+            float time = m_modelAnimation.PlayTime;
+            List<KeyValuePair<float, AnimClipData.GrabData>> list = LuaAnimClipModel.ListGrabCollision;
+            if (IsOutOfTimeArea(list))
+                return;
+            for (int index = 0; index < list.Count; index++) {
+                float triggerTime = list[index].Key;
+                if (!IsInCollisionTime(time, triggerTime))
+                    continue;
+                AddTriggerTimePosition(triggerTime, animationTime);
+                m_listPointGrabData.Add(new KeyValuePair<Vector3, AnimClipData.ICubeData>(m_dicTimePosition[triggerTime], list[index].Value));
+            }
+            EditorScene.SetDrawGrabData(m_listPointGrabData);
+        }
+
+        private static bool IsOutOfTimeArea<T>(List<KeyValuePair<float, T>> list) {
+            float time = m_modelAnimation.PlayTime;
+            float minTime = list[0].Key;
+            float maxTime = list[list.Count - 1].Key + Config.DrawCubeLastTime;
+            return time < minTime || time > maxTime;
+        }
+
+        private static void AddTriggerTimePosition(float triggerTime, float animationTime) {
+            if (m_dicTimePosition.ContainsKey(triggerTime))
+                return;
+            Vector3 position = m_footTransform.position;
+            if (!Config.IsNoRuntimeCubeDelay) {
+                m_modelAnimation.SetAnimationPlayTime(AnimationModel.SelectAnimationClip, triggerTime + Config.RuntimeCubeDelay);
+                position = m_footTransform.position;
+                m_modelAnimation.SetAnimationPlayTime(AnimationModel.SelectAnimationClip, animationTime);
+            }
+            m_dicTimePosition.Add(triggerTime, position);
         }
 
         private static bool IsInCollisionTime(float curTime, float collisionTime) {
@@ -503,6 +536,7 @@ namespace SkillEditor {
         private static void ResetDrawHitData() {
             m_dicTimePosition.Clear();
             m_listPointHitData.Clear();
+            m_listPointGrabData.Clear();
         }
 
         public static void Reset() {

@@ -108,4 +108,12 @@ namespace Lua.AnimClipData {
             return m_arraykeyValue;
         }
     }
+
+    public interface ICubeData {
+
+        Vector3 GetOffset();
+        Vector3 GetSize();
+        float GetWidth();
+        float GetHeight();
+    }
 }

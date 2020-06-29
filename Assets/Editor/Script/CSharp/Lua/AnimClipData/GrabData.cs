@@ -1,11 +1,20 @@
+using UnityEngine;
 using System;
 using System.Text;
 
 namespace Lua.AnimClipData {
 
-    public struct GrabData : IFieldValueTable {
+    public struct GrabData : IFieldValueTable, ICubeData {
 
         public CubeData cubeData;
+
+        #region ICubeData Function
+
+        public Vector3 GetOffset() => cubeData.Offset;
+        public Vector3 GetSize() => cubeData.Size;
+        public float GetWidth() => cubeData.width;
+        public float GetHeight() => cubeData.height;
+        #endregion
 
         #region ITable Function
 

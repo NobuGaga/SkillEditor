@@ -276,6 +276,7 @@ namespace SkillEditor {
             
             m_listEffect.Clear();
             m_listCollision.Clear();
+            m_listGrabCollision.Clear();
         }
 
         public static void Reset() {
@@ -333,7 +334,7 @@ namespace SkillEditor {
 
         private static Action m_effectChangeCall;
         public static void SetEffectChangeCallback(Action call) => m_effectChangeCall = call;
-        private static void SetFrameData(int index, FrameData data, bool isRefreshEffectFrame, bool isRefresHitFrame) {
+        private static void SetFrameData(int index, FrameData data, bool isRefreshEffectFrame = false, bool isRefresHitFrame = false, bool isRefreshGrabFrame = false) {
             FrameData[] array = FrameList;
             array[index] = data;
             FrameList = array;
@@ -343,6 +344,8 @@ namespace SkillEditor {
             }
             if (isRefresHitFrame)
                 SetFrameList<HitData>();
+            if (isRefreshGrabFrame)
+                SetFrameGrabDataList();
         }
 
         public static FrameData GetFrameData(int index) {
@@ -355,13 +358,13 @@ namespace SkillEditor {
         public static void SetFrameDataTime(int index, float time) {
             FrameData data = GetFrameData(index);
             data.time = time;
-            SetFrameData(index, data, false, false);
+            SetFrameData(index, data);
         }
 
         public static void SetFrameDataEndTime(int index, float endTime) {
             FrameData data = GetFrameData(index);
             data.endTime = endTime;
-            SetFrameData(index, data, false, false);
+            SetFrameData(index, data);
         }
 
         private const int DefaultPriority = 1;
@@ -370,7 +373,7 @@ namespace SkillEditor {
             PriorityFrameData priorityFrameData = (PriorityFrameData)frameData.GetFieldValueTableValue(frameType.ToString());
             priorityFrameData.priority = DefaultPriority;
             frameData.SetFieldValueTableValue(frameType.ToString(), priorityFrameData);
-            SetFrameData(index, frameData, false, false);
+            SetFrameData(index, frameData);
         }
 
         public static void DeletePriorityFrameData(int index, FrameType frameType) {
@@ -378,7 +381,7 @@ namespace SkillEditor {
             ITable table = (ITable)frameData.GetFieldValueTableValue(frameType.ToString());
             table.Clear();
             frameData.SetFieldValueTableValue(frameType.ToString(), table);
-            SetFrameData(index, frameData, false, false);
+            SetFrameData(index, frameData, frameType == FrameType.PlayEffect, frameType == FrameType.Hit, frameType == FrameType.Grab);
         }
 
         public static void SetFramePriorityData(int index, FrameType frameType, ushort priority) {
@@ -386,7 +389,7 @@ namespace SkillEditor {
             IFieldValueTable table = (IFieldValueTable)frameData.GetFieldValueTableValue(frameType.ToString());
             table.SetFieldValueTableValue(PriorityFrameData.Key_Priority, (int)priority);
             frameData.SetFieldValueTableValue(frameType.ToString(), table);
-            SetFrameData(index, frameData, false, false);
+            SetFrameData(index, frameData);
         }
 
         public static void AddGrabFrameData(int index) {
@@ -399,13 +402,13 @@ namespace SkillEditor {
             grabData.cubeData = cubeData;
             grabFrameData.grabData = grabData;
             frameData.grabFrameData = grabFrameData;
-            SetFrameData(index, frameData, false, false);
+            SetFrameData(index, frameData, false, false, true);
         }
 
         public static void SetGrabFrameData(int index, GrabFrameData data) {
             FrameData frameData = GetFrameData(index);
             frameData.grabFrameData = data;
-            SetFrameData(index, frameData, false, false);
+            SetFrameData(index, frameData, false, false, true);
         }
 
         public static void AddUngrabFrameData(int index) {
@@ -416,13 +419,13 @@ namespace SkillEditor {
             ungrabData.gravityAccelerate = 1;
             ungrabFrameData.ungrabData = ungrabData;
             frameData.ungrabFrameData = ungrabFrameData;
-            SetFrameData(index, frameData, false, false);
+            SetFrameData(index, frameData);
         }
 
         public static void SetUngrabFrameData(int index, UngrabFrameData data) {
             FrameData frameData = GetFrameData(index);
             frameData.ungrabFrameData = data;
-            SetFrameData(index, frameData, false, false);
+            SetFrameData(index, frameData);
         }
 
         private const int DefaultCameraID = 1;
@@ -436,19 +439,19 @@ namespace SkillEditor {
             cameraData.focusType = CameraFocusType.Attacker;
             cameraFrameData.cameraData = cameraData;
             frameData.cameraFrameData = cameraFrameData;
-            SetFrameData(index, frameData, false, false);
+            SetFrameData(index, frameData);
         }
 
         public static void DeleteCameraFrameData(int index) {
             FrameData frameData = GetFrameData(index);
             frameData.cameraFrameData.Clear();
-            SetFrameData(index, frameData, false, false);
+            SetFrameData(index, frameData);
         }
 
         public static void SetCameraFrameData(int index, CameraFrameData data) {
             FrameData frameData = GetFrameData(index);
             frameData.cameraFrameData = data;
-            SetFrameData(index, frameData, false, false);
+            SetFrameData(index, frameData);
         }
 
         #region Reflection Method And Data
@@ -586,9 +589,13 @@ namespace SkillEditor {
         private static List<KeyValuePair<float, HitData[]>> m_listCollision = new List<KeyValuePair<float, HitData[]>>();
         public static List<KeyValuePair<float, HitData[]>> ListCollision => m_listCollision;
 
+        private static List<KeyValuePair<float, GrabData>> m_listGrabCollision = new List<KeyValuePair<float, GrabData>>();
+        public static List<KeyValuePair<float, GrabData>> ListGrabCollision => m_listGrabCollision;
+
         private static void ResetFrameCubeAndEffectData() {
             SetFrameList<EffectData>();
             SetFrameList<HitData>();
+            SetFrameGrabDataList();
         }
 
         private static void SetFrameList<T>() where T : IFieldValueTable {
@@ -616,7 +623,24 @@ namespace SkillEditor {
             list.Sort(SortFrameListByTime);
         }
 
+        private static void SetFrameGrabDataList() {
+            m_listGrabCollision.Clear();
+            if (FrameList == null || FrameList.Length == 0)
+                return;
+            for (int index = 0; index < FrameList.Length; index++) {
+                FrameData frameData = FrameList[index];
+                GrabFrameData grabFrameData = frameData.grabFrameData;
+                if (grabFrameData.IsNullTable())
+                    continue;
+                KeyValuePair<float, GrabData> timeGrabData = new KeyValuePair<float, GrabData>(frameData.time, grabFrameData.grabData);
+                m_listGrabCollision.Add(timeGrabData);
+            }
+            m_listGrabCollision.Sort(SortFrameListByTime);
+        }
+
         private static int SortFrameListByTime<T>(KeyValuePair<float, T[]> left, KeyValuePair<float, T[]> right) =>
+            left.Key.CompareTo(right.Key);
+        private static int SortFrameListByTime<T>(KeyValuePair<float, T> left, KeyValuePair<float, T> right) =>
             left.Key.CompareTo(right.Key);
 
         public static string GetWriteFileString() => LuaWriter.GetWriteFileString(m_listAnimClip);
