@@ -20,7 +20,21 @@ namespace Lua.AnimClipData {
         public void Clear() => dataList = null;
 
         private static StringBuilder m_staticBuilder = new StringBuilder((ushort)Math.Pow(2, 9));
-        public override string ToString() => LuaTable.GetRepeatKeyTableText(m_staticBuilder, this);
+        public override string ToString() {
+            var copy = this;
+            if (dataList != null && dataList.Length > 0) {
+                m_listCache.Clear();
+                for (ushort index = 0; index < dataList.Length; index++) {
+                    var table = dataList[index];
+                    if (table.IsNullTable())
+                        continue;
+                    table.SetKey(m_listCache.Count + 1);
+                    m_listCache.Add(table);
+                }
+                copy.dataList = m_listCache.ToArray();
+            }
+            return LuaTable.GetRepeatKeyTableText(m_staticBuilder, copy);
+        }
         #endregion
     
         #region IRepeatKeyTable Function

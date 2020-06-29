@@ -6,6 +6,7 @@ namespace Lua.AnimClipData {
 
     public struct GrabData : IFieldValueTable, ICubeData {
 
+        public ushort index;
         public CubeData cubeData;
 
         #region ICubeData Function
@@ -19,11 +20,11 @@ namespace Lua.AnimClipData {
         #region ITable Function
 
         public string GetTableName() => "GrabData";
-        public ushort GetLayer() => 6;
+        public ushort GetLayer() => 7;
         public ReadType GetReadType() => ReadType.Fixed;
-        public KeyType GetKeyType() => KeyType.FixedField;
-        public void SetKey(object key) { }
-        public string GetKey() => "data";
+        public KeyType GetKeyType() => KeyType.Array;
+        public void SetKey(object key) => index = (ushort)(int)key;
+        public string GetKey() => index.ToString();
         public bool IsNullTable() => cubeData.IsNull();
         public void Clear() => cubeData.Clear();
 

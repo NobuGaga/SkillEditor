@@ -304,9 +304,6 @@ namespace SkillEditor {
         public static void DeletePriorityFrameData(int index, AnimClipData.FrameType frameType) => LuaAnimClipModel.DeletePriorityFrameData(index, frameType);
         public static void SetFramePriorityData(int index, AnimClipData.FrameType frameType, ushort priority) => LuaAnimClipModel.SetFramePriorityData(index, frameType, priority);
 
-        public static void AddGrabFrameData(int index) => LuaAnimClipModel.AddGrabFrameData(index);
-        public static void SetGrabFrameData(int index, AnimClipData.GrabFrameData data) => LuaAnimClipModel.SetGrabFrameData(index, data);
-
         public static void AddUngrabFrameData(int index) => LuaAnimClipModel.AddUngrabFrameData(index);
         public static void SetUngrabFrameData(int index, AnimClipData.UngrabFrameData data) => LuaAnimClipModel.SetUngrabFrameData(index, data);
 
@@ -485,7 +482,7 @@ namespace SkillEditor {
                 return;
             m_listPointGrabData.Clear();
             float time = m_modelAnimation.PlayTime;
-            List<KeyValuePair<float, AnimClipData.GrabData>> list = LuaAnimClipModel.ListGrabCollision;
+            List<KeyValuePair<float, AnimClipData.GrabData[]>> list = LuaAnimClipModel.ListGrabCollision;
             if (IsOutOfTimeArea(list))
                 return;
             for (int index = 0; index < list.Count; index++) {
@@ -493,7 +490,8 @@ namespace SkillEditor {
                 if (!IsInCollisionTime(time, triggerTime))
                     continue;
                 AddTriggerTimePosition(triggerTime, animationTime);
-                m_listPointGrabData.Add(new KeyValuePair<Vector3, AnimClipData.ICubeData>(m_dicTimePosition[triggerTime], list[index].Value));
+                foreach (AnimClipData.GrabData data in list[index].Value)
+                    m_listPointGrabData.Add(new KeyValuePair<Vector3, AnimClipData.ICubeData>(m_dicTimePosition[triggerTime], data));
             }
             EditorScene.SetDrawGrabData(m_listPointGrabData);
         }

@@ -7,7 +7,7 @@ namespace Lua.AnimClipData {
     public struct GrabFrameData : IFieldValueTable {
 
         public ushort priority;
-        public GrabData grabData;
+        public CustomData<GrabData> grabData;
 
         #region ITable Function
         
@@ -38,7 +38,7 @@ namespace Lua.AnimClipData {
                     priority = (ushort)(int)value;
                     return;
                 case Key_GrabData:
-                    grabData = (GrabData)value;
+                    grabData = (CustomData<GrabData>)value;
                     return;
             }
         }

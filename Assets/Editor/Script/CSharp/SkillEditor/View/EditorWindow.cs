@@ -232,7 +232,7 @@ namespace SkillEditor {
                 }
                 if (!data.grabFrameData.IsNullTable()) {
                     HorizontalLayoutUI(GrabFrameDataTitleUI, index);
-                    HorizontalLayoutUI(GrabFrameDataUI, index);
+                    GrabFrameDataUI(index);
                 }
                 if (!data.ungrabFrameData.IsNullTable()) {
                     HorizontalLayoutUI(UngrabFrameDataTitleUI, index);
@@ -271,8 +271,8 @@ namespace SkillEditor {
                 Controller.AddNewCustomData(index, FrameType.PlayEffect);
             if (SpaceWithButton(BtnAddCube))
                 Controller.AddNewCustomData(index, FrameType.Hit);
-            if (data.grabFrameData.IsNullTable() && SpaceWithButton(BtnAdd + LabelGrab))
-                Controller.AddGrabFrameData(index);
+            if (SpaceWithButton(BtnAdd + LabelGrab))
+                Controller.AddNewCustomData(index, FrameType.Grab);
             if (data.ungrabFrameData.IsNullTable() && SpaceWithButton(BtnAdd + LabelUngrab))
                 Controller.AddUngrabFrameData(index);
             if (data.trackFrameData.IsNullTable() && SpaceWithButton(BtnAddTrack))
@@ -350,15 +350,18 @@ namespace SkillEditor {
         private void EffectTransformDataUI(Lua.EffectConf.EffectConfTransform data) => SpaceWithLabel(data.VectorString);
 
         private void GrabFrameDataTitleUI(int index) => PriorityFrameDataTitleUI(index, FrameType.Grab);
-        private void GrabFrameDataUI(int frameIndex) {
-            FrameData frameData = GetFrameData(frameIndex);
-            GrabFrameData grabFrameData = frameData.grabFrameData;
-            GrabData grabData = grabFrameData.grabData;
-            CubeData cubeData = grabData.cubeData;
+        private void GrabFrameDataUI(int frameIndex) => FrameDataListUI(frameIndex, FrameType.Grab);
+        private bool GrabDataUI(int frameIndex, object @object) {
+            GrabData data = (GrabData)@object;
+            CubeData cubeData = data.cubeData;
             CubeDataUI(ref cubeData);
-            grabData.cubeData = cubeData;
-            grabFrameData.grabData = grabData;
-            Controller.SetGrabFrameData(frameIndex, grabFrameData);
+            data.cubeData = cubeData;
+            Controller.SetCustomeSubData(frameIndex, data, FrameType.Grab);
+            bool isDelete = SpaceWithButton(BtnDelete);
+            if (isDelete)
+                Controller.DeleteCustomData(frameIndex, (int)data.index - 1, FrameType.Grab);
+            Space();
+            return isDelete;
         }
 
         private void UngrabFrameDataTitleUI(int index) => PriorityFrameDataTitleUI(index, FrameType.Ungrab);
@@ -376,7 +379,7 @@ namespace SkillEditor {
 
         private void HitFrameDataTitleUI(int index) => PriorityFrameDataTitleUI(index, FrameType.Hit);
         private void HitFrameDataUI(int frameIndex) => FrameDataListUI(frameIndex, FrameType.Hit);
-        private bool HitDataUI(int frameIndex, object  @object) {
+        private bool HitDataUI(int frameIndex, object @object) {
             HitData data = (HitData)@object;
             CubeData cubeData = data.cubeData;
             CubeDataUI(ref cubeData);
@@ -457,6 +460,9 @@ namespace SkillEditor {
                     break;
                 case FrameType.Buff:
                     uiFunction = BuffDataUI;
+                    break;
+                case FrameType.Grab:
+                    uiFunction = GrabDataUI;
                     break;
             }
             if (dataList == null)
