@@ -38,6 +38,10 @@ namespace SkillEditor {
         private const string LabelEffect = "特效";
         private const string LabelEffectType = "类型 ";
         private const string LabelEffectID = "ID ";
+        private const string LabelGrab = "抓取点";
+        private const string LabelUngrab = "被抓取点";
+        private const string LabelGravityAccelerate = "重力加速度";
+        private const string LabelHorizontalSpeed = "水平速度";
         private const string LabelCollision = "碰撞框";
         private const string LabelX = "x";
         private const string LabelY = "y";
@@ -222,12 +226,20 @@ namespace SkillEditor {
                     HorizontalLayoutUI(HitFrameDataTitleUI, index);
                     HitFrameDataUI(index);
                 }
-                if (!data.trackFrameData.IsNullTable())
-                    HorizontalLayoutUI(TrackFrameDataTitleUI, index);
                 if (!data.effectFrameData.IsNullTable()) {
                     HorizontalLayoutUI(EffectFrameDataTitleUI, index);
                     EffectFrameDataUI(index);
                 }
+                if (!data.grabFrameData.IsNullTable()) {
+                    HorizontalLayoutUI(GrabFrameDataTitleUI, index);
+                    HorizontalLayoutUI(GrabFrameDataUI, index);
+                }
+                if (!data.ungrabFrameData.IsNullTable()) {
+                    HorizontalLayoutUI(UngrabFrameDataTitleUI, index);
+                    HorizontalLayoutUI(UngrabFrameDataUI, index);
+                }
+                if (!data.trackFrameData.IsNullTable())
+                    HorizontalLayoutUI(TrackFrameDataTitleUI, index);
                 if (!data.cacheFrameData.IsNullTable())
                     HorizontalLayoutUI(CacheFrameDataTitleUI, index);
                 if (!data.sectionFrameData.IsNullTable())
@@ -259,6 +271,10 @@ namespace SkillEditor {
                 Controller.AddNewCustomData(index, FrameType.PlayEffect);
             if (SpaceWithButton(BtnAddCube))
                 Controller.AddNewCustomData(index, FrameType.Hit);
+            if (data.grabFrameData.IsNullTable() && SpaceWithButton(BtnAdd + LabelGrab))
+                Controller.AddGrabFrameData(index);
+            if (data.ungrabFrameData.IsNullTable() && SpaceWithButton(BtnAdd + LabelUngrab))
+                Controller.AddUngrabFrameData(index);
             if (data.trackFrameData.IsNullTable() && SpaceWithButton(BtnAddTrack))
                 Controller.AddPriorityFrameData(index, FrameType.Track);
             if (data.cacheFrameData.IsNullTable() && SpaceWithButton(BtnAdd + FrameType.CacheBegin))
@@ -333,11 +349,48 @@ namespace SkillEditor {
 
         private void EffectTransformDataUI(Lua.EffectConf.EffectConfTransform data) => SpaceWithLabel(data.VectorString);
 
+        private void GrabFrameDataTitleUI(int index) => PriorityFrameDataTitleUI(index, FrameType.Grab);
+        private void GrabFrameDataUI(int frameIndex) {
+            FrameData frameData = GetFrameData(frameIndex);
+            GrabFrameData grabFrameData = frameData.grabFrameData;
+            GrabData grabData = grabFrameData.grabData;
+            CubeData cubeData = grabData.cubeData;
+            CubeDataUI(ref cubeData);
+            grabData.cubeData = cubeData;
+            grabFrameData.grabData = grabData;
+            Controller.SetGrabFrameData(frameIndex, grabFrameData);
+        }
+
+        private void UngrabFrameDataTitleUI(int index) => PriorityFrameDataTitleUI(index, FrameType.Ungrab);
+        private void UngrabFrameDataUI(int frameIndex) {
+            FrameData frameData = GetFrameData(frameIndex);
+            UngrabFrameData ungrabFrameData = frameData.ungrabFrameData;
+            UngrabData ungrabData = ungrabFrameData.ungrabData;
+            SpaceWithLabel(LabelGravityAccelerate);
+            ungrabData.gravityAccelerate = TextField(ungrabData.gravityAccelerate);
+            SpaceWithLabel(LabelHorizontalSpeed);
+            ungrabData.horizontalSpeed = TextField(ungrabData.horizontalSpeed);
+            ungrabFrameData.ungrabData = ungrabData;
+            Controller.SetUngrabFrameData(frameIndex, ungrabFrameData);
+        }
+
         private void HitFrameDataTitleUI(int index) => PriorityFrameDataTitleUI(index, FrameType.Hit);
         private void HitFrameDataUI(int frameIndex) => FrameDataListUI(frameIndex, FrameType.Hit);
         private bool HitDataUI(int frameIndex, object  @object) {
             HitData data = (HitData)@object;
             CubeData cubeData = data.cubeData;
+            CubeDataUI(ref cubeData);
+            data.cubeData = cubeData;
+            SpaceWithLabel(LabelCrush);
+            data.crush = Toggle(data.crush);
+            Controller.SetCustomeSubData(frameIndex, data, FrameType.Hit);
+            bool isDelete = SpaceWithButton(BtnDelete);
+            if (isDelete)
+                Controller.DeleteCustomData(frameIndex, (int)data.index - 1, FrameType.Hit);
+            Space();
+            return isDelete;
+        }
+        private void CubeDataUI(ref CubeData cubeData) {
             SpaceWithLabel(LabelX);
             cubeData.x = TextField(cubeData.x);
             SpaceWithLabel(LabelY);
@@ -350,15 +403,6 @@ namespace SkillEditor {
             cubeData.height = TextField(cubeData.height);
             SpaceWithLabel(LabelDepth);
             cubeData.depth = TextField(cubeData.depth);
-            data.cubeData = cubeData;
-            SpaceWithLabel(LabelCrush);
-            data.crush = Toggle(data.crush);
-            Controller.SetCustomeSubData(frameIndex, data, FrameType.Hit);
-            bool isDelete = SpaceWithButton(BtnDelete);
-            if (isDelete)
-                Controller.DeleteCustomData(frameIndex, (int)data.index - 1, FrameType.Hit);
-            Space();
-            return isDelete;
         }
 
         private void TrackFrameDataTitleUI(int index) => PriorityFrameDataTitleUI(index, FrameType.Track);
@@ -377,6 +421,12 @@ namespace SkillEditor {
                     break;
                 case FrameType.Hit:
                     SpaceWithLabel(LabelCollision);
+                    break;
+                case FrameType.Grab:
+                    SpaceWithLabel(LabelGrab);
+                    break;
+                case FrameType.Ungrab:
+                    SpaceWithLabel(LabelUngrab);
                     break;
                 default:
                     SpaceWithLabel(frameType.ToString());

@@ -25,6 +25,11 @@ namespace Lua.AnimClipData {
         }
 
         public Vector3 Size {
+            set {
+                width = value.x;
+                height = value.y;
+                depth = value.z;
+            }
             get {
                 m_sizeCache.x = width;
                 m_sizeCache.y = height;

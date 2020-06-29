@@ -10,6 +10,8 @@ namespace Lua.AnimClipData {
         public ushort index;
         public float time;
         public float endTime;
+        public GrabFrameData grabFrameData;
+        public UngrabFrameData ungrabFrameData;
         public HitFrameData hitFrameData;
         public PriorityFrameData trackFrameData;
         public EffectFrameData effectFrameData;
@@ -44,6 +46,7 @@ namespace Lua.AnimClipData {
         }
         public void Clear() {
             time = 0;
+            grabFrameData.Clear();
             hitFrameData.Clear();
             trackFrameData.Clear();
             effectFrameData.Clear();
@@ -76,6 +79,12 @@ namespace Lua.AnimClipData {
             }
             FrameType frameType = GetFrameTypeFromKey(key);
             switch (frameType) {
+                case FrameType.Grab:
+                    grabFrameData = (GrabFrameData)value;
+                    return;
+                case FrameType.Ungrab:
+                    ungrabFrameData = (UngrabFrameData)value;
+                    return;
                 case FrameType.Hit:
                     hitFrameData = (HitFrameData)value;
                     return;
@@ -127,6 +136,10 @@ namespace Lua.AnimClipData {
             FrameData data = GetFileTypeTable();
             FrameType frameType = GetFrameTypeFromKey(key);
             switch (frameType) {
+                case FrameType.Grab:
+                    return data.grabFrameData;
+                case FrameType.Ungrab:
+                    return data.ungrabFrameData;
                 case FrameType.Hit:
                     return data.hitFrameData;
                 case FrameType.Track:
@@ -200,6 +213,8 @@ namespace Lua.AnimClipData {
     }
 
     public enum FrameType {
+        Grab = 1,
+        Ungrab = 2,
         Hit = 4,
         Track = 5,
         PlayEffect = 6,

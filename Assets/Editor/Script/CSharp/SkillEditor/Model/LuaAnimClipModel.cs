@@ -389,6 +389,42 @@ namespace SkillEditor {
             SetFrameData(index, frameData, false, false);
         }
 
+        public static void AddGrabFrameData(int index) {
+            FrameData frameData = GetFrameData(index);
+            GrabFrameData grabFrameData = default;
+            grabFrameData.priority = DefaultPriority;
+            GrabData grabData = default;
+            CubeData cubeData = grabData.cubeData;
+            cubeData.Size = Vector3.one;
+            grabData.cubeData = cubeData;
+            grabFrameData.grabData = grabData;
+            frameData.grabFrameData = grabFrameData;
+            SetFrameData(index, frameData, false, false);
+        }
+
+        public static void SetGrabFrameData(int index, GrabFrameData data) {
+            FrameData frameData = GetFrameData(index);
+            frameData.grabFrameData = data;
+            SetFrameData(index, frameData, false, false);
+        }
+
+        public static void AddUngrabFrameData(int index) {
+            FrameData frameData = GetFrameData(index);
+            UngrabFrameData ungrabFrameData = default;
+            ungrabFrameData.priority = DefaultPriority;
+            UngrabData ungrabData = default;
+            ungrabData.gravityAccelerate = 1;
+            ungrabFrameData.ungrabData = ungrabData;
+            frameData.ungrabFrameData = ungrabFrameData;
+            SetFrameData(index, frameData, false, false);
+        }
+
+        public static void SetUngrabFrameData(int index, UngrabFrameData data) {
+            FrameData frameData = GetFrameData(index);
+            frameData.ungrabFrameData = data;
+            SetFrameData(index, frameData, false, false);
+        }
+
         private const int DefaultCameraID = 1;
         public static void AddCameraFrameData(int index) {
             FrameData frameData = GetFrameData(index);
