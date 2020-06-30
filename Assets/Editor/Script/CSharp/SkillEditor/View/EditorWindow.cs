@@ -39,7 +39,7 @@ namespace SkillEditor {
         private const string LabelEffectType = "类型 ";
         private const string LabelEffectID = "ID ";
         private const string LabelGrab = "抓取点";
-        private const string LabelUngrab = "被抓取点";
+        private const string LabelUngrab = "投技释放点";
         private const string LabelGravityAccelerate = "重力加速度";
         private const string LabelHorizontalSpeed = "水平速度";
         private const string LabelCollision = "碰撞框";
