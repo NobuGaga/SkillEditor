@@ -175,8 +175,9 @@ namespace SkillEditor {
                 if (data.parentPivotType == EffectConf.ParentPivotType.Body)
                     parent = m_model.transform.Find(data.pivotNodeName);
                 else {
-                    parent = m_rightWeapon.transform.Find(data.pivotNodeName);
-                    if (parent == null)
+                    if (m_rightWeapon != null)
+                        parent = m_rightWeapon.transform.Find(data.pivotNodeName);
+                    if (parent == null && m_leftWeapon != null)
                         parent = m_leftWeapon.transform.Find(data.pivotNodeName);
                 }
                 if (parent)
