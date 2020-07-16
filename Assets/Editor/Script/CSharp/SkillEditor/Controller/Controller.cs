@@ -37,7 +37,7 @@ namespace SkillEditor {
         public static void Start(string prefabPath) {
             Reset();
             m_model = LoadPrefab(prefabPath);
-            m_footTransform = m_model.transform.Find(Config.DrawCubeNodeName);
+            m_footTransform = Tool.FindContainChild(m_model.transform, Config.DrawCubeNodeName);
             Selection.activeGameObject = null;
             InitModelAnimation();
             InitLuaConfigData();

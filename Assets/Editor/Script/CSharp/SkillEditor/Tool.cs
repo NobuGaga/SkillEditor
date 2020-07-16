@@ -173,5 +173,19 @@ namespace SkillEditor {
             if (isNeedSaveAssets)
                 AssetDatabase.SaveAssets();
         }
+
+        public static Transform FindContainChild(Transform node, string name) {
+            if (node == null)
+                return null;
+            Transform target = node.Find(Config.DrawCubeNodeName);
+            if (target != null)
+                return target;
+            for (ushort index = 0; index < node.GetChildCount(); index++) {
+                target = FindContainChild(node.GetChild(index), name);
+                if (target != null)
+                    return target;
+            }
+            return null;
+        }
     }
 }
