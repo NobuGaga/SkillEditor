@@ -33,6 +33,7 @@ namespace SkillEditor {
         private static Dictionary<float, Vector3> m_dicTimePosition = new Dictionary<float, Vector3>();
         private static List<KeyValuePair<Vector3, AnimClipData.ICubeData>> m_listPointHitData = new List<KeyValuePair<Vector3, AnimClipData.ICubeData>>();
         private static List<KeyValuePair<Vector3, AnimClipData.ICubeData>> m_listPointGrabData = new List<KeyValuePair<Vector3, AnimClipData.ICubeData>>();
+        private static List<KeyValuePair<Vector3, AnimClipData.ICubeData>> m_listPointBlockData = new List<KeyValuePair<Vector3, AnimClipData.ICubeData>>();
 
         public static void Start(string prefabPath) {
             Reset();
@@ -457,6 +458,7 @@ namespace SkillEditor {
         private static void SetDrawCubeData(float animationTime) {
             SetDrawHitData(animationTime);
             SetDrawGrabData(animationTime);
+            SetDrawBlockData(animationTime);
         }
 
         private static void SetDrawHitData(float animationTime) {
@@ -495,6 +497,25 @@ namespace SkillEditor {
                     m_listPointGrabData.Add(new KeyValuePair<Vector3, AnimClipData.ICubeData>(m_dicTimePosition[triggerTime], data));
             }
             EditorScene.SetDrawGrabData(m_listPointGrabData);
+        }
+
+        private static void SetDrawBlockData(float animationTime) {
+            if (LuaAnimClipModel.ListBlockCollision.Count == 0)
+                return;
+            m_listPointBlockData.Clear();
+            float time = m_modelAnimation.PlayTime;
+            List<KeyValuePair<float, AnimClipData.BlockData[]>> list = LuaAnimClipModel.ListBlockCollision;
+            if (IsOutOfTimeArea(list))
+                return;
+            for (int index = 0; index < list.Count; index++) {
+                float triggerTime = list[index].Key;
+                if (!IsInCollisionTime(time, triggerTime))
+                    continue;
+                AddTriggerTimePosition(triggerTime, animationTime);
+                foreach (AnimClipData.BlockData data in list[index].Value)
+                    m_listPointBlockData.Add(new KeyValuePair<Vector3, AnimClipData.ICubeData>(m_dicTimePosition[triggerTime], data));
+            }
+            EditorScene.SetDrawBlockData(m_listPointBlockData);
         }
 
         private static bool IsOutOfTimeArea<T>(List<KeyValuePair<float, T>> list) {

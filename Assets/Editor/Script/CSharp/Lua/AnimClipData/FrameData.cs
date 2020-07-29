@@ -22,6 +22,9 @@ namespace Lua.AnimClipData {
         public PriorityFrameData airBeginFrameData;
         public PriorityFrameData airEndFrameData;
         public PriorityFrameData dodgeFrameData;
+        public PriorityFrameData blockStartFrameData;
+        public PriorityFrameData blockEndFrameData;
+        public BlockFrameData blockFrameData;
 
         #region ITable Function
         
@@ -57,6 +60,9 @@ namespace Lua.AnimClipData {
             airBeginFrameData.Clear();
             airEndFrameData.Clear();
             dodgeFrameData.Clear();
+            blockStartFrameData.Clear();
+            blockEndFrameData.Clear();
+            blockFrameData.Clear();
         }
 
         private static readonly StringBuilder m_staticBuilder = new StringBuilder((ushort)Math.Pow(2, 11));
@@ -121,6 +127,17 @@ namespace Lua.AnimClipData {
                     dodgeFrameData = (PriorityFrameData)value;
                     dodgeFrameData.frameType = FrameType.DodgeBreak;
                     return;
+                case FrameType.BlockStart:
+                    blockStartFrameData = (PriorityFrameData)value;
+                    blockStartFrameData.frameType = FrameType.BlockStart;
+                    return;
+                case FrameType.BlockEnd:
+                    blockEndFrameData = (PriorityFrameData)value;
+                    blockEndFrameData.frameType = FrameType.BlockEnd;
+                    return;
+                case FrameType.Block:
+                    blockFrameData = (BlockFrameData)value;
+                    return;
             }
         }
 
@@ -160,6 +177,12 @@ namespace Lua.AnimClipData {
                     return data.airEndFrameData;
                 case FrameType.DodgeBreak:
                     return data.dodgeFrameData;
+                case FrameType.BlockStart:
+                    return data.blockStartFrameData;
+                case FrameType.BlockEnd:
+                    return data.blockEndFrameData;
+                case FrameType.Block:
+                    return data.blockFrameData;
             }
             Debug.LogError("FrameData::GetFieldValueTableValue key is not exit. key " + key);
             return null;
@@ -225,5 +248,8 @@ namespace Lua.AnimClipData {
         OverheadStart = 14,
         OverheadBreak = 15,
         DodgeBreak = 16,
+        BlockStart = 17,
+        BlockEnd = 18,
+        Block = 19,
     }
 }

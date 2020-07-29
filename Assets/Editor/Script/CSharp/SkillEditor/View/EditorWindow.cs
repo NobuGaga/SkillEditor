@@ -40,6 +40,9 @@ namespace SkillEditor {
         private const string LabelEffectID = "ID ";
         private const string LabelGrab = "抓取点";
         private const string LabelUngrab = "投技释放点";
+        private const string LabelBlockStart = "轨迹格挡开始";
+        private const string LabelBlockEnd = "轨迹格挡结束";
+        private const string LabelBlock = "格挡框";
         private const string LabelGravityAccelerate = "重力加速度";
         private const string LabelHorizontalSpeed = "水平速度";
         private const string LabelCollision = "碰撞框";
@@ -238,6 +241,14 @@ namespace SkillEditor {
                     HorizontalLayoutUI(UngrabFrameDataTitleUI, index);
                     HorizontalLayoutUI(UngrabFrameDataUI, index);
                 }
+                if (!data.blockStartFrameData.IsNullTable())
+                    HorizontalLayoutUI(BlockStartFrameDataTitleUI, index);
+                if (!data.blockEndFrameData.IsNullTable())
+                    HorizontalLayoutUI(BlockEndFrameDataTitleUI, index);
+                if (!data.blockFrameData.IsNullTable()) {
+                    HorizontalLayoutUI(BlockFrameDataTitleUI, index);
+                    BlockFrameDataUI(index);
+                }
                 if (!data.trackFrameData.IsNullTable())
                     HorizontalLayoutUI(TrackFrameDataTitleUI, index);
                 if (!data.cacheFrameData.IsNullTable())
@@ -275,6 +286,12 @@ namespace SkillEditor {
                 Controller.AddNewCustomData(index, FrameType.Grab);
             if (data.ungrabFrameData.IsNullTable() && SpaceWithButton(BtnAdd + LabelUngrab))
                 Controller.AddUngrabFrameData(index);
+            if (SpaceWithButton(BtnAdd + LabelBlockStart))
+                Controller.AddPriorityFrameData(index, FrameType.BlockStart);
+            if (SpaceWithButton(BtnAdd + LabelBlockEnd))
+                Controller.AddPriorityFrameData(index, FrameType.BlockEnd);
+            if (SpaceWithButton(BtnAdd + LabelBlock))
+                Controller.AddNewCustomData(index, FrameType.Block);
             if (data.trackFrameData.IsNullTable() && SpaceWithButton(BtnAddTrack))
                 Controller.AddPriorityFrameData(index, FrameType.Track);
             if (data.cacheFrameData.IsNullTable() && SpaceWithButton(BtnAdd + FrameType.CacheBegin))
@@ -377,6 +394,21 @@ namespace SkillEditor {
             Controller.SetUngrabFrameData(frameIndex, ungrabFrameData);
         }
 
+        private void BlockFrameDataTitleUI(int index) => PriorityFrameDataTitleUI(index, FrameType.Block);
+        private void BlockFrameDataUI(int frameIndex) => FrameDataListUI(frameIndex, FrameType.Block);
+        private bool BlockDataUI(int frameIndex, object @object) {
+            BlockData data = (BlockData)@object;
+            CubeData cubeData = data.cubeData;
+            CubeDataUI(ref cubeData);
+            data.cubeData = cubeData;
+            Controller.SetCustomeSubData(frameIndex, data, FrameType.Block);
+            bool isDelete = SpaceWithButton(BtnDelete);
+            if (isDelete)
+                Controller.DeleteCustomData(frameIndex, (int)data.index - 1, FrameType.Block);
+            Space();
+            return isDelete;
+        }
+
         private void HitFrameDataTitleUI(int index) => PriorityFrameDataTitleUI(index, FrameType.Hit);
         private void HitFrameDataUI(int frameIndex) => FrameDataListUI(frameIndex, FrameType.Hit);
         private bool HitDataUI(int frameIndex, object @object) {
@@ -408,6 +440,8 @@ namespace SkillEditor {
             cubeData.depth = TextField(cubeData.depth);
         }
 
+        private void BlockStartFrameDataTitleUI(int index) => PriorityFrameDataTitleUI(index, FrameType.BlockStart);
+        private void BlockEndFrameDataTitleUI(int index) => PriorityFrameDataTitleUI(index, FrameType.BlockEnd);
         private void TrackFrameDataTitleUI(int index) => PriorityFrameDataTitleUI(index, FrameType.Track);
         private void CacheFrameDataTitleUI(int index) => PriorityFrameDataTitleUI(index, FrameType.CacheBegin);
         private void SectionFrameDataTitleUI(int index) => PriorityFrameDataTitleUI(index, FrameType.SectionOver);
@@ -430,6 +464,15 @@ namespace SkillEditor {
                     break;
                 case FrameType.Ungrab:
                     SpaceWithLabel(LabelUngrab);
+                    break;
+                case FrameType.BlockStart:
+                    SpaceWithLabel(LabelBlockStart);
+                    break;
+                case FrameType.BlockEnd:
+                    SpaceWithLabel(LabelBlockEnd);
+                    break;
+                case FrameType.Block:
+                    SpaceWithLabel(LabelBlock);
                     break;
                 default:
                     SpaceWithLabel(frameType.ToString());
@@ -463,6 +506,9 @@ namespace SkillEditor {
                     break;
                 case FrameType.Grab:
                     uiFunction = GrabDataUI;
+                    break;
+                case FrameType.Block:
+                    uiFunction = BlockDataUI;
                     break;
             }
             if (dataList == null)
