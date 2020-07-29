@@ -9,7 +9,7 @@ namespace SkillEditor {
 
         private static readonly Color HitCubeColor = Color.green;
         private static readonly Color GrabCubeColor = Color.yellow;
-        private static readonly Color BlockCubeColor = Color.red;
+        private static readonly Color BlockCubeColor = new Color(0.5f, 0, 0.5f);
 
         private static List<KeyValuePair<Vector3, ICubeData>> m_listPointHitData;
         private static List<KeyValuePair<Vector3, ICubeData>> m_listPointGrabData;
