@@ -391,7 +391,7 @@ namespace SkillEditor {
         public static void SetFramePriorityData(int index, FrameType frameType, ushort priority) {
             FrameData frameData = GetFrameData(index);
             IFieldValueTable table = (IFieldValueTable)frameData.GetFieldValueTableValue(frameType.ToString());
-            table.SetFieldValueTableValue(CommonFrameData.Key_Data, (int)priority);
+            table.SetFieldValueTableValue(CommonFrameData.Key_Priority, (int)priority);
             frameData.SetFieldValueTableValue(frameType.ToString(), table);
             SetFrameData(index, frameData);
         }
@@ -473,14 +473,9 @@ namespace SkillEditor {
         private static object GetCustomDataStaticList() => m_customDataCache[CustomDataStaticListIndex];
         private static object GetCustomDataList() => m_customDataCache[CustomDatalistIndex];
         private static Type ListType;
-        private static string Key_Data = null;
         
         private static void SetCustomDataMethodAndData(IFieldValueTable table) {
-            if (Key_Data == null) {
-                CustomData<EffectData> defaultCustomData = default;
-                Key_Data = defaultCustomData.GetKey();
-            }
-            m_customDataCache[CustomDataIndex] = table.GetFieldValueTableValue(Key_Data);
+            m_customDataCache[CustomDataIndex] = table.GetFieldValueTableValue(CommonFrameData.Key_Data);
             object customData = m_customDataCache[CustomDataIndex];
             Type customDataType = customData.GetType();
             CustomDataClearMethod = customDataType.GetMethod("Clear");
@@ -502,7 +497,7 @@ namespace SkillEditor {
             FrameData frameData = GetFrameData(index);
             IFieldValueTable table = (IFieldValueTable)frameData.GetFieldValueTableValue(frameType.ToString());
             if (table.IsNullTable())
-                table.SetFieldValueTableValue(CommonFrameData.Key_Data, (int)DefaultPriority);
+                table.SetFieldValueTableValue(CommonFrameData.Key_Priority, (int)DefaultPriority);
             SetCustomDataMethodAndData(table);
             object customData = GetCustomData();
             object staticList = GetCustomDataStaticList();
@@ -523,7 +518,7 @@ namespace SkillEditor {
             SetStaticCacheListAddArg(data);
             CustomDataStaticCacheListAddMethod.Invoke(staticList, GetStaticCacheListAddArg());
             customData = CustomDataSetTableListMethod.Invoke(customData, null);
-            table.SetFieldValueTableValue(Key_Data, customData);
+            table.SetFieldValueTableValue(CommonFrameData.Key_Data, customData);
             frameData.SetFieldValueTableValue(frameType.ToString(), table);
             SetFrameData(index, frameData, frameType == FrameType.PlayEffect, frameType == FrameType.Hit, frameType == FrameType.Grab, frameType == FrameType.Block);
         }
@@ -553,7 +548,7 @@ namespace SkillEditor {
                 }
                 customData = CustomDataSetTableListMethod.Invoke(customData, null);
             }
-            table.SetFieldValueTableValue(Key_Data, customData);
+            table.SetFieldValueTableValue(CommonFrameData.Key_Data, customData);
             frameData.SetFieldValueTableValue(frameType.ToString(), table);
             SetFrameData(frameIndex, frameData, frameType == FrameType.PlayEffect, frameType == FrameType.Hit, frameType == FrameType.Grab, frameType == FrameType.Block);
         }
@@ -571,7 +566,7 @@ namespace SkillEditor {
             object customData = GetCustomData();
             SetSetTableListDataArg(dataIndex, data);
             CustomDataSetTableListDataMethod.Invoke(customData, GetSetTableListDataArg());
-            table.SetFieldValueTableValue(Key_Data, customData);
+            table.SetFieldValueTableValue(CommonFrameData.Key_Data, customData);
             frameData.SetFieldValueTableValue(frameType.ToString(), table);
             SetFrameData(frameIndex, frameData, frameType == FrameType.PlayEffect, frameType == FrameType.Hit, frameType == FrameType.Grab, frameType == FrameType.Block);
         }
