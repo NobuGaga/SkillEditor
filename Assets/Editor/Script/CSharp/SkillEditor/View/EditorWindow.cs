@@ -35,6 +35,7 @@ namespace SkillEditor {
         private const string LabelTime = "触发时间点 ";
         private const string LabelEndTime = "结束触发时间点 ";
         private const string LabelPriority = "优先级 ";
+        private const string LabelLoop = "循环 ";
         private const string LabelEffect = "特效";
         private const string LabelEffectType = "类型 ";
         private const string LabelEffectID = "ID ";
@@ -449,9 +450,6 @@ namespace SkillEditor {
         private void AirEndFrameDataTitleUI(int index) => PriorityFrameDataTitleUI(index, FrameType.OverheadBreak);
         private void DodgeFrameDataTitleUI(int index) => PriorityFrameDataTitleUI(index, FrameType.DodgeBreak);
         private void PriorityFrameDataTitleUI(int index, FrameType frameType) {
-            FrameData frameData = GetFrameData(index);
-            IFieldValueTable table = (IFieldValueTable)frameData.GetFieldValueTableValue(frameType.ToString());
-            ushort originPriority = (ushort)table.GetFieldValueTableValue(PriorityFrameData.Key_Priority);
             switch (frameType) {
                 case FrameType.PlayEffect:
                     SpaceWithLabel(LabelEffect);
@@ -479,9 +477,16 @@ namespace SkillEditor {
                     break;
             }
             SpaceWithLabel(LabelPriority);
+            FrameData frameData = GetFrameData(index);
+            IFieldValueTable table = (IFieldValueTable)frameData.GetFieldValueTableValue(frameType.ToString());
+            ushort originPriority = (ushort)table.GetFieldValueTableValue(CommonFrameData.Key_Priority);
             ushort newPriority = (ushort)TextField(originPriority);
             if (newPriority != originPriority)
                 Controller.SetFramePriorityData(index, frameType, newPriority);
+            SpaceWithLabel(LabelLoop);
+            ICommonFrameData commonFrameData = (ICommonFrameData)table;
+            bool isLoop = Toggle(commonFrameData.GetLoop());
+            Controller.SetFrameLoopData(index, frameType, isLoop);
             if (SpaceWithButton(BtnDelete))
                 Controller.DeletePriorityFrameData(index, frameType);
         }

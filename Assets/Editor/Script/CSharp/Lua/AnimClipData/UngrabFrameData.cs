@@ -4,10 +4,17 @@ using System.Text;
 
 namespace Lua.AnimClipData {
 
-    public struct UngrabFrameData : IFieldValueTable {
+    public struct UngrabFrameData : IFieldValueTable, ICommonFrameData {
 
-        public ushort priority;
+        public CommonFrameData commonData;
         public UngrabData ungrabData;
+
+        #region ICommonFrameData Function
+
+        public void SetPriority(ushort priority) => commonData.priority = priority;
+        public void SetLoop(bool isLoop) => commonData.isLoop = isLoop;
+        public bool GetLoop() => commonData.isLoop;
+        #endregion
 
         #region ITable Function
         
@@ -17,9 +24,9 @@ namespace Lua.AnimClipData {
         public KeyType GetKeyType() => KeyType.FixedField;
         public void SetKey(object key) { }
         public string GetKey() => LuaTable.GetArrayKeyString(FrameType.Ungrab);
-        public bool IsNullTable() => priority <= 0 || ungrabData.IsNullTable();
+        public bool IsNullTable() => commonData.IsNull() || ungrabData.IsNullTable();
         public void Clear() {
-            priority = 0;
+            commonData.Clear();
             ungrabData.Clear();
         }
 
@@ -29,41 +36,34 @@ namespace Lua.AnimClipData {
 
         #region IFieldKeyTable Function
 
-        private const string Key_Priority = PriorityFrameData.Key_Priority;
-        private const string Key_UngrabData = "data";
-        
         public void SetFieldValueTableValue(string key, object value) {
             switch (key) {
-                case Key_Priority:
-                    priority = (ushort)(int)value;
-                    return;
-                case Key_UngrabData:
+                case CommonFrameData.Key_Data:
                     ungrabData = (UngrabData)value;
                     return;
             }
+            commonData.SetFieldValueTableValue(key, value);
         }
 
         public object GetFieldValueTableValue(string key) {
             switch (key) {
-                case Key_Priority:
-                    return priority;
-                case Key_UngrabData:
+                case CommonFrameData.Key_Data:
                     return ungrabData;
-                default:
-                    Debug.LogError("UngrabFrameData::GetFieldValueTableValue key is not exit. key " + key);
-                    return null;
             }
+            return commonData.GetFieldValueTableValue(key);
         }
 
         private static FieldValueTableInfo[] m_arraykeyValue;
         public FieldValueTableInfo[] GetFieldValueTableInfo() {
             if (m_arraykeyValue != null)
                 return m_arraykeyValue;
-            const ushort length = 2;
+            FieldValueTableInfo[] commonFrameValues = commonData.GetFieldValueTableInfo();
+            ushort length = (ushort)(1 + commonFrameValues.Length);
             ushort count = 0;
             m_arraykeyValue = new FieldValueTableInfo[length];
-            m_arraykeyValue[count++] = new FieldValueTableInfo(Key_Priority, ValueType.Int);
-            m_arraykeyValue[count] = new FieldValueTableInfo(Key_UngrabData, ValueType.Table);
+            for (ushort index = 0; index < commonFrameValues.Length; index++)
+                m_arraykeyValue[count++] = commonFrameValues[index];
+            m_arraykeyValue[count] = new FieldValueTableInfo(CommonFrameData.Key_Data, ValueType.Table);
             return m_arraykeyValue;
         }
         #endregion

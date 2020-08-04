@@ -77,6 +77,7 @@ public class BaseEditorWindow : EditorWindow {
 
     protected float Slider(float current, float maxValue) => EditorGUILayout.Slider(current, 0, maxValue);
 
+    protected bool Toggle(bool boolean) => EditorGUILayout.Toggle(boolean);
     protected int Toggle(int number) => EditorGUILayout.Toggle(number == 1) ? 1 : 0;
 
     protected void FadeLayoutUI(Action uiFunction, float value) {

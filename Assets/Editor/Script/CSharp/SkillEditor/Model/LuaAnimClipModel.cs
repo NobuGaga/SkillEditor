@@ -371,11 +371,11 @@ namespace SkillEditor {
             SetFrameData(index, data);
         }
 
-        private const int DefaultPriority = 1;
+        private const ushort DefaultPriority = 1;
         public static void AddPriorityFrameData(int index, FrameType frameType) {
             FrameData frameData = GetFrameData(index);
             PriorityFrameData priorityFrameData = (PriorityFrameData)frameData.GetFieldValueTableValue(frameType.ToString());
-            priorityFrameData.priority = DefaultPriority;
+            priorityFrameData.SetPriority(DefaultPriority);
             frameData.SetFieldValueTableValue(frameType.ToString(), priorityFrameData);
             SetFrameData(index, frameData);
         }
@@ -391,7 +391,15 @@ namespace SkillEditor {
         public static void SetFramePriorityData(int index, FrameType frameType, ushort priority) {
             FrameData frameData = GetFrameData(index);
             IFieldValueTable table = (IFieldValueTable)frameData.GetFieldValueTableValue(frameType.ToString());
-            table.SetFieldValueTableValue(PriorityFrameData.Key_Priority, (int)priority);
+            table.SetFieldValueTableValue(CommonFrameData.Key_Data, (int)priority);
+            frameData.SetFieldValueTableValue(frameType.ToString(), table);
+            SetFrameData(index, frameData);
+        }
+
+        public static void SetFrameLoopData(int index, FrameType frameType, bool isLoop) {
+            FrameData frameData = GetFrameData(index);
+            ICommonFrameData table = (ICommonFrameData)frameData.GetFieldValueTableValue(frameType.ToString());
+            table.SetLoop(isLoop);
             frameData.SetFieldValueTableValue(frameType.ToString(), table);
             SetFrameData(index, frameData);
         }
@@ -399,7 +407,7 @@ namespace SkillEditor {
         public static void AddUngrabFrameData(int index) {
             FrameData frameData = GetFrameData(index);
             UngrabFrameData ungrabFrameData = default;
-            ungrabFrameData.priority = DefaultPriority;
+            ungrabFrameData.SetPriority(DefaultPriority);
             UngrabData ungrabData = default;
             ungrabData.gravityAccelerate = 1;
             ungrabFrameData.ungrabData = ungrabData;
@@ -417,7 +425,7 @@ namespace SkillEditor {
         public static void AddCameraFrameData(int index) {
             FrameData frameData = GetFrameData(index);
             CameraFrameData cameraFrameData = default;
-            cameraFrameData.priority = DefaultPriority;
+            cameraFrameData.SetPriority(DefaultPriority);
             CameraData cameraData = default;
             cameraData.id = DefaultCameraID;
             cameraData.triggerType = CameraTriggerType.Time;
@@ -494,7 +502,7 @@ namespace SkillEditor {
             FrameData frameData = GetFrameData(index);
             IFieldValueTable table = (IFieldValueTable)frameData.GetFieldValueTableValue(frameType.ToString());
             if (table.IsNullTable())
-                table.SetFieldValueTableValue(PriorityFrameData.Key_Priority,  DefaultPriority);
+                table.SetFieldValueTableValue(CommonFrameData.Key_Data, (int)DefaultPriority);
             SetCustomDataMethodAndData(table);
             object customData = GetCustomData();
             object staticList = GetCustomDataStaticList();

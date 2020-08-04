@@ -305,6 +305,7 @@ namespace SkillEditor {
         public static void AddPriorityFrameData(int index, AnimClipData.FrameType frameType) => LuaAnimClipModel.AddPriorityFrameData(index, frameType);
         public static void DeletePriorityFrameData(int index, AnimClipData.FrameType frameType) => LuaAnimClipModel.DeletePriorityFrameData(index, frameType);
         public static void SetFramePriorityData(int index, AnimClipData.FrameType frameType, ushort priority) => LuaAnimClipModel.SetFramePriorityData(index, frameType, priority);
+        public static void SetFrameLoopData(int index, AnimClipData.FrameType frameType, bool isLoop) => LuaAnimClipModel. SetFrameLoopData(index, frameType, isLoop);
 
         public static void AddUngrabFrameData(int index) => LuaAnimClipModel.AddUngrabFrameData(index);
         public static void SetUngrabFrameData(int index, AnimClipData.UngrabFrameData data) => LuaAnimClipModel.SetUngrabFrameData(index, data);

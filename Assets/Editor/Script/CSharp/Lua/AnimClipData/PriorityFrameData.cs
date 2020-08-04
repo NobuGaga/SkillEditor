@@ -4,10 +4,17 @@ using System.Text;
 
 namespace Lua.AnimClipData {
 
-    public struct PriorityFrameData : IFieldValueTable {
+    public struct PriorityFrameData : IFieldValueTable, ICommonFrameData {
 
         public FrameType frameType;
-        public ushort priority;
+        public CommonFrameData commonData;
+
+        #region ICommonFrameData Function
+
+        public void SetPriority(ushort priority) => commonData.priority = priority;
+        public void SetLoop(bool isLoop) => commonData.isLoop = isLoop;
+        public bool GetLoop() => commonData.isLoop;
+        #endregion
 
         #region ITable Function
         
@@ -17,8 +24,8 @@ namespace Lua.AnimClipData {
         public KeyType GetKeyType() => KeyType.FixedField;
         public void SetKey(object key) => Enum.TryParse(key as string, false, out frameType);
         public string GetKey() => LuaTable.GetArrayKeyString(frameType);
-        public bool IsNullTable() => priority <= 0;
-        public void Clear() => priority = 0;
+        public bool IsNullTable() => commonData.IsNull();
+        public void Clear() => commonData.Clear();
 
         private static readonly StringBuilder m_staticBuilder = new StringBuilder((ushort)Math.Pow(2, 7));
         public override string ToString() => LuaTable.GetFieldKeyTableText(m_staticBuilder, this);
@@ -26,36 +33,11 @@ namespace Lua.AnimClipData {
 
         #region IFieldKeyTable Function
 
-        public const string Key_Priority = "priority";
-        
-        public void SetFieldValueTableValue(string key, object value) {
-            switch (key) {
-                case Key_Priority:
-                    priority = (ushort)(int)value;
-                    return;
-            }
-        }
+        public void SetFieldValueTableValue(string key, object value) => commonData.SetFieldValueTableValue(key, value);
 
-        public object GetFieldValueTableValue(string key) {
-            switch (key) {
-                case Key_Priority:
-                    return priority;
-                default:
-                    Debug.LogError("PriorityFrameData::GetFieldValueTableValue key is not exit. key " + key);
-                    return null;
-            }
-        }
+        public object GetFieldValueTableValue(string key) => commonData.GetFieldValueTableValue(key);
 
-        private static FieldValueTableInfo[] m_arraykeyValue;
-        public FieldValueTableInfo[] GetFieldValueTableInfo() {
-            if (m_arraykeyValue != null)
-                return m_arraykeyValue;
-            const ushort length = 1;
-            ushort count = 0;
-            m_arraykeyValue = new FieldValueTableInfo[length];
-            m_arraykeyValue[count] = new FieldValueTableInfo(Key_Priority, ValueType.Int);
-            return m_arraykeyValue;
-        }
+        public FieldValueTableInfo[] GetFieldValueTableInfo() => commonData.GetFieldValueTableInfo();
         #endregion
     }
 }
