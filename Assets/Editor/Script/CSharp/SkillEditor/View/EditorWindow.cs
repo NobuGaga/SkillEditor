@@ -30,6 +30,7 @@ namespace SkillEditor {
         private const string BtnAddEffect = "增加特效";
         private const string BtnAddCube = "增加碰撞框";
         private const string BtnAddTrack = "增加轨迹段";
+        private const string BtnAddTrackChange = "增加轨迹改变";
         private const string BtnAdd = "增加 ";
         private const string BtnCopy = "复制帧数据";
         private const string LabelTime = "触发时间点 ";
@@ -44,6 +45,7 @@ namespace SkillEditor {
         private const string LabelBlockStart = "轨迹格挡开始";
         private const string LabelBlockEnd = "轨迹格挡结束";
         private const string LabelBlock = "格挡框";
+        private const string LabelTrack = "轨迹改变";
         private const string LabelGravityAccelerate = "重力加速度";
         private const string LabelHorizontalSpeed = "水平速度";
         private const string LabelCollision = "碰撞框";
@@ -56,6 +58,7 @@ namespace SkillEditor {
         private const string LabelCrush = "碎尸";
         private const string LabelCameraTriggerType = "镜头触发类型";
         private const string LabelCameraFocusType = "镜头聚焦类型";
+        private const string LabelReplaceID = "替换轨迹 ID";
         private const string BtnPlay = "Play";
         private const string BtnPause = "Pause";
         private const string BtnStop = "Stop";
@@ -266,6 +269,10 @@ namespace SkillEditor {
                     HorizontalLayoutUI(CameraFrameDataTitleUI, index);
                     HorizontalLayoutUI(CameraFrameDataUI, index);
                 }
+                if (!data.trackChangeFrameData.IsNullTable()) {
+                    HorizontalLayoutUI(TrackChangeFrameDataTitleUI, index);
+                    HorizontalLayoutUI(TrackChangeFrameDataUI, index);
+                }
                 if (!data.buffFrameData.IsNullTable()) {
                     HorizontalLayoutUI(BuffFrameDataTitleUI, index);
                     BuffFrameDataUI(index);
@@ -307,6 +314,8 @@ namespace SkillEditor {
                 Controller.AddPriorityFrameData(index, FrameType.DodgeBreak);
             if (data.cameraFrameData.IsNullTable() && SpaceWithButton(BtnAdd + FrameType.Camera))
                 Controller.AddCameraFrameData(index);
+            if (data.trackChangeFrameData.IsNullTable() && SpaceWithButton(BtnAddTrackChange))
+                Controller.AddTrackChangeFrameData(index);
             if (SpaceWithButton(BtnAdd + FrameType.Buff))
                 Controller.AddNewCustomData(index, FrameType.Buff);
             if (SpaceWithButton(BtnCopy))
@@ -472,6 +481,9 @@ namespace SkillEditor {
                 case FrameType.Block:
                     SpaceWithLabel(LabelBlock);
                     break;
+                case FrameType.TrackChange:
+                    SpaceWithLabel(LabelTrack);
+                    break;
                 default:
                     SpaceWithLabel(frameType.ToString());
                     break;
@@ -539,6 +551,21 @@ namespace SkillEditor {
             bool isDelete = SpaceWithButton(BtnDelete);
             if (isDelete)
                 Controller.DeleteCameraFrameData(frameIndex);
+        }
+
+        private void TrackChangeFrameDataTitleUI(int index) => PriorityFrameDataTitleUI(index, FrameType.TrackChange);
+        private void TrackChangeFrameDataUI(int frameIndex) {
+            FrameData frameData = GetFrameData(frameIndex);
+            TrackChangeFrameData trackChangeFrameData = frameData.trackChangeFrameData;
+            TrackChangeData trackChangeData = trackChangeFrameData.trackChangeData;
+            SpaceWithLabel(LabelEffectID);
+            trackChangeData.id = TextField(trackChangeData.id);
+            SpaceWithLabel(LabelReplaceID);
+            trackChangeData.replaceID = TextField(trackChangeData.replaceID);
+            Controller.SetTrackChangeFrameData(frameIndex, trackChangeFrameData);
+            bool isDelete = SpaceWithButton(BtnDelete);
+            if (isDelete)
+                Controller.DeleteTrackChangeFrameData(frameIndex);
         }
 
         private void BuffFrameDataTitleUI(int index) => PriorityFrameDataTitleUI(index, FrameType.Buff);

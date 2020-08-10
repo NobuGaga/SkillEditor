@@ -15,7 +15,7 @@ namespace Lua.AnimClipData {
         public ReadType GetReadType() => ReadType.FixedToRepeat;
         public KeyType GetKeyType() => KeyType.FixedField;
         public void SetKey(object key) { }
-        public string GetKey() => "data";
+        public string GetKey() => CommonFrameData.Key_Data;
         public bool IsNullTable() => dataList == null || dataList.Length == 0;
         public void Clear() => dataList = null;
 

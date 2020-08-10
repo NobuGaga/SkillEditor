@@ -25,6 +25,7 @@ namespace Lua.AnimClipData {
         public PriorityFrameData blockStartFrameData;
         public PriorityFrameData blockEndFrameData;
         public BlockFrameData blockFrameData;
+        public TrackChangeFrameData trackChangeFrameData;
 
         #region ITable Function
         
@@ -63,6 +64,7 @@ namespace Lua.AnimClipData {
             blockStartFrameData.Clear();
             blockEndFrameData.Clear();
             blockFrameData.Clear();
+            trackChangeFrameData.Clear();
         }
 
         private static readonly StringBuilder m_staticBuilder = new StringBuilder((ushort)Math.Pow(2, 11));
@@ -138,6 +140,9 @@ namespace Lua.AnimClipData {
                 case FrameType.Block:
                     blockFrameData = (BlockFrameData)value;
                     return;
+                case FrameType.TrackChange:
+                    trackChangeFrameData = (TrackChangeFrameData)value;
+                    return;
             }
         }
 
@@ -183,6 +188,8 @@ namespace Lua.AnimClipData {
                     return data.blockEndFrameData;
                 case FrameType.Block:
                     return data.blockFrameData;
+                case FrameType.TrackChange:
+                    return data.trackChangeFrameData;
             }
             Debug.LogError("FrameData::GetFieldValueTableValue key is not exit. key " + key);
             return null;
@@ -191,7 +198,7 @@ namespace Lua.AnimClipData {
         private static Dictionary<string, FrameType> m_dicKeyToFrameType;
         private FrameType GetFrameTypeFromKey(string key) {
             if (!Enum.TryParse(key, false, out FrameType frameType) && !m_dicKeyToFrameType.ContainsKey(key)) {
-                UnityEngine.Debug.LogError("FrameData::GetFieldValueTableValue not exit key : " + key);
+                Debug.LogError("FrameData::GetFieldValueTableValue not exit key : " + key);
                 return default;
             }
             if (m_dicKeyToFrameType.ContainsKey(key))
@@ -251,5 +258,6 @@ namespace Lua.AnimClipData {
         BlockStart = 17,
         BlockEnd = 18,
         Block = 19,
+        TrackChange = 20,
     }
 }

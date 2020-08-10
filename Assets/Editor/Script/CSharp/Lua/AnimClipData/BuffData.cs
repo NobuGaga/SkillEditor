@@ -27,17 +27,14 @@ namespace Lua.AnimClipData {
 
         #region IFieldKeyTable Function
         
-        private const string Key_Type = "type";
-        private const string Key_Id = "id";
-
         public void SetFieldValueTableValue(string key, object value) {
             switch (key) {
-                case Key_Type:
+                case CommonFrameData.Key_Type:
                     if (!Enum.TryParse(value.ToString(), false, out BuffType buffType))
                         Debug.LogError("BuffData::SetFieldValueTableValue value type is not a BuffType");
                     type = buffType;
                     return;
-                case Key_Id:
+                case CommonFrameData.Key_ID:
                     id = (uint)(int)value;
                     return;
             }
@@ -45,9 +42,9 @@ namespace Lua.AnimClipData {
 
         public object GetFieldValueTableValue(string key) {
             switch (key) {
-                case Key_Type:
+                case CommonFrameData.Key_Type:
                     return (ushort)type;
-                case Key_Id:
+                case CommonFrameData.Key_ID:
                     return id;
                 default:
                     Debug.LogError("BuffData::GetFieldValueTableValue key is not exit. key " + key);
@@ -62,8 +59,8 @@ namespace Lua.AnimClipData {
             const ushort length = 2;
             ushort count = 0;
             m_arraykeyValue = new FieldValueTableInfo[length];
-            m_arraykeyValue[count++] = new FieldValueTableInfo(Key_Type, ValueType.Int);
-            m_arraykeyValue[count++] = new FieldValueTableInfo(Key_Id, ValueType.Int);
+            m_arraykeyValue[count++] = new FieldValueTableInfo(CommonFrameData.Key_Type, ValueType.Int);
+            m_arraykeyValue[count++] = new FieldValueTableInfo(CommonFrameData.Key_ID, ValueType.Int);
             return m_arraykeyValue;
         }
         #endregion

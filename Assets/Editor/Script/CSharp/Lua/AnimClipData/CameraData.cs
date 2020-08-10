@@ -17,7 +17,7 @@ namespace Lua.AnimClipData {
         public ReadType GetReadType() => ReadType.Fixed;
         public KeyType GetKeyType() => KeyType.FixedField;
         public void SetKey(object key) { }
-        public string GetKey() => "data";
+        public string GetKey() => CommonFrameData.Key_Data;
         public bool IsNullTable() => id == 0;
         public void Clear() => id = 0;
 
@@ -26,17 +26,15 @@ namespace Lua.AnimClipData {
         #endregion
     
         #region IFieldKeyTable Function
-        
-        private const string Key_Id = "id";
-        private const string Key_Type = "type";
+
         private const string Key_Focus = "focus";
 
         public void SetFieldValueTableValue(string key, object value) {
             switch (key) {
-                case Key_Id:
+                case CommonFrameData.Key_ID:
                     id = (uint)(int)value;
                     return;
-                case Key_Type:
+                case CommonFrameData.Key_Type:
                     if (!Enum.TryParse(value.ToString(), false, out CameraTriggerType triggerType))
                         Debug.LogError("CameraData::SetFieldValueTableValue value type is not a CameraTriggerType");
                     this.triggerType = triggerType;
@@ -51,9 +49,9 @@ namespace Lua.AnimClipData {
 
         public object GetFieldValueTableValue(string key) {
             switch (key) {
-                case Key_Id:
+                case CommonFrameData.Key_ID:
                     return id;
-                case Key_Type:
+                case CommonFrameData.Key_Type:
                     return (ushort)triggerType;
                 case Key_Focus:
                     return (ushort)focusType;
@@ -70,8 +68,8 @@ namespace Lua.AnimClipData {
             const ushort length = 3;
             ushort count = 0;
             m_arraykeyValue = new FieldValueTableInfo[length];
-            m_arraykeyValue[count++] = new FieldValueTableInfo(Key_Id, ValueType.Int);
-            m_arraykeyValue[count++] = new FieldValueTableInfo(Key_Type, ValueType.Int);
+            m_arraykeyValue[count++] = new FieldValueTableInfo(CommonFrameData.Key_ID, ValueType.Int);
+            m_arraykeyValue[count++] = new FieldValueTableInfo(CommonFrameData.Key_Type, ValueType.Int);
             m_arraykeyValue[count] = new FieldValueTableInfo(Key_Focus, ValueType.Int);
             return m_arraykeyValue;
         }

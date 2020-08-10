@@ -447,6 +447,31 @@ namespace SkillEditor {
             SetFrameData(index, frameData);
         }
 
+        private const int DefaultTrackID = 1;
+        public static void AddTrackChangeFrameData(int index) {
+            FrameData frameData = GetFrameData(index);
+            TrackChangeFrameData trackChangeFrameData = default;
+            trackChangeFrameData.SetPriority(DefaultPriority);
+            TrackChangeData trackChangeData = default;
+            trackChangeData.id = DefaultCameraID;
+            trackChangeData.replaceID = DefaultTrackID;
+            trackChangeFrameData.trackChangeData = trackChangeData;
+            frameData.trackChangeFrameData = trackChangeFrameData;
+            SetFrameData(index, frameData);
+        }
+
+        public static void DeleteTrackChangeFrameData(int index) {
+            FrameData frameData = GetFrameData(index);
+            frameData.trackChangeFrameData.Clear();
+            SetFrameData(index, frameData);
+        }
+
+        public static void SetTrackChangeFrameData(int index, TrackChangeFrameData data) {
+            FrameData frameData = GetFrameData(index);
+            frameData.trackChangeFrameData = data;
+            SetFrameData(index, frameData);
+        }
+
         #region Reflection Method And Data
 
         private static MethodInfo CustomDataSetTableListMethod;

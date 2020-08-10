@@ -18,6 +18,8 @@ namespace Lua.AnimClipData {
         public const string Key_Priority = "priority";
         public const string Key_Loop = "loop";
         public const string Key_Data = "data";
+        public const string Key_ID = "id";
+        public const string Key_Type = "type";
         
         private bool SetLoop(object value) => isLoop = ((int)value) == 1;
         private object GetLoop() => isLoop ? 1 : 0;
