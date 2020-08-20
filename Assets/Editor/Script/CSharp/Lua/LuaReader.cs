@@ -147,8 +147,16 @@ namespace Lua {
         private static ushort WriteArrayKeyToFileString(StringBuilder builder, ushort index, ushort key) {
             string keyString = Tool.GetCacheString(string.Format(LuaFormat.ArrayKeyFormat, key));
             char @char = builder[index];
-            while (IsLuaBaseValue(@char))
+            bool isQuotation = @char == LuaFormat.QuotationPair.start;
+            if (isQuotation) {
                 @char = builder[--index];
+                while (@char != LuaFormat.QuotationPair.start)
+                    @char = builder[--index];
+                index--;
+            }
+            else
+                while (IsLuaBaseValue(@char))
+                    @char = builder[--index];
             builder.Insert(index + 1, keyString);
             return (ushort)keyString.Length;
         }

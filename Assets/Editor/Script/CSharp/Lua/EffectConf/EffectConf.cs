@@ -19,6 +19,16 @@ namespace Lua.EffectConf {
         public EffectConfTransform offset;
         public EffectConfTransform scale;
         public EffectConfTransform rotation;
+        public EffectConfShow showType;
+        public EffectConfSound sound;
+        public ushort playTime;
+        public ushort trackRotate;
+        public ushort canMirror;
+        public string pivotWeapon;
+        public ushort beginTime;
+        public ushort lastTime;
+        public ushort minHeight;
+        public ushort scaleByEntity;
 
         #region ITable Function
 
@@ -54,6 +64,14 @@ namespace Lua.EffectConf {
         private const string Key_ResourceName = "sResName";
         private const string Key_Loop = "iLoop";
         private const string Key_Break = "iBreak";
+        private const string Key_PlayTime = "iPlayTime";
+        private const string Key_TrackRotate = "TrackRotate";
+        private const string Key_CanMirror = "iCanMirror";
+        private const string Key_PivotWeapon = "sPivotWeapon";
+        private const string Key_BeginTime = "iBeginTime";
+        private const string Key_LastTime = "iLastTime";
+        private const string Key_MinHeight = "iMinHeight";
+        private const string Key_ScaleByEntity = "iScaleByEntity";
 
         public void SetFieldValueTableValue(string key, object value) {
             switch (key) {
@@ -84,6 +102,36 @@ namespace Lua.EffectConf {
                     return;
                 case Key_Break:
                     isBreak = (int)value > 0;
+                    return;
+                case EffectConfShow.Key_ShowType:
+                    showType = (EffectConfShow)value;
+                    return;
+                case EffectConfSound.Key_Sound:
+                    sound = (EffectConfSound)value;
+                    return;
+                case Key_PlayTime:
+                    playTime = (ushort)(int)value;
+                    return;
+                case Key_TrackRotate:
+                    trackRotate = (ushort)(int)value;
+                    return;
+                case Key_CanMirror:
+                    canMirror = (ushort)(int)value;
+                    return;
+                case Key_PivotWeapon:
+                    pivotWeapon = value as string;
+                    return;
+                case Key_BeginTime:
+                    beginTime = (ushort)(int)value;
+                    return;
+                case Key_LastTime:
+                    lastTime = (ushort)(int)value;
+                    return;
+                case Key_MinHeight:
+                    minHeight = (ushort)(int)value;
+                    return;
+                case Key_ScaleByEntity:
+                    scaleByEntity = (ushort)(int)value;
                     return;
             }
             if (!Enum.TryParse(key.Substring(1), false, out TransformType transformType))
@@ -122,6 +170,26 @@ namespace Lua.EffectConf {
                     return isLoop ? 1 : 0;
                 case Key_Break:
                     return isBreak ? 1 : 0;
+                case EffectConfShow.Key_ShowType:
+                    return showType;
+                case EffectConfSound.Key_Sound:
+                    return sound;
+                case Key_PlayTime:
+                    return playTime;
+                case Key_TrackRotate:
+                    return trackRotate;
+                case Key_CanMirror:
+                    return canMirror;
+                case Key_PivotWeapon:
+                    return pivotWeapon;
+                case Key_BeginTime:
+                    return beginTime;
+                case Key_LastTime:
+                    return lastTime;
+                case Key_MinHeight:
+                    return minHeight;
+                case Key_ScaleByEntity:
+                    return scaleByEntity;
             }
             string typeString = key.Substring(1);
             if (!Enum.TryParse(typeString, false, out TransformType type)) {
@@ -145,7 +213,7 @@ namespace Lua.EffectConf {
             if (m_arraykeyValue != null)
                 return m_arraykeyValue;
             Array arrayType = Enum.GetValues(typeof(TransformType));
-            ushort length = (ushort)(8 + arrayType.Length);
+            ushort length = (ushort)(18 + arrayType.Length);
             ushort count = 0;
             m_arraykeyValue = new FieldValueTableInfo[length];
             m_arraykeyValue[count++] = new FieldValueTableInfo(Key_ID, ValueType.Int);
@@ -161,7 +229,17 @@ namespace Lua.EffectConf {
             m_arraykeyValue[count++] = new FieldValueTableInfo(scale.GetKey(), ValueType.Table);
             rotation.type = TransformType.Rotation;
             m_arraykeyValue[count++] = new FieldValueTableInfo(rotation.GetKey(), ValueType.Table);
-            m_arraykeyValue[count] = new FieldValueTableInfo(Key_ParentPivotType, ValueType.Int);
+            m_arraykeyValue[count++] = new FieldValueTableInfo(Key_ParentPivotType, ValueType.Int);
+            m_arraykeyValue[count++] = new FieldValueTableInfo(showType.GetKey(), ValueType.Table);
+            m_arraykeyValue[count++] = new FieldValueTableInfo(sound.GetKey(), ValueType.Table);
+            m_arraykeyValue[count++] = new FieldValueTableInfo(Key_PlayTime, ValueType.Int);
+            m_arraykeyValue[count++] = new FieldValueTableInfo(Key_TrackRotate, ValueType.Int);
+            m_arraykeyValue[count++] = new FieldValueTableInfo(Key_CanMirror, ValueType.Int);
+            m_arraykeyValue[count++] = new FieldValueTableInfo(Key_PivotWeapon, ValueType.String);
+            m_arraykeyValue[count++] = new FieldValueTableInfo(Key_BeginTime, ValueType.Int);
+            m_arraykeyValue[count++] = new FieldValueTableInfo(Key_LastTime, ValueType.Int);
+            m_arraykeyValue[count++] = new FieldValueTableInfo(Key_MinHeight, ValueType.Int);
+            m_arraykeyValue[count] = new FieldValueTableInfo(Key_ScaleByEntity, ValueType.Int);
             return m_arraykeyValue;
         }
         #endregion
