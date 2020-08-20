@@ -102,12 +102,12 @@ namespace Lua {
             StringBuilder builder = LuaWriter.BuilderCache;
             builder.Clear();
             builder.Append(luaText);
-            ushort index = 0;
+            int index = 0;
             CheckNoKeyTable(builder, ref index);
             luaText = builder.ToString();
         }
 
-        private static void CheckNoKeyTable(StringBuilder builder, ref ushort index) {
+        private static void CheckNoKeyTable(StringBuilder builder, ref int index) {
             while (builder[index++] != LuaFormat.CurlyBracesPair.start) { }
             ushort key = 1;
             for (; index < builder.Length; index++) {
@@ -124,10 +124,10 @@ namespace Lua {
             }
         }
 
-        private static void CheckNoKeyValue(StringBuilder builder, ref ushort index, ref ushort key) {
+        private static void CheckNoKeyValue(StringBuilder builder, ref int index, ref ushort key) {
             bool hasEqualSymbol = false;
             bool hasValue = false;
-            for (ushort valueIndex = (ushort)(index - 1); valueIndex >= 0; valueIndex--) {
+            for (int valueIndex = index - 1; valueIndex >= 0; valueIndex--) {
                 char valueChar = builder[valueIndex];
                 if (valueChar == LuaFormat.EqualSymbol) {
                     hasEqualSymbol = true;
@@ -140,11 +140,11 @@ namespace Lua {
             }
             if (hasEqualSymbol || !hasValue)
                 return;
-            ushort length = WriteArrayKeyToFileString(builder, (ushort)(index - 1), key++);
+            ushort length = WriteArrayKeyToFileString(builder, index - 1, key++);
             index += length;
         }
 
-        private static ushort WriteArrayKeyToFileString(StringBuilder builder, ushort index, ushort key) {
+        private static ushort WriteArrayKeyToFileString(StringBuilder builder, int index, ushort key) {
             string keyString = Tool.GetCacheString(string.Format(LuaFormat.ArrayKeyFormat, key));
             char @char = builder[index];
             bool isQuotation = @char == LuaFormat.QuotationPair.start;
@@ -610,7 +610,7 @@ namespace Lua {
             return index;
         }
 
-        private static ushort FindLuaTableEndIndex(StringBuilder builder, ushort index) {
+        private static int FindLuaTableEndIndex(StringBuilder builder, int index) {
             int curlyBracesCount = 0;
             for (; index < builder.Length; index++) {
                 char curChar = builder[index];
