@@ -562,6 +562,7 @@ namespace SkillEditor {
             trackChangeData.id = TextField(trackChangeData.id);
             SpaceWithLabel(LabelReplaceID);
             trackChangeData.replaceID = TextField(trackChangeData.replaceID);
+            trackChangeFrameData.trackChangeData = trackChangeData;
             Controller.SetTrackChangeFrameData(frameIndex, trackChangeFrameData);
             bool isDelete = SpaceWithButton(BtnDelete);
             if (isDelete)

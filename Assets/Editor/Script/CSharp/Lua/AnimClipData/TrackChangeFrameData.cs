@@ -23,7 +23,7 @@ namespace Lua.AnimClipData {
         public ReadType GetReadType() => ReadType.Fixed;
         public KeyType GetKeyType() => KeyType.FixedField;
         public void SetKey(object key) { }
-        public string GetKey() => LuaTable.GetArrayKeyString(FrameType.Track);
+        public string GetKey() => LuaTable.GetArrayKeyString(FrameType.TrackChange);
         public bool IsNullTable() => commonData.IsNull() || trackChangeData.IsNullTable();
         public void Clear() {
             commonData.Clear();
