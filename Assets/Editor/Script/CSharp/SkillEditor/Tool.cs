@@ -180,7 +180,7 @@ namespace SkillEditor {
             Transform target = node.Find(Config.DrawCubeNodeName);
             if (target != null)
                 return target;
-            for (ushort index = 0; index < node.GetChildCount(); index++) {
+            for (ushort index = 0; index < node.childCount; index++) {
                 target = FindContainChild(node.GetChild(index), name);
                 if (target != null)
                     return target;
