@@ -265,6 +265,8 @@ namespace SkillEditor {
                     HorizontalLayoutUI(AirEndFrameDataTitleUI, index);
                 if (!data.dodgeFrameData.IsNullTable())
                     HorizontalLayoutUI(DodgeFrameDataTitleUI, index);
+                if (!data.atkContinueFrameData.IsNullTable())
+                    HorizontalLayoutUI(AttackContinueFrameDataTitleUI, index);
                 if (!data.cameraFrameData.IsNullTable()) {
                     HorizontalLayoutUI(CameraFrameDataTitleUI, index);
                     HorizontalLayoutUI(CameraFrameDataUI, index);
@@ -316,6 +318,8 @@ namespace SkillEditor {
                 Controller.AddCameraFrameData(index);
             if (data.trackChangeFrameData.IsNullTable() && SpaceWithButton(BtnAddTrackChange))
                 Controller.AddTrackChangeFrameData(index);
+            if (data.atkContinueFrameData.IsNullTable() && SpaceWithButton(BtnAdd + FrameType.AttackContinue))
+                Controller.AddPriorityFrameData(index, FrameType.AttackContinue);
             if (SpaceWithButton(BtnAdd + FrameType.Buff))
                 Controller.AddNewCustomData(index, FrameType.Buff);
             if (SpaceWithButton(BtnCopy))
@@ -458,6 +462,7 @@ namespace SkillEditor {
         private void AirBeginFrameDataTitleUI(int index) => PriorityFrameDataTitleUI(index, FrameType.OverheadStart);
         private void AirEndFrameDataTitleUI(int index) => PriorityFrameDataTitleUI(index, FrameType.OverheadBreak);
         private void DodgeFrameDataTitleUI(int index) => PriorityFrameDataTitleUI(index, FrameType.DodgeBreak);
+        private void AttackContinueFrameDataTitleUI(int index) => PriorityFrameDataTitleUI(index, FrameType.AttackContinue);
         private void PriorityFrameDataTitleUI(int index, FrameType frameType) {
             switch (frameType) {
                 case FrameType.PlayEffect:

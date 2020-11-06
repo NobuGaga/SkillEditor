@@ -26,6 +26,7 @@ namespace Lua.AnimClipData {
         public PriorityFrameData blockEndFrameData;
         public BlockFrameData blockFrameData;
         public TrackChangeFrameData trackChangeFrameData;
+        public PriorityFrameData atkContinueFrameData;
 
         #region ITable Function
         
@@ -65,6 +66,7 @@ namespace Lua.AnimClipData {
             blockEndFrameData.Clear();
             blockFrameData.Clear();
             trackChangeFrameData.Clear();
+            atkContinueFrameData.Clear();
         }
 
         private static readonly StringBuilder m_staticBuilder = new StringBuilder((ushort)Math.Pow(2, 11));
@@ -143,6 +145,10 @@ namespace Lua.AnimClipData {
                 case FrameType.TrackChange:
                     trackChangeFrameData = (TrackChangeFrameData)value;
                     return;
+                case FrameType.AttackContinue:
+                    atkContinueFrameData = (PriorityFrameData)value;
+                    atkContinueFrameData.frameType = FrameType.AttackContinue;
+                    return;
             }
         }
 
@@ -190,6 +196,8 @@ namespace Lua.AnimClipData {
                     return data.blockFrameData;
                 case FrameType.TrackChange:
                     return data.trackChangeFrameData;
+                case FrameType.AttackContinue:
+                    return data.atkContinueFrameData;
             }
             Debug.LogError("FrameData::GetFieldValueTableValue key is not exit. key " + key);
             return null;
@@ -259,5 +267,6 @@ namespace Lua.AnimClipData {
         BlockEnd = 18,
         Block = 19,
         TrackChange = 20,
+        AttackContinue = 21,
     }
 }
