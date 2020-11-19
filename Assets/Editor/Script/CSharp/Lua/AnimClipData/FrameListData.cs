@@ -50,7 +50,7 @@ namespace Lua.AnimClipData {
         public FileType GetFileType() => GetRootTableType().GetFileType();
         private static List<FrameData> m_listFrameCache = new List<FrameData>();
         public FrameListData GetFileTypeTable() {
-            if (IsNullTable() || GetFileType() == FileType.Client)
+            if (IsNullTable())
                 return this;
             m_listFrameCache.Clear();
             for (ushort index = 0; index < frameList.Length; index++) {
