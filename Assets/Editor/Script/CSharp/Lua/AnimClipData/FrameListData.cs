@@ -60,6 +60,11 @@ namespace Lua.AnimClipData {
                 frameData.index = (ushort)(m_listFrameCache.Count + 1);
                 m_listFrameCache.Add(frameData);
             }
+            for (ushort index = 0; index < m_listFrameCache.Count; index++) {
+                FrameData frameData = m_listFrameCache[index];
+                frameData.index = (ushort)(index + 1);
+                m_listFrameCache[index] = frameData;
+            }
             FrameListData newData = default;
             newData.frameList = m_listFrameCache.ToArray();
             return newData;
