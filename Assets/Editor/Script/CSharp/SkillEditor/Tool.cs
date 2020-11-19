@@ -177,7 +177,7 @@ namespace SkillEditor {
         public static Transform FindContainChild(Transform node, string name) {
             if (node == null)
                 return null;
-            Transform target = node.Find(Config.DrawCubeNodeName);
+            Transform target = node.Find(name);
             if (target != null)
                 return target;
             for (ushort index = 0; index < node.childCount; index++) {
