@@ -59,9 +59,9 @@ public class BaseEditorWindow : EditorWindow {
 
     protected string TextField(string text) => EditorGUILayout.TextField(text);
 
-    protected bool Button(string buttonName, Style style = Style.PreButton) => GUILayout.Button(buttonName, GetGUIStyle(style));
+    protected bool Button(string buttonName, Style style = Style.Button) => GUILayout.Button(buttonName, GetGUIStyle(style));
 
-    protected bool SpaceWithButton(string buttonName, Style style = Style.PreButton, float space = DefaultSpace) {
+    protected bool SpaceWithButton(string buttonName, Style style = Style.Button, float space = DefaultSpace) {
         Space(space);
         return Button(buttonName, style);
     }
@@ -175,6 +175,7 @@ public class BaseEditorWindow : EditorWindow {
     }
 
     protected enum Style {
+        Button,
         PreButton,
         PreDropDown,
     }
