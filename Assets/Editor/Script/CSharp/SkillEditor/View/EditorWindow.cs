@@ -31,6 +31,8 @@ namespace SkillEditor {
         private const string BtnAddCube = "增加碰撞框";
         private const string BtnAddTrack = "增加轨迹段";
         private const string BtnAddTrackChange = "增加轨迹改变";
+        private const string BtnAddCommandAttack = "增加指挥放普攻";
+        private const string BtnAddCommandSkill = "增加指挥放技能";
         private const string BtnAdd = "增加 ";
         private const string BtnCopy = "复制帧数据";
         private const string LabelTime = "触发时间点 ";
@@ -46,6 +48,8 @@ namespace SkillEditor {
         private const string LabelBlockEnd = "轨迹格挡结束";
         private const string LabelBlock = "格挡框";
         private const string LabelTrack = "轨迹改变";
+        private const string LabelCommandAttack = "指挥放普攻";
+        private const string LabelCommandSkill = "指挥放技能";
         private const string LabelGravityAccelerate = "重力加速度";
         private const string LabelHorizontalSpeed = "水平速度";
         private const string LabelCollision = "碰撞框";
@@ -275,6 +279,14 @@ namespace SkillEditor {
                     HorizontalLayoutUI(TrackChangeFrameDataTitleUI, index);
                     HorizontalLayoutUI(TrackChangeFrameDataUI, index);
                 }
+                if (!data.commandAttackFrameData.IsNullTable()) {
+                    HorizontalLayoutUI(CommandAttackFrameDataTitleUI, index);
+                    HorizontalLayoutUI(CommandAttackFrameDataUI, index);
+                }
+                if (!data.commandSkillFrameData.IsNullTable()) {
+                    HorizontalLayoutUI(CommandSkillFrameDataTitleUI, index);
+                    HorizontalLayoutUI(CommandSkillFrameDataUI, index);
+                }
                 if (!data.buffFrameData.IsNullTable()) {
                     HorizontalLayoutUI(BuffFrameDataTitleUI, index);
                     BuffFrameDataUI(index);
@@ -320,6 +332,10 @@ namespace SkillEditor {
                 Controller.AddTrackChangeFrameData(index);
             if (data.atkContinueFrameData.IsNullTable() && SpaceWithButton(BtnAdd + FrameType.AttackContinue))
                 Controller.AddPriorityFrameData(index, FrameType.AttackContinue);
+            if (data.commandAttackFrameData.IsNullTable() && SpaceWithButton(BtnAddCommandAttack))
+                Controller.AddIDFrameData(index, FrameType.CommandAttack);
+            if (data.commandSkillFrameData.IsNullTable() && SpaceWithButton(BtnAddCommandSkill))
+                Controller.AddIDFrameData(index, FrameType.CommandSkill);
             if (SpaceWithButton(BtnAdd + FrameType.Buff))
                 Controller.AddNewCustomData(index, FrameType.Buff);
             if (SpaceWithButton(BtnCopy))
@@ -489,6 +505,12 @@ namespace SkillEditor {
                 case FrameType.TrackChange:
                     SpaceWithLabel(LabelTrack);
                     break;
+                case FrameType.CommandAttack:
+                    SpaceWithLabel(LabelCommandAttack);
+                    break;
+                case FrameType.CommandSkill:
+                    SpaceWithLabel(LabelCommandSkill);
+                    break;
                 default:
                     SpaceWithLabel(frameType.ToString());
                     break;
@@ -572,6 +594,31 @@ namespace SkillEditor {
             bool isDelete = SpaceWithButton(BtnDelete);
             if (isDelete)
                 Controller.DeleteTrackChangeFrameData(frameIndex);
+        }
+
+        private void CommandAttackFrameDataTitleUI(int index) => PriorityFrameDataTitleUI(index, FrameType.CommandAttack);
+        private void CommandSkillFrameDataTitleUI(int index) => PriorityFrameDataTitleUI(index, FrameType.CommandSkill);
+        private void CommandAttackFrameDataUI(int index) => IDFrameDataUI(index, FrameType.CommandAttack);
+        private void CommandSkillFrameDataUI(int index) => IDFrameDataUI(index, FrameType.CommandSkill);
+        private void IDFrameDataUI(int frameIndex, FrameType frameType) {
+            FrameData frameData = GetFrameData(frameIndex);
+            IDFrameData idFrameData = default;
+            switch (frameType) {
+                case FrameType.CommandAttack:
+                    idFrameData = frameData.commandAttackFrameData;
+                    break;
+                case FrameType.CommandSkill:
+                    idFrameData = frameData.commandSkillFrameData;
+                    break;
+            }
+            IDData idData = idFrameData.idData;
+            SpaceWithLabel(LabelEffectID);
+            idData.id = TextField(idData.id);
+            idFrameData.idData = idData;
+            Controller.SetIDFrameData(frameIndex, frameType, idFrameData);
+            bool isDelete = SpaceWithButton(BtnDelete);
+            if (isDelete)
+                Controller.DeleteIDFrameData(frameIndex, frameType);
         }
 
         private void BuffFrameDataTitleUI(int index) => PriorityFrameDataTitleUI(index, FrameType.Buff);

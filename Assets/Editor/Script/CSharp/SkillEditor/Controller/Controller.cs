@@ -318,6 +318,10 @@ namespace SkillEditor {
         public static void DeleteTrackChangeFrameData(int index) => LuaAnimClipModel.DeleteTrackChangeFrameData(index);
         public static void SetTrackChangeFrameData(int index, AnimClipData.TrackChangeFrameData data) => LuaAnimClipModel.SetTrackChangeFrameData(index, data);
 
+        public static void AddIDFrameData(int index, AnimClipData.FrameType frameType) => LuaAnimClipModel.AddIDFrameData(index, frameType);
+        public static void DeleteIDFrameData(int index, AnimClipData.FrameType frameType) => LuaAnimClipModel.DeleteIDFrameData(index, frameType);
+        public static void SetIDFrameData(int index, AnimClipData.FrameType frameType, AnimClipData.IDFrameData data) => LuaAnimClipModel.SetIDFrameData(index, frameType, data);
+
         public static void AddNewCustomData(int index, AnimClipData.FrameType frameType) => LuaAnimClipModel.AddNewCustomSubData(index, frameType);
         public static void DeleteCustomData(int frameIndex, int deleteIndex, AnimClipData.FrameType frameType) => LuaAnimClipModel.DeleteCustomSubData(frameIndex, deleteIndex, frameType);
         public static void SetCustomeSubData(int frameIndex, ITable data, AnimClipData.FrameType frameType) => LuaAnimClipModel.SetCustomeSubData(frameIndex, data, frameType);

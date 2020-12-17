@@ -58,6 +58,8 @@
      <Compile Include="Assets\Editor\Script\CSharp\Lua\AnimClipData\GrabFrameData.cs" />
      <Compile Include="Assets\Editor\Script\CSharp\Lua\AnimClipData\HitData.cs" />
      <Compile Include="Assets\Editor\Script\CSharp\Lua\AnimClipData\HitFrameData.cs" />
+     <Compile Include="Assets\Editor\Script\CSharp\Lua\AnimClipData\IDData.cs" />
+     <Compile Include="Assets\Editor\Script\CSharp\Lua\AnimClipData\IDFrameData.cs" />
      <Compile Include="Assets\Editor\Script\CSharp\Lua\AnimClipData\PriorityFrameData.cs" />
      <Compile Include="Assets\Editor\Script\CSharp\Lua\AnimClipData\StateData.cs" />
      <Compile Include="Assets\Editor\Script\CSharp\Lua\AnimClipData\TrackChangeData.cs" />

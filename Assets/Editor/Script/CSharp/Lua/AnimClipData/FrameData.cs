@@ -27,6 +27,8 @@ namespace Lua.AnimClipData {
         public BlockFrameData blockFrameData;
         public TrackChangeFrameData trackChangeFrameData;
         public PriorityFrameData atkContinueFrameData;
+        public IDFrameData commandAttackFrameData;
+        public IDFrameData commandSkillFrameData;
 
         #region ITable Function
         
@@ -67,6 +69,8 @@ namespace Lua.AnimClipData {
             blockFrameData.Clear();
             trackChangeFrameData.Clear();
             atkContinueFrameData.Clear();
+            commandAttackFrameData.Clear();
+            commandSkillFrameData.Clear();
         }
 
         private static readonly StringBuilder m_staticBuilder = new StringBuilder((ushort)Math.Pow(2, 11));
@@ -149,6 +153,14 @@ namespace Lua.AnimClipData {
                     atkContinueFrameData = (PriorityFrameData)value;
                     atkContinueFrameData.frameType = FrameType.AttackContinue;
                     return;
+                case FrameType.CommandAttack:
+                    commandAttackFrameData = (IDFrameData)value;
+                    commandAttackFrameData.frameType = FrameType.CommandAttack;
+                    return;
+                case FrameType.CommandSkill:
+                    commandSkillFrameData = (IDFrameData)value;
+                    commandSkillFrameData.frameType = FrameType.CommandSkill;
+                    return;
             }
         }
 
@@ -198,6 +210,10 @@ namespace Lua.AnimClipData {
                     return data.trackChangeFrameData;
                 case FrameType.AttackContinue:
                     return data.atkContinueFrameData;
+                case FrameType.CommandAttack:
+                    return data.commandAttackFrameData;
+                case FrameType.CommandSkill:
+                    return data.commandSkillFrameData;
             }
             Debug.LogError("FrameData::GetFieldValueTableValue key is not exit. key " + key);
             return null;
@@ -268,5 +284,7 @@ namespace Lua.AnimClipData {
         Block = 19,
         TrackChange = 20,
         AttackContinue = 21,
+        CommandAttack = 22,
+        CommandSkill = 23,
     }
 }

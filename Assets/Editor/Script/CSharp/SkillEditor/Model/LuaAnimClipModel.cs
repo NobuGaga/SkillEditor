@@ -472,6 +472,51 @@ namespace SkillEditor {
             SetFrameData(index, frameData);
         }
 
+        private const int DefaultID = 1;
+        public static void AddIDFrameData(int index, FrameType frameType) {
+            FrameData frameData = GetFrameData(index);
+            IDFrameData idFrameData = default;
+            idFrameData.SetPriority(DefaultPriority);
+            IDData idData = default;
+            idData.id = DefaultID;
+            idFrameData.idData = idData;
+            switch (frameType) {
+                case FrameType.CommandAttack:
+                    frameData.commandAttackFrameData = idFrameData;
+                    break;
+                case FrameType.CommandSkill:
+                    frameData.commandSkillFrameData = idFrameData;
+                    break;
+            }
+            SetFrameData(index, frameData);
+        }
+
+        public static void DeleteIDFrameData(int index, FrameType frameType) {
+            FrameData frameData = GetFrameData(index);
+            switch (frameType) {
+                case FrameType.CommandAttack:
+                    frameData.commandAttackFrameData.Clear();
+                    break;
+                case FrameType.CommandSkill:
+                    frameData.commandSkillFrameData.Clear();
+                    break;
+            }
+            SetFrameData(index, frameData);
+        }
+
+        public static void SetIDFrameData(int index, FrameType frameType, IDFrameData data) {
+            FrameData frameData = GetFrameData(index);
+            switch (frameType) {
+                case FrameType.CommandAttack:
+                    frameData.commandAttackFrameData = data;
+                    break;
+                case FrameType.CommandSkill:
+                    frameData.commandSkillFrameData = data;
+                    break;
+            }
+            SetFrameData(index, frameData);
+        }
+
         #region Reflection Method And Data
 
         private static MethodInfo CustomDataSetTableListMethod;
