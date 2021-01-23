@@ -35,8 +35,9 @@
         public const string StringKeyValueFormat = "{0}[\"{1}\"] = {2}\n{3}{0}{4}" + TableEndString;
         public const string FixedKeyValueFormat = "{0}{1} = {2}\n{3}{0}{4}" + TableEndString;
         public const string TableEndString = ",\n";
-        public const string RequireFunction = "require(\"{0}\")\n";
-
+        public const string ClientRequireFunction = "require(\"{0}\")\n";
+        public const string ServerRequireFunction = "RequireConfig(\"{0}\")\n";
+        
         public struct PairChar {
 
             public char start;

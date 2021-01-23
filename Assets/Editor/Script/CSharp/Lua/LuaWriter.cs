@@ -75,6 +75,7 @@ namespace Lua {
         private static void WriteSplitFile<T>(string folderPath, string mainFileName, string mainFileHeadText, string requirePath, string fileNameFormat) where T : ITable, ILuaFile<T> {
             T luaFile = default;
             ILuaSplitFile<T> luaSplitFile = (ILuaSplitFile<T>)luaFile;
+            string requireFunction = luaSplitFile.GetChildFileRequireFunction();
             List<T> list = luaFile.GetModel();
             string fileExtension = luaSplitFile.GetFileExtension();
             m_mainFileTextBuilder.Clear();
@@ -82,7 +83,7 @@ namespace Lua {
                 T childFileData = list[index];
                 string fileName = string.Format(fileNameFormat, childFileData.GetKey());
                 string path = requirePath + fileName;
-                string requireText = string.Format(LuaFormat.RequireFunction, path);
+                string requireText = string.Format(requireFunction, path);
                 m_mainFileTextBuilder.Append(requireText);
                 string filePath = Tool.CombineFilePath(folderPath, fileName, fileExtension);
                 Write(filePath, childFileData.GetWriteFileString());

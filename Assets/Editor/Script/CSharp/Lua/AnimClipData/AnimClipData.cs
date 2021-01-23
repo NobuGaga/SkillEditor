@@ -71,6 +71,11 @@ namespace Lua.AnimClipData {
         public string GetFileExtension() => "lua";
         public string GetFolderPath() => Tool.CombinePath(Application.dataPath, "Editor/.luaconfig2/clientOnline/animclipconfig/client");
         public string GetMainFileName() => "AnimClipBase";
+        public string GetChildFileRequireFunction() {
+            if (m_fileType == FileType.Client)
+                return LuaFormat.ClientRequireFunction;
+            return LuaFormat.ServerRequireFunction;
+        }
         public string GetChildFileRequirePath() => "data/config/animclipconfig/client/";
         public string GetChildFileNameFormat() => "{0}_clip";
         public string GetChildFileHeadStart() {
@@ -102,7 +107,14 @@ namespace Lua.AnimClipData {
         public string[] GetMultipleFolderPath() => m_multipleFolderPath;
 
         private static string[] m_multipleMainFileHeadStart = new string[] {
-            "AnimClipServerData = AnimClipServerData or {}\nAnimClipServerData.data = {}\n"
+                                            "local RequireConfig = function(sParth)\n" +
+                            LuaFormat.TabString + "if sParth then\n" +
+            LuaFormat.TabString + LuaFormat.TabString + "table.insert(gProConfigParthLit, sParth)\n" +
+            LuaFormat.TabString + LuaFormat.TabString + "return require_ex(sParth)\n" +
+                            LuaFormat.TabString + "end\n" +
+                                            "end\n" +
+                                            "AnimClipServerData = AnimClipServerData or {}\n" +
+                                            "AnimClipServerData.data = {}\n"
         };
         public string[] GetMultipleLuaMainFileHeadStart() => m_multipleMainFileHeadStart;
 
