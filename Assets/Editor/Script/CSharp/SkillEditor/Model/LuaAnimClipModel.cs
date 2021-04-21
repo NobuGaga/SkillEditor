@@ -77,40 +77,33 @@ namespace SkillEditor {
         public static string[] GetClipGropuIDList(out int[] indexList) => CurrentStateData.GetClipGropuIDList(out indexList, m_lastClipName);
 
         public static void SetCurrentState(State state) {
-            if (m_curStateDataIndex == Config.ErrorIndex) {
+            int stateDataIndex = FindStateDataIndex(state);
+            bool isNotExitState = stateDataIndex == Config.ErrorIndex;
+            if (m_curStateDataIndex == Config.ErrorIndex && isNotExitState) {
                 AddNewStateData(state);
                 return;
             }
             if (state == CurrentState)
                 return;
             StateData lastStateData = CurrentStateData;
-            ClipGroupData clipGroupData = CurrentClipGroupData;
             if (!lastStateData.IsNullTable()) {
                 SetClipGroupDataListCache(lastStateData.clipList);
-                m_listClipGroupDataCache.RemoveAt(m_curClipGroupDataIndex);
                 lastStateData.clipList = m_listClipGroupDataCache.ToArray();
                 CurrentStateData = lastStateData;
             }
-            int stateDataIndex = FindStateDataIndex(state);
-            if (stateDataIndex == Config.ErrorIndex) {
-                StateData newStateData = default;
-                newStateData.state = state;
-                newStateData.clipList = new ClipGroupData[] { clipGroupData };
-                AddNewStateData(state, newStateData);
+            if (isNotExitState) {
+                AddNewStateData(state);
                 return;
             }
             m_curStateDataIndex = stateDataIndex;
             StateData curStateData = CurrentStateData;
-            SetClipGroupDataListCache(curStateData.clipList);
-            m_listClipGroupDataCache.Add(clipGroupData);
-            SortClipGroupDataListCache();
-            curStateData.clipList = m_listClipGroupDataCache.ToArray();
-            CurrentStateData = curStateData;
+            m_curClipGroupDataIndex = FindClipGroupDataIndex();
         }
 
-        private static void AddNewStateData(State state, StateData data = default) {
+        private static void AddNewStateData(State state) {
             AnimClipData animClipData = CurrentAnimClipData;
             StateData[] dataList = animClipData.stateList;
+            StateData data = default;
             data.state = state;
             if (dataList == null || dataList. Length == 0) {
                 dataList = new StateData[] { data };
@@ -121,14 +114,17 @@ namespace SkillEditor {
                 m_listStateDataCache.Add(data);
                 m_listStateDataCache.Sort(SortStateData);
                 dataList = m_listStateDataCache.ToArray();
-                m_curStateDataIndex = FindStateDataIndex(state);
+                m_curStateDataIndex = dataList.Length - 1;
             }
+            m_curClipGroupDataIndex = Config.ErrorIndex;
             animClipData.stateList = dataList;
             CurrentAnimClipData = animClipData;
         }
 
         private static int FindStateDataIndex(State state) {
             StateData[] dataList = CurrentAnimClipData.stateList;
+            if (dataList == null)
+                return Config.ErrorIndex;
             for (int index = 0; index < dataList.Length; index++)
                 if (dataList[index].state == state)
                     return index;
@@ -181,6 +177,16 @@ namespace SkillEditor {
             m_stateClipGroupIndexCache.clipGroupIndex = (ushort)m_curClipGroupDataIndex;
             m_listStateClipIndexPair.Add(m_stateClipGroupIndexCache);
             ResetFrameCubeAndEffectData();
+        }
+
+        private static int FindClipGroupDataIndex() {
+            StateData stateData = CurrentStateData;
+            if (stateData.IsNullTable())
+                return Config.ErrorIndex;
+            for (int index = 0; index < stateData.clipList.Length; index++)
+                if (stateData.clipList[index].clipName == m_lastClipName)
+                    return index;
+            return Config.ErrorIndex;
         }
 
         public static void DeleteClipGroupData() {
@@ -409,7 +415,7 @@ namespace SkillEditor {
             UngrabFrameData ungrabFrameData = default;
             ungrabFrameData.SetPriority(DefaultPriority);
             UngrabData ungrabData = default;
-            ungrabData.gravityAccelerate = 1;
+            ungrabData.grabState = 1;
             ungrabFrameData.ungrabData = ungrabData;
             frameData.ungrabFrameData = ungrabFrameData;
             SetFrameData(index, frameData);

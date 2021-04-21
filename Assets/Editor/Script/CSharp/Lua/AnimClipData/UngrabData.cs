@@ -6,7 +6,7 @@ namespace Lua.AnimClipData {
 
     public struct UngrabData : IFieldValueTable {
 
-        public float gravityAccelerate;
+        public float grabState;
         public float horizontalSpeed;
 
         #region ITable Function
@@ -17,9 +17,9 @@ namespace Lua.AnimClipData {
         public KeyType GetKeyType() => KeyType.FixedField;
         public void SetKey(object key) { }
         public string GetKey() => CommonFrameData.Key_Data;
-        public bool IsNullTable() => gravityAccelerate == 0 && horizontalSpeed == 0;
+        public bool IsNullTable() => grabState == 0 && horizontalSpeed == 0;
         public void Clear() {
-            gravityAccelerate = 0;
+            grabState = 0;
             horizontalSpeed = 0;
         }
 
@@ -35,7 +35,7 @@ namespace Lua.AnimClipData {
         public void SetFieldValueTableValue(string key, object value) {
             switch (key) {
                 case Key_GravityAccelerate:
-                    gravityAccelerate = (float)value;
+                    grabState = (float)value;
                     return;
                 case Key_HorizontalSpeed:
                     horizontalSpeed = (float)value;
@@ -46,7 +46,7 @@ namespace Lua.AnimClipData {
         public object GetFieldValueTableValue(string key) {
             switch (key) {
                 case Key_GravityAccelerate:
-                    return gravityAccelerate;
+                    return grabState;
                 case Key_HorizontalSpeed:
                     return horizontalSpeed;
                 default:

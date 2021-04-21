@@ -463,7 +463,7 @@ namespace Lua {
                 valueIndex += keyValue.KeyLength;
                 FilterSpaceSymbol(luaText, ref valueIndex);
                 if (luaText[valueIndex] != LuaFormat.EqualSymbol) {
-                    PrintErrorWhithLayer("关键帧配置表关键帧 Lua table 配置错误", valueIndex);
+                    PrintErrorWhithLayer("关键帧配置表关键帧 Lua table 配置错误", valueIndex, luaText);
                     break;
                 }
                 valueIndex++;
@@ -513,7 +513,7 @@ namespace Lua {
             }
             string intString = luaText.Substring(startIndex, index - startIndex);
             if (!int.TryParse(intString, out int interge))
-                PrintErrorWhithLayer("关键帧配置表读取整型错误", index);
+                PrintErrorWhithLayer("关键帧配置表读取整型错误", index, luaText);
             if (luaText[index] == LuaFormat.CommaSymbol)
                 index++;
             if (luaText[index] == LuaFormat.LineSymbol)
@@ -531,7 +531,7 @@ namespace Lua {
             }
             string numberString = luaText.Substring(startIndex, index - startIndex);
             if (!float.TryParse(numberString, out float number))
-                PrintErrorWhithLayer("关键帧配置表读取浮点型错误", index);
+                PrintErrorWhithLayer("关键帧配置表读取浮点型错误", index, luaText);
             if (luaText[index] == LuaFormat.CommaSymbol)
                 index++;
             if (luaText[index] == LuaFormat.LineSymbol)
@@ -541,7 +541,7 @@ namespace Lua {
 
         private static string GetLuaTextString(string luaText, ref int index) {
             if (luaText[index] != LuaFormat.QuotationPair.start) {
-                PrintErrorWhithLayer("关键帧配置表读取字符串错误", index);
+                PrintErrorWhithLayer("关键帧配置表读取字符串错误", index, luaText);
                 return string.Empty;
             }
             index++;
@@ -656,8 +656,8 @@ namespace Lua {
             return count == 0;
         }
 
-        private static void PrintErrorWhithLayer(string text, int index) {
-            Debug.LogError(string.Format("{0} 当前索引值为 {1}", text, index));
+        private static void PrintErrorWhithLayer(string text, int index, string luaText) {
+            Debug.LogError(string.Format("{0} 当前索引值为 {1}\n{2}", text, index, luaText));
         }
     }
 }

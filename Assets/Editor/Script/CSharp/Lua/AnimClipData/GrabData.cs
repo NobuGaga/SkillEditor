@@ -8,6 +8,7 @@ namespace Lua.AnimClipData {
 
         public ushort index;
         public CubeData cubeData;
+        public string alignBonePoint;
 
         #region ICubeData Function
 
@@ -33,10 +34,39 @@ namespace Lua.AnimClipData {
         #endregion
 
         #region IFieldKeyTable Function
-        
-        public void SetFieldValueTableValue(string key, object value) => cubeData.SetFieldValueTableValue(key, value);
-        public object GetFieldValueTableValue(string key) => cubeData.GetFieldValueTableValue(key);
-        public FieldValueTableInfo[] GetFieldValueTableInfo() => cubeData.GetFieldValueTableInfo();
+
+        private const string Key_AlignBonePoint = "alignBonePoint";
+
+        public void SetFieldValueTableValue(string key, object value) {
+            switch(key) {
+                case Key_AlignBonePoint:
+                    alignBonePoint = (string)value;
+                    return;
+            }
+            cubeData.SetFieldValueTableValue(key, value);
+        }
+
+        public object GetFieldValueTableValue(string key) {
+            switch(key) {
+                case Key_AlignBonePoint:
+                    return alignBonePoint;
+            }
+            return cubeData.GetFieldValueTableValue(key);
+        }
+
+        private static FieldValueTableInfo[] m_arraykeyValue;
+        public FieldValueTableInfo[] GetFieldValueTableInfo() {
+            if (m_arraykeyValue != null)
+                return m_arraykeyValue;
+            FieldValueTableInfo[] cubeValues = cubeData.GetFieldValueTableInfo();
+            ushort length = (ushort)(1 + cubeValues.Length);
+            ushort count = 0;
+            m_arraykeyValue = new FieldValueTableInfo[length];
+            for (ushort index = 0; index < cubeValues.Length; index++)
+                m_arraykeyValue[count++] = cubeValues[index];
+            m_arraykeyValue[count] = new FieldValueTableInfo(Key_AlignBonePoint, ValueType.String);
+            return m_arraykeyValue;
+        }
         #endregion
     }
 }

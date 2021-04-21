@@ -50,9 +50,10 @@ namespace SkillEditor {
         private const string LabelTrack = "轨迹改变";
         private const string LabelCommandAttack = "指挥放普攻";
         private const string LabelCommandSkill = "指挥放技能";
-        private const string LabelGravityAccelerate = "重力加速度";
+        private const string LabelGrabState = "松手状态";
         private const string LabelHorizontalSpeed = "水平速度";
         private const string LabelCollision = "碰撞框";
+        private const string LabelHighLevelBreakPoint = "高取消等级打断点";
         private const string LabelX = "x";
         private const string LabelY = "y";
         private const string LabelZ = "z";
@@ -67,6 +68,7 @@ namespace SkillEditor {
         private const string BtnPause = "Pause";
         private const string BtnStop = "Stop";
         private const string LabelFrameFormat = "第 {0:f0} 帧";
+        private const string AlignBonePoint = "对齐挂点名";
 
         private static bool m_isSelectPrefab;
         private static bool m_isNoAnimationClip;
@@ -271,6 +273,8 @@ namespace SkillEditor {
                     HorizontalLayoutUI(DodgeFrameDataTitleUI, index);
                 if (!data.atkContinueFrameData.IsNullTable())
                     HorizontalLayoutUI(AttackContinueFrameDataTitleUI, index);
+                if (!data.breakPointFrameData.IsNullTable())
+                    HorizontalLayoutUI(BreakPointFrameDataTitleUI, index);
                 if (!data.cameraFrameData.IsNullTable()) {
                     HorizontalLayoutUI(CameraFrameDataTitleUI, index);
                     HorizontalLayoutUI(CameraFrameDataUI, index);
@@ -332,6 +336,8 @@ namespace SkillEditor {
                 Controller.AddTrackChangeFrameData(index);
             if (data.atkContinueFrameData.IsNullTable() && SpaceWithButton(BtnAdd + FrameType.AttackContinue))
                 Controller.AddPriorityFrameData(index, FrameType.AttackContinue);
+            if (data.breakPointFrameData.IsNullTable() && SpaceWithButton(BtnAdd + LabelHighLevelBreakPoint))
+                Controller.AddPriorityFrameData(index, FrameType.BreakPoint);
             if (data.commandAttackFrameData.IsNullTable() && SpaceWithButton(BtnAddCommandAttack))
                 Controller.AddIDFrameData(index, FrameType.CommandAttack);
             if (data.commandSkillFrameData.IsNullTable() && SpaceWithButton(BtnAddCommandSkill))
@@ -403,6 +409,8 @@ namespace SkillEditor {
             CubeData cubeData = data.cubeData;
             CubeDataUI(ref cubeData);
             data.cubeData = cubeData;
+            SpaceWithLabel(AlignBonePoint);
+            data.alignBonePoint = TextField(data.alignBonePoint);
             Controller.SetCustomeSubData(frameIndex, data, FrameType.Grab);
             bool isDelete = SpaceWithButton(BtnDelete);
             if (isDelete)
@@ -416,10 +424,8 @@ namespace SkillEditor {
             FrameData frameData = GetFrameData(frameIndex);
             UngrabFrameData ungrabFrameData = frameData.ungrabFrameData;
             UngrabData ungrabData = ungrabFrameData.ungrabData;
-            SpaceWithLabel(LabelGravityAccelerate);
-            ungrabData.gravityAccelerate = TextField(ungrabData.gravityAccelerate);
-            SpaceWithLabel(LabelHorizontalSpeed);
-            ungrabData.horizontalSpeed = TextField(ungrabData.horizontalSpeed);
+            SpaceWithLabel(LabelGrabState);
+            ungrabData.grabState = TextField(ungrabData.grabState);
             ungrabFrameData.ungrabData = ungrabData;
             Controller.SetUngrabFrameData(frameIndex, ungrabFrameData);
         }
@@ -479,6 +485,7 @@ namespace SkillEditor {
         private void AirEndFrameDataTitleUI(int index) => PriorityFrameDataTitleUI(index, FrameType.OverheadBreak);
         private void DodgeFrameDataTitleUI(int index) => PriorityFrameDataTitleUI(index, FrameType.DodgeBreak);
         private void AttackContinueFrameDataTitleUI(int index) => PriorityFrameDataTitleUI(index, FrameType.AttackContinue);
+        private void BreakPointFrameDataTitleUI(int index) => PriorityFrameDataTitleUI(index, FrameType.BreakPoint);
         private void PriorityFrameDataTitleUI(int index, FrameType frameType) {
             switch (frameType) {
                 case FrameType.PlayEffect:

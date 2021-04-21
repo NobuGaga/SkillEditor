@@ -27,6 +27,7 @@ namespace Lua.AnimClipData {
         public BlockFrameData blockFrameData;
         public TrackChangeFrameData trackChangeFrameData;
         public PriorityFrameData atkContinueFrameData;
+        public PriorityFrameData breakPointFrameData;
         public IDFrameData commandAttackFrameData;
         public IDFrameData commandSkillFrameData;
 
@@ -69,6 +70,7 @@ namespace Lua.AnimClipData {
             blockFrameData.Clear();
             trackChangeFrameData.Clear();
             atkContinueFrameData.Clear();
+            breakPointFrameData.Clear();
             commandAttackFrameData.Clear();
             commandSkillFrameData.Clear();
         }
@@ -153,6 +155,10 @@ namespace Lua.AnimClipData {
                     atkContinueFrameData = (PriorityFrameData)value;
                     atkContinueFrameData.frameType = FrameType.AttackContinue;
                     return;
+                case FrameType.BreakPoint:
+                    breakPointFrameData = (PriorityFrameData)value;
+                    breakPointFrameData.frameType = FrameType.BreakPoint;
+                    return;
                 case FrameType.CommandAttack:
                     commandAttackFrameData = (IDFrameData)value;
                     commandAttackFrameData.frameType = FrameType.CommandAttack;
@@ -210,6 +216,8 @@ namespace Lua.AnimClipData {
                     return data.trackChangeFrameData;
                 case FrameType.AttackContinue:
                     return data.atkContinueFrameData;
+                case FrameType.BreakPoint:
+                    return data.breakPointFrameData;
                 case FrameType.CommandAttack:
                     return data.commandAttackFrameData;
                 case FrameType.CommandSkill:
@@ -284,7 +292,8 @@ namespace Lua.AnimClipData {
         Block = 19,
         TrackChange = 20,
         AttackContinue = 21,
-        CommandAttack = 22,
-        CommandSkill = 23,
+        BreakPoint = 22,
+        CommandAttack = 23,
+        CommandSkill = 24,
     }
 }
